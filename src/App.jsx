@@ -1,0 +1,49 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Login from './screen/login/Login';
+import AppShell from './screen/sidebarshell/Appshell';
+
+import Dashboard from './screen/dashboard/Dashboard';
+
+import AddNewUser from './Pages/Users/AddNewUser/AddNewUser.jsx';
+import Users from './Pages/Users/Users.jsx';
+
+function App() {
+  return (
+    <BrowserRouter>
+
+      <Routes>
+
+        {/* LOGIN */}
+
+        <Route
+          path="/"
+          element={<Login />}
+        />
+
+
+        {/* PHARMALYX APPLICATION SHELL */}
+
+        <Route element={<AppShell />}>
+
+          {/* DASHBOARD */}
+
+          <Route
+            path="/dashboard"
+            element={<Dashboard />}
+          />
+
+
+          {/* ALL OTHER MODULES */}
+
+          <Route path='admin/Users' element={<Users/>} ></Route>
+
+        </Route>
+
+      </Routes>
+
+    </BrowserRouter>
+  );
+}
+
+export default App;
