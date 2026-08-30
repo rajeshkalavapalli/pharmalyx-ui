@@ -5,8 +5,15 @@ import {
   Button,
 } from '@mui/material';
 
+import {
+  BarChartOutlined,
+  GpsFixedOutlined,
+  GroupsOutlined,
+  ShieldOutlined,
+} from '@mui/icons-material';
+
 import PharmalyxLogo from '../../assets/PharmalyxLogo.png';
-import PharmalyxLoginillustrationLight from '../../assets/PharmalyxLoginillustrationLight.png'
+import PharmalyxLoginillustrationLight from '../../assets/PharmalyxLoginillustrationLight.png';
 import PharmalyxLoginillustration from '../../assets/PharmalyxLoginillustration.png';
 
 function Login() {
@@ -16,16 +23,18 @@ function Login() {
         width: '100%',
         height: '100vh',
         minHeight: '100dvh',
+
         position: 'relative',
         overflow: 'hidden',
+
         boxSizing: 'border-box',
 
         backgroundImage: `
           linear-gradient(
             90deg,
-            rgba(247, 249, 252, 0.08) 0%,
-            rgba(247, 249, 252, 0.03) 45%,
-            rgba(247, 249, 252, 0.35) 100%
+            rgba(244, 247, 251, 0.06) 0%,
+            rgba(244, 247, 251, 0.02) 45%,
+            rgba(244, 247, 251, 0.42) 100%
           ),
           url(${PharmalyxLoginillustrationLight})
         `,
@@ -40,31 +49,44 @@ function Login() {
         backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* Background overlay */}
+
+      {/* ================================================= */}
+      {/* BACKGROUND OVERLAY */}
+      {/* ================================================= */}
+
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
+
           background:
-            'linear-gradient(90deg, rgba(247,249,252,0.08) 0%, rgba(247,249,252,0.03) 45%, rgba(247,249,252,0.35) 100%)',
+            'linear-gradient(90deg, rgba(244,247,251,0.04) 0%, rgba(244,247,251,0.02) 45%, rgba(244,247,251,0.36) 100%)',
+
           pointerEvents: 'none',
         }}
       />
 
-      {/* Pharmalyx Logo */}
+
+      {/* ================================================= */}
+      {/* BRAND LOGO */}
+      {/* ================================================= */}
+
       <Box
         sx={{
           position: 'absolute',
+
           top: {
             xs: 20,
             sm: 28,
             md: 32,
           },
+
           left: {
             xs: 20,
             sm: 32,
             md: 40,
           },
+
           zIndex: 2,
         }}
       >
@@ -78,12 +100,448 @@ function Login() {
               sm: 170,
               md: 190,
             },
+
             height: 'auto',
           }}
         />
       </Box>
 
-      {/* Login Area */}
+
+      {/* ================================================= */}
+      {/* LEFT SIDE PROMOTIONAL CONTENT */}
+      {/* ================================================= */}
+
+      <Box
+        sx={{
+          position: 'absolute',
+
+          zIndex: 2,
+
+          left: {
+            xs: 20,
+            sm: 32,
+            md: 64,
+            lg: 78,
+          },
+
+          top: {
+            md: '56%',
+            lg: '57%',
+          },
+
+          transform: 'translateY(-50%)',
+
+          width: {
+            md: 430,
+            lg: 470,
+          },
+
+          display: {
+            xs: 'none',
+            md: 'block',
+          },
+        }}
+      >
+
+        {/* ================================================= */}
+        {/* HEADLINE */}
+        {/* ================================================= */}
+
+        <Typography
+          sx={{
+            fontSize: {
+              md: 36,
+              lg: 42,
+            },
+
+            lineHeight: 1.08,
+
+            fontWeight: 700,
+
+            letterSpacing: '-0.035em',
+
+            color: 'common.white',
+
+            maxWidth: 440,
+
+            textShadow:
+              '0 2px 10px rgba(0, 0, 0, 0.18)',
+          }}
+        >
+          Intelligence that
+          <br />
+          drives better
+          <br />
+
+          <Box
+            component="span"
+            sx={{
+              background: (theme) =>
+                `linear-gradient(
+                  90deg,
+                  ${theme.palette.brand.azure} 0%,
+                  ${theme.palette.brand.lumen} 100%
+                )`,
+
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+
+              backgroundClip: 'text',
+            }}
+          >
+            health outcomes.
+          </Box>
+        </Typography>
+
+
+        {/* ================================================= */}
+        {/* DESCRIPTION */}
+        {/* ================================================= */}
+
+        <Typography
+          sx={{
+            mt: 2,
+
+            maxWidth: 390,
+
+            fontSize: {
+              md: 12,
+              lg: 13,
+            },
+
+            lineHeight: 1.6,
+
+            color: 'common.white',
+
+            opacity: 0.72,
+
+            textShadow:
+              '0 1px 5px rgba(0, 0, 0, 0.18)',
+          }}
+        >
+          Pharmalyx empowers field teams with real-time
+          <br />
+          insights, smarter decisions, and measurable impact
+          <br />
+          across every touchpoint.
+        </Typography>
+
+
+        {/* ================================================= */}
+        {/* FOUR FEATURES */}
+        {/* ================================================= */}
+
+        <Box
+          sx={{
+            display: 'grid',
+
+            gridTemplateColumns: 'repeat(4, 1fr)',
+
+            gap: {
+              md: 1.2,
+              lg: 1.8,
+            },
+
+            mt: 7,
+
+            width: '100%',
+
+            maxWidth: 450,
+          }}
+        >
+
+          {/* ================================================= */}
+          {/* REAL-TIME INTELLIGENCE */}
+          {/* ================================================= */}
+
+          <Box
+            sx={{
+              display: 'flex',
+
+              flexDirection: 'column',
+
+              alignItems: 'center',
+
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+
+                display: 'flex',
+
+                alignItems: 'center',
+                justifyContent: 'center',
+
+                border: '1px solid',
+
+                borderColor: 'brand.azure',
+
+                borderRadius: '50%',
+
+                color: 'brand.azure',
+
+                backgroundColor: 'rgba(0, 0, 0, 0.10)',
+
+                backdropFilter: 'blur(3px)',
+
+                mb: 1,
+              }}
+            >
+              <BarChartOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: {
+                  md: 9,
+                  lg: 9.5,
+                },
+
+                lineHeight: 1.25,
+
+                fontWeight: 500,
+
+                color: 'common.white',
+
+                textShadow:
+                  '0 1px 5px rgba(0, 0, 0, 0.35)',
+              }}
+            >
+              Real-time
+              <br />
+              Intelligence
+            </Typography>
+          </Box>
+
+
+          {/* ================================================= */}
+          {/* SMARTER DECISIONS */}
+          {/* ================================================= */}
+
+          <Box
+            sx={{
+              display: 'flex',
+
+              flexDirection: 'column',
+
+              alignItems: 'center',
+
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+
+                display: 'flex',
+
+                alignItems: 'center',
+                justifyContent: 'center',
+
+                border: '1px solid',
+
+                borderColor: 'brand.azure',
+
+                borderRadius: '50%',
+
+                color: 'brand.azure',
+
+                backgroundColor: 'rgba(0, 0, 0, 0.10)',
+
+                backdropFilter: 'blur(3px)',
+
+                mb: 1,
+              }}
+            >
+              <GpsFixedOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: {
+                  md: 9,
+                  lg: 9.5,
+                },
+
+                lineHeight: 1.25,
+
+                fontWeight: 500,
+
+                color: 'common.white',
+
+                textShadow:
+                  '0 1px 5px rgba(0, 0, 0, 0.35)',
+              }}
+            >
+              Smarter
+              <br />
+              Decisions
+            </Typography>
+          </Box>
+
+
+          {/* ================================================= */}
+          {/* FIELD TEAM EMPOWERMENT */}
+          {/* ================================================= */}
+
+          <Box
+            sx={{
+              display: 'flex',
+
+              flexDirection: 'column',
+
+              alignItems: 'center',
+
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+
+                display: 'flex',
+
+                alignItems: 'center',
+                justifyContent: 'center',
+
+                border: '1px solid',
+
+                borderColor: 'brand.azure',
+
+                borderRadius: '50%',
+
+                color: 'brand.azure',
+
+                backgroundColor: 'rgba(0, 0, 0, 0.10)',
+
+                backdropFilter: 'blur(3px)',
+
+                mb: 1,
+              }}
+            >
+              <GroupsOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: {
+                  md: 9,
+                  lg: 9.5,
+                },
+
+                lineHeight: 1.25,
+
+                fontWeight: 500,
+
+                color: 'common.white',
+
+                textShadow:
+                  '0 1px 5px rgba(0, 0, 0, 0.35)',
+              }}
+            >
+              Field Team
+              <br />
+              Empowerment
+            </Typography>
+          </Box>
+
+
+          {/* ================================================= */}
+          {/* TRUSTED COMPLIANCE */}
+          {/* ================================================= */}
+
+          <Box
+            sx={{
+              display: 'flex',
+
+              flexDirection: 'column',
+
+              alignItems: 'center',
+
+              textAlign: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+
+                display: 'flex',
+
+                alignItems: 'center',
+                justifyContent: 'center',
+
+                border: '1px solid',
+
+                borderColor: 'brand.azure',
+
+                borderRadius: '50%',
+
+                color: 'brand.azure',
+
+                backgroundColor: 'rgba(0, 0, 0, 0.10)',
+
+                backdropFilter: 'blur(3px)',
+
+                mb: 1,
+              }}
+            >
+              <ShieldOutlined
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+            </Box>
+
+            <Typography
+              sx={{
+                fontSize: {
+                  md: 9,
+                  lg: 9.5,
+                },
+
+                lineHeight: 1.25,
+
+                fontWeight: 500,
+
+                color: 'common.white',
+
+                textShadow:
+                  '0 1px 5px rgba(0, 0, 0, 0.35)',
+              }}
+            >
+              Trusted
+              <br />
+              Compliance
+            </Typography>
+          </Box>
+
+        </Box>
+
+      </Box>
+
+
+      {/* ================================================= */}
+      {/* LOGIN AREA */}
+      {/* ================================================= */}
+
       <Box
         sx={{
           position: 'relative',
@@ -91,6 +549,7 @@ function Login() {
 
           width: '100%',
           height: '100%',
+
           boxSizing: 'border-box',
 
           display: 'flex',
@@ -114,22 +573,28 @@ function Login() {
           },
         }}
       >
-        {/* Login Card */}
+
+        {/* ================================================= */}
+        {/* LOGIN CARD */}
+        {/* ================================================= */}
+
         <Box
           sx={{
             width: '100%',
-            maxWidth: 410,
+            maxWidth: 420,
 
-            backgroundColor: 'rgba(255, 255, 255, 0.97)',
+            position: 'relative',
+
+            backgroundColor: 'rgba(255, 255, 255, 0.96)',
 
             borderRadius: 3,
 
+            border: '1px solid rgba(255, 255, 255, 0.95)',
+
             boxShadow:
-              '0 18px 50px rgba(23, 43, 77, 0.18)',
+              '0 24px 70px rgba(16, 24, 40, 0.14)',
 
-            border: '1px solid rgba(255, 255, 255, 0.9)',
-
-            backdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(14px)',
 
             boxSizing: 'border-box',
 
@@ -140,16 +605,39 @@ function Login() {
 
             py: {
               xs: 3,
-              sm: 3.5,
+              sm: 4,
+            },
+
+            overflow: 'hidden',
+
+            // Pharmalyx signature accent
+            '&::before': {
+              content: '""',
+
+              position: 'absolute',
+
+              top: 0,
+              left: 0,
+              right: 0,
+
+              height: 3,
+
+              background:
+                'linear-gradient(90deg, #536DFF 0%, #7C5CFF 55%, #2DD4BF 100%)',
             },
           }}
         >
-          {/* Logo */}
+
+          {/* ================================================= */}
+          {/* LOGO */}
+          {/* ================================================= */}
+
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              mb: 2,
+
+              mb: 2.5,
             }}
           >
             <Box
@@ -161,55 +649,73 @@ function Login() {
                   xs: 150,
                   sm: 170,
                 },
+
                 height: 'auto',
               }}
             />
           </Box>
 
-          {/* Welcome */}
+
+          {/* ================================================= */}
+          {/* WELCOME */}
+          {/* ================================================= */}
+
           <Typography
             variant="h4"
             sx={{
               textAlign: 'center',
+
               color: 'text.primary',
-              fontWeight: 600,
+
+              fontWeight: 700,
+
               fontSize: {
                 xs: '24px',
                 sm: '27px',
               },
-              mb: 0.5,
+
+              letterSpacing: '-0.025em',
+
+              mb: 0.6,
             }}
           >
             Welcome back
           </Typography>
+
 
           <Typography
             variant="body2"
             color="text.secondary"
             sx={{
               textAlign: 'center',
-              mb: 3,
+
+              mb: 3.5,
+
+              lineHeight: 1.5,
             }}
           >
             Sign in to your Pharmalyx account
           </Typography>
 
-          {/* Email */}
+
+          {/* ================================================= */}
+          {/* EMAIL / MOBILE */}
+          {/* ================================================= */}
+
           <TextField
             fullWidth
             label="Email or Mobile Number"
             variant="outlined"
             sx={{
-              mb: 1.8,
-
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                backgroundColor: '#FFFFFF',
-              },
+              mb: 2,
             }}
           />
 
-          {/* Password */}
+
+          {/* ================================================= */}
+          {/* PASSWORD */}
+          {/* ================================================= */}
+
           <TextField
             fullWidth
             label="Password"
@@ -217,30 +723,35 @@ function Login() {
             variant="outlined"
             sx={{
               mb: 1,
-
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                backgroundColor: '#FFFFFF',
-              },
             }}
           />
 
-          {/* Forgot Password */}
+
+          {/* ================================================= */}
+          {/* FORGOT PASSWORD */}
+          {/* ================================================= */}
+
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'flex-end',
-              mb: 2.5,
+
+              mb: 2.75,
             }}
           >
             <Typography
               color="primary"
               sx={{
                 fontSize: '13px',
-                fontWeight: 500,
+
+                fontWeight: 600,
+
                 cursor: 'pointer',
 
+                transition: 'color 160ms ease',
+
                 '&:hover': {
+                  color: 'primary.dark',
                   textDecoration: 'underline',
                 },
               }}
@@ -249,7 +760,11 @@ function Login() {
             </Typography>
           </Box>
 
-          {/* Sign In */}
+
+          {/* ================================================= */}
+          {/* SIGN IN */}
+          {/* ================================================= */}
+
           <Button
             fullWidth
             variant="contained"
@@ -257,35 +772,41 @@ function Login() {
             size="large"
             sx={{
               height: 48,
-              borderRadius: 2,
-              fontSize: '15px',
-              fontWeight: 600,
-              textTransform: 'none',
+
+              borderRadius: 1.5,
+
+              fontSize: '14px',
+
+              fontWeight: 650,
 
               boxShadow:
-                '0 7px 18px rgba(23, 105, 170, 0.22)',
-
-              '&:hover': {
-                boxShadow:
-                  '0 9px 22px rgba(23, 105, 170, 0.30)',
-              },
+                '0 8px 22px rgba(83, 109, 255, 0.20)',
             }}
           >
             Sign In
           </Button>
 
-          {/* Security */}
+
+          {/* ================================================= */}
+          {/* SECURITY */}
+          {/* ================================================= */}
+
           <Typography
             variant="caption"
             color="text.secondary"
             sx={{
               display: 'block',
+
               textAlign: 'center',
+
               mt: 2.5,
+
+              fontSize: 11.5,
             }}
           >
             Secure access to Pharmalyx
           </Typography>
+
         </Box>
       </Box>
     </Box>

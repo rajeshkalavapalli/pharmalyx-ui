@@ -8,9 +8,38 @@ import {
   Avatar,
 } from '@mui/material';
 
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+
+import { useLocation } from 'react-router-dom';
 
 function Header() {
+  const location = useLocation();
+
+  const getPageDetails = () => {
+    switch (location.pathname) {
+      case '/dashboard':
+        return {
+          title: 'Dashboard',
+          subtitle: 'Welcome to Pharmalyx',
+        };
+
+      case '/admin/Users':
+        return {
+          title: 'Users',
+          subtitle: 'Manage users and their organizational access.',
+        };
+
+      default:
+        return {
+          title: '',
+          subtitle: '',
+        };
+    }
+  };
+
+  const { title, subtitle } = getPageDetails();
+
   return (
     <AppBar
       position="static"
@@ -18,69 +47,101 @@ function Header() {
       sx={{
         backgroundColor: 'background.paper',
         color: 'text.primary',
+
         borderBottom: '1px solid',
         borderColor: 'divider',
+
+        backgroundImage: 'none',
       }}
     >
       <Toolbar
         sx={{
           minHeight: '72px !important',
+
           px: {
             xs: 2,
             md: 3,
           },
+
+          gap: 2,
         }}
       >
-        {/* ================= LEFT SIDE ================= */}
+
+        {/* ================================================= */}
+        {/* LEFT SIDE */}
+        {/* ================================================= */}
 
         <Box
           sx={{
             flex: 1,
+            minWidth: 0,
           }}
         >
           <Typography
             sx={{
               fontSize: 18,
-              fontWeight: 600,
+              fontWeight: 650,
               color: 'text.primary',
-              letterSpacing: '-0.2px',
+
+              letterSpacing: '-0.025em',
+              lineHeight: 1.3,
+
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
-            Dashboard
+            {title}
           </Typography>
 
           <Typography
             sx={{
               fontSize: 12,
+              fontWeight: 400,
               color: 'text.secondary',
-              mt: 0.2,
+
+              mt: 0.35,
+
+              lineHeight: 1.3,
             }}
           >
-            Welcome to Pharmalyx
+            {subtitle}
           </Typography>
         </Box>
 
-        {/* ================= RIGHT SIDE ================= */}
+
+        {/* ================================================= */}
+        {/* RIGHT SIDE */}
+        {/* ================================================= */}
 
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 1,
+
+            gap: 0.75,
           }}
         >
-          {/* ================= NOTIFICATIONS ================= */}
+
+          {/* =============================================== */}
+          {/* NOTIFICATIONS */}
+          {/* =============================================== */}
 
           <IconButton
             sx={{
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
+
               borderRadius: 1.5,
+
               color: 'text.secondary',
 
+              border: '1px solid transparent',
+
               '&:hover': {
-                backgroundColor: 'sidebar.hover',
+                backgroundColor: 'rgba(83, 109, 255, 0.06)',
                 color: 'primary.main',
+                borderColor: 'rgba(83, 109, 255, 0.08)',
               },
             }}
           >
@@ -90,38 +151,58 @@ function Header() {
               sx={{
                 '& .MuiBadge-badge': {
                   fontSize: 9,
+                  fontWeight: 700,
+
                   minWidth: 16,
                   height: 16,
+
                   padding: '0 4px',
+
+                  border: '2px solid #FFFFFF',
                 },
               }}
             >
-              <NotificationsNoneIcon
+              <NotificationsNoneRoundedIcon
                 sx={{
-                  fontSize: 22,
+                  fontSize: 21,
                 }}
               />
             </Badge>
           </IconButton>
 
-          {/* ================= USER ================= */}
+
+          {/* =============================================== */}
+          {/* USER ACCOUNT */}
+          {/* =============================================== */}
 
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1.25,
-              ml: 1,
+
+              gap: 1.1,
+
+              ml: 0.5,
+
               px: 1,
-              py: 0.75,
-              borderRadius: 2,
+              py: 0.6,
+
+              borderRadius: 1.75,
+
               cursor: 'pointer',
 
+              border: '1px solid transparent',
+
+              transition:
+                'background-color 160ms ease, border-color 160ms ease',
+
               '&:hover': {
-                backgroundColor: 'sidebar.hover',
+                backgroundColor: '#F7F9FC',
+                borderColor: '#E4E9F1',
               },
             }}
           >
+
             {/* Avatar */}
 
             <Avatar
@@ -129,17 +210,21 @@ function Header() {
                 width: 36,
                 height: 36,
 
-                backgroundColor: 'primary.main',
-                color: 'primary.contrastText',
+                background:
+                  'linear-gradient(135deg, #536DFF 0%, #7C5CFF 100%)',
 
-                fontSize: 14,
-                fontWeight: 600,
+                color: '#FFFFFF',
 
-                boxShadow: '0 3px 10px rgba(11, 114, 133, 0.20)',
+                fontSize: 13,
+                fontWeight: 700,
+
+                boxShadow:
+                  '0 4px 12px rgba(83, 109, 255, 0.20)',
               }}
             >
               M
             </Avatar>
+
 
             {/* User information */}
 
@@ -149,14 +234,18 @@ function Header() {
                   xs: 'none',
                   sm: 'block',
                 },
-                minWidth: 80,
+
+                minWidth: 78,
               }}
             >
               <Typography
                 sx={{
                   fontSize: 13,
-                  fontWeight: 600,
+
+                  fontWeight: 650,
+
                   color: 'text.primary',
+
                   lineHeight: 1.3,
                 }}
               >
@@ -166,15 +255,35 @@ function Header() {
               <Typography
                 sx={{
                   fontSize: 11,
+
+                  fontWeight: 400,
+
                   color: 'text.secondary',
+
                   lineHeight: 1.3,
+
                   mt: 0.2,
                 }}
               >
                 Manager
               </Typography>
             </Box>
+
+
+            {/* Account dropdown indicator */}
+
+            <KeyboardArrowDownRoundedIcon
+              sx={{
+                fontSize: 19,
+
+                color: 'text.secondary',
+
+                ml: 0.25,
+              }}
+            />
+
           </Box>
+
         </Box>
       </Toolbar>
     </AppBar>

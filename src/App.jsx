@@ -7,6 +7,7 @@ import Dashboard from './screen/dashboard/Dashboard';
 
 import AddNewUser from './Pages/Users/AddNewUser/AddNewUser.jsx';
 import Users from './Pages/Users/Users.jsx';
+import DivisionOrTerritoty from './Pages/Division/DivisionOrTerrototy.jsx';
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           {/* ALL OTHER MODULES */}
 
           <Route path='admin/Users' element={<Users/>} ></Route>
+
+          <Route path='admin/Divisions' element= {<DivisionOrTerritoty/>}></Route>
 
         </Route>
 

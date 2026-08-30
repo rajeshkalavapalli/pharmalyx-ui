@@ -30,13 +30,22 @@ function AppShell() {
           component="main"
           sx={{
             flex: 1,
+
             p: {
               xs: 2,
               md: 3,
             },
+
             minHeight: 0,
+            minWidth: 0,
+
             overflowY: 'auto',
+
             backgroundColor: 'background.default',
+
+            // Very subtle workspace separation
+            borderTop: '1px solid',
+            borderColor: 'rgba(16, 24, 40, 0.025)',
           }}
         >
           <Outlet />

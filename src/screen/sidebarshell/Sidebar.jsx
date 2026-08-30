@@ -65,7 +65,9 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import navigation from '../naviagation/Navigation';
 import PharmalyxLogo from '../../assets/PharmalyxLogo.png';
 
+
 const iconMap = {
+
   Dashboard: DashboardRoundedIcon,
 
   // Main sections
@@ -153,6 +155,7 @@ const iconMap = {
   Users: PeopleAltRoundedIcon,
   'Roles & Permissions': SecurityRoundedIcon,
   Masters: ManageAccountsRoundedIcon,
+  Divisions: MapRoundedIcon,
   Territories: MapRoundedIcon,
   'Stockist / Retailer Masters': StorefrontRoundedIcon,
   Configuration: SecurityRoundedIcon,
@@ -160,14 +163,24 @@ const iconMap = {
   Integrations: ShareRoundedIcon,
 };
 
+
 function Sidebar() {
+
   const [openSections, setOpenSections] = useState({});
+
   const [collapsed, setCollapsed] = useState(false);
 
   const location = useLocation();
 
+
+  /* ================================================= */
+  /* SECTION CLICK */
+  /* ================================================= */
+
   const handleSectionClick = (label) => {
+
     if (collapsed) {
+
       setCollapsed(false);
 
       setOpenSections((previous) => ({
@@ -184,111 +197,563 @@ function Sidebar() {
     }));
   };
 
+
+  /* ================================================= */
+  /* ICON */
+  /* ================================================= */
+
   const getIcon = (label) => {
+
     return iconMap[label] || DashboardRoundedIcon;
   };
 
+
+  /* ================================================= */
+  /* CHECK ACTIVE RECURSIVELY */
+  /* ================================================= */
+
   const isSectionActive = (item) => {
+
     if (!item.children) {
       return false;
     }
 
-    return item.children.some(
-      (child) =>
+    return item.children.some((child) => {
+
+      if (child.children) {
+        return isSectionActive(child);
+      }
+
+      return (
         location.pathname === child.path ||
         location.pathname.startsWith(`${child.path}/`)
+      );
+    });
+  };
+
+
+  /* ================================================= */
+  /* RENDER NESTED CHILDREN */
+  /* ================================================= */
+
+  const renderChildren = (children, level = 1) => {
+
+    return (
+      <List
+        disablePadding
+        sx={{
+          mb: 0.5,
+
+          pl: level === 1 ? 0.5 : 0.75,
+
+          ml: level > 1 ? 1 : 0,
+
+          borderLeft: '1px solid',
+
+          borderColor: 'sidebar.border',
+        }}
+      >
+
+        {children.map((child) => {
+
+          const ChildIcon = getIcon(child.label);
+
+          const hasChildren = Boolean(child.children);
+
+          const childActive = hasChildren
+            ? isSectionActive(child)
+            : (
+                location.pathname === child.path ||
+                location.pathname.startsWith(`${child.path}/`)
+              );
+
+
+          return (
+            <Box
+              key={child.path || child.label}
+            >
+
+              {/* ================================================= */}
+              {/* NESTED SECTION */}
+              {/* ================================================= */}
+
+              {hasChildren ? (
+
+                <>
+                  <ListItemButton
+                    onClick={() =>
+                      handleSectionClick(child.label)
+                    }
+
+                    sx={{
+                      minHeight: 50,
+
+                      width: '100%',
+
+                      px: 1,
+
+                      py: 0.5,
+
+                      mb: 0.25,
+
+                      borderRadius: 1.25,
+
+                      display: 'flex',
+
+                      flexDirection: 'column',
+
+                      justifyContent: 'center',
+
+                      alignItems: 'center',
+
+                      color: childActive
+                        ? 'sidebar.text'
+                        : 'sidebar.mutedText',
+
+                      backgroundColor: childActive
+                        ? 'sidebar.surface'
+                        : 'transparent',
+
+                      position: 'relative',
+
+                      transition:
+                        'background-color 160ms ease, color 160ms ease',
+
+                      '&:hover': {
+                        backgroundColor:
+                          'sidebar.hover',
+
+                        color:
+                          'sidebar.text',
+                      },
+
+                      '&::after': childActive
+                        ? {
+                            content: '""',
+
+                            position: 'absolute',
+
+                            right: 5,
+
+                            width: 3,
+
+                            height: 20,
+
+                            borderRadius: 4,
+
+                            backgroundColor:
+                              'sidebar.active',
+                          }
+                        : {},
+                    }}
+                  >
+
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+
+                        width: 'auto',
+
+                        mr: 0,
+
+                        mb: 0.25,
+
+                        color: 'inherit',
+
+                        display: 'flex',
+
+                        justifyContent: 'center',
+
+                        alignItems: 'center',
+                      }}
+                    >
+
+                      <ChildIcon
+                        sx={{
+                          fontSize: 17,
+                        }}
+                      />
+
+                    </ListItemIcon>
+
+
+                    <ListItemText
+                      primary={child.label}
+
+                      sx={{
+                        m: 0,
+
+                        textAlign: 'center',
+                      }}
+
+                      primaryTypographyProps={{
+                        fontSize: 12,
+
+                        fontWeight: 500,
+
+                        color: 'inherit',
+
+                        whiteSpace: 'normal',
+
+                        lineHeight: 1.2,
+                      }}
+                    />
+
+
+                    <ExpandMoreRoundedIcon
+                      sx={{
+                        position: 'absolute',
+
+                        right: 7,
+
+                        top: '50%',
+
+                        fontSize: 16,
+
+                        color: childActive
+                          ? 'sidebar.text'
+                          : 'sidebar.mutedText',
+
+                        transition:
+                          'transform 160ms ease',
+
+                        transform:
+                          openSections[child.label]
+                            ? 'rotate(180deg)'
+                            : 'rotate(0deg)',
+                      }}
+                    />
+
+                  </ListItemButton>
+
+
+                  {/* ================================================= */}
+                  {/* GRANDCHILDREN */}
+                  {/* ================================================= */}
+
+                  <Collapse
+                    in={
+                      !collapsed &&
+                      openSections[child.label]
+                    }
+
+                    timeout="auto"
+
+                    unmountOnExit
+                  >
+
+                    {renderChildren(
+                      child.children,
+                      level + 1
+                    )}
+
+                  </Collapse>
+
+                </>
+
+              ) : (
+
+                /* ================================================= */
+                /* NORMAL CHILD */
+                /* ================================================= */
+
+                <ListItemButton
+                  component={NavLink}
+
+                  to={child.path}
+
+                  sx={{
+                    minHeight: level === 1 ? 50 : 46,
+
+                    width: '100%',
+
+                    px: 1,
+
+                    py: 0.5,
+
+                    mb: 0.25,
+
+                    borderRadius: 1.25,
+
+                    display: 'flex',
+
+                    flexDirection: 'column',
+
+                    justifyContent: 'center',
+
+                    alignItems: 'center',
+
+                    color:
+                      'sidebar.mutedText',
+
+                    position: 'relative',
+
+                    transition:
+                      'background-color 160ms ease, color 160ms ease',
+
+                    '&:hover': {
+                      backgroundColor:
+                        'sidebar.hover',
+
+                      color:
+                        'sidebar.text',
+                    },
+
+                    '&.active': {
+                      backgroundColor:
+                        'rgba(45, 212, 191, 0.07)',
+
+                      color:
+                        'sidebar.text',
+
+                      '&::after': {
+                        content: '""',
+
+                        position: 'absolute',
+
+                        right: 5,
+
+                        width: 3,
+
+                        height: level === 1
+                          ? 20
+                          : 18,
+
+                        borderRadius: 4,
+
+                        backgroundColor:
+                          'sidebar.active',
+                      },
+                    },
+                  }}
+                >
+
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+
+                      width: 'auto',
+
+                      mr: 0,
+
+                      mb: 0.25,
+
+                      color: 'inherit',
+
+                      display: 'flex',
+
+                      justifyContent: 'center',
+
+                      alignItems: 'center',
+                    }}
+                  >
+
+                    <ChildIcon
+                      sx={{
+                        fontSize:
+                          level === 1
+                            ? 17
+                            : 16,
+                      }}
+                    />
+
+                  </ListItemIcon>
+
+
+                  <ListItemText
+                    primary={child.label}
+
+                    sx={{
+                      m: 0,
+
+                      textAlign: 'center',
+                    }}
+
+                    primaryTypographyProps={{
+                      fontSize:
+                        level === 1
+                          ? 12
+                          : 11.5,
+
+                      fontWeight:
+                        level === 1
+                          ? 450
+                          : 450,
+
+                      color:
+                        'inherit',
+
+                      whiteSpace:
+                        'normal',
+
+                      lineHeight:
+                        1.2,
+                    }}
+                  />
+
+                </ListItemButton>
+
+              )}
+
+            </Box>
+          );
+        })}
+
+      </List>
     );
   };
 
+
   return (
+
     <Box
       sx={{
         width: collapsed ? 76 : 240,
+
         height: '100vh',
+
         flexShrink: 0,
 
-        backgroundColor: 'sidebar.background',
+        backgroundColor:
+          'sidebar.background',
 
         display: 'flex',
+
         flexDirection: 'column',
+
         boxSizing: 'border-box',
 
-        transition: 'width 0.2s ease',
+        transition:
+          'width 0.2s ease',
 
         overflow: 'hidden',
 
-        boxShadow: '4px 0 18px rgba(3, 24, 32, 0.12)',
+        borderRight: '1px solid',
+
+        borderColor:
+          'sidebar.border',
       }}
     >
-      {/* ================= BRAND ================= */}
+
+      {/* ================================================= */}
+      {/* BRAND */}
+      {/* ================================================= */}
 
       <Box
         sx={{
           height: 72,
+
           px: collapsed ? 1 : 2,
 
           display: 'flex',
+
           alignItems: 'center',
+
           justifyContent: 'center',
 
           borderBottom: '1px solid',
-          borderColor: 'sidebar.border',
+
+          borderColor:
+            'sidebar.border',
 
           flexShrink: 0,
 
-          backgroundColor: 'sidebar.surface',
+          backgroundColor:
+            'sidebar.background',
         }}
       >
+
         <Box
           component="img"
+
           src={PharmalyxLogo}
+
           alt="Pharmalyx"
+
           sx={{
-            width: collapsed ? 48 : 175,
+            width:
+              collapsed
+                ? 48
+                : 175,
+
             height: 'auto',
+
             maxHeight: 52,
+
             objectFit: 'contain',
-            transition: 'width 0.2s ease',
+
+            transition:
+              'width 0.2s ease',
           }}
         />
+
       </Box>
 
-      {/* ================= TOGGLE ================= */}
+
+      {/* ================================================= */}
+      {/* TOGGLE */}
+      {/* ================================================= */}
 
       <Box
         sx={{
           height: 54,
 
           display: 'flex',
-          justifyContent: collapsed ? 'center' : 'flex-end',
+
+          justifyContent:
+            collapsed
+              ? 'center'
+              : 'flex-end',
+
           alignItems: 'center',
 
-          px: collapsed ? 0 : 1.5,
+          px:
+            collapsed
+              ? 0
+              : 1.5,
 
           flexShrink: 0,
         }}
       >
-        <IconButton
-          onClick={() => setCollapsed((previous) => !previous)}
-          sx={{
-            color: 'sidebar.mutedText',
 
-            width: 42,
-            height: 42,
+        <IconButton
+          onClick={() =>
+            setCollapsed(
+              (previous) =>
+                !previous
+            )
+          }
+
+          sx={{
+            color:
+              'sidebar.mutedText',
+
+            width: 40,
+
+            height: 40,
 
             borderRadius: 1.5,
 
             '&:hover': {
-              backgroundColor: 'sidebar.hover',
-              color: 'sidebar.text',
+              backgroundColor:
+                'sidebar.hover',
+
+              color:
+                'sidebar.text',
             },
           }}
         >
+
           <MenuRoundedIcon />
+
         </IconButton>
+
       </Box>
 
-      {/* ================= NAVIGATION ================= */}
+
+      {/* ================================================= */}
+      {/* NAVIGATION */}
+      {/* ================================================= */}
 
       <Box
         sx={{
@@ -296,7 +761,11 @@ function Sidebar() {
 
           overflowY: 'auto',
 
-          px: collapsed ? 1 : 1.25,
+          px:
+            collapsed
+              ? 1
+              : 1.25,
+
           pb: 2,
 
           '&::-webkit-scrollbar': {
@@ -308,362 +777,474 @@ function Sidebar() {
           },
 
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'sidebar.scrollbar',
+            backgroundColor:
+              'sidebar.scrollbar',
+
             borderRadius: '10px',
           },
         }}
       >
+
         <List disablePadding>
+
           {navigation.map((item) => {
-            const MainIcon = getIcon(item.label);
-            const sectionActive = isSectionActive(item);
+
+            const MainIcon =
+              getIcon(item.label);
+
+            const sectionActive =
+              isSectionActive(item);
+
 
             return (
-              <Box key={item.label}>
-                {/* ================= NORMAL ITEM ================= */}
+
+              <Box
+                key={item.label}
+              >
+
+                {/* ================================================= */}
+                {/* NORMAL ITEM */}
+                {/* ================================================= */}
 
                 {!item.children && (
+
                   <Tooltip
-                    title={collapsed ? item.label : ''}
+                    title={
+                      collapsed
+                        ? item.label
+                        : ''
+                    }
+
                     placement="right"
+
                     arrow
                   >
+
                     <ListItemButton
                       component={NavLink}
+
                       to={item.path}
+
                       sx={{
-                        minHeight: 58,
+                        minHeight: 56,
+
                         width: '100%',
 
-                        px: collapsed ? 0 : 1,
-                        py: collapsed ? 1 : 0.75,
+                        px:
+                          collapsed
+                            ? 0
+                            : 1,
 
-                        mb: 0.75,
+                        py:
+                          collapsed
+                            ? 1
+                            : 0.75,
 
-                        borderRadius: 2,
+                        mb: 0.5,
+
+                        borderRadius: 1.5,
 
                         display: 'flex',
-                        flexDirection: 'column',
 
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        flexDirection:
+                          'column',
 
-                        color: 'sidebar.text',
+                        justifyContent:
+                          'center',
+
+                        alignItems:
+                          'center',
+
+                        color:
+                          'sidebar.mutedText',
+
+                        position:
+                          'relative',
 
                         transition:
-                          'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
+                          'background-color 160ms ease, color 160ms ease',
 
                         '&:hover': {
-                          backgroundColor: 'sidebar.hover',
-                          color: 'sidebar.text',
+                          backgroundColor:
+                            'sidebar.hover',
+
+                          color:
+                            'sidebar.text',
                         },
 
                         '&.active': {
-                          backgroundColor: 'sidebar.surface',
-                          color: 'sidebar.text',
+                          backgroundColor:
+                            'rgba(45, 212, 191, 0.08)',
 
-                          boxShadow:
-                            '0 6px 18px rgba(0, 0, 0, 0.20)',
+                          color:
+                            'sidebar.text',
 
                           '&::before': {
                             content: '""',
-                            position: 'absolute',
+
+                            position:
+                              'absolute',
+
                             left: 0,
+
                             top: 10,
+
                             bottom: 10,
+
                             width: 3,
-                            borderRadius: '0 4px 4px 0',
-                            backgroundColor: 'sidebar.active',
+
+                            borderRadius:
+                              '0 4px 4px 0',
+
+                            backgroundColor:
+                              'sidebar.active',
                           },
                         },
                       }}
                     >
+
                       <ListItemIcon
                         sx={{
                           minWidth: 0,
+
                           width: 'auto',
+
                           mr: 0,
+
                           mb: 0.35,
 
                           color: 'inherit',
 
                           display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
+
+                          justifyContent:
+                            'center',
+
+                          alignItems:
+                            'center',
                         }}
                       >
-                        <MainIcon sx={{ fontSize: 21 }} />
+
+                        <MainIcon
+                          sx={{
+                            fontSize: 21,
+                          }}
+                        />
+
                       </ListItemIcon>
 
-                      {!collapsed && <ListItemText
-                        primary={item.label}
-                        sx={{
-                          m: 0,
-                          textAlign: 'center',
-                        }}
-                        primaryTypographyProps={{
-                          fontSize: collapsed ? 0 : 12.5,
-                          fontWeight: 500,
-                          color: 'inherit',
-                          whiteSpace: 'normal',
-                          lineHeight: 1.2,
-                        }}
-                      />}
+
+                      {!collapsed && (
+
+                        <ListItemText
+                          primary={
+                            item.label
+                          }
+
+                          sx={{
+                            m: 0,
+
+                            textAlign:
+                              'center',
+                          }}
+
+                          primaryTypographyProps={{
+                            fontSize: 12.5,
+
+                            fontWeight: 500,
+
+                            color:
+                              'inherit',
+
+                            whiteSpace:
+                              'normal',
+
+                            lineHeight:
+                              1.2,
+                          }}
+                        />
+
+                      )}
+
                     </ListItemButton>
+
                   </Tooltip>
+
                 )}
 
-                {/* ================= PARENT / MODULE ================= */}
+
+                {/* ================================================= */}
+                {/* PARENT / MODULE */}
+                {/* ================================================= */}
 
                 {item.children && (
+
                   <>
+
                     <Tooltip
-                      title={collapsed ? item.label : ''}
+                      title={
+                        collapsed
+                          ? item.label
+                          : ''
+                      }
+
                       placement="right"
+
                       arrow
                     >
+
                       <ListItemButton
-                        onClick={() => handleSectionClick(item.label)}
+                        onClick={() =>
+                          handleSectionClick(
+                            item.label
+                          )
+                        }
+
                         sx={{
-                          minHeight: collapsed ? 58 : 72,
+                          minHeight:
+                            collapsed
+                              ? 58
+                              : 68,
+
                           width: '100%',
 
-                          px: collapsed ? 0 : 1,
-                          py: collapsed ? 1 : 0.75,
+                          px:
+                            collapsed
+                              ? 0
+                              : 1,
+
+                          py:
+                            collapsed
+                              ? 1
+                              : 0.75,
 
                           mb: 0.5,
 
-                          borderRadius: 2,
+                          borderRadius: 1.5,
 
-                          position: 'relative',
+                          position:
+                            'relative',
 
                           display: 'flex',
-                          flexDirection: 'column',
 
-                          justifyContent: 'center',
-                          alignItems: 'center',
+                          flexDirection:
+                            'column',
 
-                          color: sectionActive
-                            ? 'sidebar.text'
-                            : 'sidebar.mutedText',
+                          justifyContent:
+                            'center',
 
-                          backgroundColor: sectionActive
-                            ? 'sidebar.surface'
-                            : 'transparent',
+                          alignItems:
+                            'center',
+
+                          color:
+                            sectionActive
+                              ? 'sidebar.text'
+                              : 'sidebar.mutedText',
+
+                          backgroundColor:
+                            sectionActive
+                              ? 'sidebar.surface'
+                              : 'transparent',
 
                           border: '1px solid',
-                          borderColor: 'sidebar.border',
+
+                          borderColor:
+                            sectionActive
+                              ? 'rgba(45, 212, 191, 0.16)'
+                              : 'transparent',
 
                           transition:
-                            'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
-
-                          boxShadow: sectionActive
-                            ? '0 6px 18px rgba(0, 0, 0, 0.16)'
-                            : 'none',
+                            'background-color 160ms ease, color 160ms ease, border-color 160ms ease',
 
                           '&:hover': {
-                            backgroundColor: sectionActive
-                              ? 'sidebar.surface'
-                              : 'sidebar.hover',
+                            backgroundColor:
+                              sectionActive
+                                ? 'sidebar.surface'
+                                : 'sidebar.hover',
 
-                            color: 'sidebar.text',
+                            color:
+                              'sidebar.text',
+
+                            borderColor:
+                              sectionActive
+                                ? 'rgba(45, 212, 191, 0.20)'
+                                : 'transparent',
                           },
 
-                          '&::before': sectionActive
-                            ? {
-                                content: '""',
-                                position: 'absolute',
-                                left: 0,
-                                top: 10,
-                                bottom: 10,
-                                width: 3,
-                                borderRadius: '0 4px 4px 0',
-                                backgroundColor: 'sidebar.active',
-                              }
-                            : {},
+                          '&::before':
+                            sectionActive
+                              ? {
+                                  content:
+                                    '""',
+
+                                  position:
+                                    'absolute',
+
+                                  left: 0,
+
+                                  top: 10,
+
+                                  bottom: 10,
+
+                                  width: 3,
+
+                                  borderRadius:
+                                    '0 4px 4px 0',
+
+                                  backgroundColor:
+                                    'sidebar.active',
+                                }
+                              : {},
                         }}
                       >
+
                         {/* Parent icon */}
 
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
+
                             width: 'auto',
+
                             mr: 0,
+
                             mb: 0.35,
 
                             color: 'inherit',
 
                             display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
+
+                            justifyContent:
+                              'center',
+
+                            alignItems:
+                              'center',
                           }}
                         >
-                          <MainIcon sx={{ fontSize: 22 }} />
+
+                          <MainIcon
+                            sx={{
+                              fontSize: 21,
+                            }}
+                          />
+
                         </ListItemIcon>
+
 
                         {/* Parent name */}
 
                         {!collapsed && (
+
                           <ListItemText
-                            primary={item.label}
+                            primary={
+                              item.label
+                            }
+
                             sx={{
                               m: 0,
-                              textAlign: 'center',
+
+                              textAlign:
+                                'center',
                             }}
+
                             primaryTypographyProps={{
                               fontSize: 12.5,
-                              fontWeight: 500,
-                              color: 'inherit',
-                              whiteSpace: 'normal',
-                              lineHeight: 1.2,
+
+                              fontWeight: 550,
+
+                              color:
+                                'inherit',
+
+                              whiteSpace:
+                                'normal',
+
+                              lineHeight:
+                                1.2,
                             }}
                           />
+
                         )}
+
 
                         {/* Expand arrow */}
 
                         {!collapsed && (
+
                           <ExpandMoreRoundedIcon
                             sx={{
-                              position: 'absolute',
+                              position:
+                                'absolute',
+
                               right: 7,
+
                               top: '50%',
 
                               fontSize: 17,
 
-                              color: 'sidebar.mutedText',
+                              color:
+                                sectionActive
+                                  ? 'sidebar.text'
+                                  : 'sidebar.mutedText',
 
-                              transition: 'transform 0.2s ease',
+                              transition:
+                                'transform 160ms ease, color 160ms ease',
 
-                              transform: openSections[item.label]
-                                ? 'rotate(180deg)'
-                                : 'rotate(0deg)',
+                              transform:
+                                openSections[
+                                  item.label
+                                ]
+                                  ? 'rotate(180deg)'
+                                  : 'rotate(0deg)',
                             }}
                           />
+
                         )}
+
                       </ListItemButton>
+
                     </Tooltip>
 
-                    {/* ================= CHILDREN ================= */}
+
+                    {/* ================================================= */}
+                    {/* CHILDREN */}
+                    {/* ================================================= */}
 
                     <Collapse
-                      in={!collapsed && openSections[item.label]}
+                      in={
+                        !collapsed &&
+                        openSections[
+                          item.label
+                        ]
+                      }
+
                       timeout="auto"
+
                       unmountOnExit
                     >
-                      <List
-                        disablePadding
-                        sx={{
-                          mb: 0.5,
 
-                          pl: collapsed ? 0 : 0.5,
+                      {renderChildren(
+                        item.children
+                      )}
 
-                          borderLeft: '1px solid',
-                          borderColor: 'sidebar.border',
-                        }}
-                      >
-                        {item.children.map((child) => {
-                          const ChildIcon = getIcon(child.label);
-
-                          return (
-                            <ListItemButton
-                              key={child.path}
-                              component={NavLink}
-                              to={child.path}
-                              sx={{
-                                minHeight: 58,
-                                width: '100%',
-
-                                px: 1,
-                                py: 0.75,
-
-                                mb: 0.25,
-
-                                borderRadius: 1.5,
-
-                                display: 'flex',
-                                flexDirection: 'column',
-
-                                justifyContent: 'center',
-                                alignItems: 'center',
-
-                                color: 'sidebar.mutedText',
-
-                                transition:
-                                  'background-color 0.2s ease, color 0.2s ease',
-
-                                '&:hover': {
-                                  backgroundColor: 'sidebar.hover',
-                                  color: 'sidebar.text',
-                                },
-
-                                '&.active': {
-                                  backgroundColor: 'sidebar.surface',
-
-                                  color: 'sidebar.text',
-
-                                  '&::after': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    right: 6,
-                                    width: 3,
-                                    height: 22,
-                                    borderRadius: 4,
-                                    backgroundColor: 'sidebar.active',
-                                  },
-                                },
-                              }}
-                            >
-                              <ListItemIcon
-                                sx={{
-                                  minWidth: 0,
-                                  width: 'auto',
-                                  mr: 0,
-                                  mb: 0.3,
-
-                                  color: 'inherit',
-
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <ChildIcon
-                                  sx={{
-                                    fontSize: 18,
-                                  }}
-                                />
-                              </ListItemIcon>
-
-                              <ListItemText
-                                primary={child.label}
-                                sx={{
-                                  m: 0,
-                                  textAlign: 'center',
-                                }}
-                                primaryTypographyProps={{
-                                  fontSize: 12,
-                                  fontWeight: 400,
-                                  color: 'inherit',
-                                  whiteSpace: 'normal',
-                                  lineHeight: 1.2,
-                                }}
-                              />
-                            </ListItemButton>
-                          );
-                        })}
-                      </List>
                     </Collapse>
+
                   </>
+
                 )}
+
               </Box>
+
             );
+
           })}
+
         </List>
+
       </Box>
+
     </Box>
   );
 }
+
 
 export default Sidebar;
