@@ -124,7 +124,7 @@ const navigation = [
                 label: 'Masters',
                 children: [
                     { label: 'Divisions', path: '/admin/divisions' },
-                    { label: 'Territories', path: '/admin/territories' },
+                    { label: 'Areas', path: '/admin/Areas' },
                 ],
             },
             { label: 'Stockist / Retailer Masters', path: '/admin/stockist-retailer' },

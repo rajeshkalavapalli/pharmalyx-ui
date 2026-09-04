@@ -15,201 +15,546 @@ import * as yup from "yup";
 import { useState, useEffect } from "react";
 
 import * as countryCodes from "country-codes-list";
+
 import ConfirmationDialog from "../../../components/conformationDialog/ConformationDialog";
 
-import { getDesignation, createUser } from "../../Users/service/index";
+import {
+    getDesignation,
+    createUser,
+    getUsers,
+} from "../../Users/service/index";
+
+import { getDivisions } from "../../Division/index";
+
+import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
 
 function AddNewUser({ onUserCreated }) {
 
+    /* ================================================= */
+    /* COMMON FIELD STYLE */
+    /* ================================================= */
+
     const fieldSx = {
+
         "& .MuiOutlinedInput-root": {
-            minHeight: "40px",
+
+            minHeight: 42,
 
             borderRadius: 1.5,
 
-            backgroundColor: "background.paper",
+            backgroundColor:
+                "background.paper",
+
+            transition:
+                "border-color 160ms ease, box-shadow 160ms ease",
 
             "& fieldset": {
-                borderColor: "divider",
+
+                borderColor:
+                    "divider",
+
             },
 
             "&:hover fieldset": {
-                borderColor: "secondary.light",
+
+                borderColor:
+                    "primary.light",
+
             },
 
             "&.Mui-focused fieldset": {
-                borderColor: "primary.main",
 
-                borderWidth: "1px",
+                borderColor:
+                    "primary.main",
+
+                borderWidth: 1,
+
             },
+
         },
+
 
         "& .MuiInputLabel-root": {
+
             fontSize: 13,
 
-            color: "text.secondary",
+            color:
+                "text.secondary",
+
         },
+
 
         "& .MuiInputLabel-root.Mui-focused": {
-            color: "primary.main",
+
+            color:
+                "primary.main",
+
         },
+
 
         "& .MuiInputBase-input": {
+
             fontSize: 13,
+
         },
 
+
+        "& .MuiSelect-select": {
+
+            fontSize: 13,
+
+        },
+
+
         "& .MuiFormHelperText-root": {
+
             fontSize: 11,
 
             marginLeft: 0.25,
 
             marginTop: 0.5,
+
         },
+
     };
 
 
-    const countries = countryCodes.all();
+    /* ================================================= */
+    /* COUNTRIES */
+    /* ================================================= */
+
+    const countries =
+        countryCodes.all();
 
 
-    const [Username, setUsername] = useState("");
-    const [firstName, setfirstName] = useState("");
-    const [Lastname, setLastname] = useState("");
-    const [email, setEmail] = useState("");
-    const [Mobile, setMobile] = useState("");
-    const [password, setPassword] = useState("");
-    const [Designation, setDesignation] = useState("");
-    const [designations, setDesignations] = useState([]);
-    const [ReportingManager, setReportingManager] = useState("");
-    const [openCloseDialog, setOpenCloseDialog] = useState(false);
-    const [countryCode, setCountryCode] = useState("");
+    /* ================================================= */
+    /* STATE */
+    /* ================================================= */
+
+    const [firstName, setfirstName] =
+        useState("");
+
+    const [Lastname, setLastname] =
+        useState("");
+
+    const [designations, setDesignations] =
+        useState([]);
+
+    const [ReportingManager, setReportingManager] =
+        useState("");
+
+    const [openCloseDialog, setOpenCloseDialog] =
+        useState(false);
+
+    const [divisions, setDivisions] =
+        useState([]);
+
+    const [users, setUsers] =
+        useState([]);
 
 
-    const validationSchema = yup.object({
-        Username: yup
-            .string()
-            .required("username is required")
-            .min(3, "Username must be at least 3 characters")
-            .max(20, "Username must be at most 20 characters"),
+    /* ================================================= */
+    /* GLOBAL SNACKBAR */
+    /* ================================================= */
 
-        email: yup
-            .string()
-            .required("user emailId required ")
-            .email("invalid email adress"),
-
-        Mobile: yup
-            .string()
-            .required("Mobile number is required")
-            .matches(
-                /^[0-9]+$/,
-                "Mobile number must contain only numbers"
-            )
-            .min(6, "Mobile number is too short")
-            .max(15, "Mobile number is too long"),
-
-        password: yup
-            .string()
-            .required("user password is required")
-            .min(8, "user password must be 8 characters"),
-
-        Designation: yup
-            .string()
-            .required("user Designation required"),
-
-        countryCode: yup
-            .string()
-            .required("please select valid country code"),
-    });
+    const { showSnackbar } =
+        useSnackbar();
 
 
-    const formik = useFormik({
-        initialValues: {
-            Username: "",
-            email: "",
-            Mobile: "",
-            password: "",
-            Designation: "",
-            countryCode: "",
-        },
+    /* ================================================= */
+    /* VALIDATION */
+    /* ================================================= */
 
-        validationSchema: validationSchema,
-    });
+    const validationSchema =
+        yup.object({
+
+            Username:
+                yup
+                    .string()
+                    .required(
+                        "Username is required"
+                    )
+                    .min(
+                        3,
+                        "Username must be at least 3 characters"
+                    )
+                    .max(
+                        20,
+                        "Username must be at most 20 characters"
+                    ),
+
+            email:
+                yup
+                    .string()
+                    .required(
+                        "Email is required"
+                    )
+                    .email(
+                        "Invalid email address"
+                    ),
+
+            Mobile:
+                yup
+                    .string()
+                    .required(
+                        "Mobile number is required"
+                    )
+                    .matches(
+                        /^[0-9]+$/,
+                        "Mobile number must contain only numbers"
+                    )
+                    .min(
+                        6,
+                        "Mobile number is too short"
+                    )
+                    .max(
+                        15,
+                        "Mobile number is too long"
+                    ),
+
+            password:
+                yup
+                    .string()
+                    .required(
+                        "Password is required"
+                    )
+                    .min(
+                        8,
+                        "Password must be at least 8 characters"
+                    ),
+
+            Designation:
+                yup
+                    .string()
+                    .required(
+                        "Designation is required"
+                    ),
+
+            countryCode:
+                yup
+                    .string()
+                    .required(
+                        "Please select country code"
+                    ),
+
+            DivisionId:
+                yup
+                    .string()
+                    .required(
+                        "Division is required"
+                    ),
+
+            TerritoryId:
+                yup
+                    .string(),
+
+        });
 
 
-    useEffect(() => {
-        const loadDesignation = async () => {
-            const data = await getDesignation();
+    /* ================================================= */
+    /* CREATE USER */
+    /* ================================================= */
 
-            setDesignations(data);
+    const handleCreateUser =
+        async (values) => {
 
-            console.log("Designation API data:", data);
+            try {
+
+                const userData = {
+
+                    UserName:
+                        values.Username,
+
+                    FirstName:
+                        firstName,
+
+                    LastName:
+                        Lastname,
+
+                    EmailId:
+                        values.email,
+
+                    MobileNumber:
+                        values.Mobile,
+
+                    password:
+                        values.password,
+
+                    DesignationId:
+                        values.Designation,
+
+                    ManagerId:
+                        ReportingManager || null,
+
+                    CountryCode:
+                        values.countryCode,
+
+                    DivisionId:
+                        values.DivisionId || null,
+
+                    TerritoryId:
+                        values.TerritoryId || null,
+
+                };
+
+
+                console.log(
+                    "before create user data",
+                    userData
+                );
+
+
+                const result =
+                    await createUser(userData);
+
+
+                console.log(
+                    "created user details",
+                    result
+                );
+
+
+                showSnackbar(
+                    "User created successfully",
+                    "success"
+                );
+
+
+                onUserCreated();
+
+            } catch (err) {
+
+                console.log(
+                    "error creating user:",
+                    err
+                );
+
+
+                showSnackbar(
+                    "Failed to create user",
+                    "error"
+                );
+
+            }
+
         };
 
+
+    /* ================================================= */
+    /* FORMIK */
+    /* ================================================= */
+
+    const formik =
+        useFormik({
+
+            initialValues: {
+
+                Username: "",
+
+                email: "",
+
+                Mobile: "",
+
+                password: "",
+
+                Designation: "",
+
+                countryCode: "",
+
+                DivisionId: "",
+
+                TerritoryId: "",
+
+            },
+
+
+            validationSchema:
+                validationSchema,
+
+
+            onSubmit:
+                async (values) => {
+
+                    console.log(
+                        "Formik validation passed:",
+                        values
+                    );
+
+
+                    await handleCreateUser(
+                        values
+                    );
+
+                },
+
+        });
+
+
+    /* ================================================= */
+    /* LOAD DESIGNATIONS + DIVISIONS + USERS */
+    /* ================================================= */
+
+    useEffect(() => {
+
+        const loadDesignation =
+            async () => {
+
+                try {
+
+                    const data =
+                        await getDesignation();
+
+
+                    console.log(
+                        "Designation API data:",
+                        data
+                    );
+
+
+                    setDesignations(
+                        Array.isArray(data)
+                            ? data
+                            : []
+                    );
+
+                } catch (err) {
+
+                    console.log(
+                        "error getting designation:",
+                        err
+                    );
+
+                }
+
+            };
+
+
+        const loadDivisions =
+            async () => {
+
+                try {
+
+                    const response =
+                        await getDivisions();
+
+
+                    console.log(
+                        "Division API data:",
+                        response
+                    );
+
+
+                    const data =
+                        response?.result ||
+                        response ||
+                        [];
+
+
+                    setDivisions(
+                        Array.isArray(data)
+                            ? data
+                            : []
+                    );
+
+                } catch (err) {
+
+                    console.log(
+                        "error getting divisions:",
+                        err
+                    );
+
+                }
+
+            };
+
+
+        const loadUsers =
+            async () => {
+
+                try {
+
+                    const response =
+                        await getUsers();
+
+
+                    console.log(
+                        "Users API data:",
+                        response
+                    );
+
+
+                    const data =
+                        response?.result ||
+                        [];
+
+
+                    setUsers(
+                        Array.isArray(data)
+                            ? data
+                            : []
+                    );
+
+                } catch (err) {
+
+                    console.log(
+                        "error getting users:",
+                        err
+                    );
+
+                }
+
+            };
+
+
         loadDesignation();
+
+        loadDivisions();
+
+        loadUsers();
+
     }, []);
 
 
-    const handleCreateUser = async () => {
-
-        const userData = {
-            UserName: formik.values.Username,
-
-            FirstName: firstName,
-
-            LastName: Lastname,
-
-            EmailId: formik.values.email,
-
-            MobileNumber: formik.values.Mobile,
-
-            password: formik.values.password,
-
-            DesignationId: formik.values.Designation,
-
-            ManagerId: ReportingManager || null,
-
-            CountryCode: formik.values.countryCode,
-        };
-
-
-        console.log("before create user data", userData);
-
-        console.log("PASSWORD:", userData.password);
-
-
-        const result = await createUser(userData);
-
-        console.log("created user details", result);
-
-        onUserCreated();
-    };
-
+    /* ================================================= */
+    /* CLOSE */
+    /* ================================================= */
 
     const handleClosed = () => {
 
         setOpenCloseDialog(true);
 
-        console.log("Close clicked");
     };
 
 
+    /* ================================================= */
+    /* RETURN */
+    /* ================================================= */
+
     return (
+
         <Paper
             elevation={0}
+
             sx={{
+
                 width: "100%",
 
                 borderRadius: 2.5,
 
                 border: "1px solid",
 
-                borderColor: "divider",
+                borderColor:
+                    "divider",
 
-                backgroundColor: "background.paper",
+                backgroundColor:
+                    "background.paper",
 
                 overflow: "hidden",
+
             }}
         >
+
 
             {/* ================================================= */}
             {/* FORM HEADER */}
@@ -217,6 +562,7 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
+
                     px: {
                         xs: 2.5,
                         md: 3.5,
@@ -227,41 +573,53 @@ function AddNewUser({ onUserCreated }) {
                         md: 3,
                     },
 
-                    backgroundColor: "background.paper",
                 }}
             >
+
                 <Typography
                     sx={{
+
                         fontSize: {
                             xs: 18,
-                            md: 19,
+                            md: 20,
                         },
 
                         fontWeight: 650,
 
-                        color: "text.primary",
+                        color:
+                            "text.primary",
 
-                        letterSpacing: "-0.025em",
+                        letterSpacing:
+                            "-0.025em",
+
+                        lineHeight: 1.25,
+
                     }}
                 >
                     Create User
                 </Typography>
 
+
                 <Typography
                     sx={{
+
                         mt: 0.6,
 
                         fontSize: 13,
 
                         lineHeight: 1.5,
 
-                        color: "text.secondary",
+                        color:
+                            "text.secondary",
 
                         maxWidth: 620,
+
                     }}
                 >
-                    Add a new user and configure their organizational access.
+                    Add a new user and configure
+                    their organizational access.
                 </Typography>
+
             </Box>
 
 
@@ -274,6 +632,7 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
+
                     px: {
                         xs: 2.5,
                         md: 3.5,
@@ -283,155 +642,274 @@ function AddNewUser({ onUserCreated }) {
                         xs: 2.75,
                         md: 3.25,
                     },
+
                 }}
             >
 
-                {/* Section heading */}
+
+                {/* SECTION HEADER */}
 
                 <Box
                     sx={{
-                        mb: 2.25,
+
+                        display: "flex",
+
+                        alignItems: "flex-start",
+
+                        gap: 1.25,
+
+                        mb: 2.5,
+
                     }}
                 >
-                    <Typography
+
+                    <Box
                         sx={{
-                            fontSize: 12,
 
-                            fontWeight: 650,
+                            width: 3,
 
-                            color: "primary.main",
+                            minHeight: 38,
 
-                            letterSpacing: "0.06em",
+                            borderRadius: 2,
 
-                            textTransform: "uppercase",
+                            backgroundColor:
+                                "primary.main",
+
+                            flexShrink: 0,
+
+                            mt: 0.15,
+
                         }}
-                    >
-                        Basic Information
-                    </Typography>
+                    />
 
-                    <Typography
-                        sx={{
-                            mt: 0.35,
 
-                            fontSize: 12,
+                    <Box>
 
-                            color: "text.secondary",
-                        }}
-                    >
-                        Enter the user's account and contact details.
-                    </Typography>
+                        <Typography
+                            sx={{
+
+                                fontSize: 14,
+
+                                fontWeight: 650,
+
+                                color:
+                                    "text.primary",
+
+                                letterSpacing:
+                                    "-0.01em",
+
+                                lineHeight: 1.35,
+
+                            }}
+                        >
+                            Basic Information
+                        </Typography>
+
+
+                        <Typography
+                            sx={{
+
+                                mt: 0.35,
+
+                                fontSize: 12,
+
+                                color:
+                                    "text.secondary",
+
+                                lineHeight: 1.5,
+
+                            }}
+                        >
+                            Enter the user's account
+                            and contact details.
+                        </Typography>
+
+                    </Box>
+
                 </Box>
 
 
                 <Grid
                     container
+
                     spacing={{
                         xs: 2,
                         md: 2,
                     }}
                 >
 
-                    {/* ================================================= */}
-                    {/* USERNAME */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    {/* USERNAME */}
+
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
                         <TextField
                             fullWidth
+
                             label="Username"
+
                             name="Username"
+
                             placeholder="Enter username"
+
                             sx={fieldSx}
-                            value={formik.values.Username}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+
+                            value={
+                                formik.values.Username
+                            }
+
+                            onChange={
+                                formik.handleChange
+                            }
+
+                            onBlur={
+                                formik.handleBlur
+                            }
+
                             error={
                                 formik.touched.Username &&
-                                Boolean(formik.errors.Username)
+                                Boolean(
+                                    formik.errors.Username
+                                )
                             }
+
                             helperText={
                                 formik.touched.Username &&
                                 formik.errors.Username
                             }
                         />
+
                     </Grid>
 
 
-                    {/* ================================================= */}
                     {/* FIRST NAME */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
                         <TextField
                             fullWidth
+
                             label="First Name"
+
                             placeholder="Enter first name"
+
                             sx={fieldSx}
+
                             value={firstName}
+
                             onChange={(event) =>
-                                setfirstName(event.target.value)
+                                setfirstName(
+                                    event.target.value
+                                )
                             }
                         />
+
                     </Grid>
 
 
-                    {/* ================================================= */}
                     {/* LAST NAME */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
                         <TextField
                             fullWidth
+
                             label="Last Name"
+
                             placeholder="Enter last name"
+
                             sx={fieldSx}
+
                             value={Lastname}
+
                             onChange={(event) =>
-                                setLastname(event.target.value)
+                                setLastname(
+                                    event.target.value
+                                )
                             }
                         />
+
                     </Grid>
 
 
-                    {/* ================================================= */}
                     {/* EMAIL */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
                         <TextField
                             fullWidth
+
                             label="Email"
+
                             name="email"
+
                             placeholder="Enter email address"
+
                             type="email"
+
                             sx={fieldSx}
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+
+                            value={
+                                formik.values.email
+                            }
+
+                            onChange={
+                                formik.handleChange
+                            }
+
+                            onBlur={
+                                formik.handleBlur
+                            }
+
                             error={
                                 formik.touched.email &&
-                                Boolean(formik.errors.email)
+                                Boolean(
+                                    formik.errors.email
+                                )
                             }
+
                             helperText={
                                 formik.touched.email &&
                                 formik.errors.email
                             }
                         />
+
                     </Grid>
 
 
-                    {/* ================================================= */}
                     {/* MOBILE */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
 
                         <Grid
                             container
                             spacing={1.5}
                         >
-
-                            {/* COUNTRY CODE */}
 
                             <Grid size={{ xs: 4 }}>
 
@@ -440,8 +918,9 @@ function AddNewUser({ onUserCreated }) {
 
                                     options={countries}
 
-                                    getOptionLabel={(country) =>
-                                        `${country.countryCallingCode} - ${country.countryNameEn}`
+                                    getOptionLabel={
+                                        (country) =>
+                                            `${country.countryCallingCode} - ${country.countryNameEn}`
                                     }
 
                                     value={
@@ -452,7 +931,10 @@ function AddNewUser({ onUserCreated }) {
                                         ) || null
                                     }
 
-                                    onChange={(event, newValue) => {
+                                    onChange={(
+                                        event,
+                                        newValue
+                                    ) => {
 
                                         formik.setFieldValue(
                                             "countryCode",
@@ -461,6 +943,7 @@ function AddNewUser({ onUserCreated }) {
                                                 ? newValue.countryCallingCode
                                                 : ""
                                         );
+
                                     }}
 
                                     onBlur={() =>
@@ -470,7 +953,10 @@ function AddNewUser({ onUserCreated }) {
                                         )
                                     }
 
-                                    renderInput={(params) => (
+                                    renderInput={(
+                                        params
+                                    ) => (
+
                                         <TextField
                                             {...params}
 
@@ -492,13 +978,12 @@ function AddNewUser({ onUserCreated }) {
                                                 formik.errors.countryCode
                                             }
                                         />
+
                                     )}
                                 />
 
                             </Grid>
 
-
-                            {/* MOBILE NUMBER */}
 
                             <Grid size={{ xs: 8 }}>
 
@@ -513,15 +998,23 @@ function AddNewUser({ onUserCreated }) {
 
                                     sx={fieldSx}
 
-                                    value={formik.values.Mobile}
+                                    value={
+                                        formik.values.Mobile
+                                    }
 
-                                    onChange={formik.handleChange}
+                                    onChange={
+                                        formik.handleChange
+                                    }
 
-                                    onBlur={formik.handleBlur}
+                                    onBlur={
+                                        formik.handleBlur
+                                    }
 
                                     error={
                                         formik.touched.Mobile &&
-                                        Boolean(formik.errors.Mobile)
+                                        Boolean(
+                                            formik.errors.Mobile
+                                        )
                                     }
 
                                     helperText={
@@ -537,11 +1030,14 @@ function AddNewUser({ onUserCreated }) {
                     </Grid>
 
 
-                    {/* ================================================= */}
                     {/* PASSWORD */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
 
                         <TextField
                             fullWidth
@@ -556,15 +1052,23 @@ function AddNewUser({ onUserCreated }) {
 
                             sx={fieldSx}
 
-                            value={formik.values.password}
+                            value={
+                                formik.values.password
+                            }
 
-                            onChange={formik.handleChange}
+                            onChange={
+                                formik.handleChange
+                            }
 
-                            onBlur={formik.handleBlur}
+                            onBlur={
+                                formik.handleBlur
+                            }
 
                             error={
                                 formik.touched.password &&
-                                Boolean(formik.errors.password)
+                                Boolean(
+                                    formik.errors.password
+                                )
                             }
 
                             helperText={
@@ -589,6 +1093,7 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
+
                     px: {
                         xs: 2.5,
                         md: 3.5,
@@ -598,80 +1103,138 @@ function AddNewUser({ onUserCreated }) {
                         xs: 2.75,
                         md: 3.25,
                     },
+
                 }}
             >
 
-                {/* Section heading */}
+
+                {/* SECTION HEADER */}
 
                 <Box
                     sx={{
-                        mb: 2.25,
+
+                        display: "flex",
+
+                        alignItems: "flex-start",
+
+                        gap: 1.25,
+
+                        mb: 2.5,
+
                     }}
                 >
-                    <Typography
+
+                    <Box
                         sx={{
-                            fontSize: 12,
 
-                            fontWeight: 650,
+                            width: 3,
 
-                            color: "primary.main",
+                            minHeight: 38,
 
-                            letterSpacing: "0.06em",
+                            borderRadius: 2,
 
-                            textTransform: "uppercase",
+                            backgroundColor:
+                                "primary.main",
+
+                            flexShrink: 0,
+
+                            mt: 0.15,
+
                         }}
-                    >
-                        Organizational Access
-                    </Typography>
+                    />
 
-                    <Typography
-                        sx={{
-                            mt: 0.35,
 
-                            fontSize: 12,
+                    <Box>
 
-                            color: "text.secondary",
-                        }}
-                    >
-                        Configure the user's role within the organization.
-                    </Typography>
+                        <Typography
+                            sx={{
+
+                                fontSize: 14,
+
+                                fontWeight: 650,
+
+                                color:
+                                    "text.primary",
+
+                                letterSpacing:
+                                    "-0.01em",
+
+                                lineHeight: 1.35,
+
+                            }}
+                        >
+                            Organizational Access
+                        </Typography>
+
+
+                        <Typography
+                            sx={{
+
+                                mt: 0.35,
+
+                                fontSize: 12,
+
+                                color:
+                                    "text.secondary",
+
+                                lineHeight: 1.5,
+
+                            }}
+                        >
+                            Configure the user's role
+                            and organizational access.
+                        </Typography>
+
+                    </Box>
+
                 </Box>
 
 
                 <Grid
                     container
+
                     spacing={{
                         xs: 2,
                         md: 2,
                     }}
                 >
 
-                    {/* ================================================= */}
-                    {/* DESIGNATION */}
-                    {/* ================================================= */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    {/* DESIGNATION */}
+
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
 
                         <TextField
                             fullWidth
 
                             select
 
-                            autoComplete=""
-
                             label="Designation"
 
                             name="Designation"
 
-                            value={formik.values.Designation}
+                            value={
+                                formik.values.Designation
+                            }
 
-                            onChange={formik.handleChange}
+                            onChange={
+                                formik.handleChange
+                            }
 
-                            onBlur={formik.handleBlur}
+                            onBlur={
+                                formik.handleBlur
+                            }
 
                             error={
                                 formik.touched.Designation &&
-                                Boolean(formik.errors.Designation)
+                                Boolean(
+                                    formik.errors.Designation
+                                )
                             }
 
                             helperText={
@@ -682,27 +1245,186 @@ function AddNewUser({ onUserCreated }) {
                             sx={fieldSx}
                         >
 
-                            {designations.map((designation) => (
+                            <MenuItem value="">
+                                Select Designation
+                            </MenuItem>
 
-                                <MenuItem
-                                    key={designation.SystemLovDetailId}
-                                    value={designation.SystemLovDetailId}
-                                >
-                                    {designation.SldName}
-                                </MenuItem>
 
-                            ))}
+                            {designations.map(
+                                (designation) => (
+
+                                    <MenuItem
+                                        key={
+                                            designation.SystemLovDetailId
+                                        }
+
+                                        value={
+                                            designation.SystemLovDetailId
+                                        }
+                                    >
+                                        {
+                                            designation.SldName
+                                        }
+                                    </MenuItem>
+
+                                )
+                            )}
 
                         </TextField>
 
                     </Grid>
 
 
-                    {/* ================================================= */}
-                    {/* REPORTING MANAGER */}
-                    {/* ================================================= */}
+                    {/* DIVISION */}
 
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
+                        <TextField
+                            fullWidth
+
+                            select
+
+                            label="Division"
+
+                            name="DivisionId"
+
+                            value={
+                                formik.values.DivisionId
+                            }
+
+                            onChange={(event) => {
+
+                                formik.setFieldValue(
+                                    "DivisionId",
+                                    event.target.value
+                                );
+
+
+                                formik.setFieldValue(
+                                    "TerritoryId",
+                                    ""
+                                );
+
+                            }}
+
+                            onBlur={() =>
+                                formik.setFieldTouched(
+                                    "DivisionId",
+                                    true
+                                )
+                            }
+
+                            error={
+                                formik.touched.DivisionId &&
+                                Boolean(
+                                    formik.errors.DivisionId
+                                )
+                            }
+
+                            helperText={
+                                formik.touched.DivisionId &&
+                                formik.errors.DivisionId
+                            }
+
+                            sx={fieldSx}
+                        >
+
+                            <MenuItem value="">
+                                Select Division
+                            </MenuItem>
+
+
+                            {divisions.map(
+                                (division) => (
+
+                                    <MenuItem
+                                        key={
+                                            division.DivisionId
+                                        }
+
+                                        value={
+                                            division.DivisionId
+                                        }
+                                    >
+                                        {
+                                            division.DivisionName ||
+                                            "-"
+                                        }
+                                    </MenuItem>
+
+                                )
+                            )}
+
+                        </TextField>
+
+                    </Grid>
+
+
+                    {/* TERRITORY */}
+
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
+
+                        <TextField
+                            fullWidth
+
+                            select
+
+                            label="Territory"
+
+                            name="TerritoryId"
+
+                            value={
+                                formik.values.TerritoryId
+                            }
+
+                            onChange={
+                                formik.handleChange
+                            }
+
+                            onBlur={
+                                formik.handleBlur
+                            }
+
+                            disabled={
+                                !formik.values.DivisionId
+                            }
+
+                            sx={fieldSx}
+                        >
+
+                            <MenuItem value="">
+
+                                {
+                                    formik.values.DivisionId
+                                        ? "Select Territory"
+                                        : "Select Division First"
+                                }
+
+                            </MenuItem>
+
+                        </TextField>
+
+                    </Grid>
+
+
+                    {/* REPORTING MANAGER */}
+
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6,
+                        }}
+                    >
 
                         <TextField
                             fullWidth
@@ -711,15 +1433,46 @@ function AddNewUser({ onUserCreated }) {
 
                             label="Reporting Manager"
 
-                            value={ReportingManager}
+                            value={
+                                ReportingManager
+                            }
 
                             onChange={(event) =>
-                                setReportingManager(event.target.value)
+                                setReportingManager(
+                                    event.target.value
+                                )
                             }
 
                             sx={fieldSx}
                         >
-                            {/* Options will come here later */}
+
+                            <MenuItem value="">
+                                Select Reporting Manager
+                            </MenuItem>
+
+
+                            {users.map(
+                                (user) => {
+
+                                    const displayName =
+                                        user.UserName ||
+                                        "-";
+
+
+                                    return (
+
+                                        <MenuItem
+                                            key={user.userId}
+
+                                            value={user.userId}
+                                        >
+                                            {displayName}
+                                        </MenuItem>
+
+                                    );
+
+                                }
+                            )}
 
                         </TextField>
 
@@ -739,6 +1492,7 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
+
                     px: {
                         xs: 2.5,
                         md: 3.5,
@@ -748,13 +1502,17 @@ function AddNewUser({ onUserCreated }) {
 
                     display: "flex",
 
-                    justifyContent: "flex-end",
+                    justifyContent:
+                        "flex-end",
 
-                    alignItems: "center",
+                    alignItems:
+                        "center",
 
                     gap: 1.25,
 
-                    backgroundColor: "background.default",
+                    backgroundColor:
+                        "background.default",
+
                 }}
             >
 
@@ -762,27 +1520,42 @@ function AddNewUser({ onUserCreated }) {
                     variant="outlined"
 
                     sx={{
+
                         minWidth: 96,
 
                         height: 40,
 
                         borderRadius: 1.5,
 
-                        textTransform: "none",
+                        textTransform:
+                            "none",
 
                         fontSize: 13,
 
                         fontWeight: 500,
 
-                        borderColor: "divider",
+                        borderColor:
+                            "divider",
 
-                        color: "text.secondary",
+                        color:
+                            "text.secondary",
+
+                        backgroundColor:
+                            "background.paper",
 
                         "&:hover": {
-                            borderColor: "secondary.light",
 
-                            backgroundColor: "sidebar.hover",
+                            borderColor:
+                                "primary.light",
+
+                            color:
+                                "text.primary",
+
+                            backgroundColor:
+                                "action.hover",
+
                         },
+
                     }}
 
                     onClick={handleClosed}
@@ -795,26 +1568,35 @@ function AddNewUser({ onUserCreated }) {
                     variant="contained"
 
                     sx={{
+
                         minWidth: 120,
 
                         height: 40,
 
                         borderRadius: 1.5,
 
-                        textTransform: "none",
+                        textTransform:
+                            "none",
 
                         fontSize: 13,
 
                         fontWeight: 600,
 
-                        boxShadow: "none",
+                        boxShadow:
+                            "none",
 
                         "&:hover": {
-                            boxShadow: "none",
+
+                            boxShadow:
+                                "none",
+
                         },
+
                     }}
 
-                    onClick={handleCreateUser}
+                    onClick={
+                        formik.handleSubmit
+                    }
                 >
                     Create User
                 </Button>
@@ -827,23 +1609,38 @@ function AddNewUser({ onUserCreated }) {
             {/* ================================================= */}
 
             <ConfirmationDialog
-                open={openCloseDialog}
+
+                open={
+                    openCloseDialog
+                }
 
                 title="Close User Creation"
 
                 message="Are you sure you want to close the user creation?"
 
                 onCancel={() =>
-                    setOpenCloseDialog(false)
+                    setOpenCloseDialog(
+                        false
+                    )
                 }
 
-                onConfirm={() =>
-                    setOpenCloseDialog(false)
-                }
+                onConfirm={() => {
+
+                    setOpenCloseDialog(
+                        false
+                    );
+
+                    onUserCreated();
+
+                }}
+
             />
 
         </Paper>
+
     );
+
 }
+
 
 export default AddNewUser;

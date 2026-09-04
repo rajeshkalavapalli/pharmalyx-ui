@@ -1,118 +1,136 @@
-import { createTheme } from '@mui/material/styles';
+import { alpha, createTheme } from '@mui/material/styles';
 
 const PharmalyxTheme = createTheme({
   // =========================================================
   // PHARMALYX DESIGN SYSTEM
-  // Lumen Precision
+  // ARCTIC BLUE — PREMIUM LIGHT INTELLIGENCE
+  //
+  // Personality:
+  // Precise • Intelligent • Calm • Premium • Enterprise
   // =========================================================
 
   palette: {
+    mode: 'light',
 
     // =======================================================
     // PRIMARY BRAND
-    // Azure is used for primary actions and key interaction
+    // ARCTIC BLUE
+    //
+    // Main product interaction color
     // =======================================================
 
     primary: {
-      main: '#536DFF',
-      dark: '#3D54D9',
-      light: '#8295FF',
+      main: '#2F5F8F',
+      dark: '#1E466D',
+      light: '#5F8FBD',
       contrastText: '#FFFFFF',
     },
 
     // =======================================================
-    // COMMAND LAYER
-    // Deep surfaces used by application navigation/shell
+    // SECONDARY / DEEP ARCTIC
+    //
+    // Reserved for strong emphasis and navigation
     // =======================================================
 
     secondary: {
-      main: '#0D1A29',
-      dark: '#050B13',
-      light: '#17283B',
+      main: '#183B5B',
+      dark: '#102B44',
+      light: '#315B7D',
       contrastText: '#FFFFFF',
     },
 
     // =======================================================
     // PHARMALYX BRAND TOKENS
-    // These are intentionally different from generic MUI
-    // primary/secondary colors.
+    //
+    // Keep custom colors centralized here.
+    // Do not hardcode these colors inside components.
     // =======================================================
 
     brand: {
-      azure: '#536DFF',
-      azureDark: '#3D54D9',
-      azureLight: '#8295FF',
+      arctic: '#2F5F8F',
+      arcticDark: '#1E466D',
+      arcticLight: '#5F8FBD',
 
-      lumen: '#2DD4BF',
-      lumenDark: '#159F90',
-      lumenLight: '#5EEAD4',
+      deepArctic: '#183B5B',
+      deepArcticDark: '#102B44',
+      deepArcticLight: '#315B7D',
 
-      indigo: '#7C5CFF',
-      indigoDark: '#6040D8',
-      indigoLight: '#A18AFF',
+      ice: '#EAF3FA',
+      iceLight: '#F4F8FC',
+
+      slate: '#64748B',
+      graphite: '#1F2933',
     },
 
     // =======================================================
-    // COMMAND SURFACES
-    // Used by the dark application shell
+    // COMMAND / NAVIGATION LAYER
+    //
+    // Light premium enterprise shell
     // =======================================================
 
     command: {
-      background: '#050B13',
-      surface: '#0B1725',
-      elevated: '#102235',
-      border: 'rgba(226, 232, 240, 0.08)',
+      background: '#F4F7FA',
+      surface: '#FFFFFF',
+      elevated: '#FFFFFF',
 
-      text: '#F1F5F9',
-      mutedText: '#94A3B8',
+      border: '#E2E8F0',
+
+      text: '#1F2933',
+      mutedText: '#6B7785',
     },
 
     // =======================================================
     // INTELLIGENCE LAYER
-    // Reserved for Insights, Analytics and future intelligence
-    // experiences.
+    //
+    // Used for analytics / insights / intelligence modules
     // =======================================================
 
     intelligence: {
-      background: '#090B18',
-      surface: '#11152A',
-      elevated: '#171D38',
+      background: '#F7FAFC',
+      surface: '#FFFFFF',
+      elevated: '#FFFFFF',
 
-      primary: '#7C5CFF',
-      accent: '#2DD4BF',
+      primary: '#2F5F8F',
+      accent: '#5F8FBD',
 
-      border: 'rgba(161, 138, 255, 0.16)',
-      text: '#F5F7FF',
-      mutedText: '#9BA4C4',
+      border: '#DCE6EF',
+
+      text: '#1F2933',
+      mutedText: '#6B7785',
     },
 
     // =======================================================
     // SIDEBAR
+    //
+    // Minimal Modular Enterprise Navigation
     // =======================================================
 
     sidebar: {
-      background: '#050B13',
-      surface: '#102235',
+  background: '#F4F7FA',
+  surface: '#FFFFFF',
 
-      // Lumen line used by the existing sidebar
-      active: '#2DD4BF',
+  active: '#183B5B',
+  activeLight: '#EAF3FA',
+  activeText: '#FFFFFF',
 
-      text: '#E8EEF7',
-      mutedText: '#91A1B5',
+  text: '#2D3742',
+  mutedText: '#6B7785',
 
-      border: 'rgba(232, 238, 247, 0.08)',
+  border: '#E2E8F0',
 
-      hover: 'rgba(83, 109, 255, 0.09)',
+  hover: '#EAF3FA',
 
-      scrollbar: 'rgba(145, 161, 181, 0.20)',
-    },
+  scrollbar: '#CBD5E1',
+},
 
     // =======================================================
     // WORKSPACE
+    //
+    // Premium neutral Arctic workspace
     // =======================================================
 
     background: {
-      default: '#F4F7FB',
+      default: '#F7FAFC',
       paper: '#FFFFFF',
     },
 
@@ -121,58 +139,62 @@ const PharmalyxTheme = createTheme({
     // =======================================================
 
     text: {
-      primary: '#101828',
-      secondary: '#667085',
-      disabled: '#98A2B3',
+      primary: '#1F2933',
+      secondary: '#6B7785',
+      disabled: '#9AA5B1',
     },
 
     // =======================================================
     // DIVIDER
     // =======================================================
 
-    divider: '#E4E9F1',
+    divider: '#E2E8F0',
 
     // =======================================================
     // STATUS COLORS
-    // Status colors remain semantic.
-    // They are NOT used as decoration.
+    //
+    // Semantic colors only.
+    // Do not use as general decoration.
     // =======================================================
 
     success: {
-      main: '#16A36A',
-      dark: '#118357',
-      light: '#4CC38A',
+      main: '#2E7D5B',
+      dark: '#216044',
+      light: '#5BA982',
       contrastText: '#FFFFFF',
     },
 
     warning: {
-      main: '#E29A3B',
-      dark: '#B9751F',
-      light: '#F2BB68',
+      main: '#C58A1A',
+      dark: '#96670F',
+      light: '#E0B34D',
       contrastText: '#FFFFFF',
     },
 
     error: {
-      main: '#D94F5C',
-      dark: '#B73542',
-      light: '#EE7A84',
+      main: '#C94F5C',
+      dark: '#A83B47',
+      light: '#E77A84',
       contrastText: '#FFFFFF',
     },
 
     info: {
-      main: '#22B8D6',
-      dark: '#168BA3',
-      light: '#5ED3E7',
+      main: '#3F7FB8',
+      dark: '#2F6390',
+      light: '#72A8D8',
       contrastText: '#FFFFFF',
     },
   },
 
   // =========================================================
   // GLOBAL SHAPE
+  //
+  // Enterprise minimal:
+  // Controlled radius, not overly rounded
   // =========================================================
 
   shape: {
-    borderRadius: 10,
+    borderRadius: 8,
   },
 
   // =========================================================
@@ -247,7 +269,6 @@ const PharmalyxTheme = createTheme({
   // =========================================================
 
   components: {
-
     // =======================================================
     // GLOBAL CSS BASELINE
     // =======================================================
@@ -255,14 +276,14 @@ const PharmalyxTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         html: {
-          backgroundColor: '#F4F7FB',
+          backgroundColor: '#F7FAFC',
         },
 
         body: {
           margin: 0,
           padding: 0,
-          backgroundColor: '#F4F7FB',
-          color: '#101828',
+          backgroundColor: '#F7FAFC',
+          color: '#1F2933',
           fontFamily: 'Inter, Arial, Helvetica, sans-serif',
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
@@ -295,19 +316,20 @@ const PharmalyxTheme = createTheme({
 
     // =======================================================
     // PAPER
-    // The foundation for cards, panels and data surfaces
+    //
+    // Cards, panels and data surfaces
     // =======================================================
 
     MuiPaper: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           backgroundImage: 'none',
-          border: '1px solid #E4E9F1',
+          border: `1px solid ${theme.palette.divider}`,
           boxShadow: '0 4px 18px rgba(16, 24, 40, 0.035)',
-        },
+        }),
 
         rounded: {
-          borderRadius: 10,
+          borderRadius: 8,
         },
       },
     },
@@ -324,54 +346,69 @@ const PharmalyxTheme = createTheme({
       styleOverrides: {
         root: {
           minHeight: 40,
-          borderRadius: 9,
+          borderRadius: 7,
           paddingLeft: 16,
           paddingRight: 16,
           fontWeight: 600,
+
           transition:
             'background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease',
         },
 
-        containedPrimary: {
-          backgroundColor: '#536DFF',
+        // ===================================================
+        // PRIMARY BUTTON
+        // ===================================================
+
+        containedPrimary: ({ theme }) => ({
+          backgroundColor: theme.palette.primary.main,
 
           '&:hover': {
-            backgroundColor: '#3D54D9',
-            boxShadow: '0 6px 16px rgba(83, 109, 255, 0.20)',
+            backgroundColor: theme.palette.primary.dark,
+            boxShadow: `0 6px 16px ${alpha(
+              theme.palette.primary.main,
+              0.18
+            )}`,
           },
 
           '&:active': {
             transform: 'translateY(1px)',
           },
-        },
+        }),
 
-        outlined: {
-          borderColor: '#D7DEE8',
-          color: '#344054',
-          backgroundColor: '#FFFFFF',
+        // ===================================================
+        // OUTLINED BUTTON
+        // ===================================================
+
+        outlined: ({ theme }) => ({
+          borderColor: theme.palette.divider,
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.background.paper,
 
           '&:hover': {
-            borderColor: '#536DFF',
-            backgroundColor: 'rgba(83, 109, 255, 0.035)',
+            borderColor: theme.palette.primary.main,
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
           },
 
-          // Error outlined buttons
           '&.MuiButton-colorError': {
-            color: '#D94F5C',
-            borderColor: '#D94F5C',
+            color: theme.palette.error.main,
+            borderColor: theme.palette.error.main,
 
             '&:hover': {
-              borderColor: '#B73542',
-              backgroundColor: 'rgba(217, 79, 92, 0.04)',
+              borderColor: theme.palette.error.dark,
+              backgroundColor: alpha(theme.palette.error.main, 0.04),
             },
           },
-        },
+        }),
 
-        text: {
+        // ===================================================
+        // TEXT BUTTON
+        // ===================================================
+
+        text: ({ theme }) => ({
           '&:hover': {
-            backgroundColor: 'rgba(83, 109, 255, 0.06)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.06),
           },
-        },
+        }),
       },
     },
 
@@ -381,15 +418,16 @@ const PharmalyxTheme = createTheme({
 
     MuiIconButton: {
       styleOverrides: {
-        root: {
-          borderRadius: 8,
+        root: ({ theme }) => ({
+          borderRadius: 7,
+
           transition:
             'background-color 160ms ease, color 160ms ease',
 
           '&:hover': {
-            backgroundColor: 'rgba(83, 109, 255, 0.07)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.07),
           },
-        },
+        }),
       },
     },
 
@@ -403,11 +441,11 @@ const PharmalyxTheme = createTheme({
           minHeight: 48,
         },
 
-        indicator: {
+        indicator: ({ theme }) => ({
           height: 2,
           borderRadius: 2,
-          backgroundColor: '#536DFF',
-        },
+          backgroundColor: theme.palette.primary.main,
+        }),
       },
     },
 
@@ -417,23 +455,27 @@ const PharmalyxTheme = createTheme({
 
     MuiTab: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           minHeight: 48,
+
           paddingLeft: 18,
           paddingRight: 18,
-          color: '#667085',
+
+          color: theme.palette.text.secondary,
+
           fontSize: '14px',
           fontWeight: 600,
+
           textTransform: 'none',
 
           '&.Mui-selected': {
-            color: '#536DFF',
+            color: theme.palette.primary.main,
           },
 
           '&:hover': {
-            color: '#3D54D9',
+            color: theme.palette.primary.dark,
           },
-        },
+        }),
       },
     },
 
@@ -443,24 +485,30 @@ const PharmalyxTheme = createTheme({
 
     MuiOutlinedInput: {
       styleOverrides: {
-        root: {
-          borderRadius: 9,
-          backgroundColor: '#FFFFFF',
+        root: ({ theme }) => ({
+          borderRadius: 7,
+
+          backgroundColor: theme.palette.background.paper,
 
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#D7DEE8',
+            borderColor: theme.palette.divider,
           },
 
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#B9C4D3',
+            borderColor: '#B8C6D3',
           },
 
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#536DFF',
+            borderColor: theme.palette.primary.main,
+
             borderWidth: 1,
-            boxShadow: '0 0 0 3px rgba(83, 109, 255, 0.10)',
+
+            boxShadow: `0 0 0 3px ${alpha(
+              theme.palette.primary.main,
+              0.1
+            )}`,
           },
-        },
+        }),
 
         input: {
           fontSize: '14px',
@@ -474,14 +522,15 @@ const PharmalyxTheme = createTheme({
 
     MuiInputLabel: {
       styleOverrides: {
-        root: {
-          color: '#667085',
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+
           fontSize: '14px',
 
           '&.Mui-focused': {
-            color: '#536DFF',
+            color: theme.palette.primary.main,
           },
-        },
+        }),
       },
     },
 
@@ -498,15 +547,15 @@ const PharmalyxTheme = createTheme({
     },
 
     // =======================================================
-    // TABLE
+    // TABLE CONTAINER
     // =======================================================
 
     MuiTableContainer: {
       styleOverrides: {
-        root: {
-          borderRadius: 10,
-          backgroundColor: '#FFFFFF',
-        },
+        root: ({ theme }) => ({
+          borderRadius: 8,
+          backgroundColor: theme.palette.background.paper,
+        }),
       },
     },
 
@@ -528,20 +577,27 @@ const PharmalyxTheme = createTheme({
 
     MuiTableCell: {
       styleOverrides: {
-        root: {
-          borderBottom: '1px solid #EDF1F5',
-          color: '#344054',
-          fontSize: '14px',
-          padding: '14px 16px',
-        },
+        root: ({ theme }) => ({
+          borderBottom: `1px solid ${theme.palette.divider}`,
 
-        head: {
-          color: '#475467',
+          color: theme.palette.text.primary,
+
+          fontSize: '14px',
+
+          padding: '14px 16px',
+        }),
+
+        head: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+
           fontSize: '13px',
+
           fontWeight: 650,
+
           backgroundColor: '#F8FAFC',
+
           whiteSpace: 'nowrap',
-        },
+        }),
       },
     },
 
@@ -551,17 +607,18 @@ const PharmalyxTheme = createTheme({
 
     MuiTableRow: {
       styleOverrides: {
-        root: {
-          transition: 'background-color 140ms ease',
+        root: ({ theme }) => ({
+          transition:
+            'background-color 140ms ease',
 
           '&:hover': {
-            backgroundColor: '#F8FAFF',
+            backgroundColor: alpha(theme.palette.primary.main, 0.025),
           },
 
           '&:last-child td': {
             borderBottom: 0,
           },
-        },
+        }),
       },
     },
 
@@ -572,30 +629,52 @@ const PharmalyxTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 7,
+          borderRadius: 6,
+
           fontWeight: 600,
+
           fontSize: '12px',
         },
 
-        colorPrimary: {
-          backgroundColor: 'rgba(83, 109, 255, 0.10)',
-          color: '#3D54D9',
-        },
+        // ===================================================
+        // PRIMARY CHIP
+        // ===================================================
 
-        colorSuccess: {
-          backgroundColor: 'rgba(22, 163, 106, 0.10)',
-          color: '#118357',
-        },
+        colorPrimary: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.primary.main, 0.1),
 
-        colorWarning: {
-          backgroundColor: 'rgba(226, 154, 59, 0.12)',
-          color: '#A66318',
-        },
+          color: theme.palette.primary.dark,
+        }),
 
-        colorError: {
-          backgroundColor: 'rgba(217, 79, 92, 0.10)',
-          color: '#B73542',
-        },
+        // ===================================================
+        // SUCCESS CHIP
+        // ===================================================
+
+        colorSuccess: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.success.main, 0.1),
+
+          color: theme.palette.success.dark,
+        }),
+
+        // ===================================================
+        // WARNING CHIP
+        // ===================================================
+
+        colorWarning: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.warning.main, 0.12),
+
+          color: theme.palette.warning.dark,
+        }),
+
+        // ===================================================
+        // ERROR CHIP
+        // ===================================================
+
+        colorError: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.error.main, 0.1),
+
+          color: theme.palette.error.dark,
+        }),
       },
     },
 
@@ -605,12 +684,16 @@ const PharmalyxTheme = createTheme({
 
     MuiDialog: {
       styleOverrides: {
-        paper: {
-          borderRadius: 14,
-          border: '1px solid #E4E9F1',
-          boxShadow: '0 24px 70px rgba(16, 24, 40, 0.16)',
+        paper: ({ theme }) => ({
+          borderRadius: 12,
+
+          border: `1px solid ${theme.palette.divider}`,
+
+          boxShadow:
+            '0 24px 70px rgba(16, 24, 40, 0.16)',
+
           backgroundImage: 'none',
-        },
+        }),
       },
     },
 
@@ -620,12 +703,16 @@ const PharmalyxTheme = createTheme({
 
     MuiMenu: {
       styleOverrides: {
-        paper: {
-          borderRadius: 10,
-          border: '1px solid #E4E9F1',
-          boxShadow: '0 12px 32px rgba(16, 24, 40, 0.12)',
+        paper: ({ theme }) => ({
+          borderRadius: 8,
+
+          border: `1px solid ${theme.palette.divider}`,
+
+          boxShadow:
+            '0 12px 32px rgba(16, 24, 40, 0.12)',
+
           marginTop: 4,
-        },
+        }),
       },
     },
 
@@ -635,24 +722,30 @@ const PharmalyxTheme = createTheme({
 
     MuiMenuItem: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           minHeight: 40,
-          borderRadius: 7,
+
+          borderRadius: 6,
+
           margin: '2px 5px',
+
           fontSize: '14px',
 
           '&:hover': {
-            backgroundColor: 'rgba(83, 109, 255, 0.06)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.06),
           },
 
           '&.Mui-selected': {
-            backgroundColor: 'rgba(83, 109, 255, 0.09)',
+            backgroundColor: alpha(theme.palette.primary.main, 0.09),
 
             '&:hover': {
-              backgroundColor: 'rgba(83, 109, 255, 0.12)',
+              backgroundColor: alpha(
+                theme.palette.primary.main,
+                0.12
+              ),
             },
           },
-        },
+        }),
       },
     },
 
@@ -662,18 +755,24 @@ const PharmalyxTheme = createTheme({
 
     MuiTooltip: {
       styleOverrides: {
-        tooltip: {
-          backgroundColor: '#101828',
-          color: '#FFFFFF',
-          fontSize: '12px',
-          borderRadius: 6,
-          padding: '7px 10px',
-          boxShadow: '0 6px 18px rgba(16, 24, 40, 0.16)',
-        },
+        tooltip: ({ theme }) => ({
+          backgroundColor: theme.palette.secondary.main,
 
-        arrow: {
-          color: '#101828',
-        },
+          color: theme.palette.secondary.contrastText,
+
+          fontSize: '12px',
+
+          borderRadius: 6,
+
+          padding: '7px 10px',
+
+          boxShadow:
+            '0 6px 18px rgba(16, 24, 40, 0.16)',
+        }),
+
+        arrow: ({ theme }) => ({
+          color: theme.palette.secondary.main,
+        }),
       },
     },
 
@@ -683,9 +782,9 @@ const PharmalyxTheme = createTheme({
 
     MuiDivider: {
       styleOverrides: {
-        root: {
-          borderColor: '#E8EDF3',
-        },
+        root: ({ theme }) => ({
+          borderColor: theme.palette.divider,
+        }),
       },
     },
   },

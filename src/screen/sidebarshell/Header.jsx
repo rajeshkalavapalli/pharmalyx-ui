@@ -6,34 +6,39 @@ import {
   IconButton,
   Badge,
   Avatar,
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 
-import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 function Header() {
   const location = useLocation();
 
+  // =====================================================
+  // PAGE DETAILS
+  // =====================================================
+
   const getPageDetails = () => {
     switch (location.pathname) {
-      case '/dashboard':
+      case "/dashboard":
         return {
-          title: 'Dashboard',
-          subtitle: 'Welcome to Pharmalyx',
+          title: "Dashboard",
+          subtitle: "Welcome to Pharmalyx",
         };
 
-      case '/admin/Users':
+      case "/admin/Users":
         return {
-          title: 'Users',
-          subtitle: 'Manage users and their organizational access.',
+          title: "Users",
+          subtitle: "Manage users and their organizational access.",
         };
 
       default:
         return {
-          title: '',
-          subtitle: '',
+          title: "",
+          subtitle: "",
         };
     }
   };
@@ -45,18 +50,16 @@ function Header() {
       position="static"
       elevation={0}
       sx={{
-        backgroundColor: 'background.paper',
-        color: 'text.primary',
-
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-
-        backgroundImage: 'none',
+        backgroundColor: "background.paper",
+        color: "text.primary",
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        backgroundImage: "none",
       }}
     >
       <Toolbar
         sx={{
-          minHeight: '72px !important',
+          minHeight: "68px !important",
 
           px: {
             xs: 2,
@@ -66,9 +69,8 @@ function Header() {
           gap: 2,
         }}
       >
-
         {/* ================================================= */}
-        {/* LEFT SIDE */}
+        {/* LEFT — PAGE INFORMATION */}
         {/* ================================================= */}
 
         <Box
@@ -81,171 +83,153 @@ function Header() {
             sx={{
               fontSize: 18,
               fontWeight: 650,
-              color: 'text.primary',
-
-              letterSpacing: '-0.025em',
+              color: "text.primary",
+              letterSpacing: "-0.025em",
               lineHeight: 1.3,
-
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             {title}
           </Typography>
 
-          <Typography
-            sx={{
-              fontSize: 12,
-              fontWeight: 400,
-              color: 'text.secondary',
-
-              mt: 0.35,
-
-              lineHeight: 1.3,
-            }}
-          >
-            {subtitle}
-          </Typography>
+          {subtitle && (
+            <Typography
+              sx={{
+                fontSize: 12,
+                fontWeight: 400,
+                color: "text.secondary",
+                mt: 0.35,
+                lineHeight: 1.35,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {subtitle}
+            </Typography>
+          )}
         </Box>
 
-
         {/* ================================================= */}
-        {/* RIGHT SIDE */}
+        {/* RIGHT — USER AREA */}
         {/* ================================================= */}
 
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-
+            display: "flex",
+            alignItems: "center",
             gap: 0.75,
           }}
         >
-
-          {/* =============================================== */}
+          {/* ================================================= */}
           {/* NOTIFICATIONS */}
-          {/* =============================================== */}
+          {/* ================================================= */}
 
-          <IconButton
-            sx={{
-              width: 42,
-              height: 42,
-
-              borderRadius: 1.5,
-
-              color: 'text.secondary',
-
-              border: '1px solid transparent',
-
-              '&:hover': {
-                backgroundColor: 'rgba(83, 109, 255, 0.06)',
-                color: 'primary.main',
-                borderColor: 'rgba(83, 109, 255, 0.08)',
-              },
-            }}
-          >
-            <Badge
-              badgeContent={3}
-              color="error"
+          <Tooltip title="Notifications">
+            <IconButton
               sx={{
-                '& .MuiBadge-badge': {
-                  fontSize: 9,
-                  fontWeight: 700,
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                color: "text.secondary",
 
-                  minWidth: 16,
-                  height: 16,
+                transition:
+                  "background-color 160ms ease, color 160ms ease",
 
-                  padding: '0 4px',
-
-                  border: '2px solid #FFFFFF',
+                "&:hover": {
+                  backgroundColor: "action.hover",
+                  color: "primary.main",
                 },
               }}
             >
-              <NotificationsNoneRoundedIcon
+              <Badge
+                badgeContent={3}
+                color="error"
                 sx={{
-                  fontSize: 21,
+                  "& .MuiBadge-badge": {
+                    fontSize: 9,
+                    fontWeight: 700,
+                    minWidth: 16,
+                    height: 16,
+                    padding: "0 4px",
+                    border: "2px solid",
+                    borderColor: "background.paper",
+                  },
                 }}
-              />
-            </Badge>
-          </IconButton>
+              >
+                <NotificationsNoneRoundedIcon
+                  sx={{
+                    fontSize: 21,
+                  }}
+                />
+              </Badge>
+            </IconButton>
+          </Tooltip>
 
-
-          {/* =============================================== */}
+          {/* ================================================= */}
           {/* USER ACCOUNT */}
-          {/* =============================================== */}
+          {/* ================================================= */}
 
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-
-              gap: 1.1,
-
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
               ml: 0.5,
-
               px: 1,
-              py: 0.6,
-
-              borderRadius: 1.75,
-
-              cursor: 'pointer',
-
-              border: '1px solid transparent',
+              py: 0.5,
+              borderRadius: 1.5,
+              cursor: "pointer",
+              border: "1px solid transparent",
 
               transition:
-                'background-color 160ms ease, border-color 160ms ease',
+                "background-color 160ms ease, border-color 160ms ease",
 
-              '&:hover': {
-                backgroundColor: '#F7F9FC',
-                borderColor: '#E4E9F1',
+              "&:hover": {
+                backgroundColor: "action.hover",
+                borderColor: "divider",
               },
             }}
           >
-
             {/* Avatar */}
 
             <Avatar
               sx={{
-                width: 36,
-                height: 36,
+                width: 34,
+                height: 34,
 
-                background:
-                  'linear-gradient(135deg, #536DFF 0%, #7C5CFF 100%)',
+                // Centralized theme color
+                backgroundColor: "primary.main",
+                color: "primary.contrastText",
 
-                color: '#FFFFFF',
-
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 700,
 
-                boxShadow:
-                  '0 4px 12px rgba(83, 109, 255, 0.20)',
+                boxShadow: 1,
               }}
             >
               M
             </Avatar>
-
 
             {/* User information */}
 
             <Box
               sx={{
                 display: {
-                  xs: 'none',
-                  sm: 'block',
+                  xs: "none",
+                  sm: "block",
                 },
 
-                minWidth: 78,
+                minWidth: 82,
               }}
             >
               <Typography
                 sx={{
                   fontSize: 13,
-
-                  fontWeight: 650,
-
-                  color: 'text.primary',
-
+                  fontWeight: 600,
+                  color: "text.primary",
                   lineHeight: 1.3,
                 }}
               >
@@ -255,35 +239,26 @@ function Header() {
               <Typography
                 sx={{
                   fontSize: 11,
-
                   fontWeight: 400,
-
-                  color: 'text.secondary',
-
+                  color: "text.secondary",
                   lineHeight: 1.3,
-
-                  mt: 0.2,
+                  mt: 0.15,
                 }}
               >
-                Manager
+                Administrator
               </Typography>
             </Box>
 
-
-            {/* Account dropdown indicator */}
+            {/* Dropdown */}
 
             <KeyboardArrowDownRoundedIcon
               sx={{
-                fontSize: 19,
-
-                color: 'text.secondary',
-
-                ml: 0.25,
+                fontSize: 18,
+                color: "text.secondary",
+                ml: 0.15,
               }}
             />
-
           </Box>
-
         </Box>
       </Toolbar>
     </AppBar>

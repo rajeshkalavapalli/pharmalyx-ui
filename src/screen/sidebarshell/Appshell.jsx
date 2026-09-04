@@ -1,51 +1,65 @@
-import { Box } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
-import Sidebar from './Sidebar';
-import Header from './Header';
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 function AppShell() {
   return (
     <Box
       sx={{
-        height: '100vh',
-        display: 'flex',
-        backgroundColor: 'background.default',
+        height: "100vh",
+        display: "flex",
+        overflow: "hidden",
+        backgroundColor: "background.default",
       }}
     >
+      {/* ================================================= */}
+      {/* SIDEBAR */}
+      {/* ================================================= */}
+
       <Sidebar />
+
+      {/* ================================================= */}
+      {/* APPLICATION AREA */}
+      {/* ================================================= */}
 
       <Box
         sx={{
           flex: 1,
           minWidth: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'background.default',
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "background.default",
         }}
       >
+        {/* ================================================= */}
+        {/* HEADER */}
+        {/* ================================================= */}
+
         <Header />
+
+        {/* ================================================= */}
+        {/* MAIN WORKSPACE */}
+        {/* ================================================= */}
 
         <Box
           component="main"
           sx={{
             flex: 1,
+            minWidth: 0,
+            minHeight: 0,
+            overflowY: "auto",
+            overflowX: "hidden",
+            backgroundColor: "background.default",
 
             p: {
               xs: 2,
+              sm: 2.5,
               md: 3,
+              lg: 3.5,
             },
-
-            minHeight: 0,
-            minWidth: 0,
-
-            overflowY: 'auto',
-
-            backgroundColor: 'background.default',
-
-            // Very subtle workspace separation
-            borderTop: '1px solid',
-            borderColor: 'rgba(16, 24, 40, 0.025)',
           }}
         >
           <Outlet />

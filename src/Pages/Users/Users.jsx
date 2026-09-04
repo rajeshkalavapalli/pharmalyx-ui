@@ -3,7 +3,6 @@ import {
     Tab,
     Tabs,
     Typography,
-    Paper,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -19,18 +18,58 @@ function Users() {
     const [selectedUser, setSelecetdUser] = useState(null);
 
 
+    // =====================================================
+    // VIEW USER
+    // =====================================================
+
     const handleViewUser = (user) => {
+
         setSelecetdUser(user);
+
         setActiveTab("new");
+
+    };
+
+
+    // =====================================================
+    // USER CREATED
+    // =====================================================
+
+    const handleUserCreated = () => {
+
+        setSelecetdUser(null);
+
+        setActiveTab("list");
+
+    };
+
+
+    // =====================================================
+    // TAB CHANGE
+    // =====================================================
+
+    const handleTabChange = (event, newValue) => {
+
+        setActiveTab(newValue);
+
+        // Clear selected user when creating a new user
+        if (newValue === "new") {
+
+            setSelecetdUser(null);
+
+        }
+
     };
 
 
     return (
+
         <Box
             sx={{
                 width: "100%",
             }}
         >
+
 
             {/* ================================================= */}
             {/* PAGE HEADER */}
@@ -38,10 +77,12 @@ function Users() {
 
             <Box
                 sx={{
-                    mb: 2.5,
+                    mb: 3,
                 }}
             >
+
                 <Typography
+                    variant="h5"
                     sx={{
                         fontSize: {
                             xs: 20,
@@ -52,7 +93,7 @@ function Users() {
 
                         color: "text.primary",
 
-                        letterSpacing: "-0.03em",
+                        letterSpacing: "-0.02em",
 
                         lineHeight: 1.25,
                     }}
@@ -60,9 +101,11 @@ function Users() {
                     Users
                 </Typography>
 
+
                 <Typography
+                    variant="body2"
                     sx={{
-                        mt: 0.6,
+                        mt: 0.75,
 
                         fontSize: 13,
 
@@ -73,6 +116,7 @@ function Users() {
                 >
                     Manage users and their organizational access.
                 </Typography>
+
             </Box>
 
 
@@ -80,48 +124,46 @@ function Users() {
             {/* MODULE TABS */}
             {/* ================================================= */}
 
-            <Paper
-                elevation={0}
+            <Box
                 sx={{
-                    width: "fit-content",
-
-                    border: "1px solid",
+                    borderBottom: "1px solid",
 
                     borderColor: "divider",
 
-                    borderRadius: 2.5,
-
-                    backgroundColor: "background.paper",
-
-                    overflow: "hidden",
-
-                    mb: 2.75,
+                    mb: 3,
                 }}
             >
+
                 <Tabs
+
                     value={activeTab}
 
-                    onChange={(event, newValue) =>
-                        setActiveTab(newValue)
-                    }
+                    onChange={handleTabChange}
 
                     sx={{
-                        minHeight: 48,
+
+                        minHeight: 42,
 
                         "& .MuiTabs-indicator": {
+
                             height: 2,
 
-                            borderRadius: 2,
+                            borderRadius: "2px 2px 0 0",
 
                             backgroundColor: "primary.main",
+
                         },
 
+
                         "& .MuiTab-root": {
-                            minHeight: 48,
+
+                            minHeight: 42,
 
                             minWidth: 0,
 
-                            px: 2.5,
+                            px: 1.5,
+
+                            mr: 2,
 
                             textTransform: "none",
 
@@ -131,22 +173,30 @@ function Users() {
 
                             color: "text.secondary",
 
+                            borderRadius: "6px 6px 0 0",
+
                             transition:
                                 "color 160ms ease, background-color 160ms ease",
 
                             "&:hover": {
+
                                 color: "primary.main",
 
-                                backgroundColor:
-                                    "sidebar.hover",
+                                backgroundColor: "action.hover",
+
                             },
+
                         },
 
+
                         "& .MuiTab-root.Mui-selected": {
+
                             color: "primary.main",
 
                             fontWeight: 650,
+
                         },
+
                     }}
                 >
 
@@ -155,13 +205,15 @@ function Users() {
                         label="Users List"
                     />
 
+
                     <Tab
                         value="new"
                         label="+ New User"
                     />
 
                 </Tabs>
-            </Paper>
+
+            </Box>
 
 
             {/* ================================================= */}
@@ -171,20 +223,31 @@ function Users() {
             {activeTab === "new" ? (
 
                 <AddNewUser
-                    onUserCreated={() =>
-                        setActiveTab("list")
+
+                    onUserCreated={
+                        handleUserCreated
                     }
+
+                    selectedUser={
+                        selectedUser
+                    }
+
                 />
 
             ) : (
 
                 <UserList
-                    onViewUser={handleViewUser}
+
+                    onViewUser={
+                        handleViewUser
+                    }
+
                 />
 
             )}
 
         </Box>
+
     );
 }
 

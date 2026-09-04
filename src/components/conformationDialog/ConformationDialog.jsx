@@ -3,8 +3,10 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Button
+    Button,
+    Typography
 } from "@mui/material";
+
 
 const ConfirmationDialog = ({
     open,
@@ -13,67 +15,102 @@ const ConfirmationDialog = ({
     onCancel,
     onConfirm
 }) => {
+
     return (
+
         <Dialog
             open={open}
             onClose={onCancel}
             maxWidth="xs"
             fullWidth
         >
+
+            {/* ================================================= */}
+            {/* TITLE */}
+            {/* ================================================= */}
+
             <DialogTitle
                 sx={{
+                    px: 3,
+                    pt: 3,
+                    pb: 1,
+
                     fontSize: "17px",
-                    fontWeight: 600,
+                    fontWeight: 650,
+
                     color: "text.primary",
-                    px: 2.5,
-                    pt: 2.5,
-                    pb: 1
+
+                    letterSpacing: "-0.01em"
                 }}
             >
                 {title}
             </DialogTitle>
 
+
+            {/* ================================================= */}
+            {/* MESSAGE */}
+            {/* ================================================= */}
+
             <DialogContent
                 sx={{
-                    px: 2.5,
-                    py: 1
+                    px: 3,
+                    pt: 0.5,
+                    pb: 1
                 }}
             >
-                {message}
+
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        lineHeight: 1.6
+                    }}
+                >
+                    {message}
+                </Typography>
+
             </DialogContent>
+
+
+            {/* ================================================= */}
+            {/* ACTIONS */}
+            {/* ================================================= */}
 
             <DialogActions
                 sx={{
-                    px: 2.5,
-                    pb: 2,
-                    pt: 1.5,
+                    px: 3,
+                    pb: 2.5,
+                    pt: 2,
+
                     gap: 1
                 }}
             >
+
+                {/* Cancel */}
+
                 <Button
+                    variant="outlined"
                     onClick={onCancel}
-                    sx={{
-                        textTransform: "none",
-                        fontWeight: 500
-                    }}
                 >
                     Cancel
                 </Button>
 
+
+                {/* Confirm */}
+
                 <Button
                     variant="contained"
-                    color="warning"
+                    color="error"
                     onClick={onConfirm}
-                    sx={{
-                        textTransform: "none",
-                        fontWeight: 600
-                    }}
                 >
                     Close
                 </Button>
+
             </DialogActions>
+
         </Dialog>
     );
 };
+
 
 export default ConfirmationDialog;

@@ -7,11 +7,27 @@ import './index.css';
 import App from './App.jsx';
 import PharmalyxTheme from './Theme/Theme.js';
 
+import {
+  SnackbarProvider
+} from './components/Snackbar/SnackbarContext.jsx';
+
+
 createRoot(document.getElementById('root')).render(
+
   <StrictMode>
+
     <ThemeProvider theme={PharmalyxTheme}>
+
       <CssBaseline />
-      <App />
+
+      <SnackbarProvider>
+
+        <App />
+
+      </SnackbarProvider>
+
     </ThemeProvider>
+
   </StrictMode>
+
 );
