@@ -18,12 +18,15 @@ import {
     InputAdornment,
 } from "@mui/material";
 
+import { alpha } from "@mui/material/styles";
+
 import { useEffect, useState } from "react";
 
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import Delete from "@mui/icons-material/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import AddIcon from "@mui/icons-material/Add";
 
 import { getDivisions } from "../Division/index";
 
@@ -155,6 +158,95 @@ function DivisionList({ handleAddDiv }) {
     };
 
 
+    // =====================================================
+    // TABLE HEADER STYLE
+    // =====================================================
+
+    const getHeaderCellSx = (width) => {
+
+        return (theme) => ({
+
+            width,
+
+            fontSize: 11,
+
+            fontWeight: 750,
+
+            color: theme.palette.primary.main,
+
+            textTransform: "uppercase",
+
+            letterSpacing: "0.07em",
+
+            py: 1.8,
+
+            whiteSpace: "nowrap",
+
+            borderBottom: "1px solid",
+
+            borderColor:
+                alpha(
+                    theme.palette.primary.main,
+                    0.16
+                ),
+
+        });
+
+    };
+
+
+    // =====================================================
+    // ACTION BUTTON STYLE
+    // =====================================================
+
+    const getActionButtonSx = (
+        type = "default"
+    ) => {
+
+        return (theme) => {
+
+            const hoverColor =
+                type === "delete"
+                    ? theme.palette.error.main
+                    : theme.palette.primary.main;
+
+
+            return {
+
+                width: 34,
+
+                height: 34,
+
+                borderRadius: 1.5,
+
+                color:
+                    theme.palette.text.secondary,
+
+                transition:
+                    "all 160ms ease",
+
+                "&:hover": {
+
+                    color: hoverColor,
+
+                    backgroundColor:
+                        alpha(
+                            hoverColor,
+                            0.09
+                        ),
+
+                    transform:
+                        "translateY(-1px)",
+
+                },
+
+            };
+
+        };
+
+    };
+
+
     return (
 
         <Box
@@ -165,7 +257,7 @@ function DivisionList({ handleAddDiv }) {
 
 
             {/* ================================================= */}
-            {/* LIST TOOLBAR */}
+            {/* PAGE TOOLBAR */}
             {/* ================================================= */}
 
             <Box
@@ -187,129 +279,174 @@ function DivisionList({ handleAddDiv }) {
 
                     gap: 2,
 
-                    mb: 2.25,
+                    mb: 2.5,
 
                 }}
             >
 
 
-                {/* ================================================= */}
-                {/* LEFT SIDE */}
-                {/* ================================================= */}
+                {/* PAGE TITLE */}
 
                 <Box>
 
-                    <Typography
+                    <Box
                         sx={{
 
-                            fontSize: 15,
+                            display: "flex",
 
-                            fontWeight: 650,
+                            alignItems: "center",
 
-                            color: "text.primary",
-
-                            letterSpacing: "-0.015em",
-
-                            lineHeight: 1.3,
+                            gap: 1.25,
 
                         }}
                     >
-                        Divisions
-                    </Typography>
+
+                        <Box
+                            sx={(theme) => ({
+
+                                width: 4,
+
+                                height: 32,
+
+                                borderRadius: 10,
+
+                                backgroundColor:
+                                    theme.palette.primary.main,
+
+                            })}
+                        />
+
+                        <Box>
+
+                            <Typography
+                                sx={{
+
+                                    fontSize: 18,
+
+                                    fontWeight: 750,
+
+                                    color: "text.primary",
+
+                                    letterSpacing: "-0.02em",
+
+                                    lineHeight: 1.25,
+
+                                }}
+                            >
+                                Divisions
+                            </Typography>
 
 
-                    <Typography
-                        sx={{
+                            <Typography
+                                sx={{
 
-                            mt: 0.35,
+                                    mt: 0.35,
 
-                            fontSize: 12,
+                                    fontSize: 12.5,
 
-                            color: "text.secondary",
+                                    color: "text.secondary",
 
-                            lineHeight: 1.5,
+                                }}
+                            >
+                                Manage and maintain organization divisions.
+                            </Typography>
 
-                        }}
-                    >
-                        Manage and maintain organization divisions.
-                    </Typography>
+                        </Box>
+
+                    </Box>
 
                 </Box>
 
 
-                {/* ================================================= */}
                 {/* ADD DIVISION */}
-                {/* ================================================= */}
 
                 <Button
                     variant="contained"
+
+                    startIcon={
+                        <AddIcon
+                            sx={{
+                                fontSize: 18,
+                            }}
+                        />
+                    }
 
                     onClick={handleAddDiv}
 
                     sx={{
 
-                        minWidth: 138,
+                        minWidth: 168,
 
-                        height: 40,
+                        height: 46,
 
-                        px: 2.25,
+                        px: 2.5,
 
-                        borderRadius: 1.5,
+                        borderRadius: 1.75,
 
                         textTransform: "none",
 
                         fontSize: 13,
 
-                        fontWeight: 600,
+                        fontWeight: 700,
 
                         alignSelf: {
                             xs: "flex-start",
                             sm: "center",
                         },
 
-                        boxShadow: "none",
+                        boxShadow: 2,
+
+                        transition:
+                            "all 180ms ease",
 
                         "&:hover": {
 
-                            boxShadow: "none",
+                            boxShadow: 4,
+
+                            transform:
+                                "translateY(-1px)",
 
                         },
 
                     }}
                 >
-                    + Add Division
+                    Add Division
                 </Button>
 
             </Box>
 
 
             {/* ================================================= */}
-            {/* FILTER TOOLBAR */}
+            {/* FILTER BAR */}
             {/* ================================================= */}
 
             <Paper
                 elevation={0}
 
-                sx={{
+                sx={(theme) => ({
 
-                    mb: 1.75,
+                    mb: 2,
 
                     px: {
                         xs: 1.5,
                         md: 2,
                     },
 
-                    py: 1.25,
+                    py: 1.5,
 
                     border: "1px solid",
 
                     borderColor: "divider",
 
-                    borderRadius: 2,
+                    borderRadius: 2.5,
 
-                    backgroundColor: "background.paper",
+                    backgroundColor:
+                        alpha(
+                            theme.palette.primary.main,
+                            0.025
+                        ),
 
-                }}
+                })}
             >
 
                 <Box
@@ -335,9 +472,7 @@ function DivisionList({ handleAddDiv }) {
                 >
 
 
-                    {/* ================================================= */}
-                    {/* FILTERS */}
-                    {/* ================================================= */}
+                    {/* FILTER CONTROLS */}
 
                     <Box
                         sx={{
@@ -376,48 +511,64 @@ function DivisionList({ handleAddDiv }) {
 
                             }}
 
-                            sx={{
+                            sx={(theme) => ({
 
                                 width: {
                                     xs: "100%",
-                                    sm: 280,
+                                    sm: 330,
                                 },
 
                                 "& .MuiOutlinedInput-root": {
 
-                                    height: 38,
+                                    height: 44,
 
-                                    borderRadius: 1.5,
+                                    borderRadius: 1.75,
 
                                     fontSize: 13,
 
                                     backgroundColor:
-                                        "background.default",
+                                        theme.palette.background.paper,
+
+                                    transition:
+                                        "all 160ms ease",
 
                                     "& fieldset": {
 
                                         borderColor:
-                                            "divider",
+                                            theme.palette.divider,
 
                                     },
 
                                     "&:hover fieldset": {
 
                                         borderColor:
-                                            "primary.light",
+                                            alpha(
+                                                theme.palette.primary.main,
+                                                0.55
+                                            ),
+
+                                    },
+
+                                    "&.Mui-focused": {
+
+                                        boxShadow:
+                                            `0 0 0 3px ${alpha(
+                                                theme.palette.primary.main,
+                                                0.1
+                                            )}`,
 
                                     },
 
                                     "&.Mui-focused fieldset": {
 
                                         borderColor:
-                                            "primary.main",
+                                            theme.palette.primary.main,
 
                                     },
 
                                 },
 
-                            }}
+                            })}
 
                             InputProps={{
 
@@ -430,7 +581,7 @@ function DivisionList({ handleAddDiv }) {
                                         <SearchOutlinedIcon
                                             sx={{
 
-                                                fontSize: 18,
+                                                fontSize: 19,
 
                                                 color:
                                                     "text.secondary",
@@ -446,7 +597,7 @@ function DivisionList({ handleAddDiv }) {
                         />
 
 
-                        {/* STATUS FILTER */}
+                        {/* STATUS */}
 
                         <Select
                             size="small"
@@ -461,41 +612,56 @@ function DivisionList({ handleAddDiv }) {
 
                             }}
 
-                            sx={{
+                            sx={(theme) => ({
 
-                                minWidth: 130,
+                                minWidth: 160,
 
-                                height: 38,
+                                height: 44,
 
-                                borderRadius: 1.5,
+                                borderRadius: 1.75,
 
                                 fontSize: 13,
 
+                                fontWeight: 500,
+
                                 backgroundColor:
-                                    "background.default",
+                                    theme.palette.background.paper,
 
                                 "& .MuiOutlinedInput-notchedOutline": {
 
                                     borderColor:
-                                        "divider",
+                                        theme.palette.divider,
 
                                 },
 
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
 
                                     borderColor:
-                                        "primary.light",
+                                        alpha(
+                                            theme.palette.primary.main,
+                                            0.55
+                                        ),
+
+                                },
+
+                                "&.Mui-focused": {
+
+                                    boxShadow:
+                                        `0 0 0 3px ${alpha(
+                                            theme.palette.primary.main,
+                                            0.1
+                                        )}`,
 
                                 },
 
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
 
                                     borderColor:
-                                        "primary.main",
+                                        theme.palette.primary.main,
 
                                 },
 
-                            }}
+                            })}
                         >
 
                             <MenuItem value="All">
@@ -515,27 +681,79 @@ function DivisionList({ handleAddDiv }) {
                     </Box>
 
 
-                    {/* ================================================= */}
                     {/* RESULT COUNT */}
-                    {/* ================================================= */}
 
-                    <Typography
-                        sx={{
+                    <Box
+                        sx={(theme) => ({
 
-                            fontSize: 12,
+                            display: "flex",
 
-                            color: "text.secondary",
+                            alignItems: "center",
 
-                            whiteSpace: "nowrap",
+                            gap: 0.75,
 
-                        }}
+                            px: 1.5,
+
+                            py: 0.9,
+
+                            borderRadius: 1.5,
+
+                            backgroundColor:
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.07
+                                ),
+
+                            border: "1px solid",
+
+                            borderColor:
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.14
+                                ),
+
+                            alignSelf: {
+                                xs: "flex-start",
+                                md: "center",
+                            },
+
+                        })}
                     >
-                        {filteredDivisions.length}{" "}
 
-                        {filteredDivisions.length === 1
-                            ? "division"
-                            : "divisions"}
-                    </Typography>
+                        <Typography
+                            sx={{
+
+                                fontSize: 12,
+
+                                fontWeight: 750,
+
+                                color: "primary.main",
+
+                            }}
+                        >
+                            {filteredDivisions.length}
+                        </Typography>
+
+
+                        <Typography
+                            sx={{
+
+                                fontSize: 12,
+
+                                fontWeight: 500,
+
+                                color: "text.secondary",
+
+                                whiteSpace: "nowrap",
+
+                            }}
+                        >
+                            {filteredDivisions.length === 1
+                                ? "division"
+                                : "divisions"}
+                        </Typography>
+
+                    </Box>
 
                 </Box>
 
@@ -547,22 +765,19 @@ function DivisionList({ handleAddDiv }) {
             {/* ================================================= */}
 
             <TableContainer
-                component={Paper}
-
-                elevation={0}
-
                 sx={{
 
-                    border: "1px solid",
+                    width: "100%",
 
-                    borderColor: "divider",
+                    overflowX: "hidden",
 
-                    borderRadius: 2,
+                    border: 0,
 
-                    overflow: "hidden",
+                    borderRadius: 0,
 
-                    backgroundColor:
-                        "background.paper",
+                    backgroundColor: "transparent",
+
+                    boxShadow: "none",
 
                 }}
             >
@@ -578,203 +793,59 @@ function DivisionList({ handleAddDiv }) {
                 >
 
 
-                    {/* ================================================= */}
                     {/* TABLE HEADER */}
-                    {/* ================================================= */}
 
                     <TableHead>
 
                         <TableRow
-                            sx={{
+                            sx={(theme) => ({
 
                                 backgroundColor:
-                                    "background.default",
+                                    alpha(
+                                        theme.palette.primary.main,
+                                        0.07
+                                    ),
 
-                            }}
+                            })}
                         >
 
-
                             <TableCell
-                                sx={{
-
-                                    width: "14%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("14%")}
                             >
                                 Actions
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    width: "22%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("22%")}
                             >
                                 Division Name
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    width: "13%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("13%")}
                             >
                                 Status
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    width: "19%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("19%")}
                             >
                                 Created On
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    width: "19%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("19%")}
                             >
                                 Modified On
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    width: "13%",
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color: "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={getHeaderCellSx("13%")}
                             >
                                 Modified By
                             </TableCell>
@@ -784,41 +855,58 @@ function DivisionList({ handleAddDiv }) {
                     </TableHead>
 
 
-                    {/* ================================================= */}
                     {/* TABLE BODY */}
-                    {/* ================================================= */}
 
                     <TableBody>
 
                         {filteredDivisions.length > 0 ? (
 
                             filteredDivisions.map(
-                                (division) => (
+                                (division, index) => (
 
                                     <TableRow
                                         key={
                                             division.DivisionId
                                         }
 
-                                        sx={{
+                                        sx={(theme) => ({
 
                                             transition:
-                                                "background-color 140ms ease",
+                                                "background-color 160ms ease",
 
-                                            "&:hover": {
+                                            "& .MuiTableCell-root": {
 
                                                 backgroundColor:
-                                                    "action.hover",
+                                                    index % 2 === 0
+                                                        ? "#FFFFFF"
+                                                        : "#F7F5F1",
 
                                             },
 
-                                            "&:last-child td": {
+                                            "&:hover .MuiTableCell-root": {
+
+                                                backgroundColor:
+                                                    alpha(
+                                                        theme.palette.primary.main,
+                                                        0.035
+                                                    ),
+
+                                            },
+
+                                            "&:hover .division-name": {
+
+                                                color:
+                                                    theme.palette.primary.main,
+
+                                            },
+
+                                            "&:last-child .MuiTableCell-root": {
 
                                                 borderBottom: 0,
 
                                             },
 
-                                        }}
+                                        })}
                                     >
 
 
@@ -835,14 +923,12 @@ function DivisionList({ handleAddDiv }) {
 
                                                     display: "flex",
 
-                                                    alignItems:
-                                                        "center",
+                                                    alignItems: "center",
 
                                                     gap: 0.25,
 
                                                 }}
                                             >
-
 
                                                 {/* VIEW */}
 
@@ -854,33 +940,14 @@ function DivisionList({ handleAddDiv }) {
                                                     <IconButton
                                                         size="small"
 
-                                                        sx={{
-
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            borderRadius: 1.25,
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "primary.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-
-                                                        }}
+                                                        sx={
+                                                            getActionButtonSx()
+                                                        }
                                                     >
 
                                                         <VisibilityOutlinedIcon
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: 18,
                                                             }}
                                                         />
 
@@ -899,33 +966,14 @@ function DivisionList({ handleAddDiv }) {
                                                     <IconButton
                                                         size="small"
 
-                                                        sx={{
-
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            borderRadius: 1.25,
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "primary.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-
-                                                        }}
+                                                        sx={
+                                                            getActionButtonSx()
+                                                        }
                                                     >
 
                                                         <EditOutlinedIcon
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: 18,
                                                             }}
                                                         />
 
@@ -944,33 +992,16 @@ function DivisionList({ handleAddDiv }) {
                                                     <IconButton
                                                         size="small"
 
-                                                        sx={{
-
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            borderRadius: 1.25,
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "error.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-
-                                                        }}
+                                                        sx={
+                                                            getActionButtonSx(
+                                                                "delete"
+                                                            )
+                                                        }
                                                     >
 
-                                                        <Delete
+                                                        <DeleteIcon
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: 18,
                                                             }}
                                                         />
 
@@ -986,27 +1017,31 @@ function DivisionList({ handleAddDiv }) {
                                         {/* DIVISION NAME */}
 
                                         <TableCell
-                                            sx={{
+                                            className="division-name"
+
+                                            sx={(theme) => ({
 
                                                 py: 1.1,
 
-                                                fontSize: 13,
+                                                fontSize: 13.5,
 
-                                                fontWeight: 600,
+                                                fontWeight: 700,
 
                                                 color:
-                                                    "text.primary",
+                                                    theme.palette.primary.dark,
 
-                                                whiteSpace:
-                                                    "nowrap",
+                                                whiteSpace: "nowrap",
 
-                                                overflow:
-                                                    "hidden",
+                                                overflow: "hidden",
 
-                                                textOverflow:
-                                                    "ellipsis",
+                                                textOverflow: "ellipsis",
 
-                                            }}
+                                                letterSpacing: "-0.01em",
+
+                                                transition:
+                                                    "color 160ms ease",
+
+                                            })}
                                         >
                                             {division.DivisionName || "-"}
                                         </TableCell>
@@ -1021,37 +1056,119 @@ function DivisionList({ handleAddDiv }) {
                                         >
 
                                             <Chip
-                                                label={
-                                                    division.IsActive
-                                                        ? "Active"
-                                                        : "Inactive"
-                                                }
-
                                                 size="small"
 
-                                                color={
-                                                    division.IsActive
-                                                        ? "success"
-                                                        : "default"
+                                                label={
+
+                                                    <Box
+                                                        sx={{
+
+                                                            display: "flex",
+
+                                                            alignItems: "center",
+
+                                                            gap: 0.75,
+
+                                                        }}
+                                                    >
+
+                                                        <Box
+                                                            sx={(theme) => ({
+
+                                                                width: 6,
+
+                                                                height: 6,
+
+                                                                borderRadius: "50%",
+
+                                                                backgroundColor:
+                                                                    division.IsActive
+                                                                        ? theme.palette.success.main
+                                                                        : theme.palette.warning.main,
+
+                                                                boxShadow:
+                                                                    division.IsActive
+                                                                        ? `0 0 0 3px ${alpha(
+                                                                            theme.palette.success.main,
+                                                                            0.12
+                                                                        )}`
+                                                                        : `0 0 0 3px ${alpha(
+                                                                            theme.palette.warning.main,
+                                                                            0.12
+                                                                        )}`,
+
+                                                            })}
+                                                        />
+
+                                                        <Typography
+                                                            component="span"
+
+                                                            sx={{
+
+                                                                fontSize: 11,
+
+                                                                fontWeight: 700,
+
+                                                                lineHeight: 1,
+
+                                                            }}
+                                                        >
+                                                            {division.IsActive
+                                                                ? "Active"
+                                                                : "Inactive"}
+                                                        </Typography>
+
+                                                    </Box>
+
                                                 }
 
-                                                sx={{
+                                                sx={(theme) => ({
 
-                                                    height: 24,
+                                                    height: 30,
 
-                                                    fontSize: 11,
+                                                    minWidth: 96,
 
-                                                    fontWeight: 600,
+                                                    borderRadius: 1.5,
 
-                                                    borderRadius: 1.25,
+                                                    color:
+                                                        division.IsActive
+                                                            ? theme.palette.success.main
+                                                            : theme.palette.warning.main,
+
+                                                    backgroundColor:
+                                                        division.IsActive
+                                                            ? alpha(
+                                                                theme.palette.success.main,
+                                                                0.09
+                                                            )
+                                                            : alpha(
+                                                                theme.palette.warning.main,
+                                                                0.1
+                                                            ),
+
+                                                    border:
+                                                        "1px solid",
+
+                                                    borderColor:
+                                                        division.IsActive
+                                                            ? alpha(
+                                                                theme.palette.success.main,
+                                                                0.2
+                                                            )
+                                                            : alpha(
+                                                                theme.palette.warning.main,
+                                                                0.22
+                                                            ),
 
                                                     "& .MuiChip-label": {
 
-                                                        px: 1.1,
+                                                        px: 1.2,
+
+                                                        width: "100%",
 
                                                     },
 
-                                                }}
+                                                })}
                                             />
 
                                         </TableCell>
@@ -1064,7 +1181,9 @@ function DivisionList({ handleAddDiv }) {
 
                                                 py: 1.1,
 
-                                                fontSize: 12,
+                                                fontSize: 12.5,
+
+                                                fontWeight: 500,
 
                                                 color:
                                                     "text.secondary",
@@ -1087,7 +1206,9 @@ function DivisionList({ handleAddDiv }) {
 
                                                 py: 1.1,
 
-                                                fontSize: 12,
+                                                fontSize: 12.5,
+
+                                                fontWeight: 500,
 
                                                 color:
                                                     "text.secondary",
@@ -1110,7 +1231,9 @@ function DivisionList({ handleAddDiv }) {
 
                                                 py: 1.1,
 
-                                                fontSize: 12,
+                                                fontSize: 12.5,
+
+                                                fontWeight: 500,
 
                                                 color:
                                                     "text.secondary",
@@ -1132,6 +1255,7 @@ function DivisionList({ handleAddDiv }) {
                                     </TableRow>
 
                                 )
+
                             )
 
                         ) : (
@@ -1145,44 +1269,98 @@ function DivisionList({ handleAddDiv }) {
 
                                     sx={{
 
-                                        py: 7,
+                                        py: 8,
 
                                         borderBottom: 0,
 
                                     }}
                                 >
 
-                                    <Typography
+                                    <Box
                                         sx={{
 
-                                            fontSize: 14,
+                                            display: "flex",
 
-                                            fontWeight: 600,
+                                            flexDirection: "column",
 
-                                            color:
-                                                "text.primary",
+                                            alignItems: "center",
 
                                         }}
                                     >
-                                        No divisions found
-                                    </Typography>
+
+                                        <Box
+                                            sx={(theme) => ({
+
+                                                width: 48,
+
+                                                height: 48,
+
+                                                borderRadius: "50%",
+
+                                                display: "flex",
+
+                                                alignItems: "center",
+
+                                                justifyContent: "center",
+
+                                                mb: 1.5,
+
+                                                backgroundColor:
+                                                    alpha(
+                                                        theme.palette.primary.main,
+                                                        0.08
+                                                    ),
+
+                                            })}
+                                        >
+
+                                            <SearchOutlinedIcon
+                                                sx={{
+
+                                                    fontSize: 23,
+
+                                                    color:
+                                                        "primary.main",
+
+                                                }}
+                                            />
+
+                                        </Box>
 
 
-                                    <Typography
-                                        sx={{
+                                        <Typography
+                                            sx={{
 
-                                            mt: 0.5,
+                                                fontSize: 14,
 
-                                            fontSize: 12,
+                                                fontWeight: 700,
 
-                                            color:
-                                                "text.secondary",
+                                                color:
+                                                    "text.primary",
 
-                                        }}
-                                    >
-                                        Try adjusting your search or
-                                        status filter.
-                                    </Typography>
+                                            }}
+                                        >
+                                            No divisions found
+                                        </Typography>
+
+
+                                        <Typography
+                                            sx={{
+
+                                                mt: 0.5,
+
+                                                fontSize: 12,
+
+                                                color:
+                                                    "text.secondary",
+
+                                            }}
+                                        >
+                                            Try adjusting your search or
+                                            status filter.
+                                        </Typography>
+
+                                    </Box>
 
                                 </TableCell>
 

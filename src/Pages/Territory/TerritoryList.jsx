@@ -2,34 +2,305 @@ import {
     Box,
     Typography,
     Button,
-    Select,
-    MenuItem,
     TextField,
-    TableHead,
     Table,
+    TableHead,
+    TableBody,
     TableRow,
     TableCell,
-    TableBody,
     TableContainer,
+    Select,
+    MenuItem,
+    IconButton,
     Paper,
+    Chip,
+    Tooltip,
     InputAdornment,
 } from "@mui/material";
 
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { alpha } from "@mui/material/styles";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import AddIcon from "@mui/icons-material/Add";
+
+import { getTerritories } from "./index";
 
 
 function TerritoryList({
-    handleAddTerritoty
+    handleAddTerritoty,
 }) {
 
-    const [selectMenu, setselectMenu] =
+    const [status, setStatus] =
         useState("All");
-
 
     const [search, setSearch] =
         useState("");
+
+    const [territories, setTerritories] =
+        useState([]);
+
+
+    // =====================================================
+    // LOAD TERRITORIES
+    // =====================================================
+
+    useEffect(() => {
+
+        loadTerritories();
+
+    }, []);
+
+
+    const loadTerritories =
+        async () => {
+
+            try {
+
+                const response =
+                    await getTerritories();
+
+                console.log(
+                    "Territories from API:",
+                    response
+                );
+
+
+                const data =
+                    response?.result ||
+                    response?.territories ||
+                    response ||
+                    [];
+
+
+                setTerritories(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
+            } catch (err) {
+
+                console.log(
+                    "error getting territories:",
+                    err
+                );
+
+
+                setTerritories([]);
+
+            }
+
+        };
+
+
+    // =====================================================
+    // SEARCH + STATUS FILTER
+    // =====================================================
+
+    const filteredTerritories =
+        territories.filter((territory) => {
+
+            const territoryName =
+                territory.TerritoryName || "";
+
+            const stateName =
+                territory.StateName ||
+                "";
+
+
+            const matchesSearch =
+
+                territoryName
+                    .toLowerCase()
+                    .includes(
+                        search.toLowerCase()
+                    )
+
+                ||
+
+                stateName
+                    .toLowerCase()
+                    .includes(
+                        search.toLowerCase()
+                    );
+
+
+            const isActive =
+                territory.IsActive === true ||
+                territory.IsActive === 1 ||
+                territory.IsActive === "true";
+
+
+            const matchesStatus =
+
+                status === "All"
+
+                ||
+
+                (
+                    status === "Active" &&
+                    isActive
+                )
+
+                ||
+
+                (
+                    status === "Inactive" &&
+                    !isActive
+                );
+
+
+            return (
+                matchesSearch &&
+                matchesStatus
+            );
+
+        });
+
+
+    // =====================================================
+    // DATE FORMAT
+    // =====================================================
+
+    const formatDate = (date) => {
+
+        if (!date) {
+            return "-";
+        }
+
+
+        const parsedDate =
+            new Date(date);
+
+
+        if (
+            Number.isNaN(
+                parsedDate.getTime()
+            )
+        ) {
+            return "-";
+        }
+
+
+        return parsedDate.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            }
+        );
+
+    };
+
+
+    // =====================================================
+    // TABLE HEADER STYLE
+    // =====================================================
+
+    const getHeaderCellSx =
+        (width) => {
+
+            return (theme) => ({
+
+                width,
+
+                fontSize: 11,
+
+                fontWeight: 750,
+
+                color:
+                    theme.palette.primary.main,
+
+                textTransform:
+                    "uppercase",
+
+                letterSpacing:
+                    "0.07em",
+
+                py: 1.8,
+
+                whiteSpace:
+                    "nowrap",
+
+                borderBottom:
+                    "1px solid",
+
+                borderColor:
+                    alpha(
+                        theme.palette.primary.main,
+                        0.16
+                    ),
+
+            });
+
+        };
+
+
+    // =====================================================
+    // ACTION BUTTON STYLE
+    // =====================================================
+
+    const getActionButtonSx =
+        (
+            type = "default"
+        ) => {
+
+            return (theme) => {
+
+                const hoverColor =
+
+                    type === "delete"
+
+                        ? theme.palette.error.main
+
+                        : theme.palette.primary.main;
+
+
+                return {
+
+                    width: 34,
+
+                    height: 34,
+
+                    borderRadius: 1.5,
+
+                    color:
+                        theme.palette.text.secondary,
+
+                    transition:
+                        "all 160ms ease",
+
+
+                    "&:hover": {
+
+                        color:
+                            hoverColor,
+
+                        backgroundColor:
+
+                            alpha(
+                                hoverColor,
+                                0.09
+                            ),
+
+                        transform:
+                            "translateY(-1px)",
+
+                    },
+
+                };
+
+            };
+
+        };
 
 
     return (
@@ -42,7 +313,7 @@ function TerritoryList({
 
 
             {/* ================================================= */}
-            {/* LIST TOOLBAR */}
+            {/* PAGE TOOLBAR */}
             {/* ================================================= */}
 
             <Box
@@ -65,65 +336,101 @@ function TerritoryList({
 
                     gap: 2,
 
-                    mb: 2.25,
+                    mb: 2.5,
 
                 }}
             >
 
 
-                {/* ================================================= */}
-                {/* LEFT SIDE */}
-                {/* ================================================= */}
+                {/* PAGE TITLE */}
 
                 <Box>
 
-                    <Typography
+                    <Box
                         sx={{
 
-                            fontSize: 15,
+                            display: "flex",
 
-                            fontWeight: 650,
+                            alignItems: "center",
 
-                            color:
-                                "text.primary",
-
-                            letterSpacing:
-                                "-0.015em",
-
-                            lineHeight: 1.3,
+                            gap: 1.25,
 
                         }}
                     >
-                        Territories
-                    </Typography>
+
+                        <Box
+                            sx={(theme) => ({
+
+                                width: 4,
+
+                                height: 32,
+
+                                borderRadius: 10,
+
+                                backgroundColor:
+                                    theme.palette.primary.main,
+
+                            })}
+                        />
 
 
-                    <Typography
-                        sx={{
+                        <Box>
 
-                            mt: 0.35,
+                            <Typography
+                                sx={{
 
-                            fontSize: 12,
+                                    fontSize: 18,
 
-                            color:
-                                "text.secondary",
+                                    fontWeight: 750,
 
-                            lineHeight: 1.5,
+                                    color:
+                                        "text.primary",
 
-                        }}
-                    >
-                        Manage territories and their organizational coverage.
-                    </Typography>
+                                    letterSpacing:
+                                        "-0.02em",
+
+                                    lineHeight: 1.25,
+
+                                }}
+                            >
+                                Territories
+                            </Typography>
+
+
+                            <Typography
+                                sx={{
+
+                                    mt: 0.35,
+
+                                    fontSize: 12.5,
+
+                                    color:
+                                        "text.secondary",
+
+                                }}
+                            >
+                                Manage territories and their organizational coverage.
+                            </Typography>
+
+                        </Box>
+
+                    </Box>
 
                 </Box>
 
 
-                {/* ================================================= */}
                 {/* ADD TERRITORY */}
-                {/* ================================================= */}
 
                 <Button
                     variant="contained"
+
+                    startIcon={
+                        <AddIcon
+                            sx={{
+                                fontSize: 18,
+                            }}
+                        />
+                    }
 
                     onClick={
                         handleAddTerritoty
@@ -131,61 +438,66 @@ function TerritoryList({
 
                     sx={{
 
-                        minWidth: 145,
+                        minWidth: 168,
 
-                        height: 40,
+                        height: 46,
 
-                        px: 2.25,
+                        px: 2.5,
 
-                        borderRadius: 1.5,
+                        borderRadius: 1.75,
 
                         textTransform:
                             "none",
 
                         fontSize: 13,
 
-                        fontWeight: 600,
+                        fontWeight: 700,
 
                         alignSelf: {
                             xs: "flex-start",
                             sm: "center",
                         },
 
-                        boxShadow:
-                            "none",
+                        boxShadow: 2,
+
+                        transition:
+                            "all 180ms ease",
+
 
                         "&:hover": {
 
-                            boxShadow:
-                                "none",
+                            boxShadow: 4,
+
+                            transform:
+                                "translateY(-1px)",
 
                         },
 
                     }}
                 >
-                    + Add Territory
+                    Add Territory
                 </Button>
 
             </Box>
 
 
             {/* ================================================= */}
-            {/* FILTER TOOLBAR */}
+            {/* FILTER BAR */}
             {/* ================================================= */}
 
             <Paper
                 elevation={0}
 
-                sx={{
+                sx={(theme) => ({
 
-                    mb: 1.75,
+                    mb: 2,
 
                     px: {
                         xs: 1.5,
                         md: 2,
                     },
 
-                    py: 1.25,
+                    py: 1.5,
 
                     border:
                         "1px solid",
@@ -193,12 +505,16 @@ function TerritoryList({
                     borderColor:
                         "divider",
 
-                    borderRadius: 2,
+                    borderRadius: 2.5,
 
                     backgroundColor:
-                        "background.paper",
 
-                }}
+                        alpha(
+                            theme.palette.primary.main,
+                            0.025
+                        ),
+
+                })}
             >
 
                 <Box
@@ -206,178 +522,331 @@ function TerritoryList({
 
                         display: "flex",
 
-                        alignItems: {
-                            xs: "stretch",
-                            sm: "center",
-                        },
+                        justifyContent:
+                            "space-between",
 
-                        gap: 1.25,
+                        alignItems: {
+                            xs: "flex-start",
+                            md: "center",
+                        },
 
                         flexDirection: {
                             xs: "column",
-                            sm: "row",
+                            md: "row",
                         },
+
+                        gap: 1.5,
 
                     }}
                 >
 
 
-                    {/* SEARCH */}
+                    {/* FILTER CONTROLS */}
 
-                    <TextField
-
-                        size="small"
-
-                        placeholder="Search territories"
-
-                        value={search}
-
-                        onChange={(event) => {
-
-                            setSearch(
-                                event.target.value
-                            );
-
-                        }}
-
+                    <Box
                         sx={{
+
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            gap: 1.25,
+
+                            flexWrap: "wrap",
 
                             width: {
                                 xs: "100%",
-                                sm: 280,
-                            },
-
-                            "& .MuiOutlinedInput-root": {
-
-                                height: 38,
-
-                                borderRadius: 1.5,
-
-                                fontSize: 13,
-
-                                backgroundColor:
-                                    "background.default",
-
-                                "& fieldset": {
-
-                                    borderColor:
-                                        "divider",
-
-                                },
-
-                                "&:hover fieldset": {
-
-                                    borderColor:
-                                        "primary.light",
-
-                                },
-
-                                "&.Mui-focused fieldset": {
-
-                                    borderColor:
-                                        "primary.main",
-
-                                },
-
-                            },
-
-                        }}
-
-                        InputProps={{
-
-                            startAdornment: (
-
-                                <InputAdornment
-                                    position="start"
-                                >
-
-                                    <SearchOutlinedIcon
-                                        sx={{
-
-                                            fontSize: 18,
-
-                                            color:
-                                                "text.secondary",
-
-                                        }}
-                                    />
-
-                                </InputAdornment>
-
-                            ),
-
-                        }}
-                    />
-
-
-                    {/* STATUS FILTER */}
-
-                    <Select
-
-                        size="small"
-
-                        value={selectMenu}
-
-                        onChange={(event) => {
-
-                            setselectMenu(
-                                event.target.value
-                            );
-
-                        }}
-
-                        sx={{
-
-                            minWidth: 130,
-
-                            height: 38,
-
-                            borderRadius: 1.5,
-
-                            fontSize: 13,
-
-                            backgroundColor:
-                                "background.default",
-
-                            "& .MuiOutlinedInput-notchedOutline": {
-
-                                borderColor:
-                                    "divider",
-
-                            },
-
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-
-                                borderColor:
-                                    "primary.light",
-
-                            },
-
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-
-                                borderColor:
-                                    "primary.main",
-
+                                md: "auto",
                             },
 
                         }}
                     >
 
-                        <MenuItem value="All">
-                            All Status
-                        </MenuItem>
+
+                        {/* SEARCH */}
+
+                        <TextField
+                            size="small"
+
+                            placeholder="Search territories"
+
+                            value={search}
+
+                            onChange={(event) => {
+
+                                setSearch(
+                                    event.target.value
+                                );
+
+                            }}
+
+                            sx={(theme) => ({
+
+                                width: {
+                                    xs: "100%",
+                                    sm: 330,
+                                },
+
+                                "& .MuiOutlinedInput-root": {
+
+                                    height: 44,
+
+                                    borderRadius: 1.75,
+
+                                    fontSize: 13,
+
+                                    backgroundColor:
+                                        theme.palette.background.paper,
+
+                                    transition:
+                                        "all 160ms ease",
 
 
-                        <MenuItem value="Active">
-                            Active
-                        </MenuItem>
+                                    "& fieldset": {
+
+                                        borderColor:
+                                            theme.palette.divider,
+
+                                    },
 
 
-                        <MenuItem value="Inactive">
-                            Inactive
-                        </MenuItem>
+                                    "&:hover fieldset": {
 
-                    </Select>
+                                        borderColor:
+
+                                            alpha(
+                                                theme.palette.primary.main,
+                                                0.55
+                                            ),
+
+                                    },
+
+
+                                    "&.Mui-focused": {
+
+                                        boxShadow:
+
+                                            `0 0 0 3px ${alpha(
+                                                theme.palette.primary.main,
+                                                0.1
+                                            )}`,
+
+                                    },
+
+
+                                    "&.Mui-focused fieldset": {
+
+                                        borderColor:
+                                            theme.palette.primary.main,
+
+                                    },
+
+                                },
+
+                            })}
+
+                            InputProps={{
+
+                                startAdornment: (
+
+                                    <InputAdornment
+                                        position="start"
+                                    >
+
+                                        <SearchOutlinedIcon
+                                            sx={{
+
+                                                fontSize: 19,
+
+                                                color:
+                                                    "text.secondary",
+
+                                            }}
+                                        />
+
+                                    </InputAdornment>
+
+                                ),
+
+                            }}
+                        />
+
+
+                        {/* STATUS */}
+
+                        <Select
+                            size="small"
+
+                            value={status}
+
+                            onChange={(event) => {
+
+                                setStatus(
+                                    event.target.value
+                                );
+
+                            }}
+
+                            sx={(theme) => ({
+
+                                minWidth: 160,
+
+                                height: 44,
+
+                                borderRadius: 1.75,
+
+                                fontSize: 13,
+
+                                fontWeight: 500,
+
+                                backgroundColor:
+                                    theme.palette.background.paper,
+
+
+                                "& .MuiOutlinedInput-notchedOutline": {
+
+                                    borderColor:
+                                        theme.palette.divider,
+
+                                },
+
+
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+
+                                    borderColor:
+
+                                        alpha(
+                                            theme.palette.primary.main,
+                                            0.55
+                                        ),
+
+                                },
+
+
+                                "&.Mui-focused": {
+
+                                    boxShadow:
+
+                                        `0 0 0 3px ${alpha(
+                                            theme.palette.primary.main,
+                                            0.1
+                                        )}`,
+
+                                },
+
+
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+
+                                    borderColor:
+                                        theme.palette.primary.main,
+
+                                },
+
+                            })}
+                        >
+
+                            <MenuItem value="All">
+                                All Status
+                            </MenuItem>
+
+                            <MenuItem value="Active">
+                                Active
+                            </MenuItem>
+
+                            <MenuItem value="Inactive">
+                                Inactive
+                            </MenuItem>
+
+                        </Select>
+
+                    </Box>
+
+
+                    {/* RESULT COUNT */}
+
+                    <Box
+                        sx={(theme) => ({
+
+                            display: "flex",
+
+                            alignItems: "center",
+
+                            gap: 0.75,
+
+                            px: 1.5,
+
+                            py: 0.9,
+
+                            borderRadius: 1.5,
+
+                            backgroundColor:
+
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.07
+                                ),
+
+                            border:
+                                "1px solid",
+
+                            borderColor:
+
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.14
+                                ),
+
+                            alignSelf: {
+                                xs: "flex-start",
+                                md: "center",
+                            },
+
+                        })}
+                    >
+
+                        <Typography
+                            sx={{
+
+                                fontSize: 12,
+
+                                fontWeight: 750,
+
+                                color:
+                                    "primary.main",
+
+                            }}
+                        >
+                            {filteredTerritories.length}
+                        </Typography>
+
+
+                        <Typography
+                            sx={{
+
+                                fontSize: 12,
+
+                                fontWeight: 500,
+
+                                color:
+                                    "text.secondary",
+
+                                whiteSpace:
+                                    "nowrap",
+
+                            }}
+                        >
+
+                            {
+                                filteredTerritories.length === 1
+
+                                    ? "territory"
+
+                                    : "territories"
+                            }
+
+                        </Typography>
+
+                    </Box>
 
                 </Box>
 
@@ -389,135 +858,115 @@ function TerritoryList({
             {/* ================================================= */}
 
             <TableContainer
-
-                component={Paper}
-
-                elevation={0}
-
                 sx={{
 
-                    border:
-                        "1px solid",
+                    width: "100%",
 
-                    borderColor:
-                        "divider",
+                    overflowX: "hidden",
 
-                    borderRadius: 2,
+                    border: 0,
 
-                    overflow:
-                        "hidden",
+                    borderRadius: 0,
 
                     backgroundColor:
-                        "background.paper",
+                        "transparent",
+
+                    boxShadow:
+                        "none",
 
                 }}
             >
 
-                <Table>
+                <Table
+                    sx={{
+
+                        tableLayout: "fixed",
+
+                        width: "100%",
+
+                    }}
+                >
 
 
-                    {/* ============================================= */}
+                    {/* ================================================= */}
                     {/* TABLE HEADER */}
-                    {/* ============================================= */}
+                    {/* ================================================= */}
 
                     <TableHead>
 
                         <TableRow
-                            sx={{
+                            sx={(theme) => ({
 
                                 backgroundColor:
-                                    "background.default",
 
-                            }}
+                                    alpha(
+                                        theme.palette.primary.main,
+                                        0.07
+                                    ),
+
+                            })}
                         >
 
                             <TableCell
-                                sx={{
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color:
-                                        "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={
+                                    getHeaderCellSx("14%")
+                                }
                             >
                                 Actions
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
-
-                                    fontSize: 11,
-
-                                    fontWeight: 650,
-
-                                    color:
-                                        "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                                sx={
+                                    getHeaderCellSx("20%")
+                                }
                             >
                                 Territory Name
                             </TableCell>
 
 
                             <TableCell
-                                sx={{
+                                sx={
+                                    getHeaderCellSx("16%")
+                                }
+                            >
+                                State
+                            </TableCell>
 
-                                    fontSize: 11,
 
-                                    fontWeight: 650,
-
-                                    color:
-                                        "text.secondary",
-
-                                    textTransform:
-                                        "uppercase",
-
-                                    letterSpacing:
-                                        "0.04em",
-
-                                    py: 1.35,
-
-                                    borderBottom:
-                                        "1px solid",
-
-                                    borderColor:
-                                        "divider",
-
-                                }}
+                            <TableCell
+                                sx={
+                                    getHeaderCellSx("12%")
+                                }
                             >
                                 Status
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={
+                                    getHeaderCellSx("18%")
+                                }
+                            >
+                                Created On
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={
+                                    getHeaderCellSx("18%")
+                                }
+                            >
+                                Modified On
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={
+                                    getHeaderCellSx("15%")
+                                }
+                            >
+                                Modified By
                             </TableCell>
 
                         </TableRow>
@@ -525,64 +974,647 @@ function TerritoryList({
                     </TableHead>
 
 
-                    {/* ============================================= */}
+                    {/* ================================================= */}
                     {/* TABLE BODY */}
-                    {/* ============================================= */}
+                    {/* ================================================= */}
 
                     <TableBody>
 
-                        {/* API DATA WILL BE ADDED HERE */}
+                        {
+                            filteredTerritories.length > 0
 
-                        <TableRow>
+                                ? (
 
-                            <TableCell
-                                colSpan={3}
+                                    filteredTerritories.map(
+                                        (territory, index) => {
 
-                                align="center"
+                                            const isActive =
 
-                                sx={{
+                                                territory.IsActive === true ||
 
-                                    py: 7,
+                                                territory.IsActive === 1 ||
 
-                                    borderBottom: 0,
-
-                                }}
-                            >
-
-                                <Typography
-                                    sx={{
-
-                                        fontSize: 14,
-
-                                        fontWeight: 600,
-
-                                        color:
-                                            "text.primary",
-
-                                    }}
-                                >
-                                    No territories found
-                                </Typography>
+                                                territory.IsActive === "true";
 
 
-                                <Typography
-                                    sx={{
+                                            return (
 
-                                        mt: 0.5,
+                                                <TableRow
 
-                                        fontSize: 12,
+                                                    key={
+                                                        territory.TerritoryId
+                                                    }
 
-                                        color:
-                                            "text.secondary",
+                                                    sx={(theme) => ({
 
-                                    }}
-                                >
-                                    Territory records will appear here.
-                                </Typography>
+                                                        transition:
+                                                            "background-color 160ms ease",
 
-                            </TableCell>
 
-                        </TableRow>
+                                                        "& .MuiTableCell-root": {
+
+                                                            backgroundColor:
+
+                                                                index % 2 === 0
+
+                                                                    ? "#FFFFFF"
+
+                                                                    : "#F7F5F1",
+
+                                                        },
+
+
+                                                        "&:hover .MuiTableCell-root": {
+
+                                                            backgroundColor:
+
+                                                                alpha(
+                                                                    theme.palette.primary.main,
+                                                                    0.035
+                                                                ),
+
+                                                        },
+
+
+                                                        "&:hover .territory-name": {
+
+                                                            color:
+                                                                theme.palette.primary.main,
+
+                                                        },
+
+
+                                                        "&:last-child .MuiTableCell-root": {
+
+                                                            borderBottom: 0,
+
+                                                        },
+
+                                                    })}
+                                                >
+
+
+                                                    {/* ACTIONS */}
+
+                                                    <TableCell
+                                                        sx={{
+                                                            py: 1.1,
+                                                        }}
+                                                    >
+
+                                                        <Box
+                                                            sx={{
+
+                                                                display: "flex",
+
+                                                                alignItems: "center",
+
+                                                                gap: 0.25,
+
+                                                            }}
+                                                        >
+
+
+                                                            {/* VIEW */}
+
+                                                            <Tooltip
+                                                                title="View territory"
+                                                                arrow
+                                                            >
+
+                                                                <IconButton
+                                                                    size="small"
+
+                                                                    sx={
+                                                                        getActionButtonSx()
+                                                                    }
+                                                                >
+
+                                                                    <VisibilityOutlinedIcon
+                                                                        sx={{
+                                                                            fontSize: 18,
+                                                                        }}
+                                                                    />
+
+                                                                </IconButton>
+
+                                                            </Tooltip>
+
+
+                                                            {/* EDIT */}
+
+                                                            <Tooltip
+                                                                title="Edit territory"
+                                                                arrow
+                                                            >
+
+                                                                <IconButton
+                                                                    size="small"
+
+                                                                    sx={
+                                                                        getActionButtonSx()
+                                                                    }
+                                                                >
+
+                                                                    <EditOutlinedIcon
+                                                                        sx={{
+                                                                            fontSize: 18,
+                                                                        }}
+                                                                    />
+
+                                                                </IconButton>
+
+                                                            </Tooltip>
+
+
+                                                            {/* DELETE */}
+
+                                                            <Tooltip
+                                                                title="Delete territory"
+                                                                arrow
+                                                            >
+
+                                                                <IconButton
+                                                                    size="small"
+
+                                                                    sx={
+                                                                        getActionButtonSx(
+                                                                            "delete"
+                                                                        )
+                                                                    }
+                                                                >
+
+                                                                    <DeleteIcon
+                                                                        sx={{
+                                                                            fontSize: 18,
+                                                                        }}
+                                                                    />
+
+                                                                </IconButton>
+
+                                                            </Tooltip>
+
+                                                        </Box>
+
+                                                    </TableCell>
+
+
+                                                    {/* TERRITORY NAME */}
+
+                                                    <TableCell
+                                                        className="territory-name"
+
+                                                        sx={(theme) => ({
+
+                                                            py: 1.1,
+
+                                                            fontSize: 13.5,
+
+                                                            fontWeight: 700,
+
+                                                            color:
+                                                                theme.palette.primary.dark,
+
+                                                            whiteSpace:
+                                                                "nowrap",
+
+                                                            overflow:
+                                                                "hidden",
+
+                                                            textOverflow:
+                                                                "ellipsis",
+
+                                                            letterSpacing:
+                                                                "-0.01em",
+
+                                                            transition:
+                                                                "color 160ms ease",
+
+                                                        })}
+                                                    >
+
+                                                        {
+                                                            territory.TerritoryName ||
+                                                            "-"
+                                                        }
+
+                                                    </TableCell>
+
+
+                                                    {/* STATE */}
+
+                                                    <TableCell
+                                                        sx={{
+
+                                                            py: 1.1,
+
+                                                            fontSize: 12.5,
+
+                                                            fontWeight: 500,
+
+                                                            color:
+                                                                "text.secondary",
+
+                                                            whiteSpace:
+                                                                "nowrap",
+
+                                                            overflow:
+                                                                "hidden",
+
+                                                            textOverflow:
+                                                                "ellipsis",
+
+                                                        }}
+                                                    >
+
+                                                        {
+                                                            territory.StateName ||
+
+                                                            territory.State ||
+
+                                                            "-"
+                                                        }
+
+                                                    </TableCell>
+
+
+                                                    {/* STATUS */}
+
+                                                    <TableCell
+                                                        sx={{
+                                                            py: 1.1,
+                                                        }}
+                                                    >
+
+                                                        <Chip
+
+                                                            size="small"
+
+                                                            label={
+
+                                                                <Box
+                                                                    sx={{
+
+                                                                        display:
+                                                                            "flex",
+
+                                                                        alignItems:
+                                                                            "center",
+
+                                                                        gap: 0.75,
+
+                                                                    }}
+                                                                >
+
+                                                                    <Box
+                                                                        sx={(theme) => ({
+
+                                                                            width: 6,
+
+                                                                            height: 6,
+
+                                                                            borderRadius:
+                                                                                "50%",
+
+                                                                            backgroundColor:
+
+                                                                                isActive
+
+                                                                                    ? theme.palette.success.main
+
+                                                                                    : theme.palette.warning.main,
+
+
+                                                                            boxShadow:
+
+                                                                                isActive
+
+                                                                                    ? `0 0 0 3px ${alpha(
+                                                                                        theme.palette.success.main,
+                                                                                        0.12
+                                                                                    )}`
+
+                                                                                    : `0 0 0 3px ${alpha(
+                                                                                        theme.palette.warning.main,
+                                                                                        0.12
+                                                                                    )}`,
+
+                                                                        })}
+                                                                    />
+
+
+                                                                    <Typography
+
+                                                                        component="span"
+
+                                                                        sx={{
+
+                                                                            fontSize: 11,
+
+                                                                            fontWeight: 700,
+
+                                                                            lineHeight: 1,
+
+                                                                        }}
+                                                                    >
+
+                                                                        {
+                                                                            isActive
+
+                                                                                ? "Active"
+
+                                                                                : "Inactive"
+                                                                        }
+
+                                                                    </Typography>
+
+                                                                </Box>
+
+                                                            }
+
+                                                            sx={(theme) => ({
+
+                                                                height: 30,
+
+                                                                minWidth: 96,
+
+                                                                borderRadius: 1.5,
+
+                                                                color:
+
+                                                                    isActive
+
+                                                                        ? theme.palette.success.main
+
+                                                                        : theme.palette.warning.main,
+
+
+                                                                backgroundColor:
+
+                                                                    isActive
+
+                                                                        ? alpha(
+                                                                            theme.palette.success.main,
+                                                                            0.09
+                                                                        )
+
+                                                                        : alpha(
+                                                                            theme.palette.warning.main,
+                                                                            0.1
+                                                                        ),
+
+
+                                                                border:
+                                                                    "1px solid",
+
+
+                                                                borderColor:
+
+                                                                    isActive
+
+                                                                        ? alpha(
+                                                                            theme.palette.success.main,
+                                                                            0.2
+                                                                        )
+
+                                                                        : alpha(
+                                                                            theme.palette.warning.main,
+                                                                            0.22
+                                                                        ),
+
+
+                                                                "& .MuiChip-label": {
+
+                                                                    px: 1.2,
+
+                                                                    width: "100%",
+
+                                                                },
+
+                                                            })}
+                                                        />
+
+                                                    </TableCell>
+
+
+                                                    {/* CREATED ON */}
+
+                                                    <TableCell
+                                                        sx={{
+
+                                                            py: 1.1,
+
+                                                            fontSize: 12.5,
+
+                                                            fontWeight: 500,
+
+                                                            color:
+                                                                "text.secondary",
+
+                                                            whiteSpace:
+                                                                "nowrap",
+
+                                                        }}
+                                                    >
+
+                                                        {
+                                                            formatDate(
+                                                                territory.CreatedOn
+                                                            )
+                                                        }
+
+                                                    </TableCell>
+
+
+                                                    {/* MODIFIED ON */}
+
+                                                    <TableCell
+                                                        sx={{
+
+                                                            py: 1.1,
+
+                                                            fontSize: 12.5,
+
+                                                            fontWeight: 500,
+
+                                                            color:
+                                                                "text.secondary",
+
+                                                            whiteSpace:
+                                                                "nowrap",
+
+                                                        }}
+                                                    >
+
+                                                        {
+                                                            formatDate(
+                                                                territory.ModifiedOn
+                                                            )
+                                                        }
+
+                                                    </TableCell>
+
+
+                                                    {/* MODIFIED BY */}
+
+                                                    <TableCell
+                                                        sx={{
+
+                                                            py: 1.1,
+
+                                                            fontSize: 12.5,
+
+                                                            fontWeight: 500,
+
+                                                            color:
+                                                                "text.secondary",
+
+                                                            whiteSpace:
+                                                                "nowrap",
+
+                                                            overflow:
+                                                                "hidden",
+
+                                                            textOverflow:
+                                                                "ellipsis",
+
+                                                        }}
+                                                    >
+
+                                                        {
+                                                            territory.ModifiedBy ||
+                                                            "-"
+                                                        }
+
+                                                    </TableCell>
+
+                                                </TableRow>
+
+                                            );
+
+                                        }
+                                    )
+
+                                )
+
+                                : (
+
+                                    <TableRow>
+
+                                        <TableCell
+
+                                            colSpan={7}
+
+                                            align="center"
+
+                                            sx={{
+
+                                                py: 8,
+
+                                                borderBottom: 0,
+
+                                            }}
+                                        >
+
+                                            <Box
+                                                sx={{
+
+                                                    display: "flex",
+
+                                                    flexDirection:
+                                                        "column",
+
+                                                    alignItems:
+                                                        "center",
+
+                                                }}
+                                            >
+
+                                                <Box
+                                                    sx={(theme) => ({
+
+                                                        width: 48,
+
+                                                        height: 48,
+
+                                                        borderRadius:
+                                                            "50%",
+
+                                                        display:
+                                                            "flex",
+
+                                                        alignItems:
+                                                            "center",
+
+                                                        justifyContent:
+                                                            "center",
+
+                                                        mb: 1.5,
+
+                                                        backgroundColor:
+
+                                                            alpha(
+                                                                theme.palette.primary.main,
+                                                                0.08
+                                                            ),
+
+                                                    })}
+                                                >
+
+                                                    <SearchOutlinedIcon
+                                                        sx={{
+
+                                                            fontSize: 23,
+
+                                                            color:
+                                                                "primary.main",
+
+                                                        }}
+                                                    />
+
+                                                </Box>
+
+
+                                                <Typography
+                                                    sx={{
+
+                                                        fontSize: 14,
+
+                                                        fontWeight: 700,
+
+                                                        color:
+                                                            "text.primary",
+
+                                                    }}
+                                                >
+                                                    No territories found
+                                                </Typography>
+
+
+                                                <Typography
+                                                    sx={{
+
+                                                        mt: 0.5,
+
+                                                        fontSize: 12,
+
+                                                        color:
+                                                            "text.secondary",
+
+                                                    }}
+                                                >
+                                                    Try adjusting your search or status filter.
+                                                </Typography>
+
+                                            </Box>
+
+                                        </TableCell>
+
+                                    </TableRow>
+
+                                )
+
+                        }
 
                     </TableBody>
 

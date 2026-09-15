@@ -70,14 +70,13 @@ function Users() {
             }}
         >
 
-
             {/* ================================================= */}
             {/* PAGE HEADER */}
             {/* ================================================= */}
 
             <Box
                 sx={{
-                    mb: 3,
+                    mb: 2.5,
                 }}
             >
 
@@ -89,11 +88,11 @@ function Users() {
                             md: 22,
                         },
 
-                        fontWeight: 650,
+                        fontWeight: 700,
 
                         color: "text.primary",
 
-                        letterSpacing: "-0.02em",
+                        letterSpacing: "-0.025em",
 
                         lineHeight: 1.25,
                     }}
@@ -105,65 +104,70 @@ function Users() {
                 <Typography
                     variant="body2"
                     sx={{
-                        mt: 0.75,
+                        mt: 0.6,
 
                         fontSize: 13,
 
                         color: "text.secondary",
 
                         lineHeight: 1.5,
+
+                        maxWidth: 620,
                     }}
                 >
-                    Manage users and their organizational access.
+                    View and manage registered users.
                 </Typography>
 
             </Box>
 
 
             {/* ================================================= */}
-            {/* MODULE TABS */}
+            {/* MODULE NAVIGATION */}
             {/* ================================================= */}
 
             <Box
                 sx={{
+                    mb: 2.5,
+
                     borderBottom: "1px solid",
 
                     borderColor: "divider",
-
-                    mb: 3,
                 }}
             >
 
                 <Tabs
-
                     value={activeTab}
-
                     onChange={handleTabChange}
-
                     sx={{
 
-                        minHeight: 42,
+                        minHeight: 40,
+
+                        "& .MuiTabs-flexContainer": {
+                            gap: 0.5,
+                        },
 
                         "& .MuiTabs-indicator": {
 
                             height: 2,
 
-                            borderRadius: "2px 2px 0 0",
+                            borderRadius:
+                                "2px 2px 0 0",
 
-                            backgroundColor: "primary.main",
+                            backgroundColor:
+                                "primary.main",
 
                         },
 
 
                         "& .MuiTab-root": {
 
-                            minHeight: 42,
+                            minHeight: 40,
 
                             minWidth: 0,
 
-                            px: 1.5,
+                            px: 1.25,
 
-                            mr: 2,
+                            py: 0.75,
 
                             textTransform: "none",
 
@@ -173,16 +177,19 @@ function Users() {
 
                             color: "text.secondary",
 
-                            borderRadius: "6px 6px 0 0",
+                            borderRadius:
+                                "6px 6px 0 0",
 
                             transition:
                                 "color 160ms ease, background-color 160ms ease",
 
                             "&:hover": {
 
-                                color: "primary.main",
+                                color:
+                                    "primary.main",
 
-                                backgroundColor: "action.hover",
+                                backgroundColor:
+                                    "action.hover",
 
                             },
 
@@ -191,9 +198,10 @@ function Users() {
 
                         "& .MuiTab-root.Mui-selected": {
 
-                            color: "primary.main",
+                            color:
+                                "primary.main",
 
-                            fontWeight: 650,
+                            fontWeight: 700,
 
                         },
 

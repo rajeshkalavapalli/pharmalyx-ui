@@ -7,6 +7,8 @@ import {
     Typography,
 } from "@mui/material";
 
+import { alpha } from "@mui/material/styles";
+
 import { useState } from "react";
 
 import TerritoryList from "../Territory/TerritoryList";
@@ -17,7 +19,7 @@ import AddNewTerritoty from "../Territory/AddTerritory/AddNewTerritory";
 
 function DivisionOrTerritoty() {
 
-    const [selectedTab, setSelectedTab] = useState(0);
+    const [selectedTab, setSelectedTab] = useState("division");
 
     const [showDivision, setShowDivision] = useState(false);
 
@@ -35,9 +37,7 @@ function DivisionOrTerritoty() {
     // =====================================================
 
     const handleAddDiv = () => {
-
         setShowDivision(true);
-
     };
 
 
@@ -50,20 +50,15 @@ function DivisionOrTerritoty() {
         severity = "success"
     ) => {
 
-        // Only return to list after success
         if (severity === "success") {
-
             setShowDivision(false);
-
         }
-
 
         setSnackbar({
             open: true,
-            message: message,
-            severity: severity,
+            message,
+            severity,
         });
-
     };
 
 
@@ -72,9 +67,28 @@ function DivisionOrTerritoty() {
     // =====================================================
 
     const handleAddTerritoty = () => {
-
         setShowTerritory(true);
+    };
 
+
+    // =====================================================
+    // TERRITORY CREATED
+    // =====================================================
+
+    const handleTerritoryCreated = (
+        message = "Territory created successfully",
+        severity = "success"
+    ) => {
+
+        if (severity === "success") {
+            setShowTerritory(false);
+        }
+
+        setSnackbar({
+            open: true,
+            message,
+            severity,
+        });
     };
 
 
@@ -82,17 +96,13 @@ function DivisionOrTerritoty() {
     // TAB CHANGE
     // =====================================================
 
-    const handleTabChange = (
-        event,
-        newValue
-    ) => {
+    const handleTabChange = (event, newValue) => {
 
         setSelectedTab(newValue);
 
         setShowDivision(false);
 
         setShowTerritory(false);
-
     };
 
 
@@ -104,14 +114,16 @@ function DivisionOrTerritoty() {
             }}
         >
 
-
             {/* ================================================= */}
             {/* PAGE HEADER */}
             {/* ================================================= */}
 
             <Box
                 sx={{
-                    mb: 3,
+                    mb: {
+                        xs: 2.5,
+                        md: 2.5,
+                    },
                 }}
             >
 
@@ -122,33 +134,25 @@ function DivisionOrTerritoty() {
                             xs: 20,
                             md: 22,
                         },
-
-                        fontWeight: 650,
-
+                        fontWeight: 700,
                         color: "text.primary",
-
-                        letterSpacing: "-0.02em",
-
+                        letterSpacing: "-0.025em",
                         lineHeight: 1.25,
                     }}
                 >
                     Organization Structure
                 </Typography>
 
-
                 <Typography
                     variant="body2"
                     sx={{
                         mt: 0.75,
-
                         fontSize: 13,
-
                         color: "text.secondary",
-
                         lineHeight: 1.5,
                     }}
                 >
-                    Manage divisions and territories within your organization.
+                    View and manage divisions and territories.
                 </Typography>
 
             </Box>
@@ -161,87 +165,63 @@ function DivisionOrTerritoty() {
             <Box
                 sx={{
                     borderBottom: "1px solid",
-
                     borderColor: "divider",
-
-                    mb: 3,
+                    mb: {
+                        xs: 2.5,
+                        md: 3,
+                    },
                 }}
             >
 
                 <Tabs
-
                     value={selectedTab}
-
                     onChange={handleTabChange}
-
+                    aria-label="Organization structure tabs"
                     sx={{
+                        minHeight: 40,
 
-                        minHeight: 42,
-
-
-                        "& .MuiTabs-indicator": {
-
-                            height: 2,
-
-                            borderRadius: "2px 2px 0 0",
-
-                            backgroundColor: "primary.main",
-
+                        "& .MuiTabs-flexContainer": {
+                            gap: 0.5,
                         },
 
+                        "& .MuiTabs-indicator": {
+                            height: 2,
+                            borderRadius: "2px 2px 0 0",
+                            backgroundColor: "primary.main",
+                        },
 
                         "& .MuiTab-root": {
-
-                            minHeight: 42,
-
+                            minHeight: 40,
                             minWidth: 0,
-
-                            px: 1.5,
-
-                            mr: 2,
-
+                            px: 1.25,
                             textTransform: "none",
-
                             fontSize: 13,
-
                             fontWeight: 500,
-
                             color: "text.secondary",
-
                             borderRadius: "6px 6px 0 0",
-
                             transition:
                                 "color 160ms ease, background-color 160ms ease",
 
-
                             "&:hover": {
-
                                 color: "primary.main",
-
                                 backgroundColor: "action.hover",
-
                             },
-
                         },
-
 
                         "& .MuiTab-root.Mui-selected": {
-
                             color: "primary.main",
-
-                            fontWeight: 650,
-
+                            fontWeight: 700,
                         },
-
                     }}
                 >
 
                     <Tab
+                        value="division"
                         label="Divisions"
                     />
 
-
                     <Tab
+                        value="territory"
                         label="Territories"
                     />
 
@@ -254,18 +234,12 @@ function DivisionOrTerritoty() {
             {/* DIVISION LIST */}
             {/* ================================================= */}
 
-            {selectedTab === 0 &&
+            {selectedTab === "division" &&
                 !showDivision && (
 
-                    <Box>
-
-                        <DivisionList
-                            handleAddDiv={
-                                handleAddDiv
-                            }
-                        />
-
-                    </Box>
+                    <DivisionList
+                        handleAddDiv={handleAddDiv}
+                    />
 
                 )
             }
@@ -275,18 +249,14 @@ function DivisionOrTerritoty() {
             {/* TERRITORY LIST */}
             {/* ================================================= */}
 
-            {selectedTab === 1 &&
+            {selectedTab === "territory" &&
                 !showTerritory && (
 
-                    <Box>
-
-                        <TerritoryList
-                            handleAddTerritoty={
-                                handleAddTerritoty
-                            }
-                        />
-
-                    </Box>
+                    <TerritoryList
+                        handleAddTerritoty={
+                            handleAddTerritoty
+                        }
+                    />
 
                 )
             }
@@ -299,15 +269,12 @@ function DivisionOrTerritoty() {
             {showDivision && (
 
                 <AddNewDivision
-
                     onDivisionCreated={
                         handleDivisionCreated
                     }
-
                     onClose={() =>
                         setShowDivision(false)
                     }
-
                 />
 
             )}
@@ -319,7 +286,14 @@ function DivisionOrTerritoty() {
 
             {showTerritory && (
 
-                <AddNewTerritoty />
+                <AddNewTerritoty
+                    onTerritoryCreated={
+                        handleTerritoryCreated
+                    }
+                    onClose={() =>
+                        setShowTerritory(false)
+                    }
+                />
 
             )}
 
@@ -329,15 +303,8 @@ function DivisionOrTerritoty() {
             {/* ================================================= */}
 
             <Snackbar
-
-                open={
-                    snackbar.open
-                }
-
-                autoHideDuration={
-                    3000
-                }
-
+                open={snackbar.open}
+                autoHideDuration={3000}
                 onClose={() => {
 
                     setSnackbar({
@@ -346,7 +313,6 @@ function DivisionOrTerritoty() {
                     });
 
                 }}
-
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "right",
@@ -354,13 +320,8 @@ function DivisionOrTerritoty() {
             >
 
                 <Alert
-
-                    severity={
-                        snackbar.severity
-                    }
-
+                    severity={snackbar.severity}
                     variant="filled"
-
                     onClose={() => {
 
                         setSnackbar({
@@ -369,22 +330,21 @@ function DivisionOrTerritoty() {
                         });
 
                     }}
-
-                    sx={{
+                    sx={(theme) => ({
                         width: "100%",
-                    }}
+                        borderRadius: 2,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        boxShadow: theme.shadows[6],
+                    })}
                 >
-
                     {snackbar.message}
-
                 </Alert>
 
             </Snackbar>
 
         </Box>
-
     );
-
 }
 
 

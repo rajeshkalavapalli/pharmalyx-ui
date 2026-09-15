@@ -10,6 +10,8 @@ import {
     Autocomplete,
 } from "@mui/material";
 
+import { alpha } from "@mui/material/styles";
+
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useState, useEffect } from "react";
@@ -21,10 +23,18 @@ import ConfirmationDialog from "../../../components/conformationDialog/Conformat
 import {
     getDesignation,
     createUser,
-    getUsers,
+    //getManagersByDivision,
 } from "../../Users/service/index";
 
-import { getDivisions } from "../../Division/index";
+// import {
+//     getDivisionsByTerritory,
+// } from "../../Division/index";
+
+import {
+    getcountry,
+    getstates,
+    getTerritorie,
+} from "../../Territory/index";
 
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
@@ -36,87 +46,62 @@ function AddNewUser({ onUserCreated }) {
     /* ================================================= */
 
     const fieldSx = {
-
         "& .MuiOutlinedInput-root": {
-
-            minHeight: 42,
-
+            minHeight: 46,
             borderRadius: 1.5,
-
-            backgroundColor:
-                "background.paper",
-
+            backgroundColor: "background.paper",
             transition:
-                "border-color 160ms ease, box-shadow 160ms ease",
+                "border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease",
 
             "& fieldset": {
-
-                borderColor:
-                    "divider",
-
+                borderColor: "divider",
             },
 
             "&:hover fieldset": {
+                borderColor: "primary.light",
+            },
 
-                borderColor:
-                    "primary.light",
-
+            "&.Mui-focused": {
+                boxShadow: (theme) =>
+                    `0 0 0 3px ${alpha(
+                        theme.palette.primary.main,
+                        0.08
+                    )}`,
             },
 
             "&.Mui-focused fieldset": {
-
-                borderColor:
-                    "primary.main",
-
+                borderColor: "primary.main",
                 borderWidth: 1,
-
             },
 
+            "&.Mui-disabled": {
+                backgroundColor: "action.hover",
+            },
         },
-
 
         "& .MuiInputLabel-root": {
-
             fontSize: 13,
-
-            color:
-                "text.secondary",
-
+            color: "text.secondary",
         },
-
 
         "& .MuiInputLabel-root.Mui-focused": {
-
-            color:
-                "primary.main",
-
+            color: "primary.main",
         },
-
 
         "& .MuiInputBase-input": {
-
             fontSize: 13,
-
+            color: "text.primary",
         },
-
 
         "& .MuiSelect-select": {
-
             fontSize: 13,
-
         },
-
 
         "& .MuiFormHelperText-root": {
-
             fontSize: 11,
-
-            marginLeft: 0.25,
-
-            marginTop: 0.5,
-
+            marginLeft: 0.5,
+            marginTop: 0.6,
         },
-
     };
 
 
@@ -124,217 +109,457 @@ function AddNewUser({ onUserCreated }) {
     /* COUNTRIES */
     /* ================================================= */
 
-    const countries =
-        countryCodes.all();
+    const mobileCountries = countryCodes.all();
 
 
     /* ================================================= */
     /* STATE */
     /* ================================================= */
 
-    const [firstName, setfirstName] =
-        useState("");
-
-    const [Lastname, setLastname] =
-        useState("");
-
-    const [designations, setDesignations] =
-        useState([]);
-
-    const [ReportingManager, setReportingManager] =
-        useState("");
-
-    const [openCloseDialog, setOpenCloseDialog] =
-        useState(false);
-
-    const [divisions, setDivisions] =
-        useState([]);
-
-    const [users, setUsers] =
-        useState([]);
+    const [firstName, setfirstName] = useState("");
+    const [Lastname, setLastname] = useState("");
+    const [designations, setDesignations] = useState([]);
+    const [ReportingManager, setReportingManager] = useState("");
+    const [openCloseDialog, setOpenCloseDialog] = useState(false);
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [territories, setTerritories] = useState([]);
+    const [divisions, setDivisions] = useState([]);
+    const [managers, setManagers] = useState([]);
 
 
     /* ================================================= */
     /* GLOBAL SNACKBAR */
     /* ================================================= */
 
-    const { showSnackbar } =
-        useSnackbar();
+    const { showSnackbar } = useSnackbar();
 
 
     /* ================================================= */
     /* VALIDATION */
     /* ================================================= */
 
-    const validationSchema =
-        yup.object({
+    const validationSchema = yup.object({
 
-            Username:
-                yup
-                    .string()
-                    .required(
-                        "Username is required"
-                    )
-                    .min(
-                        3,
-                        "Username must be at least 3 characters"
-                    )
-                    .max(
-                        20,
-                        "Username must be at most 20 characters"
-                    ),
+        Username: yup
+            .string()
+            .required("Username is required")
+            .min(
+                3,
+                "Username must be at least 3 characters"
+            )
+            .max(
+                20,
+                "Username must be at most 20 characters"
+            ),
 
-            email:
-                yup
-                    .string()
-                    .required(
-                        "Email is required"
-                    )
-                    .email(
-                        "Invalid email address"
-                    ),
+        email: yup
+            .string()
+            .required("Email is required")
+            .email("Invalid email address"),
 
-            Mobile:
-                yup
-                    .string()
-                    .required(
-                        "Mobile number is required"
-                    )
-                    .matches(
-                        /^[0-9]+$/,
-                        "Mobile number must contain only numbers"
-                    )
-                    .min(
-                        6,
-                        "Mobile number is too short"
-                    )
-                    .max(
-                        15,
-                        "Mobile number is too long"
-                    ),
+        Mobile: yup
+            .string()
+            .required("Mobile number is required")
+            .matches(
+                /^[0-9]+$/,
+                "Mobile number must contain only numbers"
+            )
+            .min(
+                6,
+                "Mobile number is too short"
+            )
+            .max(
+                15,
+                "Mobile number is too long"
+            ),
 
-            password:
-                yup
-                    .string()
-                    .required(
-                        "Password is required"
-                    )
-                    .min(
-                        8,
-                        "Password must be at least 8 characters"
-                    ),
+        password: yup
+            .string()
+            .required("Password is required")
+            .min(
+                8,
+                "Password must be at least 8 characters"
+            ),
 
-            Designation:
-                yup
-                    .string()
-                    .required(
-                        "Designation is required"
-                    ),
+        Designation: yup
+            .string()
+            .required("Designation is required"),
 
-            countryCode:
-                yup
-                    .string()
-                    .required(
-                        "Please select country code"
-                    ),
+        countryCode: yup
+            .string()
+            .required("Please select country code"),
 
-            DivisionId:
-                yup
-                    .string()
-                    .required(
-                        "Division is required"
-                    ),
+        CountryId: yup
+            .string()
+            .required("Country is required"),
 
-            TerritoryId:
-                yup
-                    .string(),
+        StateId: yup
+            .string()
+            .required("State is required"),
 
-        });
+        TerritoryId: yup
+            .string()
+            .required("Territory is required"),
+
+        DivisionId: yup
+            .string()
+            .required("Division is required"),
+
+    });
 
 
     /* ================================================= */
     /* CREATE USER */
     /* ================================================= */
 
-    const handleCreateUser =
-        async (values) => {
+    const handleCreateUser = async (values) => {
 
-            try {
+        try {
 
-                const userData = {
+            const userData = {
 
-                    UserName:
-                        values.Username,
+                UserName:
+                    values.Username,
 
-                    FirstName:
-                        firstName,
+                FirstName:
+                    firstName,
 
-                    LastName:
-                        Lastname,
+                LastName:
+                    Lastname,
 
-                    EmailId:
-                        values.email,
+                EmailId:
+                    values.email,
 
-                    MobileNumber:
-                        values.Mobile,
+                MobileNumber:
+                    values.Mobile,
 
-                    password:
-                        values.password,
+                password:
+                    values.password,
 
-                    DesignationId:
-                        values.Designation,
+                DesignationId:
+                    values.Designation,
 
-                    ManagerId:
-                        ReportingManager || null,
+                ManagerId:
+                    ReportingManager || null,
 
-                    CountryCode:
-                        values.countryCode,
+                CountryCode:
+                    values.countryCode,
 
-                    DivisionId:
-                        values.DivisionId || null,
+                CountryId:
+                    values.CountryId,
 
-                    TerritoryId:
-                        values.TerritoryId || null,
+                StateId:
+                    values.StateId,
 
-                };
+                TerritoryId:
+                    values.TerritoryId,
+
+                DivisionId:
+                    values.DivisionId,
+
+            };
 
 
-                console.log(
-                    "before create user data",
+            console.log(
+                "before create user data",
+                userData
+            );
+
+
+            const result =
+                await createUser(
                     userData
                 );
 
 
-                const result =
-                    await createUser(userData);
+            console.log(
+                "created user details",
+                result
+            );
+
+
+            showSnackbar(
+                "User created successfully",
+                "success"
+            );
+
+
+            onUserCreated();
+
+
+        } catch (err) {
+
+            console.log(
+                "error creating user:",
+                err
+            );
+
+
+            showSnackbar(
+                "Failed to create user",
+                "error"
+            );
+
+        }
+
+    };
+
+
+    /* ================================================= */
+    /* FORMIK */
+    /* ================================================= */
+
+    const formik = useFormik({
+
+        initialValues: {
+
+            Username: "",
+            email: "",
+            Mobile: "",
+            password: "",
+            Designation: "",
+            countryCode: "",
+            CountryId: "",
+            StateId: "",
+            TerritoryId: "",
+            DivisionId: "",
+
+        },
+
+        validationSchema:
+            validationSchema,
+
+        onSubmit:
+            async (values) => {
+
+                console.log(
+                    "Formik validation passed:",
+                    values
+                );
+
+                await handleCreateUser(
+                    values
+                );
+
+            },
+
+    });
+
+
+    /* ================================================= */
+    /* LOAD COUNTRIES */
+    /* ================================================= */
+
+    const loadCountries = async () => {
+
+        try {
+
+            const response =
+                await getcountry();
+
+
+            console.log(
+                "Countries API data:",
+                response
+            );
+
+
+            const data =
+                response?.country ||
+                response?.countries ||
+                response?.result ||
+                response ||
+                [];
+
+
+            setCountries(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+
+        } catch (err) {
+
+            console.log(
+                "error getting countries:",
+                err
+            );
+
+            setCountries([]);
+
+        }
+
+    };
+
+
+    /* ================================================= */
+    /* LOAD STATES */
+    /* ================================================= */
+
+    const loadStates = async (CountryId) => {
+
+        try {
+
+            if (!CountryId) {
+
+                setStates([]);
+
+                return;
+
+            }
+
+
+            const response =
+                await getstates(
+                    CountryId
+                );
+
+
+            console.log(
+                "States API data:",
+                response
+            );
+
+
+            const data =
+                response?.states ||
+                response?.result ||
+                response ||
+                [];
+
+
+            setStates(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+
+        } catch (err) {
+
+            console.log(
+                "error getting states:",
+                err
+            );
+
+            setStates([]);
+
+        }
+
+    };
+
+
+    /* ================================================= */
+    /* LOAD TERRITORIES */
+    /* ================================================= */
+
+    const loadTerritories = async (StateId) => {
+
+        try {
+
+            if (!StateId) {
+
+                setTerritories([]);
+
+                return;
+
+            }
+
+
+            const response =
+                await getTerritorie(
+                    StateId
+                );
+
+
+            console.log(
+                "Territories API data:",
+                response
+            );
+
+
+            const data =
+                response?.territories ||
+                response?.result ||
+                response ||
+                [];
+
+
+            setTerritories(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+
+        } catch (err) {
+
+            console.log(
+                "error getting territories:",
+                err
+            );
+
+            setTerritories([]);
+
+        }
+
+    };
+
+
+    /* ================================================= */
+    /* LOAD DIVISIONS BY TERRITORY */
+    /* ================================================= */
+
+    const loadDivisionsByTerritory =
+        async (TerritoryId) => {
+
+            try {
+
+                if (!TerritoryId) {
+
+                    setDivisions([]);
+
+                    return;
+
+                }
+
+
+                const response =
+                    await getDivisionsByTerritory(
+                        TerritoryId
+                    );
 
 
                 console.log(
-                    "created user details",
-                    result
+                    "Divisions by Territory API data:",
+                    response
                 );
 
 
-                showSnackbar(
-                    "User created successfully",
-                    "success"
+                const data =
+                    response?.divisions ||
+                    response?.result ||
+                    response ||
+                    [];
+
+
+                setDivisions(
+                    Array.isArray(data)
+                        ? data
+                        : []
                 );
 
-
-                onUserCreated();
 
             } catch (err) {
 
                 console.log(
-                    "error creating user:",
+                    "error getting divisions by territory:",
                     err
                 );
 
-
-                showSnackbar(
-                    "Failed to create user",
-                    "error"
-                );
+                setDivisions([]);
 
             }
 
@@ -342,57 +567,66 @@ function AddNewUser({ onUserCreated }) {
 
 
     /* ================================================= */
-    /* FORMIK */
+    /* LOAD MANAGERS BY DIVISION */
     /* ================================================= */
 
-    const formik =
-        useFormik({
+    const loadManagersByDivision =
+        async (DivisionId) => {
 
-            initialValues: {
+            try {
 
-                Username: "",
+                if (!DivisionId) {
 
-                email: "",
+                    setManagers([]);
 
-                Mobile: "",
+                    return;
 
-                password: "",
-
-                Designation: "",
-
-                countryCode: "",
-
-                DivisionId: "",
-
-                TerritoryId: "",
-
-            },
+                }
 
 
-            validationSchema:
-                validationSchema,
-
-
-            onSubmit:
-                async (values) => {
-
-                    console.log(
-                        "Formik validation passed:",
-                        values
+                const response =
+                    await getManagersByDivision(
+                        DivisionId
                     );
 
 
-                    await handleCreateUser(
-                        values
-                    );
+                console.log(
+                    "Managers by Division API data:",
+                    response
+                );
 
-                },
 
-        });
+                const data =
+                    response?.managers ||
+                    response?.users ||
+                    response?.result ||
+                    response ||
+                    [];
+
+
+                setManagers(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
+
+            } catch (err) {
+
+                console.log(
+                    "error getting managers by division:",
+                    err
+                );
+
+                setManagers([]);
+
+            }
+
+        };
 
 
     /* ================================================= */
-    /* LOAD DESIGNATIONS + DIVISIONS + USERS */
+    /* LOAD INITIAL DATA */
     /* ================================================= */
 
     useEffect(() => {
@@ -418,6 +652,7 @@ function AddNewUser({ onUserCreated }) {
                             : []
                     );
 
+
                 } catch (err) {
 
                     console.log(
@@ -425,82 +660,7 @@ function AddNewUser({ onUserCreated }) {
                         err
                     );
 
-                }
-
-            };
-
-
-        const loadDivisions =
-            async () => {
-
-                try {
-
-                    const response =
-                        await getDivisions();
-
-
-                    console.log(
-                        "Division API data:",
-                        response
-                    );
-
-
-                    const data =
-                        response?.result ||
-                        response ||
-                        [];
-
-
-                    setDivisions(
-                        Array.isArray(data)
-                            ? data
-                            : []
-                    );
-
-                } catch (err) {
-
-                    console.log(
-                        "error getting divisions:",
-                        err
-                    );
-
-                }
-
-            };
-
-
-        const loadUsers =
-            async () => {
-
-                try {
-
-                    const response =
-                        await getUsers();
-
-
-                    console.log(
-                        "Users API data:",
-                        response
-                    );
-
-
-                    const data =
-                        response?.result ||
-                        [];
-
-
-                    setUsers(
-                        Array.isArray(data)
-                            ? data
-                            : []
-                    );
-
-                } catch (err) {
-
-                    console.log(
-                        "error getting users:",
-                        err
-                    );
+                    setDesignations([]);
 
                 }
 
@@ -508,10 +668,7 @@ function AddNewUser({ onUserCreated }) {
 
 
         loadDesignation();
-
-        loadDivisions();
-
-        loadUsers();
+        loadCountries();
 
     }, []);
 
@@ -527,34 +684,21 @@ function AddNewUser({ onUserCreated }) {
     };
 
 
-    /* ================================================= */
-    /* RETURN */
-    /* ================================================= */
-
     return (
 
         <Paper
             elevation={0}
-
             sx={{
-
                 width: "100%",
-
                 borderRadius: 2.5,
-
                 border: "1px solid",
-
-                borderColor:
-                    "divider",
-
-                backgroundColor:
-                    "background.paper",
-
+                borderColor: "divider",
+                backgroundColor: "background.paper",
                 overflow: "hidden",
-
+                boxShadow:
+                    "0 8px 30px rgba(32, 37, 34, 0.055)",
             }}
         >
-
 
             {/* ================================================= */}
             {/* FORM HEADER */}
@@ -562,63 +706,75 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
-                        md: 3.5,
+                        md: 4,
                     },
-
                     py: {
                         xs: 2.5,
                         md: 3,
                     },
-
+                    backgroundColor: "background.paper",
                 }}
             >
 
-                <Typography
+                <Box
                     sx={{
-
-                        fontSize: {
-                            xs: 18,
-                            md: 20,
-                        },
-
-                        fontWeight: 650,
-
-                        color:
-                            "text.primary",
-
-                        letterSpacing:
-                            "-0.025em",
-
-                        lineHeight: 1.25,
-
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 1.5,
                     }}
                 >
-                    Create User
-                </Typography>
 
+                    <Box
+                        sx={(theme) => ({
+                            width: 3,
+                            minWidth: 3,
+                            height: 44,
+                            mt: 0.2,
+                            borderRadius: 10,
+                            backgroundColor: "primary.main",
+                            boxShadow:
+                                `0 0 0 4px ${alpha(
+                                    theme.palette.primary.main,
+                                    0.07
+                                )}`,
+                        })}
+                    />
 
-                <Typography
-                    sx={{
+                    <Box>
 
-                        mt: 0.6,
+                        <Typography
+                            sx={{
+                                fontSize: {
+                                    xs: 20,
+                                    md: 22,
+                                },
+                                fontWeight: 700,
+                                color: "text.primary",
+                                letterSpacing: "-0.025em",
+                                lineHeight: 1.25,
+                            }}
+                        >
+                            Create User
+                        </Typography>
 
-                        fontSize: 13,
+                        <Typography
+                            sx={{
+                                mt: 0.55,
+                                fontSize: 13,
+                                lineHeight: 1.55,
+                                color: "text.secondary",
+                                maxWidth: 640,
+                            }}
+                        >
+                            Add a new user and configure
+                            their organizational access.
+                        </Typography>
 
-                        lineHeight: 1.5,
+                    </Box>
 
-                        color:
-                            "text.secondary",
-
-                        maxWidth: 620,
-
-                    }}
-                >
-                    Add a new user and configure
-                    their organizational access.
-                </Typography>
+                </Box>
 
             </Box>
 
@@ -627,858 +783,891 @@ function AddNewUser({ onUserCreated }) {
 
 
             {/* ================================================= */}
-            {/* BASIC INFORMATION */}
+            {/* FORM CONTENT */}
             {/* ================================================= */}
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
+                        md: 4,
+                    },
+                    py: {
+                        xs: 3,
                         md: 3.5,
                     },
-
-                    py: {
-                        xs: 2.75,
-                        md: 3.25,
-                    },
-
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 3.5,
                 }}
             >
 
+                {/* ================================================= */}
+                {/* BASIC INFORMATION */}
+                {/* ================================================= */}
 
-                {/* SECTION HEADER */}
-
-                <Box
-                    sx={{
-
-                        display: "flex",
-
-                        alignItems: "flex-start",
-
-                        gap: 1.25,
-
-                        mb: 2.5,
-
-                    }}
-                >
+                <Box>
 
                     <Box
                         sx={{
-
-                            width: 3,
-
-                            minHeight: 38,
-
-                            borderRadius: 2,
-
-                            backgroundColor:
-                                "primary.main",
-
-                            flexShrink: 0,
-
-                            mt: 0.15,
-
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 1.25,
+                            mb: 2.5,
                         }}
-                    />
+                    >
 
-
-                    <Box>
-
-                        <Typography
+                        <Box
                             sx={{
-
-                                fontSize: 14,
-
-                                fontWeight: 650,
-
-                                color:
-                                    "text.primary",
-
-                                letterSpacing:
-                                    "-0.01em",
-
-                                lineHeight: 1.35,
-
+                                width: 3,
+                                minWidth: 3,
+                                height: 36,
+                                borderRadius: 2,
+                                backgroundColor:
+                                    "primary.main",
+                                mt: 0.15,
                             }}
-                        >
-                            Basic Information
-                        </Typography>
+                        />
 
+                        <Box>
 
-                        <Typography
-                            sx={{
+                            <Typography
+                                sx={{
+                                    fontSize: 15,
+                                    fontWeight: 700,
+                                    color: "text.primary",
+                                    letterSpacing: "-0.01em",
+                                    lineHeight: 1.35,
+                                }}
+                            >
+                                Basic Information
+                            </Typography>
 
-                                mt: 0.35,
+                            <Typography
+                                sx={{
+                                    mt: 0.4,
+                                    fontSize: 12.5,
+                                    color: "text.secondary",
+                                    lineHeight: 1.5,
+                                }}
+                            >
+                                Enter the user's account and contact details.
+                            </Typography>
 
-                                fontSize: 12,
-
-                                color:
-                                    "text.secondary",
-
-                                lineHeight: 1.5,
-
-                            }}
-                        >
-                            Enter the user's account
-                            and contact details.
-                        </Typography>
+                        </Box>
 
                     </Box>
 
-                </Box>
-
-
-                <Grid
-                    container
-
-                    spacing={{
-                        xs: 2,
-                        md: 2,
-                    }}
-                >
-
-
-                    {/* USERNAME */}
 
                     <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
+                        container
+                        spacing={{
+                            xs: 2,
+                            md: 2.25,
                         }}
                     >
 
-                        <TextField
-                            fullWidth
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                            label="Username"
-
-                            name="Username"
-
-                            placeholder="Enter username"
-
-                            sx={fieldSx}
-
-                            value={
-                                formik.values.Username
-                            }
-
-                            onChange={
-                                formik.handleChange
-                            }
-
-                            onBlur={
-                                formik.handleBlur
-                            }
-
-                            error={
-                                formik.touched.Username &&
-                                Boolean(
+                            <TextField
+                                fullWidth
+                                label="Username"
+                                name="Username"
+                                placeholder="Enter username"
+                                sx={fieldSx}
+                                value={
+                                    formik.values.Username
+                                }
+                                onChange={
+                                    formik.handleChange
+                                }
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                error={
+                                    formik.touched.Username &&
+                                    Boolean(
+                                        formik.errors.Username
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.Username &&
                                     formik.errors.Username
-                                )
-                            }
+                                }
+                            />
 
-                            helperText={
-                                formik.touched.Username &&
-                                formik.errors.Username
-                            }
-                        />
-
-                    </Grid>
+                        </Grid>
 
 
-                    {/* FIRST NAME */}
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
+                            <TextField
+                                fullWidth
+                                label="First Name"
+                                placeholder="Enter first name"
+                                sx={fieldSx}
+                                value={firstName}
+                                onChange={(event) =>
+                                    setfirstName(
+                                        event.target.value
+                                    )
+                                }
+                            />
 
-                        <TextField
-                            fullWidth
-
-                            label="First Name"
-
-                            placeholder="Enter first name"
-
-                            sx={fieldSx}
-
-                            value={firstName}
-
-                            onChange={(event) =>
-                                setfirstName(
-                                    event.target.value
-                                )
-                            }
-                        />
-
-                    </Grid>
+                        </Grid>
 
 
-                    {/* LAST NAME */}
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
+                            <TextField
+                                fullWidth
+                                label="Last Name"
+                                placeholder="Enter last name"
+                                sx={fieldSx}
+                                value={Lastname}
+                                onChange={(event) =>
+                                    setLastname(
+                                        event.target.value
+                                    )
+                                }
+                            />
 
-                        <TextField
-                            fullWidth
-
-                            label="Last Name"
-
-                            placeholder="Enter last name"
-
-                            sx={fieldSx}
-
-                            value={Lastname}
-
-                            onChange={(event) =>
-                                setLastname(
-                                    event.target.value
-                                )
-                            }
-                        />
-
-                    </Grid>
+                        </Grid>
 
 
-                    {/* EMAIL */}
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
-
-                        <TextField
-                            fullWidth
-
-                            label="Email"
-
-                            name="email"
-
-                            placeholder="Enter email address"
-
-                            type="email"
-
-                            sx={fieldSx}
-
-                            value={
-                                formik.values.email
-                            }
-
-                            onChange={
-                                formik.handleChange
-                            }
-
-                            onBlur={
-                                formik.handleBlur
-                            }
-
-                            error={
-                                formik.touched.email &&
-                                Boolean(
+                            <TextField
+                                fullWidth
+                                label="Email"
+                                name="email"
+                                placeholder="Enter email address"
+                                type="email"
+                                sx={fieldSx}
+                                value={
+                                    formik.values.email
+                                }
+                                onChange={
+                                    formik.handleChange
+                                }
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                error={
+                                    formik.touched.email &&
+                                    Boolean(
+                                        formik.errors.email
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.email &&
                                     formik.errors.email
-                                )
-                            }
+                                }
+                            />
 
-                            helperText={
-                                formik.touched.email &&
-                                formik.errors.email
-                            }
-                        />
-
-                    </Grid>
+                        </Grid>
 
 
-                    {/* MOBILE */}
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
+                            <Grid
+                                container
+                                spacing={1.5}
+                            >
 
-                        <Grid
-                            container
-                            spacing={1.5}
-                        >
+                                <Grid size={{ xs: 4 }}>
 
-                            <Grid size={{ xs: 4 }}>
-
-                                <Autocomplete
-                                    fullWidth
-
-                                    options={countries}
-
-                                    getOptionLabel={
-                                        (country) =>
-                                            `${country.countryCallingCode} - ${country.countryNameEn}`
-                                    }
-
-                                    value={
-                                        countries.find(
+                                    <Autocomplete
+                                        fullWidth
+                                        options={mobileCountries}
+                                        getOptionLabel={
                                             (country) =>
-                                                country.countryCallingCode ===
-                                                formik.values.countryCode
-                                        ) || null
-                                    }
-
-                                    onChange={(
-                                        event,
-                                        newValue
-                                    ) => {
-
-                                        formik.setFieldValue(
-                                            "countryCode",
-
+                                                `${country.countryCallingCode} - ${country.countryNameEn}`
+                                        }
+                                        value={
+                                            mobileCountries.find(
+                                                (country) =>
+                                                    country.countryCallingCode ===
+                                                    formik.values.countryCode
+                                            ) || null
+                                        }
+                                        onChange={(
+                                            event,
                                             newValue
-                                                ? newValue.countryCallingCode
-                                                : ""
-                                        );
+                                        ) => {
 
-                                    }}
+                                            formik.setFieldValue(
+                                                "countryCode",
+                                                newValue
+                                                    ? newValue.countryCallingCode
+                                                    : ""
+                                            );
 
-                                    onBlur={() =>
-                                        formik.setFieldTouched(
-                                            "countryCode",
-                                            true
-                                        )
-                                    }
+                                        }}
+                                        onBlur={() =>
+                                            formik.setFieldTouched(
+                                                "countryCode",
+                                                true
+                                            )
+                                        }
+                                        renderInput={
+                                            (params) => (
 
-                                    renderInput={(
-                                        params
-                                    ) => (
+                                                <TextField
+                                                    {...params}
+                                                    fullWidth
+                                                    label="Country Code"
+                                                    sx={fieldSx}
+                                                    error={
+                                                        formik.touched.countryCode &&
+                                                        Boolean(
+                                                            formik.errors.countryCode
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        formik.touched.countryCode &&
+                                                        formik.errors.countryCode
+                                                    }
+                                                />
 
-                                        <TextField
-                                            {...params}
+                                            )
+                                        }
+                                    />
 
-                                            fullWidth
-
-                                            label="Country Code"
-
-                                            sx={fieldSx}
-
-                                            error={
-                                                formik.touched.countryCode &&
-                                                Boolean(
-                                                    formik.errors.countryCode
-                                                )
-                                            }
-
-                                            helperText={
-                                                formik.touched.countryCode &&
-                                                formik.errors.countryCode
-                                            }
-                                        />
-
-                                    )}
-                                />
-
-                            </Grid>
+                                </Grid>
 
 
-                            <Grid size={{ xs: 8 }}>
+                                <Grid size={{ xs: 8 }}>
 
-                                <TextField
-                                    fullWidth
-
-                                    label="Mobile Number"
-
-                                    name="Mobile"
-
-                                    placeholder="Enter mobile number"
-
-                                    sx={fieldSx}
-
-                                    value={
-                                        formik.values.Mobile
-                                    }
-
-                                    onChange={
-                                        formik.handleChange
-                                    }
-
-                                    onBlur={
-                                        formik.handleBlur
-                                    }
-
-                                    error={
-                                        formik.touched.Mobile &&
-                                        Boolean(
+                                    <TextField
+                                        fullWidth
+                                        label="Mobile Number"
+                                        name="Mobile"
+                                        placeholder="Enter mobile number"
+                                        sx={fieldSx}
+                                        value={
+                                            formik.values.Mobile
+                                        }
+                                        onChange={
+                                            formik.handleChange
+                                        }
+                                        onBlur={
+                                            formik.handleBlur
+                                        }
+                                        error={
+                                            formik.touched.Mobile &&
+                                            Boolean(
+                                                formik.errors.Mobile
+                                            )
+                                        }
+                                        helperText={
+                                            formik.touched.Mobile &&
                                             formik.errors.Mobile
-                                        )
-                                    }
+                                        }
+                                    />
 
-                                    helperText={
-                                        formik.touched.Mobile &&
-                                        formik.errors.Mobile
-                                    }
-                                />
+                                </Grid>
 
                             </Grid>
 
                         </Grid>
 
-                    </Grid>
 
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                    {/* PASSWORD */}
-
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
-
-                        <TextField
-                            fullWidth
-
-                            label="Password"
-
-                            name="password"
-
-                            placeholder="Enter password"
-
-                            type="password"
-
-                            sx={fieldSx}
-
-                            value={
-                                formik.values.password
-                            }
-
-                            onChange={
-                                formik.handleChange
-                            }
-
-                            onBlur={
-                                formik.handleBlur
-                            }
-
-                            error={
-                                formik.touched.password &&
-                                Boolean(
+                            <TextField
+                                fullWidth
+                                label="Password"
+                                name="password"
+                                placeholder="Enter password"
+                                type="password"
+                                sx={fieldSx}
+                                value={
+                                    formik.values.password
+                                }
+                                onChange={
+                                    formik.handleChange
+                                }
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                error={
+                                    formik.touched.password &&
+                                    Boolean(
+                                        formik.errors.password
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.password &&
                                     formik.errors.password
-                                )
-                            }
+                                }
+                            />
 
-                            helperText={
-                                formik.touched.password &&
-                                formik.errors.password
-                            }
-                        />
+                        </Grid>
 
                     </Grid>
-
-                </Grid>
-
-            </Box>
-
-
-            <Divider />
-
-
-            {/* ================================================= */}
-            {/* ORGANIZATIONAL ACCESS */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    px: {
-                        xs: 2.5,
-                        md: 3.5,
-                    },
-
-                    py: {
-                        xs: 2.75,
-                        md: 3.25,
-                    },
-
-                }}
-            >
-
-
-                {/* SECTION HEADER */}
-
-                <Box
-                    sx={{
-
-                        display: "flex",
-
-                        alignItems: "flex-start",
-
-                        gap: 1.25,
-
-                        mb: 2.5,
-
-                    }}
-                >
-
-                    <Box
-                        sx={{
-
-                            width: 3,
-
-                            minHeight: 38,
-
-                            borderRadius: 2,
-
-                            backgroundColor:
-                                "primary.main",
-
-                            flexShrink: 0,
-
-                            mt: 0.15,
-
-                        }}
-                    />
-
-
-                    <Box>
-
-                        <Typography
-                            sx={{
-
-                                fontSize: 14,
-
-                                fontWeight: 650,
-
-                                color:
-                                    "text.primary",
-
-                                letterSpacing:
-                                    "-0.01em",
-
-                                lineHeight: 1.35,
-
-                            }}
-                        >
-                            Organizational Access
-                        </Typography>
-
-
-                        <Typography
-                            sx={{
-
-                                mt: 0.35,
-
-                                fontSize: 12,
-
-                                color:
-                                    "text.secondary",
-
-                                lineHeight: 1.5,
-
-                            }}
-                        >
-                            Configure the user's role
-                            and organizational access.
-                        </Typography>
-
-                    </Box>
 
                 </Box>
 
 
-                <Grid
-                    container
-
-                    spacing={{
-                        xs: 2,
-                        md: 2,
-                    }}
-                >
+                <Divider />
 
 
-                    {/* DESIGNATION */}
+                {/* ================================================= */}
+                {/* ORGANIZATIONAL ACCESS */}
+                {/* ================================================= */}
 
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
+                <Box>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: 1.25,
+                            mb: 2.5,
                         }}
                     >
 
-                        <TextField
-                            fullWidth
-
-                            select
-
-                            label="Designation"
-
-                            name="Designation"
-
-                            value={
-                                formik.values.Designation
-                            }
-
-                            onChange={
-                                formik.handleChange
-                            }
-
-                            onBlur={
-                                formik.handleBlur
-                            }
-
-                            error={
-                                formik.touched.Designation &&
-                                Boolean(
-                                    formik.errors.Designation
-                                )
-                            }
-
-                            helperText={
-                                formik.touched.Designation &&
-                                formik.errors.Designation
-                            }
-
-                            sx={fieldSx}
-                        >
-
-                            <MenuItem value="">
-                                Select Designation
-                            </MenuItem>
-
-
-                            {designations.map(
-                                (designation) => (
-
-                                    <MenuItem
-                                        key={
-                                            designation.SystemLovDetailId
-                                        }
-
-                                        value={
-                                            designation.SystemLovDetailId
-                                        }
-                                    >
-                                        {
-                                            designation.SldName
-                                        }
-                                    </MenuItem>
-
-                                )
-                            )}
-
-                        </TextField>
-
-                    </Grid>
-
-
-                    {/* DIVISION */}
-
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
-
-                        <TextField
-                            fullWidth
-
-                            select
-
-                            label="Division"
-
-                            name="DivisionId"
-
-                            value={
-                                formik.values.DivisionId
-                            }
-
-                            onChange={(event) => {
-
-                                formik.setFieldValue(
-                                    "DivisionId",
-                                    event.target.value
-                                );
-
-
-                                formik.setFieldValue(
-                                    "TerritoryId",
-                                    ""
-                                );
-
+                        <Box
+                            sx={{
+                                width: 3,
+                                minWidth: 3,
+                                height: 36,
+                                borderRadius: 2,
+                                backgroundColor:
+                                    "primary.main",
+                                mt: 0.15,
                             }}
+                        />
 
-                            onBlur={() =>
-                                formik.setFieldTouched(
-                                    "DivisionId",
-                                    true
-                                )
-                            }
+                        <Box>
 
-                            error={
-                                formik.touched.DivisionId &&
-                                Boolean(
-                                    formik.errors.DivisionId
-                                )
-                            }
+                            <Typography
+                                sx={{
+                                    fontSize: 15,
+                                    fontWeight: 700,
+                                    color: "text.primary",
+                                    letterSpacing: "-0.01em",
+                                    lineHeight: 1.35,
+                                }}
+                            >
+                                Organizational Access
+                            </Typography>
 
-                            helperText={
-                                formik.touched.DivisionId &&
-                                formik.errors.DivisionId
-                            }
+                            <Typography
+                                sx={{
+                                    mt: 0.4,
+                                    fontSize: 12.5,
+                                    color: "text.secondary",
+                                    lineHeight: 1.5,
+                                }}
+                            >
+                                Configure the user's role and organizational access.
+                            </Typography>
 
-                            sx={fieldSx}
-                        >
+                        </Box>
 
-                            <MenuItem value="">
-                                Select Division
-                            </MenuItem>
+                    </Box>
 
-
-                            {divisions.map(
-                                (division) => (
-
-                                    <MenuItem
-                                        key={
-                                            division.DivisionId
-                                        }
-
-                                        value={
-                                            division.DivisionId
-                                        }
-                                    >
-                                        {
-                                            division.DivisionName ||
-                                            "-"
-                                        }
-                                    </MenuItem>
-
-                                )
-                            )}
-
-                        </TextField>
-
-                    </Grid>
-
-
-                    {/* TERRITORY */}
 
                     <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
+                        container
+                        spacing={{
+                            xs: 2,
+                            md: 2.25,
                         }}
                     >
 
-                        <TextField
-                            fullWidth
+                        {/* DESIGNATION */}
 
-                            select
+                        <Grid size={{ xs: 12, md: 6 }}>
 
-                            label="Territory"
-
-                            name="TerritoryId"
-
-                            value={
-                                formik.values.TerritoryId
-                            }
-
-                            onChange={
-                                formik.handleChange
-                            }
-
-                            onBlur={
-                                formik.handleBlur
-                            }
-
-                            disabled={
-                                !formik.values.DivisionId
-                            }
-
-                            sx={fieldSx}
-                        >
-
-                            <MenuItem value="">
-
-                                {
-                                    formik.values.DivisionId
-                                        ? "Select Territory"
-                                        : "Select Division First"
+                            <TextField
+                                fullWidth
+                                select
+                                label="Designation"
+                                name="Designation"
+                                value={
+                                    formik.values.Designation
                                 }
+                                onChange={
+                                    formik.handleChange
+                                }
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                error={
+                                    formik.touched.Designation &&
+                                    Boolean(
+                                        formik.errors.Designation
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.Designation &&
+                                    formik.errors.Designation
+                                }
+                                sx={fieldSx}
+                            >
 
-                            </MenuItem>
+                                <MenuItem value="">
+                                    Select Designation
+                                </MenuItem>
 
-                        </TextField>
-
-                    </Grid>
-
-
-                    {/* REPORTING MANAGER */}
-
-                    <Grid
-                        size={{
-                            xs: 12,
-                            md: 6,
-                        }}
-                    >
-
-                        <TextField
-                            fullWidth
-
-                            select
-
-                            label="Reporting Manager"
-
-                            value={
-                                ReportingManager
-                            }
-
-                            onChange={(event) =>
-                                setReportingManager(
-                                    event.target.value
-                                )
-                            }
-
-                            sx={fieldSx}
-                        >
-
-                            <MenuItem value="">
-                                Select Reporting Manager
-                            </MenuItem>
-
-
-                            {users.map(
-                                (user) => {
-
-                                    const displayName =
-                                        user.UserName ||
-                                        "-";
-
-
-                                    return (
+                                {designations.map(
+                                    (designation) => (
 
                                         <MenuItem
-                                            key={user.userId}
-
-                                            value={user.userId}
+                                            key={
+                                                designation.SystemLovDetailId
+                                            }
+                                            value={
+                                                designation.SystemLovDetailId
+                                            }
                                         >
-                                            {displayName}
+                                            {
+                                                designation.SldName
+                                            }
                                         </MenuItem>
 
+                                    )
+                                )}
+
+                            </TextField>
+
+                        </Grid>
+
+
+                        {/* COUNTRY */}
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <Autocomplete
+                                options={countries}
+                                value={
+                                    countries.find(
+                                        (country) =>
+                                            country.CountryId ===
+                                            formik.values.CountryId
+                                    ) || null
+                                }
+                                getOptionLabel={(country) =>
+                                    country.CountryName || ""
+                                }
+                                onChange={(event, value) => {
+
+                                    formik.setFieldValue(
+                                        "CountryId",
+                                        value
+                                            ? value.CountryId
+                                            : ""
                                     );
 
-                                }
-                            )}
+                                    formik.setFieldValue(
+                                        "StateId",
+                                        ""
+                                    );
 
-                        </TextField>
+                                    formik.setFieldValue(
+                                        "TerritoryId",
+                                        ""
+                                    );
+
+                                    formik.setFieldValue(
+                                        "DivisionId",
+                                        ""
+                                    );
+
+                                    setReportingManager(
+                                        ""
+                                    );
+
+                                    setStates([]);
+                                    setTerritories([]);
+                                    setDivisions([]);
+                                    setManagers([]);
+
+                                    if (value) {
+
+                                        loadStates(
+                                            value.CountryId
+                                        );
+
+                                    }
+
+                                }}
+                                onBlur={() =>
+                                    formik.setFieldTouched(
+                                        "CountryId",
+                                        true
+                                    )
+                                }
+                                renderInput={(params) => (
+
+                                    <TextField
+                                        {...params}
+                                        label="Country"
+                                        sx={fieldSx}
+                                        error={
+                                            formik.touched.CountryId &&
+                                            Boolean(
+                                                formik.errors.CountryId
+                                            )
+                                        }
+                                        helperText={
+                                            formik.touched.CountryId &&
+                                            formik.errors.CountryId
+                                        }
+                                    />
+
+                                )}
+                            />
+
+                        </Grid>
+
+
+                        {/* STATE */}
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <Autocomplete
+                                options={states}
+                                value={
+                                    states.find(
+                                        (state) =>
+                                            state.StateId ===
+                                            formik.values.StateId
+                                    ) || null
+                                }
+                                disabled={
+                                    !formik.values.CountryId
+                                }
+                                getOptionLabel={(state) =>
+                                    state.StateName || ""
+                                }
+                                onChange={(event, value) => {
+
+                                    formik.setFieldValue(
+                                        "StateId",
+                                        value
+                                            ? value.StateId
+                                            : ""
+                                    );
+
+                                    formik.setFieldValue(
+                                        "TerritoryId",
+                                        ""
+                                    );
+
+                                    formik.setFieldValue(
+                                        "DivisionId",
+                                        ""
+                                    );
+
+                                    setReportingManager(
+                                        ""
+                                    );
+
+                                    setTerritories([]);
+                                    setDivisions([]);
+                                    setManagers([]);
+
+                                    if (value) {
+
+                                        loadTerritories(
+                                            value.StateId
+                                        );
+
+                                    }
+
+                                }}
+                                onBlur={() =>
+                                    formik.setFieldTouched(
+                                        "StateId",
+                                        true
+                                    )
+                                }
+                                renderInput={(params) => (
+
+                                    <TextField
+                                        {...params}
+                                        label="State"
+                                        sx={fieldSx}
+                                        error={
+                                            formik.touched.StateId &&
+                                            Boolean(
+                                                formik.errors.StateId
+                                            )
+                                        }
+                                        helperText={
+                                            formik.touched.StateId &&
+                                            formik.errors.StateId
+                                        }
+                                    />
+
+                                )}
+                            />
+
+                        </Grid>
+
+
+                        {/* TERRITORY */}
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <TextField
+                                fullWidth
+                                select
+                                label="Territory"
+                                name="TerritoryId"
+                                value={
+                                    formik.values.TerritoryId
+                                }
+                                onChange={(event) => {
+
+                                    const TerritoryId =
+                                        event.target.value;
+
+                                    formik.setFieldValue(
+                                        "TerritoryId",
+                                        TerritoryId
+                                    );
+
+                                    formik.setFieldValue(
+                                        "DivisionId",
+                                        ""
+                                    );
+
+                                    setReportingManager(
+                                        ""
+                                    );
+
+                                    setDivisions([]);
+                                    setManagers([]);
+
+                                    if (TerritoryId) {
+
+                                        loadDivisionsByTerritory(
+                                            TerritoryId
+                                        );
+
+                                    }
+
+                                }}
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                disabled={
+                                    !formik.values.StateId
+                                }
+                                error={
+                                    formik.touched.TerritoryId &&
+                                    Boolean(
+                                        formik.errors.TerritoryId
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.TerritoryId &&
+                                    formik.errors.TerritoryId
+                                }
+                                sx={fieldSx}
+                            >
+
+                                <MenuItem value="">
+                                    {
+                                        !formik.values.CountryId
+                                            ? "Select Country First"
+                                            : !formik.values.StateId
+                                                ? "Select State First"
+                                                : "Select Territory"
+                                    }
+                                </MenuItem>
+
+                                {territories.map(
+                                    (territory) => (
+
+                                        <MenuItem
+                                            key={
+                                                territory.TerritoryId
+                                            }
+                                            value={
+                                                territory.TerritoryId
+                                            }
+                                        >
+                                            {
+                                                territory.TerritoryName ||
+                                                "-"
+                                            }
+                                        </MenuItem>
+
+                                    )
+                                )}
+
+                            </TextField>
+
+                        </Grid>
+
+
+                        {/* DIVISION */}
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <TextField
+                                fullWidth
+                                select
+                                label="Division"
+                                name="DivisionId"
+                                value={
+                                    formik.values.DivisionId
+                                }
+                                onChange={(event) => {
+
+                                    const DivisionId =
+                                        event.target.value;
+
+                                    formik.setFieldValue(
+                                        "DivisionId",
+                                        DivisionId
+                                    );
+
+                                    setReportingManager(
+                                        ""
+                                    );
+
+                                    setManagers([]);
+
+                                    if (DivisionId) {
+
+                                        loadManagersByDivision(
+                                            DivisionId
+                                        );
+
+                                    }
+
+                                }}
+                                onBlur={
+                                    formik.handleBlur
+                                }
+                                disabled={
+                                    !formik.values.TerritoryId
+                                }
+                                error={
+                                    formik.touched.DivisionId &&
+                                    Boolean(
+                                        formik.errors.DivisionId
+                                    )
+                                }
+                                helperText={
+                                    formik.touched.DivisionId &&
+                                    formik.errors.DivisionId
+                                }
+                                sx={fieldSx}
+                            >
+
+                                <MenuItem value="">
+                                    {
+                                        !formik.values.TerritoryId
+                                            ? "Select Territory First"
+                                            : "Select Division"
+                                    }
+                                </MenuItem>
+
+                                {divisions.map(
+                                    (division) => (
+
+                                        <MenuItem
+                                            key={
+                                                division.DivisionId
+                                            }
+                                            value={
+                                                division.DivisionId
+                                            }
+                                        >
+                                            {
+                                                division.DivisionName ||
+                                                "-"
+                                            }
+                                        </MenuItem>
+
+                                    )
+                                )}
+
+                            </TextField>
+
+                        </Grid>
+
+
+                        {/* REPORTING MANAGER */}
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <TextField
+                                fullWidth
+                                select
+                                label="Reporting Manager"
+                                value={
+                                    ReportingManager
+                                }
+                                onChange={(event) =>
+                                    setReportingManager(
+                                        event.target.value
+                                    )
+                                }
+                                disabled={
+                                    !formik.values.DivisionId
+                                }
+                                sx={fieldSx}
+                            >
+
+                                <MenuItem value="">
+                                    {
+                                        !formik.values.DivisionId
+                                            ? "Select Division First"
+                                            : "Select Reporting Manager"
+                                    }
+                                </MenuItem>
+
+                                {managers.map(
+                                    (manager) => {
+
+                                        const ManagerId =
+                                            manager.UserId ||
+                                            manager.userId ||
+                                            manager.Id;
+
+                                        const displayName =
+                                            manager.UserName ||
+                                            manager.Username ||
+                                            manager.FirstName ||
+                                            manager.Name ||
+                                            "-";
+
+                                        return (
+
+                                            <MenuItem
+                                                key={
+                                                    ManagerId
+                                                }
+                                                value={
+                                                    ManagerId
+                                                }
+                                            >
+                                                {
+                                                    displayName
+                                                }
+                                            </MenuItem>
+
+                                        );
+
+                                    }
+                                )}
+
+                            </TextField>
+
+                        </Grid>
 
                     </Grid>
 
-                </Grid>
+                </Box>
 
             </Box>
 
@@ -1492,113 +1681,67 @@ function AddNewUser({ onUserCreated }) {
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
-                        md: 3.5,
+                        md: 4,
                     },
-
                     py: 2,
-
                     display: "flex",
-
-                    justifyContent:
-                        "flex-end",
-
-                    alignItems:
-                        "center",
-
+                    justifyContent: "flex-end",
+                    alignItems: "center",
                     gap: 1.25,
-
-                    backgroundColor:
-                        "background.default",
-
+                    backgroundColor: "surface.subtle",
                 }}
             >
 
+                {/* CLOSE */}
+
                 <Button
                     variant="outlined"
-
+                    onClick={
+                        handleClosed
+                    }
                     sx={{
-
-                        minWidth: 96,
-
+                        minWidth: 100,
                         height: 40,
-
                         borderRadius: 1.5,
-
-                        textTransform:
-                            "none",
-
+                        textTransform: "none",
                         fontSize: 13,
-
-                        fontWeight: 500,
-
-                        borderColor:
-                            "divider",
-
-                        color:
-                            "text.secondary",
-
-                        backgroundColor:
-                            "background.paper",
-
-                        "&:hover": {
-
-                            borderColor:
-                                "primary.light",
-
-                            color:
-                                "text.primary",
-
-                            backgroundColor:
-                                "action.hover",
-
-                        },
-
+                        fontWeight: 600,
+                        borderColor: "divider",
+                        color: "text.secondary",
+                        backgroundColor: "background.paper",
                     }}
-
-                    onClick={handleClosed}
                 >
                     Close
                 </Button>
 
 
+                {/* CREATE USER */}
+
                 <Button
                     variant="contained"
-
-                    sx={{
-
-                        minWidth: 120,
-
-                        height: 40,
-
-                        borderRadius: 1.5,
-
-                        textTransform:
-                            "none",
-
-                        fontSize: 13,
-
-                        fontWeight: 600,
-
-                        boxShadow:
-                            "none",
-
-                        "&:hover": {
-
-                            boxShadow:
-                                "none",
-
-                        },
-
-                    }}
-
                     onClick={
                         formik.handleSubmit
                     }
+                    disabled={
+                        formik.isSubmitting
+                    }
+                    sx={{
+                        minWidth: 135,
+                        height: 40,
+                        borderRadius: 1.5,
+                        textTransform: "none",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        boxShadow: "none",
+                    }}
                 >
-                    Create User
+                    {
+                        formik.isSubmitting
+                            ? "Creating..."
+                            : "Create User"
+                    }
                 </Button>
 
             </Box>
@@ -1609,21 +1752,16 @@ function AddNewUser({ onUserCreated }) {
             {/* ================================================= */}
 
             <ConfirmationDialog
-
                 open={
                     openCloseDialog
                 }
-
                 title="Close User Creation"
-
                 message="Are you sure you want to close the user creation?"
-
                 onCancel={() =>
                     setOpenCloseDialog(
                         false
                     )
                 }
-
                 onConfirm={() => {
 
                     setOpenCloseDialog(
@@ -1633,7 +1771,6 @@ function AddNewUser({ onUserCreated }) {
                     onUserCreated();
 
                 }}
-
             />
 
         </Paper>

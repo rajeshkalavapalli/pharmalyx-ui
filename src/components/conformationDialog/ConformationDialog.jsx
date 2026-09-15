@@ -4,66 +4,144 @@ import {
     DialogContent,
     DialogActions,
     Button,
-    Typography
+    Typography,
+    Box,
+    IconButton,
 } from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
 
 
 const ConfirmationDialog = ({
     open,
-    title,
+    title = "Confirm Action",
     message,
+    confirmText = "Confirm",
+    cancelText = "Cancel",
     onCancel,
-    onConfirm
+    onConfirm,
+    loading = false,
 }) => {
 
     return (
 
         <Dialog
             open={open}
-            onClose={onCancel}
+            onClose={loading ? undefined : onCancel}
             maxWidth="xs"
             fullWidth
+
+            PaperProps={{
+                sx: {
+                    borderRadius: 3,
+
+                    border: "1px solid",
+
+                    borderColor: "divider",
+
+                    overflow: "hidden",
+
+                    boxShadow: (theme) => theme.shadows[8],
+                }
+            }}
         >
 
+
             {/* ================================================= */}
-            {/* TITLE */}
+            {/* HEADER */}
             {/* ================================================= */}
 
             <DialogTitle
                 sx={{
                     px: 3,
-                    pt: 3,
-                    pb: 1,
+                    pt: 2.5,
+                    pb: 1.5,
 
-                    fontSize: "17px",
-                    fontWeight: 650,
+                    display: "flex",
 
-                    color: "text.primary",
+                    alignItems: "center",
 
-                    letterSpacing: "-0.01em"
+                    justifyContent: "space-between",
+
+                    gap: 2,
                 }}
             >
-                {title}
+
+                <Box>
+
+                    <Typography
+                        component="div"
+                        sx={{
+                            fontSize: 18,
+
+                            fontWeight: 700,
+
+                            color: "text.primary",
+
+                            letterSpacing: "-0.02em",
+
+                            lineHeight: 1.3,
+                        }}
+                    >
+                        {title}
+                    </Typography>
+
+                </Box>
+
+
+                <IconButton
+                    onClick={onCancel}
+                    disabled={loading}
+                    size="small"
+
+                    sx={{
+                        width: 32,
+                        height: 32,
+
+                        borderRadius: 1.5,
+
+                        color: "text.secondary",
+
+                        "&:hover": {
+
+                            color: "text.primary",
+
+                            backgroundColor: "action.hover",
+
+                        },
+                    }}
+                >
+                    <CloseIcon
+                        sx={{
+                            fontSize: 18,
+                        }}
+                    />
+                </IconButton>
+
             </DialogTitle>
 
 
             {/* ================================================= */}
-            {/* MESSAGE */}
+            {/* CONTENT */}
             {/* ================================================= */}
 
             <DialogContent
                 sx={{
                     px: 3,
                     pt: 0.5,
-                    pb: 1
+                    pb: 1,
                 }}
             >
 
                 <Typography
                     variant="body2"
+
                     sx={{
                         color: "text.secondary",
-                        lineHeight: 1.6
+
+                        fontSize: 13.5,
+
+                        lineHeight: 1.65,
                     }}
                 >
                     {message}
@@ -79,37 +157,104 @@ const ConfirmationDialog = ({
             <DialogActions
                 sx={{
                     px: 3,
+                    pt: 2.5,
                     pb: 2.5,
-                    pt: 2,
 
-                    gap: 1
+                    gap: 1.25,
+
+                    borderTop: "1px solid",
+
+                    borderColor: "divider",
                 }}
             >
 
-                {/* Cancel */}
+
+                {/* CANCEL */}
 
                 <Button
                     variant="outlined"
+
                     onClick={onCancel}
+
+                    disabled={loading}
+
+                    sx={{
+                        minWidth: 90,
+
+                        height: 40,
+
+                        borderRadius: 2,
+
+                        textTransform: "none",
+
+                        fontSize: 13,
+
+                        fontWeight: 600,
+
+                        borderColor: "divider",
+
+                        color: "text.secondary",
+
+                        "&:hover": {
+
+                            borderColor: "primary.main",
+
+                            color: "primary.main",
+
+                            backgroundColor: "action.hover",
+
+                        },
+                    }}
                 >
-                    Cancel
+                    {cancelText}
                 </Button>
 
 
-                {/* Confirm */}
+                {/* CONFIRM */}
 
                 <Button
                     variant="contained"
+
                     color="error"
+
                     onClick={onConfirm}
+
+                    disabled={loading}
+
+                    sx={{
+                        minWidth: 100,
+
+                        height: 40,
+
+                        borderRadius: 2,
+
+                        textTransform: "none",
+
+                        fontSize: 13,
+
+                        fontWeight: 650,
+
+                        boxShadow: "none",
+
+                        "&:hover": {
+
+                            boxShadow: "none",
+
+                        },
+                    }}
                 >
-                    Close
+                    {loading
+                        ? "Please wait..."
+                        : confirmText
+                    }
                 </Button>
 
             </DialogActions>
 
         </Dialog>
+
     );
+
 };
 
 

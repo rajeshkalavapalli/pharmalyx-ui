@@ -9,7 +9,10 @@ import {
     InputLabel,
     Paper,
     Divider,
+    Autocomplete,
 } from "@mui/material";
+
+import { alpha } from "@mui/material/styles";
 
 import { useEffect, useState } from "react";
 
@@ -18,337 +21,324 @@ import * as yup from "yup";
 
 import ConfirmationDialog from "../../../components/conformationDialog/ConformationDialog";
 
-import { getDivisions } from "../../Division/index";
+import {
+    getcountry,
+    getstates,
+    createTerriTory,
+} from "../index";
 
-
-function AddNewTerritoty() {
-
-    const [divisions, setDivisions] =
-        useState([]);
-
+function AddNewTerritoty({
+    onTerritoryCreated,
+    onClose,
+}) {
     const [closeDialog, setcloseDialog] =
         useState(false);
 
+    const [countries, setCountries] =
+        useState([]);
 
-    // =====================================================
-    // LOAD DIVISIONS
-    // =====================================================
+    const [states, setStates] =
+        useState([]);
 
     useEffect(() => {
-
-        loadDivisions();
-
+        HandleGetCountries();
     }, []);
-
-
-    const loadDivisions = async () => {
-
-        try {
-
-            const response =
-                await getDivisions();
-
-
-            console.log(
-                "divisions for territory:",
-                response
-            );
-
-
-            setDivisions(
-                response || []
-            );
-
-        } catch (err) {
-
-            console.log(
-                "error getting divisions:",
-                err
-            );
-
-        }
-
-    };
-
 
     // =====================================================
     // COMMON FIELD STYLE
     // =====================================================
 
     const fieldSx = {
-
         "& .MuiOutlinedInput-root": {
-
-            minHeight: 42,
-
+            minHeight: 46,
             borderRadius: 1.5,
-
-            backgroundColor:
-                "background.paper",
-
+            backgroundColor: "background.paper",
             transition:
-                "border-color 160ms ease, box-shadow 160ms ease",
-
+                "border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease",
 
             "& fieldset": {
-
-                borderColor:
-                    "divider",
-
+                borderColor: "divider",
             },
-
 
             "&:hover fieldset": {
-
-                borderColor:
-                    "primary.light",
-
+                borderColor: "primary.light",
             },
 
+            "&.Mui-focused": {
+                boxShadow: (theme) =>
+                    `0 0 0 3px ${alpha(
+                        theme.palette.primary.main,
+                        0.08
+                    )}`,
+            },
 
             "&.Mui-focused fieldset": {
-
-                borderColor:
-                    "primary.main",
-
+                borderColor: "primary.main",
                 borderWidth: 1,
-
             },
-
         },
-
 
         "& .MuiInputLabel-root": {
-
             fontSize: 13,
-
-            color:
-                "text.secondary",
-
+            color: "text.secondary",
         },
-
 
         "& .MuiInputLabel-root.Mui-focused": {
-
-            color:
-                "primary.main",
-
+            color: "primary.main",
         },
-
 
         "& .MuiInputBase-input": {
-
             fontSize: 13,
-
+            color: "text.primary",
         },
-
 
         "& .MuiSelect-select": {
-
             fontSize: 13,
-
         },
 
+        "& .MuiFormHelperText-root": {
+            fontSize: 11,
+            marginLeft: 0.5,
+            marginTop: 0.5,
+        },
     };
-
 
     // =====================================================
     // VALIDATION
     // =====================================================
 
-    const validationSchema =
-        yup.object({
+    const validationSchema = yup.object({
+        TerritoryName: yup
+            .string()
+            .trim()
+            .required("Territory name is required"),
 
-            TerritoryName:
-                yup
-                    .string()
-                    .trim()
-                    .required(
-                        "Territory name is required"
-                    ),
+        CountryId: yup
+            .string()
+            .required("country name is required"),
 
-            DivisionId:
-                yup
-                    .string()
-                    .required(
-                        "Division is required"
-                    ),
+        StateId: yup
+            .string()
+            .required("state is required"),
 
-            isActive:
-                yup
-                    .boolean()
-                    .required(),
-
-        });
-
+        isActive: yup
+            .boolean()
+            .required(),
+    });
 
     // =====================================================
     // FORMIK
     // =====================================================
 
-    const formik =
-        useFormik({
+    const formik = useFormik({
+        initialValues: {
+            TerritoryName: "",
+            CountryId: "",
+            StateId: "",
+            isActive: true,
+        },
 
-            initialValues: {
+        validationSchema,
 
-                TerritoryName: "",
+        onSubmit: async (values) => {
+            try {
+                const TerritoryPayload = {
+                    TerritoryName:
+                        values.TerritoryName.trim(),
 
-                DivisionId: "",
+                    isActive:
+                        values.isActive,
 
-                isActive: true,
+                    CountryId:
+                        values.CountryId,
 
-            },
+                    StateId:
+                        values.StateId,
+                };
 
+                console.log(
+                    "Territory payload:",
+                    TerritoryPayload
+                );
 
-            validationSchema,
+                const response =
+                    await createTerriTory(
+                        TerritoryPayload
+                    );
 
+                onTerritoryCreated(
+                    "Territory created successfully",
+                    "success"
+                );
 
-            onSubmit:
-                async (values) => {
-
-                    try {
-
-                        const TerritoryPayload = {
-
-                            TerritoryName:
-                                values.TerritoryName.trim(),
-
-                            DivisionId:
-                                values.DivisionId,
-
-                            isActive:
-                                values.isActive,
-
-                        };
-
-
-                        console.log(
-                            "Territory payload:",
-                            TerritoryPayload
-                        );
-
-
-                        // Territory API will be called here
-                        // await createTerritory(TerritoryPayload);
-
-
-                    } catch (err) {
-
-                        console.log(
-                            "error creating territory:",
-                            err
-                        );
-
-                    }
-
-                },
-
-        });
-
+                console.log(
+                    "territory cerated sucessfully ",
+                    response
+                );
+            } catch (err) {
+                console.log(
+                    "error creating territory:",
+                    err
+                );
+            }
+        },
+    });
 
     // =====================================================
     // CLOSE
     // =====================================================
 
     const handleCloseDialog = () => {
-
         setcloseDialog(true);
-
     };
 
+    // =====================================================
+    // GET COUNTRIES
+    // =====================================================
+
+    const HandleGetCountries = async () => {
+        try {
+            const loadcontries =
+                await getcountry();
+
+            console.log(
+                "countries response",
+                loadcontries
+            );
+
+            setCountries(
+                loadcontries.country || []
+            );
+        } catch (err) {
+            console.log(
+                "error getting countries",
+                err
+            );
+        }
+    };
+
+    // =====================================================
+    // GET STATES
+    // =====================================================
+
+    const HandleGetstates = async (
+        CountryId
+    ) => {
+        try {
+            const loadsates =
+                await getstates(CountryId);
+
+            console.log(
+                "satelist",
+                loadsates
+            );
+
+            setStates(
+                loadsates.states || []
+            );
+        } catch (err) {
+            console.log(
+                "error getting states",
+                err
+            );
+        }
+    };
 
     return (
-
         <Paper
             elevation={0}
-
             sx={{
-
                 width: "100%",
-
                 borderRadius: 2.5,
-
                 border: "1px solid",
-
-                borderColor:
-                    "divider",
-
+                borderColor: "divider",
                 backgroundColor:
                     "background.paper",
-
-                overflow:
-                    "hidden",
-
+                overflow: "hidden",
+                boxShadow:
+                    "0 8px 30px rgba(32, 37, 34, 0.055)",
             }}
         >
-
-
             {/* ================================================= */}
             {/* FORM HEADER */}
             {/* ================================================= */}
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
-                        md: 3.5,
+                        md: 3,
                     },
-
                     py: {
                         xs: 2.5,
                         md: 3,
                     },
-
+                    backgroundColor:
+                        "background.paper",
                 }}
             >
-
-                <Typography
+                <Box
                     sx={{
-
-                        fontSize: {
-                            xs: 18,
-                            md: 20,
-                        },
-
-                        fontWeight: 650,
-
-                        color:
-                            "text.primary",
-
-                        letterSpacing:
-                            "-0.025em",
-
-                        lineHeight: 1.25,
-
+                        display: "flex",
+                        alignItems:
+                            "flex-start",
+                        gap: 1.25,
                     }}
                 >
-                    Create Territory
-                </Typography>
+                    {/* HEADER ACCENT */}
 
+                    <Box
+                        sx={{
+                            width: 3,
+                            minWidth: 3,
+                            height: 44,
+                            mt: 0.2,
+                            borderRadius: 10,
+                            backgroundColor:
+                                "primary.main",
+                            boxShadow:
+                                "0 0 12px rgba(196, 93, 69, 0.07)",
+                        }}
+                    />
 
-                <Typography
-                    sx={{
+                    {/* HEADER CONTENT */}
 
-                        mt: 0.6,
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: {
+                                    xs: 19,
+                                    md: 22,
+                                },
+                                fontWeight: 700,
+                                color:
+                                    "text.primary",
+                                letterSpacing:
+                                    "-0.025em",
+                                lineHeight: 1.25,
+                            }}
+                        >
+                            Create Territory
+                        </Typography>
 
-                        fontSize: 13,
-
-                        lineHeight: 1.5,
-
-                        color:
-                            "text.secondary",
-
-                    }}
-                >
-                    Add a new territory and assign it to a division.
-                </Typography>
-
+                        <Typography
+                            sx={{
+                                mt: 0.55,
+                                fontSize: 13,
+                                lineHeight: 1.5,
+                                color:
+                                    "text.secondary",
+                                maxWidth: 640,
+                            }}
+                        >
+                            Add a new geographical
+                            territory.
+                        </Typography>
+                    </Box>
+                </Box>
             </Box>
 
-
             <Divider />
-
 
             {/* ================================================= */}
             {/* FORM CONTENT */}
@@ -356,107 +346,71 @@ function AddNewTerritoty() {
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
-                        md: 3.5,
+                        md: 3,
                     },
-
                     py: {
-                        xs: 2.75,
+                        xs: 3,
                         md: 3.25,
                     },
-
-                    maxWidth:
-                        760,
-
+                    maxWidth: 900,
                 }}
             >
-
-
                 {/* ============================================= */}
                 {/* SECTION HEADER */}
                 {/* ============================================= */}
 
                 <Box
                     sx={{
-
                         display: "flex",
-
                         alignItems:
                             "flex-start",
-
                         gap: 1.25,
-
                         mb: 2.5,
-
                     }}
                 >
-
                     <Box
                         sx={{
-
                             width: 3,
-
-                            minHeight: 38,
-
+                            minHeight: 36,
                             borderRadius: 2,
-
                             backgroundColor:
                                 "primary.main",
-
                             flexShrink: 0,
-
                             mt: 0.15,
-
                         }}
                     />
 
-
                     <Box>
-
                         <Typography
                             sx={{
-
-                                fontSize: 14,
-
-                                fontWeight: 650,
-
+                                fontSize: 15,
+                                fontWeight: 700,
                                 color:
                                     "text.primary",
-
                                 letterSpacing:
                                     "-0.01em",
-
                                 lineHeight: 1.35,
-
                             }}
                         >
                             Territory Information
                         </Typography>
 
-
                         <Typography
                             sx={{
-
-                                mt: 0.35,
-
-                                fontSize: 12,
-
+                                mt: 0.4,
+                                fontSize: 12.5,
                                 color:
                                     "text.secondary",
-
                                 lineHeight: 1.5,
-
                             }}
                         >
-                            Configure the territory details and assign it to a division.
+                            Configure the geographical
+                            details of the territory.
                         </Typography>
-
                     </Box>
-
                 </Box>
-
 
                 {/* ============================================= */}
                 {/* FORM FIELDS */}
@@ -464,163 +418,197 @@ function AddNewTerritoty() {
 
                 <Box
                     sx={{
-
                         display: "flex",
-
                         flexDirection:
                             "column",
-
                         gap: 2.25,
-
                     }}
                 >
-
-
                     {/* TERRITORY NAME */}
 
                     <TextField
-
                         label="Territory Name"
-
                         placeholder="Enter territory name"
-
                         fullWidth
-
                         name="TerritoryName"
-
                         sx={fieldSx}
-
                         value={
-                            formik.values.TerritoryName
+                            formik.values
+                                .TerritoryName
                         }
-
                         onChange={
                             formik.handleChange
                         }
-
                         onBlur={
                             formik.handleBlur
                         }
-
                         error={
-                            formik.touched.TerritoryName &&
+                            formik.touched
+                                .TerritoryName &&
                             Boolean(
-                                formik.errors.TerritoryName
+                                formik.errors
+                                    .TerritoryName
                             )
                         }
-
                         helperText={
-                            formik.touched.TerritoryName &&
-                            formik.errors.TerritoryName
+                            formik.touched
+                                .TerritoryName &&
+                            formik.errors
+                                .TerritoryName
                         }
-
                     />
 
+                    {/* COUNTRY */}
 
-                    {/* DIVISION */}
-
-                    <FormControl
-
-                        fullWidth
-
-                        sx={fieldSx}
-
-                        error={
-                            formik.touched.DivisionId &&
-                            Boolean(
-                                formik.errors.DivisionId
-                            )
+                    <Autocomplete
+                        options={countries}
+                        getOptionLabel={(
+                            country
+                        ) =>
+                            country.CountryName
                         }
-                    >
+                        onChange={(
+                            event,
+                            value
+                        ) => {
+                            formik.setFieldValue(
+                                "CountryId",
+                                value
+                                    ? value.CountryId
+                                    : ""
+                            );
 
-                        <InputLabel>
-                            Division
-                        </InputLabel>
+                            console.log(value);
 
-
-                        <Select
-
-                            label="Division"
-
-                            name="DivisionId"
-
-                            value={
-                                formik.values.DivisionId
+                            if (value) {
+                                HandleGetstates(
+                                    value.CountryId
+                                );
+                            } else {
+                                setStates([]);
+                                formik.setFieldValue(
+                                    "StateId",
+                                    ""
+                                );
                             }
+                        }}
+                        onBlur={() => {
+                            formik.setFieldTouched(
+                                "CountryId",
+                                true
+                            );
+                        }}
+                        renderInput={(
+                            params
+                        ) => (
+                            <TextField
+                                {...params}
+                                label="Country"
+                                sx={fieldSx}
+                                error={
+                                    formik.touched
+                                        .CountryId &&
+                                    Boolean(
+                                        formik.errors
+                                            .CountryId
+                                    )
+                                }
+                                helperText={
+                                    formik.touched
+                                        .CountryId &&
+                                    formik.errors
+                                        .CountryId
+                                }
+                            />
+                        )}
+                        sx={{
+                            ...fieldSx,
 
-                            onChange={
-                                formik.handleChange
-                            }
+                            "& .MuiAutocomplete-inputRoot":
+                                {
+                                    minHeight: 46,
+                                    borderRadius: 1.5,
+                                },
 
-                            onBlur={
-                                formik.handleBlur
-                            }
+                            "& .MuiAutocomplete-input":
+                                {
+                                    fontSize: 13,
+                                },
+                        }}
+                    />
 
-                        >
+                    {/* STATE */}
 
-                            <MenuItem value="">
-                                Select Division
-                            </MenuItem>
+                    <Autocomplete
+                        options={states}
+                        getOptionLabel={(
+                            state
+                        ) =>
+                            state.StateName
+                        }
+                        value={
+                            states.find(
+                                (state) =>
+                                    state.StateId ===
+                                    formik.values
+                                        .StateId
+                            ) || null
+                        }
+                        onChange={(
+                            event,
+                            value
+                        ) => {
+                            formik.setFieldValue(
+                                "StateId",
+                                value
+                                    ? value.StateId
+                                    : ""
+                            );
+                        }}
+                        onBlur={() => {
+                            formik.setFieldTouched(
+                                "StateId",
+                                true
+                            );
+                        }}
+                        renderInput={(
+                            params
+                        ) => (
+                            <TextField
+                                {...params}
+                                label="State"
+                                sx={fieldSx}
+                                error={
+                                    formik.touched
+                                        .StateId &&
+                                    Boolean(
+                                        formik.errors
+                                            .StateId
+                                    )
+                                }
+                                helperText={
+                                    formik.touched
+                                        .StateId &&
+                                    formik.errors
+                                        .StateId
+                                }
+                            />
+                        )}
+                        sx={{
+                            ...fieldSx,
 
+                            "& .MuiAutocomplete-inputRoot":
+                                {
+                                    minHeight: 46,
+                                    borderRadius: 1.5,
+                                },
 
-                            {divisions.map(
-                                (division) => (
-
-                                    <MenuItem
-
-                                        key={
-                                            division.DivisionId
-                                        }
-
-                                        value={
-                                            division.DivisionId
-                                        }
-                                    >
-
-                                        {
-                                            division.DivisionName ||
-                                            "-"
-                                        }
-
-                                    </MenuItem>
-
-                                )
-                            )}
-
-                        </Select>
-
-
-                        {formik.touched.DivisionId &&
-                            formik.errors.DivisionId && (
-
-                                <Typography
-
-                                    variant="caption"
-
-                                    sx={{
-
-                                        color:
-                                            "error.main",
-
-                                        mt: 0.5,
-
-                                        ml: 1.5,
-
-                                        fontSize: 11,
-
-                                    }}
-                                >
-
-                                    {
-                                        formik.errors.DivisionId
-                                    }
-
-                                </Typography>
-
-                            )}
-
-                    </FormControl>
-
+                            "& .MuiAutocomplete-input":
+                                {
+                                    fontSize: 13,
+                                },
+                        }}
+                    />
 
                     {/* STATUS */}
 
@@ -628,52 +616,37 @@ function AddNewTerritoty() {
                         fullWidth
                         sx={fieldSx}
                     >
-
                         <InputLabel>
                             Status
                         </InputLabel>
 
-
                         <Select
-
                             label="Status"
-
                             name="isActive"
-
                             value={
-                                formik.values.isActive
+                                formik.values
+                                    .isActive
                             }
-
                             onChange={
                                 formik.handleChange
                             }
-
                             onBlur={
                                 formik.handleBlur
                             }
-
                         >
-
                             <MenuItem value={true}>
                                 Active
                             </MenuItem>
 
-
                             <MenuItem value={false}>
                                 Inactive
                             </MenuItem>
-
                         </Select>
-
                     </FormControl>
-
                 </Box>
-
             </Box>
 
-
             <Divider />
-
 
             {/* ================================================= */}
             {/* ACTION BAR */}
@@ -681,169 +654,104 @@ function AddNewTerritoty() {
 
             <Box
                 sx={{
-
                     px: {
                         xs: 2.5,
-                        md: 3.5,
+                        md: 3,
                     },
-
                     py: 2,
-
-                    display:
-                        "flex",
-
+                    display: "flex",
                     justifyContent:
                         "flex-end",
-
-                    alignItems:
-                        "center",
-
+                    alignItems: "center",
                     gap: 1.25,
-
                     backgroundColor:
                         "background.default",
-
                 }}
             >
-
-
                 {/* CLOSE */}
 
                 <Button
-
                     variant="outlined"
-
                     onClick={
                         handleCloseDialog
                     }
-
                     sx={{
-
-                        minWidth: 90,
-
+                        minWidth: 96,
                         height: 40,
-
                         borderRadius: 1.5,
-
-                        textTransform:
-                            "none",
-
+                        textTransform: "none",
                         fontSize: 13,
-
-                        fontWeight: 500,
-
+                        fontWeight: 600,
                         borderColor:
                             "divider",
-
                         color:
                             "text.secondary",
-
                         backgroundColor:
                             "background.paper",
 
-
                         "&:hover": {
-
                             borderColor:
                                 "primary.light",
-
                             color:
                                 "text.primary",
-
                             backgroundColor:
                                 "action.hover",
-
                         },
-
                     }}
                 >
                     Close
                 </Button>
 
-
                 {/* CREATE */}
 
                 <Button
-
                     variant="contained"
-
                     onClick={
                         formik.handleSubmit
                     }
-
                     disabled={
                         formik.isSubmitting
                     }
-
                     sx={{
-
-                        minWidth: 145,
-
+                        minWidth: 150,
                         height: 40,
-
                         borderRadius: 1.5,
-
-                        textTransform:
-                            "none",
-
+                        textTransform: "none",
                         fontSize: 13,
-
-                        fontWeight: 600,
-
-                        boxShadow:
-                            "none",
-
+                        fontWeight: 700,
+                        boxShadow: "none",
 
                         "&:hover": {
-
-                            boxShadow:
-                                "none",
-
+                            boxShadow: (
+                                theme
+                            ) =>
+                                theme.shadows[3],
                         },
-
                     }}
                 >
                     {formik.isSubmitting
                         ? "Creating..."
                         : "Create Territory"}
                 </Button>
-
             </Box>
-
 
             {/* ================================================= */}
             {/* CONFIRMATION */}
             {/* ================================================= */}
 
             <ConfirmationDialog
-
-                open={
-                    closeDialog
-                }
-
+                open={closeDialog}
                 title="Close Territory"
-
                 message="Are you sure you want to close?"
-
                 onCancel={() => {
-
                     setcloseDialog(false);
-
                 }}
-
                 onConfirm={() => {
-
                     setcloseDialog(false);
-
                 }}
-
             />
-
         </Paper>
-
     );
-
 }
-
 
 export default AddNewTerritoty;

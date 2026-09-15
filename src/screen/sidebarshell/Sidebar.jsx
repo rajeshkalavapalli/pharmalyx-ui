@@ -585,7 +585,7 @@ function Sidebar() {
 
                     width:
                         collapsed
-                            ? 64
+                            ? 56
                             : "100%",
 
                     minHeight: 64,
@@ -891,7 +891,7 @@ function Sidebar() {
 
                 width:
                     collapsed
-                        ? 96
+                        ? 72
                         : 250,
 
                 height: "100vh",
@@ -957,7 +957,7 @@ function Sidebar() {
 
                         width:
                             collapsed
-                                ? 64
+                                ? 48
                                 : 165,
 
                         height: "auto",
@@ -1064,7 +1064,7 @@ function Sidebar() {
 
                     px:
                         collapsed
-                            ? 1.5
+                            ? 1
                             : 1.5,
 
                     pb: 1.5,

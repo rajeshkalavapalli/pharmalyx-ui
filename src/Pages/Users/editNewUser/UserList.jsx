@@ -12,15 +12,16 @@ import {
     IconButton,
     TextField,
     MenuItem,
+    Chip,
 } from "@mui/material";
 
-import {
-    Visibility,
-    Edit,
-    Delete,
-    Search,
-    Close,
-} from "@mui/icons-material";
+import { alpha } from "@mui/material/styles";
+
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutline from "@mui/icons-material/Delete";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
     useState,
@@ -35,11 +36,9 @@ function UserList({ onViewUser }) {
 
     const [users, setUsers] = useState([]);
 
-    const [searchText, setSearchText] =
-        useState("");
+    const [searchText, setSearchText] = useState("");
 
-    const [searchField, setSearchField] =
-        useState("Username");
+    const [searchField, setSearchField] = useState("Username");
 
 
     // =================================================
@@ -52,13 +51,7 @@ function UserList({ onViewUser }) {
 
             try {
 
-                const result =
-                    await getUsers();
-
-                console.log(
-                    "users from api:",
-                    result
-                );
+                const result = await getUsers();
 
                 setUsers(
                     Array.isArray(result?.result)
@@ -69,7 +62,7 @@ function UserList({ onViewUser }) {
             } catch (err) {
 
                 console.log(
-                    "error getting users:",
+                    "Error getting users:",
                     err
                 );
 
@@ -148,11 +141,9 @@ function UserList({ onViewUser }) {
                 .trim()
                 .toLowerCase();
 
-
         if (!search) {
             return users;
         }
-
 
         return users.filter((user) => {
 
@@ -183,6 +174,151 @@ function UserList({ onViewUser }) {
     };
 
 
+    // =================================================
+    // FILTER FIELD STYLE
+    // =================================================
+
+    const filterFieldSx = {
+
+        "& .MuiOutlinedInput-root": {
+
+            height: 44,
+
+            borderRadius: 1.5,
+
+            backgroundColor:
+                "background.paper",
+
+            transition:
+                "border-color 160ms ease, box-shadow 160ms ease",
+
+            "& fieldset": {
+
+                borderColor:
+                    "divider",
+
+            },
+
+            "&:hover fieldset": {
+
+                borderColor:
+                    "primary.light",
+
+            },
+
+            "&.Mui-focused": {
+
+                boxShadow: (theme) =>
+                    `0 0 0 3px ${alpha(
+                        theme.palette.primary.main,
+                        0.07
+                    )}`,
+
+            },
+
+            "&.Mui-focused fieldset": {
+
+                borderColor:
+                    "primary.main",
+
+                borderWidth: 1,
+
+            },
+
+        },
+
+        "& .MuiInputBase-input": {
+
+            fontSize: 13,
+
+            color:
+                "text.primary",
+
+        },
+
+        "& .MuiInputBase-input::placeholder": {
+
+            color:
+                "text.secondary",
+
+            opacity: 0.72,
+
+        },
+
+        "& .MuiSelect-select": {
+
+            fontSize: 13,
+
+        },
+
+    };
+
+
+    // =================================================
+    // TABLE HEADER STYLE
+    // =================================================
+
+    const tableHeaderSx = {
+
+        borderBottom:
+            "1px solid",
+
+        borderColor:
+            "divider",
+
+        color:
+            "text.secondary",
+
+        fontSize: 10.5,
+
+        fontWeight: 700,
+
+        letterSpacing:
+            "0.075em",
+
+        textTransform:
+            "uppercase",
+
+        whiteSpace:
+            "nowrap",
+
+        py: 1.45,
+
+        px: 1.75,
+
+        backgroundColor:
+            "surface.subtle",
+
+    };
+
+
+    // =================================================
+    // TABLE CELL STYLE
+    // =================================================
+
+    const tableCellSx = {
+
+        borderBottom:
+            "1px solid",
+
+        borderColor:
+            "divider",
+
+        py: 1.35,
+
+        px: 1.75,
+
+        fontSize: 13,
+
+        color:
+            "text.primary",
+
+        whiteSpace:
+            "nowrap",
+
+    };
+
+
     return (
 
         <Box
@@ -192,122 +328,33 @@ function UserList({ onViewUser }) {
             }}
         >
 
-
-            {/* ================================================= */}
-            {/* SECTION HEADER */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-                    display: "flex",
-
-                    alignItems: "center",
-
-                    justifyContent:
-                        "space-between",
-
-                    mb: 1.5,
-                }}
-            >
-
-                <Box>
-
-                    <Typography
-                        sx={{
-                            fontSize: 15,
-
-                            fontWeight: 650,
-
-                            color:
-                                "text.primary",
-
-                            letterSpacing:
-                                "-0.015em",
-
-                            lineHeight: 1.3,
-                        }}
-                    >
-                        Users
-                    </Typography>
-
-
-                    <Typography
-                        sx={{
-                            mt: 0.35,
-
-                            fontSize: 12,
-
-                            color:
-                                "text.secondary",
-                        }}
-                    >
-                        View and manage registered users.
-                    </Typography>
-
-                </Box>
-
-
-                <Box
-                    sx={{
-                        px: 1.25,
-
-                        py: 0.5,
-
-                        borderRadius: 1.5,
-
-                        backgroundColor:
-                            "action.hover",
-
-                        border: "1px solid",
-
-                        borderColor:
-                            "divider",
-                    }}
-                >
-
-                    <Typography
-                        sx={{
-                            fontSize: 12,
-
-                            fontWeight: 600,
-
-                            color:
-                                "text.secondary",
-                        }}
-                    >
-                        {filteredUsers.length}{" "}
-
-                        {filteredUsers.length === 1
-                            ? "User"
-                            : "Users"}
-                    </Typography>
-
-                </Box>
-
-            </Box>
-
-
             {/* ================================================= */}
             {/* FILTER TOOLBAR */}
             {/* ================================================= */}
 
             <Paper
                 elevation={0}
-
                 sx={{
                     mb: 2,
 
-                    p: 1.25,
+                    p: {
+                        xs: 1.25,
+                        sm: 1.5,
+                    },
 
                     borderRadius: 2,
 
-                    border: "1px solid",
+                    border:
+                        "1px solid",
 
                     borderColor:
                         "divider",
 
                     backgroundColor:
                         "background.paper",
+
+                    boxShadow:
+                        "0 4px 18px rgba(32, 37, 34, 0.035)",
                 }}
             >
 
@@ -315,52 +362,80 @@ function UserList({ onViewUser }) {
                     sx={{
                         display: "flex",
 
-                        alignItems: "center",
+                        alignItems: {
+                            xs: "stretch",
+                            sm: "center",
+                        },
 
-                        gap: 1,
+                        justifyContent:
+                            "space-between",
 
-                        flexWrap: "wrap",
+                        gap: 1.25,
+
+                        flexDirection: {
+                            xs: "column",
+                            sm: "row",
+                        },
                     }}
                 >
 
-
+                    {/* ================================================= */}
                     {/* SEARCH */}
+                    {/* ================================================= */}
 
-                    <TextField
-                        fullWidth
+                    <Box
+                        sx={{
+                            display: "flex",
 
-                        placeholder={
-                            `Search ${searchField.toLowerCase()}...`
-                        }
+                            alignItems: "center",
 
-                        value={searchText}
+                            gap: 1,
 
-                        onChange={(event) => {
+                            width: {
+                                xs: "100%",
+                                sm: "auto",
+                            },
 
-                            setSearchText(
-                                event.target.value
-                            );
-
+                            flex: 1,
                         }}
+                    >
 
-                        size="small"
+                        <TextField
+                            placeholder={
+                                `Search ${searchField.toLowerCase()}...`
+                            }
 
-                        slotProps={{
-                            input: {
+                            value={
+                                searchText
+                            }
 
-                                startAdornment:
-                                    <Search
+                            onChange={(event) => {
+
+                                setSearchText(
+                                    event.target.value
+                                );
+
+                            }}
+
+                            size="small"
+
+                            InputProps={{
+
+                                startAdornment: (
+
+                                    <SearchOutlinedIcon
                                         sx={{
                                             mr: 1,
-
                                             fontSize: 18,
-
                                             color:
                                                 "text.secondary",
                                         }}
-                                    />,
+                                    />
+
+                                ),
 
                                 endAdornment:
+
                                     searchText
                                         ? (
 
@@ -377,17 +452,16 @@ function UserList({ onViewUser }) {
                                                     }
 
                                                     sx={{
-                                                        width: 26,
-
-                                                        height: 26,
-
+                                                        width: 28,
+                                                        height: 28,
+                                                        borderRadius: 1.25,
                                                         color:
                                                             "text.secondary",
 
                                                         "&:hover": {
 
                                                             color:
-                                                                "text.primary",
+                                                                "primary.main",
 
                                                             backgroundColor:
                                                                 "action.hover",
@@ -396,7 +470,7 @@ function UserList({ onViewUser }) {
                                                     }}
                                                 >
 
-                                                    <Close
+                                                    <CloseIcon
                                                         sx={{
                                                             fontSize: 16,
                                                         }}
@@ -409,144 +483,133 @@ function UserList({ onViewUser }) {
                                         )
                                         : null,
 
-                            },
-                        }}
+                            }}
 
-                        sx={{
-                            maxWidth: 440,
+                            sx={{
+                                ...filterFieldSx,
 
-                            flexGrow: 1,
-
-                            "& .MuiOutlinedInput-root": {
-
-                                height: 40,
-
-                                borderRadius: 1.5,
-
-                                backgroundColor:
-                                    "background.default",
-
-                                "& fieldset": {
-
-                                    borderColor:
-                                        "divider",
-
+                                width: {
+                                    xs: "100%",
+                                    sm: 380,
                                 },
 
-                                "&:hover fieldset": {
+                                flex: 1,
+                            }}
+                        />
 
-                                    borderColor:
-                                        "primary.light",
 
+                        {/* ================================================= */}
+                        {/* SEARCH FIELD */}
+                        {/* ================================================= */}
+
+                        <TextField
+                            select
+
+                            size="small"
+
+                            value={
+                                searchField
+                            }
+
+                            onChange={(event) => {
+
+                                setSearchField(
+                                    event.target.value
+                                );
+
+                                setSearchText("");
+
+                            }}
+
+                            sx={{
+                                ...filterFieldSx,
+
+                                width: {
+                                    xs: 150,
+                                    sm: 165,
                                 },
 
-                                "&.Mui-focused fieldset": {
+                                flexShrink: 0,
+                            }}
+                        >
 
-                                    borderColor:
-                                        "primary.main",
+                            <MenuItem value="Username">
+                                Username
+                            </MenuItem>
 
-                                    borderWidth: 1,
+                            <MenuItem value="Mobile Number">
+                                Mobile Number
+                            </MenuItem>
 
-                                },
+                            <MenuItem value="Email">
+                                Email
+                            </MenuItem>
 
-                            },
+                            <MenuItem value="Designation">
+                                Designation
+                            </MenuItem>
 
-                            "& .MuiInputBase-input": {
+                            <MenuItem value="Reporting Manager">
+                                Reporting Manager
+                            </MenuItem>
 
-                                fontSize: 13,
+                        </TextField>
 
-                            },
-                        }}
-                    />
+                    </Box>
 
 
-                    {/* SEARCH FIELD SELECT */}
+                    {/* ================================================= */}
+                    {/* USER COUNT */}
+                    {/* ================================================= */}
 
-                    <TextField
-                        select
+                    <Chip
+                        label={
+                            `${filteredUsers.length} ${
+                                filteredUsers.length === 1
+                                    ? "User"
+                                    : "Users"
+                            }`
+                        }
 
                         size="small"
 
-                        value={searchField}
+                        sx={(theme) => ({
 
-                        onChange={(event) => {
+                            height: 32,
 
-                            setSearchField(
-                                event.target.value
-                            );
+                            px: 0.75,
 
-                            setSearchText("");
+                            borderRadius: 1.5,
 
-                        }}
+                            fontSize: 11.5,
 
-                        sx={{
-                            width: 190,
+                            fontWeight: 700,
 
-                            flexShrink: 0,
+                            color:
+                                "primary.main",
 
-                            "& .MuiOutlinedInput-root": {
+                            backgroundColor:
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.055
+                                ),
 
-                                height: 40,
+                            border:
+                                "1px solid",
 
-                                borderRadius: 1.5,
+                            borderColor:
+                                alpha(
+                                    theme.palette.primary.main,
+                                    0.13
+                                ),
 
-                                backgroundColor:
-                                    "background.default",
-
-                                "& fieldset": {
-
-                                    borderColor:
-                                        "divider",
-
-                                },
-
-                                "&:hover fieldset": {
-
-                                    borderColor:
-                                        "primary.light",
-
-                                },
-
-                                "&.Mui-focused fieldset": {
-
-                                    borderColor:
-                                        "primary.main",
-
-                                    borderWidth: 1,
-
-                                },
-
+                            alignSelf: {
+                                xs: "flex-start",
+                                sm: "center",
                             },
 
-                            "& .MuiSelect-select": {
-
-                                fontSize: 13,
-
-                            },
-                        }}
-                    >
-
-                        <MenuItem value="Username">
-                            Username
-                        </MenuItem>
-
-                        <MenuItem value="Mobile Number">
-                            Mobile Number
-                        </MenuItem>
-
-                        <MenuItem value="Email">
-                            Email
-                        </MenuItem>
-
-                        <MenuItem value="Designation">
-                            Designation
-                        </MenuItem>
-
-                        <MenuItem value="Reporting Manager">
-                            Reporting Manager
-                        </MenuItem>
-
-                    </TextField>
+                        })}
+                    />
 
                 </Box>
 
@@ -557,453 +620,494 @@ function UserList({ onViewUser }) {
             {/* USERS TABLE */}
             {/* ================================================= */}
 
-            <Paper
-                elevation={0}
-
+            <TableContainer
                 sx={{
+
                     width: "100%",
 
-                    overflow: "hidden",
+                    overflowX: "auto",
 
-                    borderRadius: 2,
+                    border: 0,
 
-                    border: "1px solid",
-
-                    borderColor:
-                        "divider",
+                    borderRadius: 0,
 
                     backgroundColor:
-                        "background.paper",
+                        "transparent",
+
+                    boxShadow: "none",
+
+                    scrollbarWidth:
+                        "thin",
+
+                    scrollbarColor:
+                        "rgba(104, 113, 107, 0.20) transparent",
+
+                    "&::-webkit-scrollbar": {
+                        height: 5,
+                    },
+
+                    "&::-webkit-scrollbar-track": {
+                        background:
+                            "transparent",
+                    },
+
+                    "&::-webkit-scrollbar-thumb": {
+
+                        backgroundColor:
+                            "rgba(104, 113, 107, 0.20)",
+
+                        borderRadius:
+                            10,
+
+                    },
+
+                    "&::-webkit-scrollbar-thumb:hover": {
+
+                        backgroundColor:
+                            "rgba(104, 113, 107, 0.35)",
+
+                    },
+
                 }}
             >
 
-                <TableContainer
+                <Table
                     sx={{
-
-                        width: "100%",
-
-                        overflowX: "auto",
-
-                        "&::-webkit-scrollbar": {
-
-                            height: 6,
-
-                        },
-
-                        "&::-webkit-scrollbar-track": {
-
-                            backgroundColor:
-                                "background.default",
-
-                        },
-
-                        "&::-webkit-scrollbar-thumb": {
-
-                            backgroundColor:
-                                "divider",
-
-                            borderRadius: 10,
-
-                        },
-
+                        minWidth: 1080,
                     }}
                 >
 
-                    <Table
-                        sx={{
-                            minWidth: 1100,
-                        }}
-                    >
+                    {/* ================================================= */}
+                    {/* TABLE HEADER */}
+                    {/* ================================================= */}
 
+                    <TableHead>
 
-                        {/* ================================================= */}
-                        {/* TABLE HEADER */}
-                        {/* ================================================= */}
+                        <TableRow>
 
-                        <TableHead>
-
-                            <TableRow
+                            <TableCell
                                 sx={{
-
-                                    backgroundColor:
-                                        "action.hover",
-
-                                    "& .MuiTableCell-root": {
-
-                                        borderBottom:
-                                            "1px solid",
-
-                                        borderColor:
-                                            "divider",
-
-                                        color:
-                                            "text.secondary",
-
-                                        fontSize: 11,
-
-                                        fontWeight: 650,
-
-                                        letterSpacing:
-                                            "0.035em",
-
-                                        textTransform:
-                                            "uppercase",
-
-                                        whiteSpace:
-                                            "nowrap",
-
-                                        py: 1.4,
-                                    },
-
+                                    ...tableHeaderSx,
+                                    width: 115,
                                 }}
                             >
+                                Actions
+                            </TableCell>
 
-                                <TableCell
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 135,
+                                }}
+                            >
+                                Username
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 135,
+                                }}
+                            >
+                                Mobile Number
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 185,
+                                }}
+                            >
+                                Email
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 125,
+                                }}
+                            >
+                                Designation
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 155,
+                                }}
+                            >
+                                Reporting Manager
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 115,
+                                }}
+                            >
+                                Created On
+                            </TableCell>
+
+
+                            <TableCell
+                                sx={{
+                                    ...tableHeaderSx,
+                                    minWidth: 115,
+                                }}
+                            >
+                                Modified On
+                            </TableCell>
+
+                        </TableRow>
+
+                    </TableHead>
+
+
+                    {/* ================================================= */}
+                    {/* TABLE BODY */}
+                    {/* ================================================= */}
+
+                    <TableBody>
+
+                        {filteredUsers.map(
+                            (user, index) => (
+
+                                <TableRow
+                                    key={
+                                        user.UserId ||
+                                        user.userId ||
+                                        user.UserName
+                                    }
+
                                     sx={{
-                                        width: 110,
+
+                                        transition:
+                                            "background-color 160ms ease",
+
+                                        "& .MuiTableCell-root": {
+                                            ...tableCellSx,
+
+                                            backgroundColor:
+                                                index % 2 === 0
+                                                    ? "background.paper"
+                                                    : "background.default",
+                                        },
+
+                                        "&:hover .MuiTableCell-root": {
+
+                                            backgroundColor:
+                                                (theme) =>
+                                                    alpha(
+                                                        theme.palette.primary.main,
+                                                        0.035
+                                                    ),
+
+                                        },
+
+                                        "&:last-child .MuiTableCell-root": {
+
+                                            borderBottom:
+                                                0,
+
+                                        },
+
                                     }}
                                 >
-                                    Actions
-                                </TableCell>
+
+                                    {/* ================================================= */}
+                                    {/* ACTIONS */}
+                                    {/* ================================================= */}
+
+                                    <TableCell>
+
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+
+                                                alignItems:
+                                                    "center",
+
+                                                gap: 0.25,
+                                            }}
+                                        >
+
+                                            {/* VIEW */}
+
+                                            <Tooltip
+                                                title="View User"
+                                                arrow
+                                            >
+
+                                                <IconButton
+                                                    size="small"
+
+                                                    onClick={() =>
+                                                        onViewUser?.(
+                                                            user
+                                                        )
+                                                    }
+
+                                                    sx={{
+                                                        width: 31,
+                                                        height: 31,
+
+                                                        borderRadius:
+                                                            1.25,
+
+                                                        color:
+                                                            "text.secondary",
+
+                                                        transition:
+                                                            "all 150ms ease",
+
+                                                        "&:hover": {
+
+                                                            color:
+                                                                "primary.main",
+
+                                                            backgroundColor:
+                                                                (theme) =>
+                                                                    alpha(
+                                                                        theme.palette.primary.main,
+                                                                        0.07
+                                                                    ),
+
+                                                        },
+                                                    }}
+                                                >
+
+                                                    <VisibilityOutlinedIcon
+                                                        sx={{
+                                                            fontSize:
+                                                                17,
+                                                        }}
+                                                    />
+
+                                                </IconButton>
+
+                                            </Tooltip>
 
 
-                                <TableCell
-                                    sx={{
-                                        minWidth: 150,
-                                    }}
-                                >
-                                    Username
-                                </TableCell>
+                                            {/* EDIT */}
+
+                                            <Tooltip
+                                                title="Edit User"
+                                                arrow
+                                            >
+
+                                                <IconButton
+                                                    size="small"
+
+                                                    sx={{
+                                                        width: 31,
+                                                        height: 31,
+
+                                                        borderRadius:
+                                                            1.25,
+
+                                                        color:
+                                                            "text.secondary",
+
+                                                        transition:
+                                                            "all 150ms ease",
+
+                                                        "&:hover": {
+
+                                                            color:
+                                                                "primary.main",
+
+                                                            backgroundColor:
+                                                                (theme) =>
+                                                                    alpha(
+                                                                        theme.palette.primary.main,
+                                                                        0.07
+                                                                    ),
+
+                                                        },
+                                                    }}
+                                                >
+
+                                                    <EditOutlinedIcon
+                                                        sx={{
+                                                            fontSize:
+                                                                17,
+                                                        }}
+                                                    />
+
+                                                </IconButton>
+
+                                            </Tooltip>
 
 
-                                <TableCell
-                                    sx={{
-                                        minWidth: 140,
-                                    }}
-                                >
-                                    Mobile Number
-                                </TableCell>
+                                            {/* DELETE */}
+
+                                            <Tooltip
+                                                title="Delete User"
+                                                arrow
+                                            >
+
+                                                <IconButton
+                                                    size="small"
+
+                                                    sx={{
+                                                        width: 31,
+                                                        height: 31,
+
+                                                        borderRadius:
+                                                            1.25,
+
+                                                        color:
+                                                            "text.secondary",
+
+                                                        transition:
+                                                            "all 150ms ease",
+
+                                                        "&:hover": {
+
+                                                            color:
+                                                                "error.main",
+
+                                                            backgroundColor:
+                                                                (theme) =>
+                                                                    alpha(
+                                                                        theme.palette.error.main,
+                                                                        0.07
+                                                                    ),
+
+                                                        },
+                                                    }}
+                                                >
+
+                                                    <DeleteOutline
+                                                        sx={{
+                                                            fontSize:
+                                                                17,
+                                                        }}
+                                                    />
+
+                                                </IconButton>
+
+                                            </Tooltip>
+
+                                        </Box>
+
+                                    </TableCell>
 
 
-                                <TableCell
-                                    sx={{
-                                        minWidth: 220,
-                                    }}
-                                >
-                                    Email
-                                </TableCell>
+                                    {/* ================================================= */}
+                                    {/* USERNAME */}
+                                    {/* ================================================= */}
 
+                                    <TableCell>
 
-                                <TableCell
-                                    sx={{
-                                        minWidth: 150,
-                                    }}
-                                >
-                                    Designation
-                                </TableCell>
+                                        <Typography
+                                            sx={{
+                                                fontSize:
+                                                    13.25,
 
-
-                                <TableCell
-                                    sx={{
-                                        minWidth: 180,
-                                    }}
-                                >
-                                    Reporting Manager
-                                </TableCell>
-
-
-                                <TableCell
-                                    sx={{
-                                        minWidth: 120,
-                                    }}
-                                >
-                                    Created On
-                                </TableCell>
-
-
-                                <TableCell
-                                    sx={{
-                                        minWidth: 120,
-                                    }}
-                                >
-                                    Modified On
-                                </TableCell>
-
-                            </TableRow>
-
-                        </TableHead>
-
-
-                        {/* ================================================= */}
-                        {/* TABLE BODY */}
-                        {/* ================================================= */}
-
-                        <TableBody>
-
-                            {filteredUsers.map(
-                                (user) => (
-
-                                    <TableRow
-                                        key={
-                                            user.userId ||
-                                            user.UserId ||
-                                            user.UserName
-                                        }
-
-                                        sx={{
-
-                                            transition:
-                                                "background-color 160ms ease",
-
-                                            "& .MuiTableCell-root": {
-
-                                                borderBottom:
-                                                    "1px solid",
-
-                                                borderColor:
-                                                    "divider",
-
-                                                py: 1.5,
-
-                                                fontSize: 12.5,
+                                                fontWeight:
+                                                    650,
 
                                                 color:
                                                     "text.primary",
 
+                                                letterSpacing:
+                                                    "0.005em",
+
+                                                overflow:
+                                                    "hidden",
+
+                                                textOverflow:
+                                                    "ellipsis",
+
                                                 whiteSpace:
                                                     "nowrap",
 
-                                            },
+                                                maxWidth:
+                                                    150,
 
-                                            "&:hover": {
+                                                cursor:
+                                                    "pointer",
 
-                                                backgroundColor:
-                                                    "action.hover",
+                                                transition:
+                                                    "color 150ms ease",
 
-                                            },
-
-                                            "&:last-child .MuiTableCell-root": {
-
-                                                borderBottom: 0,
-
-                                            },
-
-                                        }}
-                                    >
-
-
-                                        {/* ACTIONS */}
-
-                                        <TableCell>
-
-                                            <Box
-                                                sx={{
-                                                    display:
-                                                        "flex",
-
-                                                    alignItems:
-                                                        "center",
-
-                                                    gap: 0.5,
-                                                }}
-                                            >
-
-
-                                                <Tooltip
-                                                    title="View"
-                                                    arrow
-                                                >
-
-                                                    <IconButton
-                                                        size="small"
-
-                                                        onClick={() =>
-                                                            onViewUser(
-                                                                user
-                                                            )
-                                                        }
-
-                                                        sx={{
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            borderRadius: 1.25,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "primary.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-                                                        }}
-                                                    >
-
-                                                        <Visibility
-                                                            sx={{
-                                                                fontSize: 17,
-                                                            }}
-                                                        />
-
-                                                    </IconButton>
-
-                                                </Tooltip>
-
-
-                                                <Tooltip
-                                                    title="Edit"
-                                                    arrow
-                                                >
-
-                                                    <IconButton
-                                                        size="small"
-
-                                                        sx={{
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            borderRadius: 1.25,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "primary.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-                                                        }}
-                                                    >
-
-                                                        <Edit
-                                                            sx={{
-                                                                fontSize: 17,
-                                                            }}
-                                                        />
-
-                                                    </IconButton>
-
-                                                </Tooltip>
-
-
-                                                <Tooltip
-                                                    title="Delete"
-                                                    arrow
-                                                >
-
-                                                    <IconButton
-                                                        size="small"
-
-                                                        sx={{
-                                                            width: 30,
-
-                                                            height: 30,
-
-                                                            borderRadius: 1.25,
-
-                                                            color:
-                                                                "text.secondary",
-
-                                                            "&:hover": {
-
-                                                                color:
-                                                                    "error.main",
-
-                                                                backgroundColor:
-                                                                    "action.hover",
-
-                                                            },
-                                                        }}
-                                                    >
-
-                                                        <Delete
-                                                            sx={{
-                                                                fontSize: 17,
-                                                            }}
-                                                        />
-
-                                                    </IconButton>
-
-                                                </Tooltip>
-
-                                            </Box>
-
-                                        </TableCell>
-
-
-                                        {/* USERNAME */}
-
-                                        <TableCell>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12.5,
-
-                                                    fontWeight: 600,
+                                                "&:hover": {
 
                                                     color:
-                                                        "text.primary",
+                                                        "primary.main",
 
-                                                    overflow:
-                                                        "hidden",
+                                                },
+                                            }}
+                                        >
+                                            {
+                                                user.UserName ||
+                                                "-"
+                                            }
+                                        </Typography>
 
-                                                    textOverflow:
-                                                        "ellipsis",
-
-                                                    whiteSpace:
-                                                        "nowrap",
-
-                                                    maxWidth: 150,
-                                                }}
-                                            >
-                                                {
-                                                    user.UserName ||
-                                                    "-"
-                                                }
-                                            </Typography>
-
-                                        </TableCell>
+                                    </TableCell>
 
 
-                                        {/* MOBILE */}
+                                    {/* ================================================= */}
+                                    {/* MOBILE NUMBER */}
+                                    {/* ================================================= */}
 
-                                        <TableCell>
+                                    <TableCell>
+
+                                        <Typography
+                                            sx={{
+                                                fontSize:
+                                                    13,
+
+                                                fontWeight:
+                                                    500,
+
+                                                color:
+                                                    "text.secondary",
+
+                                                letterSpacing:
+                                                    "0.015em",
+                                            }}
+                                        >
+                                            {
+                                                user.MobileNumber ||
+                                                "-"
+                                            }
+                                        </Typography>
+
+                                    </TableCell>
+
+
+                                    {/* ================================================= */}
+                                    {/* EMAIL */}
+                                    {/* ================================================= */}
+
+                                    <TableCell>
+
+                                        <Tooltip
+                                            title={
+                                                user.EmailId ||
+                                                ""
+                                            }
+
+                                            arrow
+
+                                            disableHoverListener={
+                                                !user.EmailId
+                                            }
+                                        >
 
                                             <Typography
                                                 sx={{
-                                                    fontSize: 12.5,
-
-                                                    color:
-                                                        "text.secondary",
-                                                }}
-                                            >
-                                                {
-                                                    user.MobileNumber ||
-                                                    "-"
-                                                }
-                                            </Typography>
-
-                                        </TableCell>
-
-
-                                        {/* EMAIL */}
-
-                                        <TableCell>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12.5,
+                                                    fontSize:
+                                                        13,
 
                                                     color:
                                                         "text.secondary",
@@ -1017,7 +1121,8 @@ function UserList({ onViewUser }) {
                                                     whiteSpace:
                                                         "nowrap",
 
-                                                    maxWidth: 220,
+                                                    maxWidth:
+                                                        190,
                                                 }}
                                             >
                                                 {
@@ -1026,40 +1131,112 @@ function UserList({ onViewUser }) {
                                                 }
                                             </Typography>
 
-                                        </TableCell>
+                                        </Tooltip>
+
+                                    </TableCell>
 
 
-                                        {/* DESIGNATION */}
+                                    {/* ================================================= */}
+                                    {/* DESIGNATION */}
+                                    {/* ================================================= */}
 
-                                        <TableCell>
+                                    <TableCell>
+
+                                        <Typography
+                                            sx={{
+                                                display:
+                                                    "inline-flex",
+
+                                                alignItems:
+                                                    "center",
+
+                                                minHeight:
+                                                    26,
+
+                                                px:
+                                                    1,
+
+                                                borderRadius:
+                                                    1.25,
+
+                                                fontSize:
+                                                    11.5,
+
+                                                fontWeight:
+                                                    700,
+
+                                                color:
+                                                    "primary.main",
+
+                                                backgroundColor:
+                                                    (theme) =>
+                                                        alpha(
+                                                            theme.palette.primary.main,
+                                                            0.055
+                                                        ),
+
+                                                border:
+                                                    "1px solid",
+
+                                                borderColor:
+                                                    (theme) =>
+                                                        alpha(
+                                                            theme.palette.primary.main,
+                                                            0.10
+                                                        ),
+
+                                                whiteSpace:
+                                                    "nowrap",
+
+                                            }}
+                                        >
+                                            {
+                                                user.SldName ||
+                                                "-"
+                                            }
+                                        </Typography>
+
+                                    </TableCell>
+
+
+                                    {/* ================================================= */}
+                                    {/* REPORTING MANAGER */}
+                                    {/* ================================================= */}
+
+                                    <TableCell>
+
+                                        <Tooltip
+                                            title={
+                                                user.ManagerId ||
+                                                ""
+                                            }
+
+                                            arrow
+
+                                            disableHoverListener={
+                                                !user.ManagerId
+                                            }
+                                        >
 
                                             <Typography
                                                 sx={{
-                                                    fontSize: 12.5,
+                                                    fontSize:
+                                                        13,
 
                                                     color:
                                                         "text.secondary",
-                                                }}
-                                            >
-                                                {
-                                                    user.SldName ||
-                                                    "-"
-                                                }
-                                            </Typography>
 
-                                        </TableCell>
+                                                    overflow:
+                                                        "hidden",
 
+                                                    textOverflow:
+                                                        "ellipsis",
 
-                                        {/* REPORTING MANAGER */}
+                                                    whiteSpace:
+                                                        "nowrap",
 
-                                        <TableCell>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12.5,
-
-                                                    color:
-                                                        "text.secondary",
+                                                    maxWidth:
+                                                        155,
                                                 }}
                                             >
                                                 {
@@ -1068,84 +1245,160 @@ function UserList({ onViewUser }) {
                                                 }
                                             </Typography>
 
-                                        </TableCell>
+                                        </Tooltip>
+
+                                    </TableCell>
 
 
-                                        {/* CREATED ON */}
+                                    {/* ================================================= */}
+                                    {/* CREATED ON */}
+                                    {/* ================================================= */}
 
-                                        <TableCell>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12,
-
-                                                    color:
-                                                        "text.secondary",
-                                                }}
-                                            >
-                                                {
-                                                    formatDate(
-                                                        user.CreatedOn
-                                                    )
-                                                }
-                                            </Typography>
-
-                                        </TableCell>
-
-
-                                        {/* MODIFIED ON */}
-
-                                        <TableCell>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12,
-
-                                                    color:
-                                                        "text.secondary",
-                                                }}
-                                            >
-                                                {
-                                                    formatDate(
-                                                        user.ModifiedOn
-                                                    )
-                                                }
-                                            </Typography>
-
-                                        </TableCell>
-
-                                    </TableRow>
-
-                                )
-                            )}
-
-
-                            {/* ================================================= */}
-                            {/* EMPTY STATE */}
-                            {/* ================================================= */}
-
-                            {filteredUsers.length === 0 && (
-
-                                <TableRow>
-
-                                    <TableCell
-                                        colSpan={8}
-
-                                        sx={{
-                                            borderBottom: 0,
-
-                                            py: 8,
-
-                                            textAlign:
-                                                "center",
-                                        }}
-                                    >
+                                    <TableCell>
 
                                         <Typography
                                             sx={{
-                                                fontSize: 13,
+                                                fontSize:
+                                                    12.25,
 
-                                                fontWeight: 600,
+                                                color:
+                                                    "text.secondary",
+
+                                                whiteSpace:
+                                                    "nowrap",
+                                            }}
+                                        >
+                                            {
+                                                formatDate(
+                                                    user.CreatedOn
+                                                )
+                                            }
+                                        </Typography>
+
+                                    </TableCell>
+
+
+                                    {/* ================================================= */}
+                                    {/* MODIFIED ON */}
+                                    {/* ================================================= */}
+
+                                    <TableCell>
+
+                                        <Typography
+                                            sx={{
+                                                fontSize:
+                                                    12.25,
+
+                                                color:
+                                                    "text.secondary",
+
+                                                whiteSpace:
+                                                    "nowrap",
+                                            }}
+                                        >
+                                            {
+                                                formatDate(
+                                                    user.ModifiedOn
+                                                )
+                                            }
+                                        </Typography>
+
+                                    </TableCell>
+
+                                </TableRow>
+
+                            )
+                        )}
+
+
+                        {/* ================================================= */}
+                        {/* EMPTY STATE */}
+                        {/* ================================================= */}
+
+                        {filteredUsers.length === 0 && (
+
+                            <TableRow>
+
+                                <TableCell
+                                    colSpan={8}
+
+                                    sx={{
+                                        borderBottom:
+                                            0,
+
+                                        py: 8,
+
+                                        textAlign:
+                                            "center",
+                                    }}
+                                >
+
+                                    <Box
+                                        sx={{
+                                            display:
+                                                "flex",
+
+                                            flexDirection:
+                                                "column",
+
+                                            alignItems:
+                                                "center",
+
+                                            justifyContent:
+                                                "center",
+
+                                            px: 2,
+                                        }}
+                                    >
+
+                                        <Box
+                                            sx={(theme) => ({
+                                                width: 44,
+
+                                                height: 44,
+
+                                                mb: 1.5,
+
+                                                display:
+                                                    "flex",
+
+                                                alignItems:
+                                                    "center",
+
+                                                justifyContent:
+                                                    "center",
+
+                                                borderRadius:
+                                                    2,
+
+                                                color:
+                                                    "primary.main",
+
+                                                backgroundColor:
+                                                    alpha(
+                                                        theme.palette.primary.main,
+                                                        0.055
+                                                    ),
+                                            })}
+                                        >
+
+                                            <SearchOutlinedIcon
+                                                sx={{
+                                                    fontSize:
+                                                        21,
+                                                }}
+                                            />
+
+                                        </Box>
+
+
+                                        <Typography
+                                            sx={{
+                                                fontSize:
+                                                    14,
+
+                                                fontWeight:
+                                                    700,
 
                                                 color:
                                                     "text.primary",
@@ -1161,34 +1414,38 @@ function UserList({ onViewUser }) {
 
                                         <Typography
                                             sx={{
-                                                mt: 0.75,
+                                                mt: 0.65,
 
-                                                fontSize: 12,
+                                                fontSize:
+                                                    12.5,
 
                                                 color:
                                                     "text.secondary",
+
+                                                lineHeight:
+                                                    1.5,
                                             }}
                                         >
                                             {
                                                 searchText
-                                                    ? "Try a different search term or filter."
+                                                    ? "Try a different search term or search field."
                                                     : "Users will appear here once they are created."
                                             }
                                         </Typography>
 
-                                    </TableCell>
+                                    </Box>
 
-                                </TableRow>
+                                </TableCell>
 
-                            )}
+                            </TableRow>
 
-                        </TableBody>
+                        )}
 
-                    </Table>
+                    </TableBody>
 
-                </TableContainer>
+                </Table>
 
-            </Paper>
+            </TableContainer>
 
         </Box>
 

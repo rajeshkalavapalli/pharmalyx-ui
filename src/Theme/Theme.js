@@ -1,137 +1,153 @@
-import { alpha, createTheme } from '@mui/material/styles';
+import { alpha, createTheme } from "@mui/material/styles";
 
 const PharmalyxTheme = createTheme({
   // =========================================================
   // PHARMALYX DESIGN SYSTEM
-  // ARCTIC BLUE — PREMIUM LIGHT INTELLIGENCE
+  // WARM GRAPHITE + TERRACOTTA + SAND
   //
   // Personality:
-  // Precise • Intelligent • Calm • Premium • Enterprise
+  // Premium • Modern • Confident • Human • Enterprise
   // =========================================================
 
   palette: {
-    mode: 'light',
+    mode: "light",
 
     // =======================================================
     // PRIMARY BRAND
-    // ARCTIC BLUE
-    //
-    // Main product interaction color
+    // TERRACOTTA
     // =======================================================
 
     primary: {
-      main: '#2F5F8F',
-      dark: '#1E466D',
-      light: '#5F8FBD',
-      contrastText: '#FFFFFF',
+      main: "#C45D45",
+      dark: "#9F4937",
+      light: "#E29A88",
+      contrastText: "#FFFFFF",
     },
 
     // =======================================================
-    // SECONDARY / DEEP ARCTIC
-    //
-    // Reserved for strong emphasis and navigation
+    // SECONDARY
+    // DEEP GRAPHITE
     // =======================================================
 
     secondary: {
-      main: '#183B5B',
-      dark: '#102B44',
-      light: '#315B7D',
-      contrastText: '#FFFFFF',
+      main: "#303632",
+      dark: "#202522",
+      light: "#68716B",
+      contrastText: "#FFFFFF",
     },
 
     // =======================================================
     // PHARMALYX BRAND TOKENS
-    //
-    // Keep custom colors centralized here.
-    // Do not hardcode these colors inside components.
     // =======================================================
 
     brand: {
-      arctic: '#2F5F8F',
-      arcticDark: '#1E466D',
-      arcticLight: '#5F8FBD',
+      terracotta: "#C45D45",
+      terracottaDark: "#9F4937",
+      terracottaLight: "#E29A88",
 
-      deepArctic: '#183B5B',
-      deepArcticDark: '#102B44',
-      deepArcticLight: '#315B7D',
+      graphite: "#202522",
+      charcoal: "#303632",
+      slate: "#68716B",
 
-      ice: '#EAF3FA',
-      iceLight: '#F4F8FC',
+      sage: "#6F8175",
+      sageDark: "#53665A",
+      sageLight: "#A8B6AC",
 
-      slate: '#64748B',
-      graphite: '#1F2933',
+      terracottaSoft: "#F9EEEB",
+      terracottaMuted: "#FCF5F2",
+
+      sageSoft: "#E9EFEB",
+
+      ivory: "#F7F5F1",
+      ivoryDark: "#F1EFEA",
+
+      white: "#FFFFFF",
     },
 
     // =======================================================
     // COMMAND / NAVIGATION LAYER
-    //
-    // Light premium enterprise shell
     // =======================================================
 
     command: {
-      background: '#F4F7FA',
-      surface: '#FFFFFF',
-      elevated: '#FFFFFF',
+      background: "#F7F5F1",
+      surface: "#FFFFFF",
+      elevated: "#FFFFFF",
 
-      border: '#E2E8F0',
+      border: "#E4E1DB",
 
-      text: '#1F2933',
-      mutedText: '#6B7785',
+      text: "#202522",
+      mutedText: "#68716B",
     },
 
     // =======================================================
     // INTELLIGENCE LAYER
-    //
-    // Used for analytics / insights / intelligence modules
     // =======================================================
 
     intelligence: {
-      background: '#F7FAFC',
-      surface: '#FFFFFF',
-      elevated: '#FFFFFF',
+      background: "#F8F7F4",
+      surface: "#FFFFFF",
+      elevated: "#FFFFFF",
 
-      primary: '#2F5F8F',
-      accent: '#5F8FBD',
+      primary: "#C45D45",
+      accent: "#6F8175",
 
-      border: '#DCE6EF',
+      border: "#E4E1DB",
 
-      text: '#1F2933',
-      mutedText: '#6B7785',
+      text: "#202522",
+      mutedText: "#68716B",
     },
 
     // =======================================================
     // SIDEBAR
-    //
-    // Minimal Modular Enterprise Navigation
     // =======================================================
 
     sidebar: {
-  background: '#F4F7FA',
-  surface: '#FFFFFF',
+  background: "#FFFFFF",
+  surface: "#FFFFFF",
 
-  active: '#183B5B',
-  activeLight: '#EAF3FA',
-  activeText: '#FFFFFF',
+  active: "#C45D45",
+  activeLight: "#F9EEEB",
+  activeText: "#FFFFFF",
 
-  text: '#2D3742',
-  mutedText: '#6B7785',
+  text: "#303632",
+  mutedText: "#68716B",
 
-  border: '#E2E8F0',
+  border: "#E8E5DF",
 
-  hover: '#EAF3FA',
+  hover: "#F7F5F1",
 
-  scrollbar: '#CBD5E1',
+  scrollbar: "#C9C6BF",
 },
 
     // =======================================================
     // WORKSPACE
-    //
-    // Premium neutral Arctic workspace
     // =======================================================
 
     background: {
-      default: '#F7FAFC',
-      paper: '#FFFFFF',
+      default: "#F7F5F1",
+      paper: "#FFFFFF",
+    },
+
+    // =======================================================
+    // SEMANTIC SURFACE SYSTEM
+    // =======================================================
+
+    surface: {
+      workspace: "#F7F5F1",
+      default: "#FFFFFF",
+      subtle: "#FAF9F7",
+      muted: "#F1EFEA",
+      elevated: "#FFFFFF",
+    },
+
+    // =======================================================
+    // SEMANTIC BORDER SYSTEM
+    // =======================================================
+
+    border: {
+      subtle: "#EEECE7",
+      default: "#E4E1DB",
+      strong: "#CCC9C1",
     },
 
     // =======================================================
@@ -139,62 +155,56 @@ const PharmalyxTheme = createTheme({
     // =======================================================
 
     text: {
-      primary: '#1F2933',
-      secondary: '#6B7785',
-      disabled: '#9AA5B1',
+      primary: "#202522",
+      secondary: "#68716B",
+      disabled: "#9AA19B",
     },
 
     // =======================================================
     // DIVIDER
     // =======================================================
 
-    divider: '#E2E8F0',
+    divider: "#E4E1DB",
 
     // =======================================================
     // STATUS COLORS
-    //
-    // Semantic colors only.
-    // Do not use as general decoration.
     // =======================================================
 
     success: {
-      main: '#2E7D5B',
-      dark: '#216044',
-      light: '#5BA982',
-      contrastText: '#FFFFFF',
+      main: "#238B68",
+      dark: "#176A50",
+      light: "#67B99C",
+      contrastText: "#FFFFFF",
     },
 
     warning: {
-      main: '#C58A1A',
-      dark: '#96670F',
-      light: '#E0B34D',
-      contrastText: '#FFFFFF',
+      main: "#C58A2A",
+      dark: "#94671D",
+      light: "#E0B15E",
+      contrastText: "#FFFFFF",
     },
 
     error: {
-      main: '#C94F5C',
-      dark: '#A83B47',
-      light: '#E77A84',
-      contrastText: '#FFFFFF',
+      main: "#C94B4B",
+      dark: "#A43737",
+      light: "#E17D7D",
+      contrastText: "#FFFFFF",
     },
 
     info: {
-      main: '#3F7FB8',
-      dark: '#2F6390',
-      light: '#72A8D8',
-      contrastText: '#FFFFFF',
+      main: "#68716B",
+      dark: "#4D5650",
+      light: "#98A19A",
+      contrastText: "#FFFFFF",
     },
   },
 
   // =========================================================
   // GLOBAL SHAPE
-  //
-  // Enterprise minimal:
-  // Controlled radius, not overly rounded
   // =========================================================
 
   shape: {
-    borderRadius: 8,
+    borderRadius: 9,
   },
 
   // =========================================================
@@ -202,65 +212,65 @@ const PharmalyxTheme = createTheme({
   // =========================================================
 
   typography: {
-    fontFamily: 'Inter, Arial, Helvetica, sans-serif',
+    fontFamily: "Inter, Arial, Helvetica, sans-serif",
 
     h1: {
-      fontSize: '32px',
+      fontSize: "32px",
       lineHeight: 1.2,
       fontWeight: 700,
-      letterSpacing: '-0.025em',
+      letterSpacing: "-0.025em",
     },
 
     h2: {
-      fontSize: '28px',
+      fontSize: "28px",
       lineHeight: 1.25,
       fontWeight: 700,
-      letterSpacing: '-0.02em',
+      letterSpacing: "-0.02em",
     },
 
     h3: {
-      fontSize: '24px',
+      fontSize: "24px",
       lineHeight: 1.3,
       fontWeight: 700,
-      letterSpacing: '-0.015em',
+      letterSpacing: "-0.015em",
     },
 
     h4: {
-      fontSize: '20px',
+      fontSize: "20px",
       lineHeight: 1.35,
       fontWeight: 650,
-      letterSpacing: '-0.01em',
+      letterSpacing: "-0.01em",
     },
 
     h5: {
-      fontSize: '18px',
+      fontSize: "18px",
       lineHeight: 1.4,
       fontWeight: 650,
     },
 
     h6: {
-      fontSize: '16px',
+      fontSize: "16px",
       lineHeight: 1.45,
       fontWeight: 650,
     },
 
     body1: {
-      fontSize: '14px',
+      fontSize: "14px",
       lineHeight: 1.6,
       fontWeight: 400,
     },
 
     body2: {
-      fontSize: '13px',
+      fontSize: "13px",
       lineHeight: 1.55,
       fontWeight: 400,
     },
 
     button: {
-      fontSize: '14px',
+      fontSize: "14px",
       fontWeight: 600,
-      textTransform: 'none',
-      letterSpacing: '0',
+      textTransform: "none",
+      letterSpacing: "0",
     },
   },
 
@@ -276,60 +286,58 @@ const PharmalyxTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         html: {
-          backgroundColor: '#F7FAFC',
+          backgroundColor: "#F7F5F1",
         },
 
         body: {
           margin: 0,
           padding: 0,
-          backgroundColor: '#F7FAFC',
-          color: '#1F2933',
-          fontFamily: 'Inter, Arial, Helvetica, sans-serif',
-          WebkitFontSmoothing: 'antialiased',
-          MozOsxFontSmoothing: 'grayscale',
+          backgroundColor: "#F7F5F1",
+          color: "#202522",
+          fontFamily: "Inter, Arial, Helvetica, sans-serif",
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
         },
 
-        '*': {
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#CBD5E1 transparent',
+        "*": {
+          scrollbarWidth: "thin",
+          scrollbarColor: "#C9C6BF transparent",
         },
 
-        '*::-webkit-scrollbar': {
-          width: '7px',
-          height: '7px',
+        "*::-webkit-scrollbar": {
+          width: "7px",
+          height: "7px",
         },
 
-        '*::-webkit-scrollbar-track': {
-          background: 'transparent',
+        "*::-webkit-scrollbar-track": {
+          background: "transparent",
         },
 
-        '*::-webkit-scrollbar-thumb': {
-          background: '#CBD5E1',
-          borderRadius: '10px',
+        "*::-webkit-scrollbar-thumb": {
+          background: "#C9C6BF",
+          borderRadius: "10px",
         },
 
-        '*::-webkit-scrollbar-thumb:hover': {
-          background: '#94A3B8',
+        "*::-webkit-scrollbar-thumb:hover": {
+          background: "#AAA69E",
         },
       },
     },
 
     // =======================================================
     // PAPER
-    //
-    // Cards, panels and data surfaces
     // =======================================================
 
     MuiPaper: {
       styleOverrides: {
         root: ({ theme }) => ({
-          backgroundImage: 'none',
-          border: `1px solid ${theme.palette.divider}`,
-          boxShadow: '0 4px 18px rgba(16, 24, 40, 0.035)',
+          backgroundImage: "none",
+          border: "1px solid " + theme.palette.divider,
+          boxShadow: "0 4px 18px rgba(32, 37, 34, 0.035)",
         }),
 
         rounded: {
-          borderRadius: 8,
+          borderRadius: 9,
         },
       },
     },
@@ -346,66 +354,53 @@ const PharmalyxTheme = createTheme({
       styleOverrides: {
         root: {
           minHeight: 40,
-          borderRadius: 7,
+          borderRadius: 8,
           paddingLeft: 16,
           paddingRight: 16,
           fontWeight: 600,
 
           transition:
-            'background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease',
+            "background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
         },
-
-        // ===================================================
-        // PRIMARY BUTTON
-        // ===================================================
 
         containedPrimary: ({ theme }) => ({
           backgroundColor: theme.palette.primary.main,
 
-          '&:hover': {
+          "&:hover": {
             backgroundColor: theme.palette.primary.dark,
-            boxShadow: `0 6px 16px ${alpha(
-              theme.palette.primary.main,
-              0.18
-            )}`,
+            boxShadow:
+              "0 6px 16px " +
+              alpha(theme.palette.primary.main, 0.18),
           },
 
-          '&:active': {
-            transform: 'translateY(1px)',
+          "&:active": {
+            transform: "translateY(1px)",
           },
         }),
-
-        // ===================================================
-        // OUTLINED BUTTON
-        // ===================================================
 
         outlined: ({ theme }) => ({
           borderColor: theme.palette.divider,
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.background.paper,
 
-          '&:hover': {
+          "&:hover": {
             borderColor: theme.palette.primary.main,
             backgroundColor: alpha(theme.palette.primary.main, 0.04),
           },
 
-          '&.MuiButton-colorError': {
+          "&.MuiButton-colorError": {
             color: theme.palette.error.main,
             borderColor: theme.palette.error.main,
 
-            '&:hover': {
+            "&:hover": {
               borderColor: theme.palette.error.dark,
               backgroundColor: alpha(theme.palette.error.main, 0.04),
             },
           },
         }),
 
-        // ===================================================
-        // TEXT BUTTON
-        // ===================================================
-
         text: ({ theme }) => ({
-          '&:hover': {
+          "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.06),
           },
         }),
@@ -419,12 +414,11 @@ const PharmalyxTheme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: 7,
+          borderRadius: 8,
 
-          transition:
-            'background-color 160ms ease, color 160ms ease',
+          transition: "background-color 160ms ease, color 160ms ease",
 
-          '&:hover': {
+          "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.07),
           },
         }),
@@ -463,16 +457,16 @@ const PharmalyxTheme = createTheme({
 
           color: theme.palette.text.secondary,
 
-          fontSize: '14px',
+          fontSize: "14px",
           fontWeight: 600,
 
-          textTransform: 'none',
+          textTransform: "none",
 
-          '&.Mui-selected': {
+          "&.Mui-selected": {
             color: theme.palette.primary.main,
           },
 
-          '&:hover': {
+          "&:hover": {
             color: theme.palette.primary.dark,
           },
         }),
@@ -486,32 +480,30 @@ const PharmalyxTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: 7,
+          borderRadius: 8,
 
           backgroundColor: theme.palette.background.paper,
 
-          '& .MuiOutlinedInput-notchedOutline': {
+          "& .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.divider,
           },
 
-          '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#B8C6D3',
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#B8B5AD",
           },
 
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.primary.main,
-
             borderWidth: 1,
 
-            boxShadow: `0 0 0 3px ${alpha(
-              theme.palette.primary.main,
-              0.1
-            )}`,
+            boxShadow:
+              "0 0 0 3px " +
+              alpha(theme.palette.primary.main, 0.1),
           },
         }),
 
         input: {
-          fontSize: '14px',
+          fontSize: "14px",
         },
       },
     },
@@ -525,9 +517,9 @@ const PharmalyxTheme = createTheme({
         root: ({ theme }) => ({
           color: theme.palette.text.secondary,
 
-          fontSize: '14px',
+          fontSize: "14px",
 
-          '&.Mui-focused': {
+          "&.Mui-focused": {
             color: theme.palette.primary.main,
           },
         }),
@@ -541,7 +533,7 @@ const PharmalyxTheme = createTheme({
     MuiSelect: {
       styleOverrides: {
         select: {
-          fontSize: '14px',
+          fontSize: "14px",
         },
       },
     },
@@ -553,7 +545,7 @@ const PharmalyxTheme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: 8,
+          borderRadius: 9,
           backgroundColor: theme.palette.background.paper,
         }),
       },
@@ -565,9 +557,9 @@ const PharmalyxTheme = createTheme({
 
     MuiTableHead: {
       styleOverrides: {
-        root: {
-          backgroundColor: '#F8FAFC',
-        },
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.surface.muted,
+        }),
       },
     },
 
@@ -578,25 +570,25 @@ const PharmalyxTheme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderBottom: "1px solid " + theme.palette.divider,
 
           color: theme.palette.text.primary,
 
-          fontSize: '14px',
+          fontSize: "14px",
 
-          padding: '14px 16px',
+          padding: "14px 16px",
         }),
 
         head: ({ theme }) => ({
           color: theme.palette.text.secondary,
 
-          fontSize: '13px',
+          fontSize: "13px",
 
           fontWeight: 650,
 
-          backgroundColor: '#F8FAFC',
+          backgroundColor: theme.palette.surface.muted,
 
-          whiteSpace: 'nowrap',
+          whiteSpace: "nowrap",
         }),
       },
     },
@@ -608,14 +600,13 @@ const PharmalyxTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: ({ theme }) => ({
-          transition:
-            'background-color 140ms ease',
+          transition: "background-color 140ms ease",
 
-          '&:hover': {
+          "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.025),
           },
 
-          '&:last-child td': {
+          "&:last-child td": {
             borderBottom: 0,
           },
         }),
@@ -629,50 +620,28 @@ const PharmalyxTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
-
+          borderRadius: 7,
           fontWeight: 600,
-
-          fontSize: '12px',
+          fontSize: "12px",
         },
-
-        // ===================================================
-        // PRIMARY CHIP
-        // ===================================================
 
         colorPrimary: ({ theme }) => ({
           backgroundColor: alpha(theme.palette.primary.main, 0.1),
-
           color: theme.palette.primary.dark,
         }),
 
-        // ===================================================
-        // SUCCESS CHIP
-        // ===================================================
-
         colorSuccess: ({ theme }) => ({
           backgroundColor: alpha(theme.palette.success.main, 0.1),
-
           color: theme.palette.success.dark,
         }),
 
-        // ===================================================
-        // WARNING CHIP
-        // ===================================================
-
         colorWarning: ({ theme }) => ({
           backgroundColor: alpha(theme.palette.warning.main, 0.12),
-
           color: theme.palette.warning.dark,
         }),
 
-        // ===================================================
-        // ERROR CHIP
-        // ===================================================
-
         colorError: ({ theme }) => ({
           backgroundColor: alpha(theme.palette.error.main, 0.1),
-
           color: theme.palette.error.dark,
         }),
       },
@@ -685,14 +654,13 @@ const PharmalyxTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: ({ theme }) => ({
-          borderRadius: 12,
+          borderRadius: 13,
 
-          border: `1px solid ${theme.palette.divider}`,
+          border: "1px solid " + theme.palette.divider,
 
-          boxShadow:
-            '0 24px 70px rgba(16, 24, 40, 0.16)',
+          boxShadow: "0 24px 70px rgba(32, 37, 34, 0.16)",
 
-          backgroundImage: 'none',
+          backgroundImage: "none",
         }),
       },
     },
@@ -704,12 +672,11 @@ const PharmalyxTheme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: ({ theme }) => ({
-          borderRadius: 8,
+          borderRadius: 9,
 
-          border: `1px solid ${theme.palette.divider}`,
+          border: "1px solid " + theme.palette.divider,
 
-          boxShadow:
-            '0 12px 32px rgba(16, 24, 40, 0.12)',
+          boxShadow: "0 12px 32px rgba(32, 37, 34, 0.12)",
 
           marginTop: 4,
         }),
@@ -725,24 +692,21 @@ const PharmalyxTheme = createTheme({
         root: ({ theme }) => ({
           minHeight: 40,
 
-          borderRadius: 6,
+          borderRadius: 7,
 
-          margin: '2px 5px',
+          margin: "2px 5px",
 
-          fontSize: '14px',
+          fontSize: "14px",
 
-          '&:hover': {
+          "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.06),
           },
 
-          '&.Mui-selected': {
+          "&.Mui-selected": {
             backgroundColor: alpha(theme.palette.primary.main, 0.09),
 
-            '&:hover': {
-              backgroundColor: alpha(
-                theme.palette.primary.main,
-                0.12
-              ),
+            "&:hover": {
+              backgroundColor: alpha(theme.palette.primary.main, 0.12),
             },
           },
         }),
@@ -760,14 +724,13 @@ const PharmalyxTheme = createTheme({
 
           color: theme.palette.secondary.contrastText,
 
-          fontSize: '12px',
+          fontSize: "12px",
 
-          borderRadius: 6,
+          borderRadius: 7,
 
-          padding: '7px 10px',
+          padding: "7px 10px",
 
-          boxShadow:
-            '0 6px 18px rgba(16, 24, 40, 0.16)',
+          boxShadow: "0 6px 18px rgba(32, 37, 34, 0.16)",
         }),
 
         arrow: ({ theme }) => ({
