@@ -3,7 +3,7 @@ import { alpha, createTheme } from "@mui/material/styles";
 const PharmalyxTheme = createTheme({
   // =========================================================
   // PHARMALYX DESIGN SYSTEM
-  // WARM GRAPHITE + TERRACOTTA + SAND
+  // PREMIUM LIGHT MODE • TERRACOTTA + GRAPHITE + SAGE + IVORY
   //
   // Personality:
   // Premium • Modern • Confident • Human • Enterprise
@@ -16,7 +16,6 @@ const PharmalyxTheme = createTheme({
     // PRIMARY BRAND
     // TERRACOTTA
     // =======================================================
-
     primary: {
       main: "#C45D45",
       dark: "#9F4937",
@@ -28,7 +27,6 @@ const PharmalyxTheme = createTheme({
     // SECONDARY
     // DEEP GRAPHITE
     // =======================================================
-
     secondary: {
       main: "#303632",
       dark: "#202522",
@@ -37,9 +35,8 @@ const PharmalyxTheme = createTheme({
     },
 
     // =======================================================
-    // PHARMALYX BRAND TOKENS
+    // PHARMALYX BRAND TOKENS (extended)
     // =======================================================
-
     brand: {
       terracotta: "#C45D45",
       terracottaDark: "#9F4937",
@@ -62,12 +59,29 @@ const PharmalyxTheme = createTheme({
       ivoryDark: "#F1EFEA",
 
       white: "#FFFFFF",
+
+      // Premium tokens
+      gradient: "linear-gradient(135deg, #C45D45 0%, #6F8175 100%)",
+      glass: "rgba(255, 255, 255, 0.72)",
+      glassStrong: "rgba(255,255,255,0.85)",
+    },
+
+    // =======================================================
+    // CHART / DATA VISUALIZATION PALETTE
+    // =======================================================
+    chart: {
+      primary: "#C45D45",
+      secondary: "#6F8175",
+      success: "#238B68",
+      warning: "#C58A2A",
+      error: "#C94B4B",
+      neutral: "#98A19A",
+      accent: "#E29A88",
     },
 
     // =======================================================
     // COMMAND / NAVIGATION LAYER
     // =======================================================
-
     command: {
       background: "#F7F5F1",
       surface: "#FFFFFF",
@@ -82,7 +96,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // INTELLIGENCE LAYER
     // =======================================================
-
     intelligence: {
       background: "#F8F7F4",
       surface: "#FFFFFF",
@@ -100,29 +113,27 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // SIDEBAR
     // =======================================================
-
     sidebar: {
-  background: "#FFFFFF",
-  surface: "#FFFFFF",
+      background: "#FFFFFF",
+      surface: "#FFFFFF",
 
-  active: "#C45D45",
-  activeLight: "#F9EEEB",
-  activeText: "#FFFFFF",
+      active: "#C45D45",
+      activeLight: "#F9EEEB",
+      activeText: "#FFFFFF",
 
-  text: "#303632",
-  mutedText: "#68716B",
+      text: "#303632",
+      mutedText: "#68716B",
 
-  border: "#E8E5DF",
+      border: "#E8E5DF",
 
-  hover: "#F7F5F1",
+      hover: "#F7F5F1",
 
-  scrollbar: "#C9C6BF",
-},
+      scrollbar: "#C9C6BF",
+    },
 
     // =======================================================
     // WORKSPACE
     // =======================================================
-
     background: {
       default: "#F7F5F1",
       paper: "#FFFFFF",
@@ -131,7 +142,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // SEMANTIC SURFACE SYSTEM
     // =======================================================
-
     surface: {
       workspace: "#F7F5F1",
       default: "#FFFFFF",
@@ -143,7 +153,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // SEMANTIC BORDER SYSTEM
     // =======================================================
-
     border: {
       subtle: "#EEECE7",
       default: "#E4E1DB",
@@ -153,7 +162,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TEXT SYSTEM
     // =======================================================
-
     text: {
       primary: "#202522",
       secondary: "#68716B",
@@ -163,13 +171,11 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // DIVIDER
     // =======================================================
-
     divider: "#E4E1DB",
 
     // =======================================================
     // STATUS COLORS
     // =======================================================
-
     success: {
       main: "#238B68",
       dark: "#176A50",
@@ -202,35 +208,33 @@ const PharmalyxTheme = createTheme({
   // =========================================================
   // GLOBAL SHAPE
   // =========================================================
-
   shape: {
     borderRadius: 9,
   },
 
   // =========================================================
-  // TYPOGRAPHY
+  // TYPOGRAPHY (upgraded for premium feel)
   // =========================================================
-
   typography: {
     fontFamily: "Inter, Arial, Helvetica, sans-serif",
 
     h1: {
-      fontSize: "32px",
-      lineHeight: 1.2,
-      fontWeight: 700,
-      letterSpacing: "-0.025em",
+      fontSize: "34px",
+      lineHeight: 1.15,
+      fontWeight: 800,
+      letterSpacing: "-0.03em",
     },
 
     h2: {
       fontSize: "28px",
-      lineHeight: 1.25,
+      lineHeight: 1.22,
       fontWeight: 700,
       letterSpacing: "-0.02em",
     },
 
     h3: {
       fontSize: "24px",
-      lineHeight: 1.3,
+      lineHeight: 1.28,
       fontWeight: 700,
       letterSpacing: "-0.015em",
     },
@@ -255,13 +259,13 @@ const PharmalyxTheme = createTheme({
     },
 
     body1: {
-      fontSize: "14px",
+      fontSize: "15px",
       lineHeight: 1.6,
       fontWeight: 400,
     },
 
     body2: {
-      fontSize: "13px",
+      fontSize: "14px",
       lineHeight: 1.55,
       fontWeight: 400,
     },
@@ -275,14 +279,12 @@ const PharmalyxTheme = createTheme({
   },
 
   // =========================================================
-  // COMPONENT DESIGN SYSTEM
+  // COMPONENT DESIGN SYSTEM (complete overrides merged + premium upgrades)
   // =========================================================
-
   components: {
     // =======================================================
     // GLOBAL CSS BASELINE
     // =======================================================
-
     MuiCssBaseline: {
       styleOverrides: {
         html: {
@@ -327,11 +329,13 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // PAPER
     // =======================================================
-
     MuiPaper: {
       styleOverrides: {
         root: ({ theme }) => ({
+          // subtle glass effect while keeping accessibility
           backgroundImage: "none",
+          background: theme.palette.brand.glass,
+          backdropFilter: "blur(8px)",
           border: "1px solid " + theme.palette.divider,
           boxShadow: "0 4px 18px rgba(32, 37, 34, 0.035)",
         }),
@@ -345,7 +349,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // BUTTON
     // =======================================================
-
     MuiButton: {
       defaultProps: {
         disableElevation: true,
@@ -365,16 +368,29 @@ const PharmalyxTheme = createTheme({
 
         containedPrimary: ({ theme }) => ({
           backgroundColor: theme.palette.primary.main,
+          backgroundImage: theme.palette.brand.gradient,
+          color: theme.palette.primary.contrastText,
 
           "&:hover": {
             backgroundColor: theme.palette.primary.dark,
             boxShadow:
-              "0 6px 16px " +
-              alpha(theme.palette.primary.main, 0.18),
+              "0 6px 16px " + alpha(theme.palette.primary.main, 0.18),
+            transform: "translateY(-1px)",
           },
 
           "&:active": {
             transform: "translateY(1px)",
+          },
+        }),
+
+        containedSecondary: ({ theme }) => ({
+          backgroundColor: theme.palette.secondary.main,
+          color: theme.palette.secondary.contrastText,
+          "&:hover": {
+            backgroundColor: theme.palette.secondary.dark,
+            boxShadow:
+              "0 6px 16px " + alpha(theme.palette.secondary.main, 0.12),
+            transform: "translateY(-1px)",
           },
         }),
 
@@ -410,7 +426,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // ICON BUTTON
     // =======================================================
-
     MuiIconButton: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -428,7 +443,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TABS
     // =======================================================
-
     MuiTabs: {
       styleOverrides: {
         root: {
@@ -446,7 +460,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TAB
     // =======================================================
-
     MuiTab: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -476,7 +489,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // OUTLINED INPUT
     // =======================================================
-
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -497,8 +509,7 @@ const PharmalyxTheme = createTheme({
             borderWidth: 1,
 
             boxShadow:
-              "0 0 0 3px " +
-              alpha(theme.palette.primary.main, 0.1),
+              "0 0 0 3px " + alpha(theme.palette.primary.main, 0.08),
           },
         }),
 
@@ -511,7 +522,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // INPUT LABEL
     // =======================================================
-
     MuiInputLabel: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -529,7 +539,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // SELECT
     // =======================================================
-
     MuiSelect: {
       styleOverrides: {
         select: {
@@ -541,7 +550,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TABLE CONTAINER
     // =======================================================
-
     MuiTableContainer: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -554,7 +562,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TABLE HEAD
     // =======================================================
-
     MuiTableHead: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -566,7 +573,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TABLE CELL
     // =======================================================
-
     MuiTableCell: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -596,7 +602,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TABLE ROW
     // =======================================================
-
     MuiTableRow: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -616,7 +621,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // CHIP
     // =======================================================
-
     MuiChip: {
       styleOverrides: {
         root: {
@@ -650,7 +654,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // DIALOG
     // =======================================================
-
     MuiDialog: {
       styleOverrides: {
         paper: ({ theme }) => ({
@@ -661,6 +664,8 @@ const PharmalyxTheme = createTheme({
           boxShadow: "0 24px 70px rgba(32, 37, 34, 0.16)",
 
           backgroundImage: "none",
+          background: theme.palette.brand.glass,
+          backdropFilter: "blur(12px)",
         }),
       },
     },
@@ -668,7 +673,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // MENU
     // =======================================================
-
     MuiMenu: {
       styleOverrides: {
         paper: ({ theme }) => ({
@@ -686,7 +690,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // MENU ITEM
     // =======================================================
-
     MuiMenuItem: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -716,7 +719,6 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // TOOLTIP
     // =======================================================
-
     MuiTooltip: {
       styleOverrides: {
         tooltip: ({ theme }) => ({
@@ -742,11 +744,223 @@ const PharmalyxTheme = createTheme({
     // =======================================================
     // DIVIDER
     // =======================================================
-
     MuiDivider: {
       styleOverrides: {
         root: ({ theme }) => ({
           borderColor: theme.palette.divider,
+        }),
+      },
+    },
+
+    // =======================================================
+    // ADDITIONAL COMPONENTS / OVERRIDES (kept from original + enhanced)
+    // =======================================================
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          borderRadius: 9,
+          boxShadow: "0 12px 32px rgba(32, 37, 34, 0.08)",
+        }),
+      },
+    },
+
+    MuiSnackbar: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& .MuiSnackbarContent-root": {
+            borderRadius: 8,
+            boxShadow: "0 8px 20px rgba(32,37,34,0.08)",
+          },
+        }),
+      },
+    },
+
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+          fontSize: "12px",
+        }),
+      },
+    },
+
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          marginRight: 8,
+        }),
+      },
+    },
+
+    MuiAvatar: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.surface.default,
+          color: theme.palette.text.primary,
+        }),
+      },
+    },
+
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          height: 8,
+          borderRadius: 8,
+          backgroundColor: theme.palette.surface.subtle,
+        }),
+        bar: ({ theme }) => ({
+          borderRadius: 8,
+          backgroundImage: theme.palette.brand.gradient,
+        }),
+      },
+    },
+
+    MuiCircularProgress: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main,
+        }),
+      },
+    },
+
+    MuiAccordion: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: 10,
+          boxShadow: "0 8px 24px rgba(32,37,34,0.06)",
+          "&.Mui-expanded": {
+            margin: "12px 0",
+          },
+        }),
+      },
+    },
+
+    MuiBreadcrumbs: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+      },
+    },
+
+    MuiStepper: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          background: "transparent",
+        }),
+      },
+    },
+
+    MuiStepIcon: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.surface.muted,
+          "&.Mui-active": {
+            color: theme.palette.primary.main,
+          },
+          "&.Mui-completed": {
+            color: theme.palette.success.main,
+          },
+        }),
+      },
+    },
+
+    MuiPagination: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "& .MuiPaginationItem-root": {
+            borderRadius: 8,
+            "&.Mui-selected": {
+              backgroundImage: theme.palette.brand.gradient,
+              color: theme.palette.primary.contrastText,
+            },
+          },
+        }),
+      },
+    },
+
+    MuiListItemButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: 8,
+          "&:hover": {
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
+          },
+        }),
+      },
+    },
+
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          minWidth: 40,
+          color: theme.palette.text.secondary,
+        }),
+      },
+    },
+
+    MuiListItemText: {
+      styleOverrides: {
+        primary: ({ theme }) => ({
+          color: theme.palette.text.primary,
+        }),
+        secondary: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+      },
+    },
+
+    MuiSwitch: {
+      styleOverrides: {
+        switchBase: ({ theme }) => ({
+          "&.Mui-checked": {
+            color: theme.palette.primary.contrastText,
+            "& + .MuiSwitch-track": {
+              backgroundImage: theme.palette.brand.gradient,
+            },
+          },
+        }),
+      },
+    },
+
+    MuiCheckbox: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+          "&.Mui-checked": {
+            color: theme.palette.primary.main,
+          },
+        }),
+      },
+    },
+
+    MuiRadio: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+          "&.Mui-checked": {
+            color: theme.palette.primary.main,
+          },
+        }),
+      },
+    },
+
+    MuiBackdrop: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: "rgba(32,37,34,0.45)",
+          backdropFilter: "blur(2px)",
+        }),
+      },
+    },
+
+    // =======================================================
+    // Accessibility helpers (contrast adjustments for key elements)
+    // =======================================================
+    MuiTypography: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.primary,
         }),
       },
     },

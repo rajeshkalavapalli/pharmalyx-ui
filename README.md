@@ -11,3 +11,7 @@
   # V0.0.3
  
  - addded new theme for sidebar   
+
+   # V0.0.4
+ 
+ - addded area page new create area dropdown for country , state , territoty , area name , area code etc ...
