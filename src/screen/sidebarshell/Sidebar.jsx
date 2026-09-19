@@ -751,20 +751,23 @@ function Sidebar() {
 
                             primary: {
 
-                                fontSize: 12.5,
+                                sx: {
 
-                                fontWeight:
-                                    active
-                                        ? 600
-                                        : 500,
+                                    fontSize: 12.5,
 
-                                lineHeight: 1.2,
+                                    fontWeight:
+                                        active
+                                            ? 600
+                                            : 500,
 
-                                whiteSpace: "nowrap",
+                                    lineHeight: 1.2,
 
-                                overflow: "hidden",
+                                    whiteSpace: "nowrap",
 
-                                textOverflow: "ellipsis",
+                                    overflow: "hidden",
+
+                                    textOverflow: "ellipsis",
+                                },
                             },
                         }}
                     />
@@ -1064,8 +1067,8 @@ function Sidebar() {
 
                     px:
                         collapsed
-                            ? 1
-                            : 1.5,
+                            ? 0.5
+                            : 2.5,
 
                     pb: 1.5,
 

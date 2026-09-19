@@ -23,12 +23,10 @@ import ConfirmationDialog from "../../../components/conformationDialog/Conformat
 import {
     getDesignation,
     createUser,
-    //getManagersByDivision,
+    getUsers,
 } from "../../Users/service/index";
 
-// import {
-//     getDivisionsByTerritory,
-// } from "../../Division/index";
+import { getDivisions } from "../../Division/index";
 
 import {
     getcountry,
@@ -526,10 +524,7 @@ function AddNewUser({ onUserCreated }) {
                 }
 
 
-                const response =
-                    await getDivisionsByTerritory(
-                        TerritoryId
-                    );
+                const response = await getDivisions();
 
 
                 console.log(
@@ -584,10 +579,7 @@ function AddNewUser({ onUserCreated }) {
                 }
 
 
-                const response =
-                    await getManagersByDivision(
-                        DivisionId
-                    );
+                const response = await getUsers();
 
 
                 console.log(
@@ -603,11 +595,16 @@ function AddNewUser({ onUserCreated }) {
                     response ||
                     [];
 
-
-                setManagers(
+                const managerRows =
                     Array.isArray(data)
                         ? data
-                        : []
+                        : Array.isArray(data?.recordset)
+                            ? data.recordset
+                            : [];
+
+
+                setManagers(
+                    managerRows
                 );
 
 
@@ -1632,13 +1629,20 @@ function AddNewUser({ onUserCreated }) {
                                         const ManagerId =
                                             manager.UserId ||
                                             manager.userId ||
+                                            manager.UserID ||
                                             manager.Id;
 
                                         const displayName =
                                             manager.UserName ||
+                                            manager.userName ||
                                             manager.Username ||
-                                            manager.FirstName ||
                                             manager.Name ||
+                                            [
+                                                manager.FirstName,
+                                                manager.LastName,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ") ||
                                             "-";
 
                                         return (

@@ -118,17 +118,9 @@ const navigation = [
     {
         label: 'Administration',
         children: [
-            { label: 'Users', path: '/admin/users' },
             { label: 'Roles & Permissions', path: '/admin/roles' },
-            {
-                label: 'Masters',
-                children: [
-                    { label: 'Divisions', path: '/admin/divisions' },
-                    { label: 'Areas', path: '/admin/Areas' },
-                ],
-            },
-            { label: 'Stockist / Retailer Masters', path: '/admin/stockist-retailer' },
             { label: 'Configuration', path: '/admin/configuration' },
+            { label: 'Stockist / Retailer Masters', path: '/admin/stockist-retailer' },
             { label: 'Approvals', path: '/admin/approvals' },
             { label: 'Integrations', path: '/admin/integrations' },
         ],

@@ -14,8 +14,22 @@ export const getstates = async (CountryId) =>{
 
 
 
-export const getTerritories = async () =>{
-    const response = await api.get(`app/get-territories`)
-    return response.data
+export const getTerritorie = async (StateId) => {
 
-}
+    const response =
+        await api.get(
+            `app/get-territorie/${StateId}`
+        );
+
+    return response.data;
+
+};
+
+
+export const previewAreaCode = async (TerritoryId, AreaName) => {
+    const response = await api.get(
+        `app/preview-area-code/${TerritoryId}/${AreaName}`
+    );
+
+    return response.data;
+};

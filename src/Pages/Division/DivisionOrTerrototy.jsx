@@ -7,8 +7,6 @@ import {
     Typography,
 } from "@mui/material";
 
-import { alpha } from "@mui/material/styles";
-
 import { useState } from "react";
 
 import TerritoryList from "../Territory/TerritoryList";
@@ -17,9 +15,11 @@ import AddNewDivision from "./AddNewDivision/AddNewDivision";
 import AddNewTerritoty from "../Territory/AddTerritory/AddNewTerritory";
 
 
-function DivisionOrTerritoty() {
+function DivisionOrTerritoty({
+    initialTab = "division",
+}) {
 
-    const [selectedTab, setSelectedTab] = useState("division");
+    const [selectedTab, setSelectedTab] = useState(initialTab);
 
     const [showDivision, setShowDivision] = useState(false);
 

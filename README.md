@@ -15,3 +15,7 @@
    # V0.0.4
  
  - addded area page new create area dropdown for country , state , territoty , area name , area code etc ...
+
+   # V0.0.5
+ 
+ - addded area page new create area dropdown for country , state , territoty ,  and added areacode generation added when user enter the area name 
