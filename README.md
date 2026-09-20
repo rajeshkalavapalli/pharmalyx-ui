@@ -23,3 +23,11 @@
  # V0.0.6
  
  - addded area page new create area dropdown for country , state , territoty  and added conformation warning as well snackbar 
+
+ # V0.0.7
+ 
+ - addded area page new create area dropdown for country , state , territoty  and added conformation warning as well snackbar
+ 
+  # V0.0.8
+ 
+ - addded user area maping  

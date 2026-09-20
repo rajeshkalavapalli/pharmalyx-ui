@@ -13,6 +13,11 @@ import AreaMaster from './Pages/Areas/AreaMaster.jsx';
 
 import Configuration from './Pages/Configuration/Configuration.jsx';
 
+import UserAreaMappingMaster from './Pages/UserAreaMapping/UserAreaMappingmaster.jsx';
+
+import UserAreaMappingList from './Pages/UserAreaMapping/UserAreaMappinglist.jsx';
+
+import UserAreaMapping from './Pages/UserAreaMapping/UserAreaMapping.jsx';
 
 function App() {
 
@@ -96,6 +101,22 @@ function App() {
                         path="admin/configuration"
                         element={<Configuration />}
                     />
+
+                    <Route
+                        path="admin/UserAreaMapping"
+                        element={<UserAreaMappingMaster />}
+                    >
+                        <Route
+                            path="list"
+                            element={<UserAreaMappingList />}
+                        />
+
+                        <Route
+                            path="mapping"
+                            element={<UserAreaMapping />}
+                        />
+                    </Route>
+
 
                 </Route>
 

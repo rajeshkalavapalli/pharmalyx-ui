@@ -15,6 +15,7 @@ import {
     MapRounded,
     LocationOnRounded,
     PeopleAltRounded,
+    AssignmentIndRounded,
     CloseRounded,
 } from "@mui/icons-material";
 
@@ -54,6 +55,13 @@ function Configuration() {
             icon: PeopleAltRounded,
             color: "success",
             path: "/admin/Users",
+        },
+        {
+            label: "User Area Mapping",
+            description: "Map users to territories and areas",
+            icon: AssignmentIndRounded,
+            color: "secondary",
+            path: "/admin/UserAreaMapping",
         },
     ];
 

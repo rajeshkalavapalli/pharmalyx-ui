@@ -868,7 +868,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
-                                label="Username"
+                                label="Username *"
                                 name="Username"
                                 placeholder="Enter username"
                                 sx={fieldSx}
@@ -936,7 +936,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
-                                label="Email"
+                                label="Email * "
                                 name="email"
                                 placeholder="Enter email address"
                                 type="email"
@@ -1038,7 +1038,7 @@ function AddNewUser({ onUserCreated }) {
 
                                     <TextField
                                         fullWidth
-                                        label="Mobile Number"
+                                        label="Mobile Number * "
                                         name="Mobile"
                                         placeholder="Enter mobile number"
                                         sx={fieldSx}
@@ -1074,7 +1074,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
-                                label="Password"
+                                label="Password * "
                                 name="password"
                                 placeholder="Enter password"
                                 type="password"
@@ -1182,7 +1182,7 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
-                                label="Designation"
+                                label="Designation * "
                                 name="Designation"
                                 value={
                                     formik.values.Designation
@@ -1302,7 +1302,7 @@ function AddNewUser({ onUserCreated }) {
 
                                     <TextField
                                         {...params}
-                                        label="Country"
+                                        label="Country * "
                                         sx={fieldSx}
                                         error={
                                             formik.touched.CountryId &&
@@ -1387,7 +1387,7 @@ function AddNewUser({ onUserCreated }) {
 
                                     <TextField
                                         {...params}
-                                        label="State"
+                                        label="State * "
                                         sx={fieldSx}
                                         error={
                                             formik.touched.StateId &&
@@ -1414,7 +1414,7 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
-                                label="Territory"
+                                label="Territory * "
                                 name="TerritoryId"
                                 value={
                                     formik.values.TerritoryId
@@ -1511,7 +1511,7 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
-                                label="Division"
+                                label="Division * "
                                 name="DivisionId"
                                 value={
                                     formik.values.DivisionId
