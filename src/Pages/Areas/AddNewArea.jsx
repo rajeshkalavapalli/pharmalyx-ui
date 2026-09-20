@@ -12,32 +12,96 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+
+import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
+import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 import {
     getcountry,
     getstates,
     getTerritorie,
+    createArea,
     previewAreaCode,
 
 } from "../Areas/index";
 
 
-function AddNewArea() {
+function AddNewArea({ onAreaCreated, onClose }) {
 
-    const [country, setCountry] = useState("");
+    const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
+    const [closeDialog, setCloseDialog] = useState(false);
+
     const [countries, setCountries] = useState([]);
-
-    const [state, setState] = useState("");
     const [states, setSates] = useState([]);
-
-    const [territory, setTerritory] = useState("");
     const [territories, setTerritories] = useState([]);
 
-    const [areaName, setAreaName] = useState("");
+    const validationSchema = yup.object({
+        CountryId: yup.string().required("Country is required"),
+        StateId: yup.string().required("State is required"),
+        TerritoryId: yup.string().required("Territory is required"),
+        AreaName: yup.string().trim().required("Area name is required"),
+    });
 
-    const [areaCode, setAreaCode] = useState("");
+    const formik = useFormik({
+        initialValues: {
+            CountryId: "",
+            StateId: "",
+            TerritoryId: "",
+            AreaName: "",
+            AreaCode: "",
+            IsActive: "YES",
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            try {
+                await createArea({
+                    TerritoryId: values.TerritoryId,
+                    AreaName: values.AreaName.trim(),
+                    AreaCode: values.AreaCode,
+                    IsActive: values.IsActive,
+                });
 
-    const [isActive, setIsActive] = useState("YES");
+                showSnackbar("Area created successfully", "success");
+                formik.resetForm();
+                setStates([]);
+                setTerritories([]);
+                if (onAreaCreated) {
+                    onAreaCreated();
+                } else {
+                    navigate("/admin/Areas/list");
+                }
+            } catch (err) {
+                console.log("error creating area", err);
+                showSnackbar(
+                    err.response?.status === 409
+                        ? "Area already exists"
+                        : err.response?.data?.message || "Area was not created",
+                    "error"
+                );
+            }
+        },
+    });
+
+    const { values, touched, errors, setFieldValue, handleBlur, handleSubmit } = formik;
+
+    const closeArea = () => {
+        formik.resetForm();
+        setStates([]);
+        setTerritories([]);
+        if (onClose) {
+            onClose();
+        } else {
+            navigate("/admin/Areas/list");
+        }
+    };
+
+    const handleClose = () => {
+        setCloseDialog(true);
+    };
 
 
     // =====================================================
@@ -100,23 +164,23 @@ function AddNewArea() {
     const handleAreaNameChange = async (e) => {
         const value = e.target.value;
 
-        setAreaName(value);
+        setFieldValue("AreaName", value);
 
-        if (!territory || !value.trim()) {
-            setAreaCode("");
+        if (!values.TerritoryId || !value.trim()) {
+            setFieldValue("AreaCode", "");
             return;
         }
 
         try {
             const result = await previewAreaCode(
-                territory,
+                values.TerritoryId,
                 value.trim()
             );
 
-            setAreaCode(result.areaCode || "");
+            setFieldValue("AreaCode", result.areaCode || "");
         } catch (err) {
             console.log("error previewing area code", err);
-            setAreaCode("");
+            setFieldValue("AreaCode", "");
         }
     };
 
@@ -144,20 +208,20 @@ function AddNewArea() {
 
     useEffect(() => {
 
-        if (!country) {
+        if (!values.CountryId) {
             return;
         }
 
         const loadStates = async () => {
 
-            const response = await getstates(country);
+            const response = await getstates(values.CountryId);
 
             setSates(response.states);
         };
 
         loadStates();
 
-    }, [country]);
+    }, [values.CountryId]);
 
 
     // =====================================================
@@ -166,20 +230,20 @@ function AddNewArea() {
 
     useEffect(() => {
 
-        if (!state) {
+        if (!values.StateId) {
             return;
         }
 
         const loadTerritories = async () => {
 
-            const response = await getTerritorie(state);
+            const response = await getTerritorie(values.StateId);
 
             setTerritories(response.territories);
         };
 
         loadTerritories();
 
-    }, [state]);
+    }, [values.StateId]);
 
 
     return (
@@ -341,11 +405,17 @@ function AddNewArea() {
                             </InputLabel>
 
                             <Select
-                                value={country}
+                                name="CountryId"
+                                value={values.CountryId}
                                 label="Country"
-                                onChange={(event) =>
-                                    setCountry(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setFieldValue("CountryId", event.target.value);
+                                    setFieldValue("StateId", "");
+                                    setFieldValue("TerritoryId", "");
+                                    setTerritories([]);
+                                }}
+                                onBlur={handleBlur}
+                                error={touched.CountryId && Boolean(errors.CountryId)}
                             >
 
                                 <MenuItem value="">
@@ -381,11 +451,15 @@ function AddNewArea() {
                             </InputLabel>
 
                             <Select
-                                value={state}
+                                name="StateId"
+                                value={values.StateId}
                                 label="State"
-                                onChange={(event) =>
-                                    setState(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setFieldValue("StateId", event.target.value);
+                                    setFieldValue("TerritoryId", "");
+                                }}
+                                onBlur={handleBlur}
+                                error={touched.StateId && Boolean(errors.StateId)}
                             >
 
                                 <MenuItem value="">
@@ -421,12 +495,15 @@ function AddNewArea() {
                             </InputLabel>
 
                             <Select
-                                value={territory}
+                                name="TerritoryId"
+                                value={values.TerritoryId}
                                 label="Territory"
                                 onChange={(event) => {
-                                    setTerritory(event.target.value);
-                                    setAreaCode("");
+                                    setFieldValue("TerritoryId", event.target.value);
+                                    setFieldValue("AreaCode", "");
                                 }}
+                                onBlur={handleBlur}
+                                error={touched.TerritoryId && Boolean(errors.TerritoryId)}
                             >
 
                                 <MenuItem value="">
@@ -521,8 +598,12 @@ function AddNewArea() {
                             fullWidth
                             size="small"
                             label="Area Name"
-                            value={areaName}
+                            name="AreaName"
+                            value={values.AreaName}
                             onChange={handleAreaNameChange}
+                            onBlur={handleBlur}
+                            error={touched.AreaName && Boolean(errors.AreaName)}
+                            helperText={touched.AreaName ? errors.AreaName : ""}
                             sx={fieldSx}
                         />
 
@@ -533,7 +614,7 @@ function AddNewArea() {
                             fullWidth
                             size="small"
                             label="Area Code"
-                            value={areaCode}
+                            value={values.AreaCode}
                             placeholder="Auto-generated"
                             helperText="Area code will be generated automatically."
                             InputProps={{
@@ -593,7 +674,7 @@ function AddNewArea() {
                                 <Button
                                     type="button"
                                     onClick={() =>
-                                        setIsActive("YES")
+                                        setFieldValue("IsActive", "YES")
                                     }
                                     disableRipple
                                     sx={{
@@ -608,12 +689,12 @@ function AddNewArea() {
                                         fontWeight: 600,
 
                                         color:
-                                            isActive === "YES"
+                                            values.IsActive === "YES"
                                                 ? "success.main"
                                                 : "text.secondary",
 
                                         backgroundColor:
-                                            isActive === "YES"
+                                            values.IsActive === "YES"
                                                 ? "action.selected"
                                                 : "transparent",
 
@@ -632,7 +713,7 @@ function AddNewArea() {
                                             mr: 0.75,
 
                                             backgroundColor:
-                                                isActive === "YES"
+                                                values.IsActive === "YES"
                                                     ? "success.main"
                                                     : "text.disabled",
                                         }}
@@ -656,7 +737,7 @@ function AddNewArea() {
                                 <Button
                                     type="button"
                                     onClick={() =>
-                                        setIsActive("NO")
+                                        setFieldValue("IsActive", "NO")
                                     }
                                     disableRipple
                                     sx={{
@@ -671,12 +752,12 @@ function AddNewArea() {
                                         fontWeight: 600,
 
                                         color:
-                                            isActive === "NO"
+                                            values.IsActive === "NO"
                                                 ? "error.main"
                                                 : "text.secondary",
 
                                         backgroundColor:
-                                            isActive === "NO"
+                                            values.IsActive === "NO"
                                                 ? "action.selected"
                                                 : "transparent",
 
@@ -695,7 +776,7 @@ function AddNewArea() {
                                             mr: 0.75,
 
                                             backgroundColor:
-                                                isActive === "NO"
+                                                values.IsActive === "NO"
                                                     ? "error.main"
                                                     : "text.disabled",
                                         }}
@@ -738,17 +819,32 @@ function AddNewArea() {
                 <Button
                     variant="outlined"
                     color="inherit"
+                    onClick={handleClose}
                 >
                     Close
                 </Button>
 
                 <Button
                     variant="contained"
+                    type="button"
+                    onClick={() => handleSubmit()}
                 >
                     Create Area
                 </Button>
 
             </Box>
+
+            <ConfirmationDialog
+                open={closeDialog}
+                title="Close Area Creation"
+                message="Are you sure you want to close? The entered data will be lost."
+                confirmText="Close"
+                onCancel={() => setCloseDialog(false)}
+                onConfirm={() => {
+                    setCloseDialog(false);
+                    closeArea();
+                }}
+            />
 
         </Paper>
     );

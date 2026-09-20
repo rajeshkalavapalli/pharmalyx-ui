@@ -2,10 +2,13 @@ import {
     Box,
     Tab,
     Tabs,
-    Typography,
+    IconButton,
+    Tooltip,
 } from "@mui/material";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CloseRounded from "@mui/icons-material/CloseRounded";
 
 import AddNewUser from "./AddNewUser/AddNewUser";
 import UserList from "./editNewUser/UserList";
@@ -13,6 +16,7 @@ import UserList from "./editNewUser/UserList";
 
 function Users() {
 
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("list");
 
     const [selectedUser, setSelecetdUser] = useState(null);
@@ -70,56 +74,31 @@ function Users() {
             }}
         >
 
-            {/* ================================================= */}
-            {/* PAGE HEADER */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-                    mb: 2.5,
-                }}
-            >
-
-                <Typography
-                    variant="h5"
-                    sx={{
-                        fontSize: {
-                            xs: 20,
-                            md: 22,
-                        },
-
-                        fontWeight: 700,
-
-                        color: "text.primary",
-
-                        letterSpacing: "-0.025em",
-
-                        lineHeight: 1.25,
-                    }}
-                >
-                    Users
-                </Typography>
-
-
-                <Typography
-                    variant="body2"
-                    sx={{
-                        mt: 0.6,
-
-                        fontSize: 13,
-
-                        color: "text.secondary",
-
-                        lineHeight: 1.5,
-
-                        maxWidth: 620,
-                    }}
-                >
-                    View and manage registered users.
-                </Typography>
-
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Tooltip title="Close">
+                    <IconButton
+                        onClick={() => navigate(-1)}
+                        aria-label="Close users"
+                        size="small"
+                        sx={{
+                            width: 36,
+                            height: 36,
+                            mb: 1.5,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1.5,
+                            color: "text.secondary",
+                            "&:hover": {
+                                color: "primary.main",
+                                backgroundColor: "action.hover",
+                                borderColor: "primary.main",
+                            },
+                        }}
+                    >
+                        <CloseRounded sx={{ fontSize: 19 }} />
+                    </IconButton>
+                </Tooltip>
             </Box>
-
 
             {/* ================================================= */}
             {/* MODULE NAVIGATION */}

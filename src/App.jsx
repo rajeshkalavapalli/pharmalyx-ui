@@ -10,8 +10,6 @@ import Users from './Pages/Users/Users.jsx';
 import DivisionOrTerritoty from './Pages/Division/DivisionOrTerrototy.jsx';
 
 import AreaMaster from './Pages/Areas/AreaMaster.jsx';
-import ListAreas from './Pages/Areas/ListAreas.jsx';
-import AddNewArea from './Pages/Areas/AddNewArea.jsx';
 
 import Configuration from './Pages/Configuration/Configuration.jsx';
 
@@ -83,12 +81,12 @@ function App() {
 
                     <Route
                         path="admin/Areas/list"
-                        element={<ListAreas />}
+                        element={<AreaMaster initialView="list" />}
                     />
 
                     <Route
                         path="admin/Areas/add"
-                        element={<AddNewArea />}
+                        element={<AreaMaster initialView="add" />}
                     />
 
 

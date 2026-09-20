@@ -33,3 +33,13 @@ export const previewAreaCode = async (TerritoryId, AreaName) => {
 
     return response.data;
 };
+
+export const createArea = async (AreaPayload) => {
+    const response = await api.post('app/create-Area', AreaPayload);
+    return response.data;
+}
+
+export const getAreas = async () => {
+    const response = await api.get('app/get-areas-code');
+    return response.data;
+};

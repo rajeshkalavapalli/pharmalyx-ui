@@ -5,14 +5,22 @@ import {
     ToggleButton,
     Paper,
     Divider,
+    IconButton,
+    Tooltip,
 } from "@mui/material";
 
+import CloseRounded from "@mui/icons-material/CloseRounded";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+import ListAreas from "./ListAreas";
+import AddNewArea from "./AddNewArea";
 
 
-function AreaMaster() {
+function AreaMaster({ initialView = "list" }) {
 
     const navigate = useNavigate();
+    const [activeView, setActiveView] = useState(initialView);
 
     return (
         <Paper
@@ -27,58 +35,6 @@ function AreaMaster() {
                 boxShadow: "0 8px 30px rgba(32, 37, 34, 0.055)",
             }}
         >
-
-            {/* Header */}
-
-            <Box
-                sx={{
-                    px: { xs: 2, sm: 3, md: 4 },
-                    py: 3,
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 1.5,
-                }}
-            >
-
-                <Box
-                    sx={{
-                        width: 4,
-                        minHeight: 42,
-                        borderRadius: 2,
-                        backgroundColor: "primary.main",
-                    }}
-                />
-
-                <Box>
-
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            fontWeight: 700,
-                            color: "text.primary",
-                            lineHeight: 1.3,
-                        }}
-                    >
-                        Area Master
-                    </Typography>
-
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            mt: 0.5,
-                            color: "text.secondary",
-                            fontSize: 13,
-                        }}
-                    >
-                        Create and manage geographical working areas.
-                    </Typography>
-
-                </Box>
-
-            </Box>
-
-
-            <Divider />
 
 
             {/* Navigation */}
@@ -114,6 +70,7 @@ function AreaMaster() {
 
                 <ToggleButtonGroup
                     exclusive
+                    value={activeView}
                     sx={{
                         "& .MuiToggleButton-root": {
                             textTransform: "none",
@@ -144,7 +101,7 @@ function AreaMaster() {
                     <ToggleButton
                         value="list"
                         onClick={() => {
-                            navigate("/admin/Areas/list");
+                            setActiveView("list");
                         }}
                     >
                         List Areas
@@ -154,7 +111,7 @@ function AreaMaster() {
                     <ToggleButton
                         value="add"
                         onClick={() => {
-                            navigate("/admin/Areas/add");
+                            setActiveView("add");
                         }}
                     >
                         + Add New Area
@@ -162,6 +119,19 @@ function AreaMaster() {
 
                 </ToggleButtonGroup>
 
+            </Box>
+
+            <Divider />
+
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: 3 }}>
+                {activeView === "add" ? (
+                    <AddNewArea
+                        onAreaCreated={() => setActiveView("list")}
+                        onClose={() => setActiveView("list")}
+                    />
+                ) : (
+                    <ListAreas onAddArea={() => setActiveView("add")} />
+                )}
             </Box>
 
         </Paper>
