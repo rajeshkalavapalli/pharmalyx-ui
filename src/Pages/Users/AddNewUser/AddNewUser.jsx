@@ -14,7 +14,7 @@ import { alpha } from "@mui/material/styles";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import * as countryCodes from "country-codes-list";
 
@@ -124,6 +124,7 @@ function AddNewUser({ onUserCreated }) {
     const [territories, setTerritories] = useState([]);
     const [divisions, setDivisions] = useState([]);
     const [managers, setManagers] = useState([]);
+    const territoryRequestRef = useRef(0);
 
 
     /* ================================================= */
@@ -192,12 +193,16 @@ function AddNewUser({ onUserCreated }) {
             .string()
             .required("Country is required"),
 
-        StateId: yup
-            .string()
+        StateIds: yup
+            .array()
+            .of(yup.string())
+            .min(1, "State is required")
             .required("State is required"),
 
-        TerritoryId: yup
-            .string()
+        TerritoryIds: yup
+            .array()
+            .of(yup.string())
+            .min(1, "Territory is required")
             .required("Territory is required"),
 
         DivisionId: yup
@@ -247,11 +252,11 @@ function AddNewUser({ onUserCreated }) {
                 CountryId:
                     values.CountryId,
 
-                StateId:
-                    values.StateId,
+                StateIds:
+                    values.StateIds,
 
-                TerritoryId:
-                    values.TerritoryId,
+                TerritoryIds:
+                    values.TerritoryIds,
 
                 DivisionId:
                     values.DivisionId,
@@ -270,18 +275,29 @@ function AddNewUser({ onUserCreated }) {
                     userData
                 );
 
+            const payload =
+                result?.createUser || result;
 
             console.log(
                 "created user details",
-                result
+                payload
             );
 
+            if (
+                payload?.success === false ||
+                (!payload?.success && !payload?.UserId && !payload?.message)
+            ) {
+                throw new Error(
+                    payload?.message ||
+                    "User creation failed"
+                );
+            }
 
             showSnackbar(
+                payload?.message ||
                 "User created successfully",
                 "success"
             );
-
 
             onUserCreated();
 
@@ -319,8 +335,8 @@ function AddNewUser({ onUserCreated }) {
             Designation: "",
             countryCode: "",
             CountryId: "",
-            StateId: "",
-            TerritoryId: "",
+            StateIds: [],
+            TerritoryIds: [],
             DivisionId: "",
 
         },
@@ -453,11 +469,11 @@ function AddNewUser({ onUserCreated }) {
     /* LOAD TERRITORIES */
     /* ================================================= */
 
-    const loadTerritories = async (StateId) => {
+    const loadTerritories = async (StateIds) => {
 
         try {
 
-            if (!StateId) {
+            if (!StateIds || !Array.isArray(StateIds)) {
 
                 setTerritories([]);
 
@@ -465,29 +481,46 @@ function AddNewUser({ onUserCreated }) {
 
             }
 
+            const requestId = ++territoryRequestRef.current;
 
-            const response =
-                await getTerritorie(
-                    StateId
-                );
+
+            const responses = await Promise.all(
+                StateIds.map((StateId) =>
+                    getTerritorie(StateId)
+                )
+            );
 
 
             console.log(
                 "Territories API data:",
-                response
+                responses
             );
 
 
-            const data =
+            const data = responses.flatMap((response) =>
                 response?.territories ||
                 response?.result ||
                 response ||
-                [];
+                []
+            );
+
+            const uniqueTerritories = Array.from(
+                new Map(
+                    data.map((territory) => [
+                        territory.TerritoryId,
+                        territory,
+                    ])
+                ).values()
+            );
+
+            if (requestId !== territoryRequestRef.current) {
+                return;
+            }
 
 
             setTerritories(
-                Array.isArray(data)
-                    ? data
+                Array.isArray(uniqueTerritories)
+                    ? uniqueTerritories
                     : []
             );
 
@@ -602,10 +635,17 @@ function AddNewUser({ onUserCreated }) {
                             ? data.recordset
                             : [];
 
+                const filteredManagers = managerRows.filter((manager) => {
+                    const managerDivisionId =
+                        manager.DivisionId ||
+                        manager.divisionId ||
+                        manager.DivisionID ||
+                        manager.Division_Id;
 
-                setManagers(
-                    managerRows
-                );
+                    return managerDivisionId === DivisionId;
+                });
+
+                setManagers(filteredManagers);
 
 
             } catch (err) {
@@ -684,6 +724,8 @@ function AddNewUser({ onUserCreated }) {
     return (
 
         <Paper
+            component="form"
+            onSubmit={formik.handleSubmit}
             elevation={0}
             sx={{
                 width: "100%",
@@ -1260,13 +1302,13 @@ function AddNewUser({ onUserCreated }) {
                                     );
 
                                     formik.setFieldValue(
-                                        "StateId",
-                                        ""
+                                        "StateIds",
+                                        []
                                     );
 
                                     formik.setFieldValue(
-                                        "TerritoryId",
-                                        ""
+                                        "TerritoryIds",
+                                        []
                                     );
 
                                     formik.setFieldValue(
@@ -1327,12 +1369,12 @@ function AddNewUser({ onUserCreated }) {
                         <Grid size={{ xs: 12, md: 6 }}>
 
                             <Autocomplete
+                                multiple
                                 options={states}
                                 value={
-                                    states.find(
+                                    states.filter(
                                         (state) =>
-                                            state.StateId ===
-                                            formik.values.StateId
+                                            formik.values.StateIds.includes(state.StateId)
                                     ) || null
                                 }
                                 disabled={
@@ -1344,15 +1386,15 @@ function AddNewUser({ onUserCreated }) {
                                 onChange={(event, value) => {
 
                                     formik.setFieldValue(
-                                        "StateId",
+                                        "StateIds",
                                         value
-                                            ? value.StateId
-                                            : ""
+                                            ? value.map((state) => state.StateId)
+                                            : []
                                     );
 
                                     formik.setFieldValue(
-                                        "TerritoryId",
-                                        ""
+                                        "TerritoryIds",
+                                        []
                                     );
 
                                     formik.setFieldValue(
@@ -1368,10 +1410,10 @@ function AddNewUser({ onUserCreated }) {
                                     setDivisions([]);
                                     setManagers([]);
 
-                                    if (value) {
+                                    if (value.length > 0) {
 
                                         loadTerritories(
-                                            value.StateId
+                                            value.map((state) => state.StateId)
                                         );
 
                                     }
@@ -1379,7 +1421,7 @@ function AddNewUser({ onUserCreated }) {
                                 }}
                                 onBlur={() =>
                                     formik.setFieldTouched(
-                                        "StateId",
+                                        "StateIds",
                                         true
                                     )
                                 }
@@ -1390,14 +1432,14 @@ function AddNewUser({ onUserCreated }) {
                                         label="State * "
                                         sx={fieldSx}
                                         error={
-                                            formik.touched.StateId &&
+                                            formik.touched.StateIds &&
                                             Boolean(
-                                                formik.errors.StateId
+                                                formik.errors.StateIds
                                             )
                                         }
                                         helperText={
-                                            formik.touched.StateId &&
-                                            formik.errors.StateId
+                                            formik.touched.StateIds &&
+                                            formik.errors.StateIds
                                         }
                                     />
 
@@ -1411,22 +1453,28 @@ function AddNewUser({ onUserCreated }) {
 
                         <Grid size={{ xs: 12, md: 6 }}>
 
-                            <TextField
-                                fullWidth
-                                select
-                                label="Territory * "
-                                name="TerritoryId"
+                            <Autocomplete
+                                multiple
+                                options={territories}
                                 value={
-                                    formik.values.TerritoryId
+                                    territories.filter(
+                                        (territory) =>
+                                            formik.values.TerritoryIds.includes(
+                                                territory.TerritoryId
+                                            )
+                                    )
                                 }
-                                onChange={(event) => {
+                                onChange={(event, value) => {
 
-                                    const TerritoryId =
-                                        event.target.value;
+                                    const TerritoryIds =
+                                        value.map(
+                                            (territory) =>
+                                                territory.TerritoryId
+                                        );
 
                                     formik.setFieldValue(
-                                        "TerritoryId",
-                                        TerritoryId
+                                        "TerritoryIds",
+                                        TerritoryIds
                                     );
 
                                     formik.setFieldValue(
@@ -1434,72 +1482,61 @@ function AddNewUser({ onUserCreated }) {
                                         ""
                                     );
 
-                                    setReportingManager(
-                                        ""
-                                    );
+                                    setReportingManager("");
 
                                     setDivisions([]);
                                     setManagers([]);
 
-                                    if (TerritoryId) {
+                                    if (TerritoryIds.length > 0) {
 
                                         loadDivisionsByTerritory(
-                                            TerritoryId
+                                            TerritoryIds
                                         );
 
                                     }
 
                                 }}
-                                onBlur={
-                                    formik.handleBlur
+                                onBlur={() =>
+                                    formik.setFieldTouched(
+                                        "TerritoryIds",
+                                        true
+                                    )
                                 }
                                 disabled={
-                                    !formik.values.StateId
+                                    !formik.values.StateIds ||
+                                    formik.values.StateIds.length === 0
                                 }
-                                error={
-                                    formik.touched.TerritoryId &&
-                                    Boolean(
-                                        formik.errors.TerritoryId
-                                    )
+                                getOptionLabel={(territory) =>
+                                    territory.TerritoryName || ""
                                 }
-                                helperText={
-                                    formik.touched.TerritoryId &&
-                                    formik.errors.TerritoryId
+                                isOptionEqualToValue={(
+                                    option,
+                                    value
+                                ) =>
+                                    option.TerritoryId ===
+                                    value.TerritoryId
                                 }
-                                sx={fieldSx}
-                            >
+                                renderInput={(params) => (
 
-                                <MenuItem value="">
-                                    {
-                                        !formik.values.CountryId
-                                            ? "Select Country First"
-                                            : !formik.values.StateId
-                                                ? "Select State First"
-                                                : "Select Territory"
-                                    }
-                                </MenuItem>
+                                    <TextField
+                                        {...params}
+                                        fullWidth
+                                        label="Territory *"
+                                        sx={fieldSx}
+                                        error={
+                                            formik.touched.TerritoryIds &&
+                                            Boolean(
+                                                formik.errors.TerritoryIds
+                                            )
+                                        }
+                                        helperText={
+                                            formik.touched.TerritoryIds &&
+                                            formik.errors.TerritoryIds
+                                        }
+                                    />
 
-                                {territories.map(
-                                    (territory) => (
-
-                                        <MenuItem
-                                            key={
-                                                territory.TerritoryId
-                                            }
-                                            value={
-                                                territory.TerritoryId
-                                            }
-                                        >
-                                            {
-                                                territory.TerritoryName ||
-                                                "-"
-                                            }
-                                        </MenuItem>
-
-                                    )
                                 )}
-
-                            </TextField>
+                            />
 
                         </Grid>
 
@@ -1545,7 +1582,8 @@ function AddNewUser({ onUserCreated }) {
                                     formik.handleBlur
                                 }
                                 disabled={
-                                    !formik.values.TerritoryId
+                                    !formik.values.TerritoryIds ||
+                                    formik.values.TerritoryIds.length === 0
                                 }
                                 error={
                                     formik.touched.DivisionId &&
@@ -1562,7 +1600,8 @@ function AddNewUser({ onUserCreated }) {
 
                                 <MenuItem value="">
                                     {
-                                        !formik.values.TerritoryId
+                                        !formik.values.TerritoryIds ||
+                                        formik.values.TerritoryIds.length === 0
                                             ? "Select Territory First"
                                             : "Select Division"
                                     }
@@ -1724,10 +1763,8 @@ function AddNewUser({ onUserCreated }) {
                 {/* CREATE USER */}
 
                 <Button
+                    type="submit"
                     variant="contained"
-                    onClick={
-                        formik.handleSubmit
-                    }
                     disabled={
                         formik.isSubmitting
                     }

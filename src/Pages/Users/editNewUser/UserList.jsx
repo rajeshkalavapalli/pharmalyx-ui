@@ -1207,6 +1207,7 @@ function UserList({ onViewUser }) {
 
                                         <Tooltip
                                             title={
+                                                user.ManagerName ||
                                                 user.ManagerId ||
                                                 ""
                                             }
@@ -1214,7 +1215,7 @@ function UserList({ onViewUser }) {
                                             arrow
 
                                             disableHoverListener={
-                                                !user.ManagerId
+                                                !(user.ManagerName || user.ManagerId)
                                             }
                                         >
 
@@ -1240,6 +1241,7 @@ function UserList({ onViewUser }) {
                                                 }}
                                             >
                                                 {
+                                                    user.ManagerName ||
                                                     user.ManagerId ||
                                                     "-"
                                                 }

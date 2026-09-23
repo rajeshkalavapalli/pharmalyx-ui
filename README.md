@@ -31,3 +31,7 @@
   # V0.0.8
  
  - addded user area maping  
+
+  # V0.0.9
+ 
+ - fixed multiple states and multiple territoty selected updated  
