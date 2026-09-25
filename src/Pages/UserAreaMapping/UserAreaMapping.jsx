@@ -1,21 +1,45 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Box,
+    Button,
+    Checkbox,
+    Chip,
     FormControl,
     InputLabel,
     MenuItem,
+    Paper,
     Select,
+    TextField,
     Typography,
 } from "@mui/material";
 
-import { getUsers } from "../UserAreaMapping/index.js";
+import { getAreas, getTerritories, getUsers } from "./index.js";
+import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
 function UserAreaMapping() {
 
+    const toIdArray = (value) => {
+        if (Array.isArray(value)) {
+            return value;
+        }
+
+        if (typeof value === "string") {
+            return value.split(",").map((id) => id.trim()).filter(Boolean);
+        }
+
+        return [];
+    };
+
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState("");
-    console.log("selectedUser", selectedUser);
+    const [territories, setTerritories] = useState([]);
+    const [areas, setAreas] = useState([]);
+    const [selectedTerritories, setSelectedTerritories] = useState([]);
+    const [selectedAreas, setSelectedAreas] = useState([]);
+    const [territorySearch, setTerritorySearch] = useState("");
+    const [areaSearch, setAreaSearch] = useState("");
+    const { showSnackbar } = useSnackbar();
 
     const selectedUserDetails = users.find(
         (user) => user.userId === selectedUser
@@ -23,16 +47,114 @@ function UserAreaMapping() {
 
     useEffect(() => {
         const getusers = async () => {
-            const usersList = await getUsers();
-            console.log("usersusersList from users", usersList);
-            setUsers(usersList.result);
+            try {
+                const [usersList, territoriesList, areasList] = await Promise.all([
+                    getUsers(),
+                    getTerritories(),
+                    getAreas(),
+                ]);
 
-        }
+                setUsers(Array.isArray(usersList?.result) ? usersList.result : []);
+                setTerritories(
+                    Array.isArray(territoriesList?.territories)
+                        ? territoriesList.territories
+                        : Array.isArray(territoriesList)
+                            ? territoriesList
+                            : []
+                );
+                setAreas(
+                    Array.isArray(areasList?.result)
+                        ? areasList.result
+                        : Array.isArray(areasList)
+                            ? areasList
+                            : []
+                );
+            } catch (error) {
+                console.error("Error loading user area mapping data", error);
+                showSnackbar("Unable to load mapping data", "error");
+            }
 
-        getusers();
+            };
 
+            getusers();
 
-    }, []);
+        }, [showSnackbar]);
+
+        const mappedTerritoryIds = toIdArray(selectedUserDetails?.TerritoryIds);
+
+        const availableTerritories = useMemo(() => {
+            const byUser = mappedTerritoryIds.length > 0
+                ? territories.filter((territory) =>
+                    mappedTerritoryIds.includes(territory.TerritoryId)
+                )
+                : [];
+
+            return byUser.filter((territory) =>
+                (territory.TerritoryName || "")
+                    .toLowerCase()
+                    .includes(territorySearch.trim().toLowerCase())
+            );
+        }, [mappedTerritoryIds, territories, territorySearch]);
+
+        const availableAreas = useMemo(() => {
+            const selectedTerritorySet = new Set(selectedTerritories);
+
+            return areas.filter((area) =>
+                selectedTerritorySet.has(area.TerritoryId) &&
+                (area.AreaName || "")
+                    .toLowerCase()
+                    .includes(areaSearch.trim().toLowerCase())
+            );
+        }, [areas, selectedTerritories, areaSearch]);
+
+        const handleUserChange = (event) => {
+            const userId = event.target.value;
+            const user = users.find((item) => item.userId === userId);
+
+            setSelectedUser(userId);
+            setSelectedTerritories([]);
+            setSelectedAreas([]);
+            setTerritorySearch("");
+            setAreaSearch("");
+        };
+
+        const toggleTerritory = (territoryId) => {
+            setSelectedTerritories((current) =>
+                current.includes(territoryId)
+                    ? current.filter((id) => id !== territoryId)
+                    : [...current, territoryId]
+            );
+            setSelectedAreas([]);
+        };
+
+        const toggleArea = (areaId) => {
+            setSelectedAreas((current) =>
+                current.includes(areaId)
+                    ? current.filter((id) => id !== areaId)
+                    : [...current, areaId]
+            );
+        };
+
+        const handleReset = () => {
+            setSelectedTerritories([]);
+            setSelectedAreas([]);
+            setTerritorySearch("");
+            setAreaSearch("");
+        };
+
+        const handleSave = () => {
+            if (!selectedUser) {
+                showSnackbar("Select a user first", "error");
+                return;
+            }
+
+            if (selectedTerritories.length === 0 || selectedAreas.length === 0) {
+                showSnackbar("Select at least one territory and area", "error");
+                return;
+            }
+
+            showSnackbar("Save Mapping API is not connected yet", "info");
+        };
 
 
     return (
@@ -47,6 +169,8 @@ function UserAreaMapping() {
                     backgroundColor: theme.palette.background.paper,
                     boxShadow: theme.card.shadow,
                     overflow: "hidden",
+                    flexWrap: "wrap",
+                    gap: 0,
                 })}
             >
                 {/* User */}
@@ -113,7 +237,7 @@ function UserAreaMapping() {
                         <Select
                             label="Select User"
                             value={selectedUser}
-                            onChange={(e) => setSelectedUser(e.target.value)}
+                            onChange={handleUserChange}
                         >
                             {users.map((user) => (
                                 <MenuItem
@@ -194,7 +318,8 @@ function UserAreaMapping() {
                                 fontWeight: 600,
                             })}
                         >
-                            -
+                            {selectedUserDetails?.Status ||
+                                (selectedUserDetails?.IsActive ? "Active" : "-")}
                         </Typography>
                     </Box>
                 </Box>
@@ -206,35 +331,258 @@ function UserAreaMapping() {
                         px: 3,
                         borderRight: "1px solid",
                         borderColor: theme.palette.border.subtle,
+                        opacity: selectedUser ? 1 : 0.55,
                     })}
                 >
-                    <Typography
-                        variant="h6"
-                        sx={(theme) => ({
-                            color: theme.palette.text.primary,
-                            fontWeight: 700,
-                        })}
-                    >
-                        Select Territory
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 1 }}>
+                        <Box
+                            sx={(theme) => ({
+                                width: 34,
+                                height: 34,
+                                flexShrink: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: "50%",
+                                backgroundColor: selectedUser
+                                    ? theme.palette.primary.main
+                                    : theme.palette.action.disabledBackground,
+                                color: selectedUser
+                                    ? theme.palette.primary.contrastText
+                                    : theme.palette.text.disabled,
+                                fontSize: 14,
+                                fontWeight: 700,
+                            })}
+                        >
+                            2
+                        </Box>
+                        <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 700 }}>
+                            Select Territories
+                        </Typography>
+                        <Chip size="small" label={`${selectedTerritories.length} selected`} sx={{ ml: "auto" }} />
+                    </Box>
+                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 2.5 }}>
+                        {selectedUser ? "Select one or more territories for the user." : "Select a user to continue."}
                     </Typography>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="Search territories"
+                        value={territorySearch}
+                        onChange={(event) => setTerritorySearch(event.target.value)}
+                        disabled={!selectedUser}
+                        sx={{ mb: 1.5 }}
+                    />
+                    <Paper variant="outlined" sx={{ maxHeight: 300, overflow: "auto" }}>
+                        {availableTerritories.map((territory) => (
+                            <Box key={territory.TerritoryId} sx={{ display: "flex", alignItems: "center", px: 1 }}>
+                                <Checkbox
+                                    checked={selectedTerritories.includes(territory.TerritoryId)}
+                                    onChange={() => toggleTerritory(territory.TerritoryId)}
+                                    disabled={!selectedUser}
+                                />
+                                <Typography variant="body2">{territory.TerritoryName}</Typography>
+                            </Box>
+                        ))}
+                        {availableTerritories.length === 0 && (
+                            <Typography variant="body2" sx={{ p: 2, color: "text.secondary" }}>
+                                {selectedUser ? "No territories available" : "Select a user to load territories"}
+                            </Typography>
+                        )}
+                    </Paper>
                 </Box>
 
                 {/* Area */}
                 <Box
-                    sx={{
+                    sx={(theme) => ({
                         flex: 1,
                         pl: 3,
+                        opacity: selectedTerritories.length > 0 ? 1 : 0.55,
+                    })}
+                >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 1 }}>
+                        <Box
+                            sx={(theme) => ({
+                                width: 34,
+                                height: 34,
+                                flexShrink: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: "50%",
+                                backgroundColor: selectedTerritories.length > 0
+                                    ? theme.palette.primary.main
+                                    : theme.palette.action.disabledBackground,
+                                color: selectedTerritories.length > 0
+                                    ? theme.palette.primary.contrastText
+                                    : theme.palette.text.disabled,
+                                fontSize: 14,
+                                fontWeight: 700,
+                            })}
+                        >
+                            3
+                        </Box>
+                        <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 700 }}>
+                            Select Areas
+                        </Typography>
+                        <Chip size="small" label={`${selectedAreas.length} selected`} sx={{ ml: "auto" }} />
+                    </Box>
+                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 2.5 }}>
+                        {selectedTerritories.length > 0 ? "Select areas under the selected territories." : "Select territories to continue."}
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="Search areas"
+                        value={areaSearch}
+                        onChange={(event) => setAreaSearch(event.target.value)}
+                        disabled={selectedTerritories.length === 0}
+                        sx={{ mb: 1.5 }}
+                    />
+                    <Paper variant="outlined" sx={{ maxHeight: 300, overflow: "auto" }}>
+                        {availableAreas.map((area) => (
+                            <Box key={area.AreaId} sx={{ display: "flex", alignItems: "center", px: 1 }}>
+                                <Checkbox
+                                    checked={selectedAreas.includes(area.AreaId)}
+                                    onChange={() => toggleArea(area.AreaId)}
+                                    disabled={selectedTerritories.length === 0}
+                                />
+                                <Typography variant="body2">{area.AreaName}</Typography>
+                            </Box>
+                        ))}
+                        {availableAreas.length === 0 && (
+                            <Typography variant="body2" sx={{ p: 2, color: "text.secondary" }}>
+                                Select territories to load areas
+                            </Typography>
+                        )}
+                    </Paper>
+                </Box>
+            </Box>
+            <Box
+                sx={(theme) => ({
+                    mt: 3,
+                    minHeight: 76,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0,
+                    border: "1px solid",
+                    borderColor: theme.palette.border.default,
+                    borderRadius: 1.5,
+                    backgroundColor: theme.palette.background.paper,
+                    overflow: "hidden",
+                })}
+            >
+                <Typography
+                    sx={{
+                        px: { xs: 1.5, sm: 2 },
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "text.primary",
+                        whiteSpace: "nowrap",
                     }}
                 >
+                    Mapping Summary
+                </Typography>
+
+                <Box
+                    sx={{
+                        width: "1px",
+                        height: 38,
+                        backgroundColor: "divider",
+                    }}
+                />
+
+                <Box sx={{ px: { xs: 1.25, sm: 2 }, minWidth: 110 }}>
                     <Typography
-                        variant="h6"
-                        sx={(theme) => ({
-                            color: theme.palette.text.primary,
-                            fontWeight: 700,
-                        })}
+                        sx={{
+                            fontSize: 10,
+                            fontWeight: 500,
+                            color: "text.secondary",
+                            lineHeight: 1.2,
+                        }}
                     >
-                        Select Area
+                        User
                     </Typography>
+                    <Typography
+                        sx={{
+                            mt: 0.35,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: "text.primary",
+                            lineHeight: 1.2,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxWidth: 130,
+                        }}
+                    >
+                        {selectedUserDetails?.UserName || "-"}
+                    </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        width: "1px",
+                        height: 38,
+                        backgroundColor: "divider",
+                    }}
+                />
+
+                <Box sx={{ px: { xs: 1.25, sm: 2 }, minWidth: 110 }}>
+                    <Typography
+                        sx={{
+                            fontSize: 10,
+                            fontWeight: 500,
+                            color: "text.secondary",
+                            lineHeight: 1.2,
+                        }}
+                    >
+                        Territories
+                    </Typography>
+                    <Typography sx={{ mt: 0.35, fontSize: 11, fontWeight: 700, color: "text.primary", lineHeight: 1.2 }}>
+                        {selectedTerritories.length} selected
+                    </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        width: "1px",
+                        height: 38,
+                        backgroundColor: "divider",
+                    }}
+                />
+
+                <Box sx={{ px: { xs: 1.25, sm: 2 }, minWidth: 92 }}>
+                    <Typography
+                        sx={{
+                            fontSize: 10,
+                            fontWeight: 500,
+                            color: "text.secondary",
+                            lineHeight: 1.2,
+                        }}
+                    >
+                        Areas
+                    </Typography>
+                    <Typography sx={{ mt: 0.35, fontSize: 11, fontWeight: 700, color: "text.primary", lineHeight: 1.2 }}>
+                        {selectedAreas.length} selected
+                    </Typography>
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 1,
+                        ml: "auto",
+                        px: { xs: 1, sm: 1.5 },
+                        flexShrink: 0,
+                    }}
+                >
+                    <Button variant="outlined" size="small" onClick={handleReset}>
+                        Reset
+                    </Button>
+                    <Button variant="contained" size="small" onClick={handleSave}>
+                        Save Mapping
+                    </Button>
                 </Box>
             </Box>
         </Box>

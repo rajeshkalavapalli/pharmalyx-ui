@@ -35,3 +35,7 @@
   # V0.0.9
  
  - fixed multiple states and multiple territoty selected updated  
+
+  # V0.0.10
+ 
+ - fixed user area mapping  ui added 

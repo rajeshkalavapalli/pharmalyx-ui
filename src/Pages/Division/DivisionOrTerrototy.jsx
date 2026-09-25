@@ -1,7 +1,9 @@
 import {
     Box,
-    Tabs,
-    Tab,
+        ToggleButtonGroup,
+        ToggleButton,
+        Paper,
+        Divider,
     Snackbar,
     Alert,
     Typography,
@@ -118,116 +120,110 @@ function DivisionOrTerritoty({
             {/* PAGE HEADER */}
             {/* ================================================= */}
 
-            <Box
-                sx={{
-                    mb: {
-                        xs: 2.5,
-                        md: 2.5,
-                    },
-                }}
-            >
-
-                <Typography
-                    variant="h5"
+                <Paper
+                    elevation={0}
                     sx={{
-                        fontSize: {
-                            xs: 20,
-                            md: 22,
-                        },
-                        fontWeight: 700,
-                        color: "text.primary",
-                        letterSpacing: "-0.025em",
-                        lineHeight: 1.25,
+                        width: "100%",
+                        borderRadius: 2.5,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        backgroundColor: "background.paper",
+                        overflow: "hidden",
+                        boxShadow: "0 8px 30px rgba(32, 37, 34, 0.055)",
                     }}
                 >
-                    Organization Structure
+
+                <Box
+                    sx={{
+                        px: { xs: 2, sm: 3, md: 4 },
+                        py: 3,
+                    }}
+                >
+
+                <Typography
+                    sx={{
+                        mb: 0.75,
+                        color: "primary.main",
+                        fontSize: 10.5,
+                        fontWeight: 800,
+                        letterSpacing: "0.14em",
+                        lineHeight: 1,
+                        textTransform: "uppercase",
+                    }}
+                >
+                    Administration / Master Data
                 </Typography>
 
                 <Typography
-                    variant="body2"
-                    sx={{
-                        mt: 0.75,
-                        fontSize: 13,
-                        color: "text.secondary",
-                        lineHeight: 1.5,
-                    }}
-                >
-                    View and manage divisions and territories.
-                </Typography>
-
-            </Box>
-
-
-            {/* ================================================= */}
-            {/* MODULE TABS */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                    mb: {
-                        xs: 2.5,
-                        md: 3,
-                    },
-                }}
-            >
-
-                <Tabs
-                    value={selectedTab}
-                    onChange={handleTabChange}
-                    aria-label="Organization structure tabs"
-                    sx={{
-                        minHeight: 40,
-
-                        "& .MuiTabs-flexContainer": {
-                            gap: 0.5,
-                        },
-
-                        "& .MuiTabs-indicator": {
-                            height: 2,
-                            borderRadius: "2px 2px 0 0",
-                            backgroundColor: "primary.main",
-                        },
-
-                        "& .MuiTab-root": {
-                            minHeight: 40,
-                            minWidth: 0,
-                            px: 1.25,
-                            textTransform: "none",
-                            fontSize: 13,
-                            fontWeight: 500,
-                            color: "text.secondary",
-                            borderRadius: "6px 6px 0 0",
-                            transition:
-                                "color 160ms ease, background-color 160ms ease",
-
-                            "&:hover": {
-                                color: "primary.main",
-                                backgroundColor: "action.hover",
-                            },
-                        },
-
-                        "& .MuiTab-root.Mui-selected": {
-                            color: "primary.main",
+                        sx={{
+                            fontSize: 15,
                             fontWeight: 700,
-                        },
-                    }}
-                >
+                            color: "text.primary",
+                            mb: 0.5,
+                        }}
+                    >
+                        Manage Organization Structure
+                    </Typography>
 
-                    <Tab
-                        value="division"
-                        label="Divisions"
-                    />
+                    <Typography
+                        sx={{
+                            fontSize: 12,
+                            color: "text.secondary",
+                            mb: 2,
+                        }}
+                    >
+                        View existing divisions and territories or create new ones.
+                    </Typography>
 
-                    <Tab
-                        value="territory"
-                        label="Territories"
-                    />
+                    <ToggleButtonGroup
+                        exclusive
+                        value={selectedTab}
+                        sx={{
+                            "& .MuiToggleButton-root": {
+                                textTransform: "none",
+                                fontSize: 13,
+                                fontWeight: 600,
+                                px: 2.5,
+                                py: 1,
+                                borderColor: "divider",
+                                color: "text.secondary",
 
-                </Tabs>
+                                "&:hover": {
+                                    backgroundColor: "action.hover",
+                                },
 
-            </Box>
+                                "&.Mui-selected": {
+                                    color: "primary.main",
+                                    backgroundColor: "action.selected",
+                                    borderColor: "primary.main",
+
+                                    "&:hover": {
+                                        backgroundColor: "action.selected",
+                                    },
+                                },
+                            },
+                        }}
+                    >
+                        <ToggleButton
+                            value="division"
+                            onClick={() => handleTabChange(null, "division")}
+                        >
+                            Divisions
+                        </ToggleButton>
+
+                        <ToggleButton
+                            value="territory"
+                            onClick={() => handleTabChange(null, "territory")}
+                        >
+                            Territories
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+
+                </Box>
+
+                <Divider />
+
+                <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: 3 }}>
 
 
             {/* ================================================= */}
@@ -342,6 +338,10 @@ function DivisionOrTerritoty({
                 </Alert>
 
             </Snackbar>
+
+                </Box>
+
+            </Paper>
 
         </Box>
     );

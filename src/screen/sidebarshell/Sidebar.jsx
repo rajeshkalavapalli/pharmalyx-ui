@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -59,7 +59,6 @@ import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 
-import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
 import navigation from "../naviagation/Navigation";
@@ -156,6 +155,19 @@ function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
 
     const location = useLocation();
+
+    useEffect(() => {
+        const activeSection = navigation.find((item) =>
+            item.children && isSectionActive(item)
+        );
+
+        if (activeSection) {
+            setOpenSections((previous) => ({
+                ...previous,
+                [activeSection.label]: true,
+            }));
+        }
+    }, [location.pathname]);
 
 
     // =====================================================
@@ -321,14 +333,14 @@ function Sidebar() {
                                                 backgroundColor:
                                                     childActive
                                                         ? "sidebar.activeLight"
-                                                        : "sidebar.surface",
+                                                        : "transparent",
 
-                                                border: "1px solid",
+                                                border: "1px solid transparent",
 
                                                 borderColor:
                                                     childActive
                                                         ? "sidebar.active"
-                                                        : "sidebar.border",
+                                                        : "transparent",
 
                                                 transition:
                                                     "all 160ms ease",
@@ -339,6 +351,9 @@ function Sidebar() {
 
                                                     color:
                                                         "sidebar.text",
+
+                                                    borderColor:
+                                                        "transparent",
                                                 },
                                             }}
                                         >
@@ -378,22 +393,6 @@ function Sidebar() {
                                                 }}
                                             />
 
-
-                                            <ExpandMoreRoundedIcon
-                                                sx={{
-                                                    fontSize: 18,
-
-                                                    transition:
-                                                        "transform 160ms ease",
-
-                                                    transform:
-                                                        openSections[
-                                                            child.label
-                                                        ]
-                                                            ? "rotate(180deg)"
-                                                            : "rotate(0deg)",
-                                                }}
-                                            />
 
                                         </ListItemButton>
 
@@ -452,12 +451,12 @@ function Sidebar() {
                                                 "sidebar.mutedText",
 
                                             backgroundColor:
-                                                "sidebar.surface",
+                                                "transparent",
 
-                                            border: "1px solid",
+                                            border: "1px solid transparent",
 
                                             borderColor:
-                                                "sidebar.border",
+                                                "transparent",
 
                                             transition:
                                                 "all 160ms ease",
@@ -475,6 +474,9 @@ function Sidebar() {
                                                     "sidebar.activeLight",
 
                                                 borderColor:
+                                                    "transparent",
+
+                                                borderLeftColor:
                                                     "sidebar.active",
 
                                                 color:
@@ -633,14 +635,14 @@ function Sidebar() {
                     backgroundColor:
                         active
                             ? "sidebar.active"
-                            : "sidebar.surface",
+                            : "transparent",
 
-                    border: "1px solid",
+                    border: "1px solid transparent",
 
                     borderColor:
                         active
                             ? "sidebar.active"
-                            : "sidebar.border",
+                            : "transparent",
 
 
                     /* ============================================= */
@@ -662,7 +664,7 @@ function Sidebar() {
                         borderColor:
                             active
                                 ? "sidebar.active"
-                                : "primary.light",
+                                : "transparent",
 
                         backgroundColor:
                             active
@@ -684,6 +686,9 @@ function Sidebar() {
                             "sidebar.active",
 
                         borderColor:
+                            "transparent",
+
+                        borderLeftColor:
                             "sidebar.active",
                     },
                 }}
@@ -778,34 +783,6 @@ function Sidebar() {
                 {/* ============================================= */}
                 {/* EXPAND ICON */}
                 {/* ============================================= */}
-
-                {hasChildren && !collapsed && (
-
-                    <ExpandMoreRoundedIcon
-
-                        sx={{
-
-                            position: "absolute",
-
-                            right: 7,
-
-                            top: 7,
-
-                            fontSize: 15,
-
-                            transition:
-                                "transform 160ms ease",
-
-                            transform:
-                                openSections[
-                                    item.label
-                                ]
-                                    ? "rotate(180deg)"
-                                    : "rotate(0deg)",
-                        }}
-                    />
-
-                )}
 
             </ListItemButton>
 

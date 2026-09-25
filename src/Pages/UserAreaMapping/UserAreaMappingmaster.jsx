@@ -1,4 +1,4 @@
-import { Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Box, ToggleButtonGroup, ToggleButton, Typography } from "@mui/material";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 
@@ -15,42 +15,10 @@ function UserAreaMappingMaster() {
             sx={(theme) => ({
                 width: "100%",
                 minHeight: "100%",
-                px: {
-                    xs: 2,
-                    sm: 3,
-                    md: 4,
-                },
-                py: 3,
                 backgroundColor: theme.palette.background.default,
             })}
         >
             <Box>
-                <Typography
-                    variant="h4"
-                    gutterBottom
-                    sx={(theme) => ({
-                        color: theme.palette.text.primary,
-                        fontWeight: 700,
-                        letterSpacing: "-0.02em",
-                        mb: 0.75,
-                    })}
-                >
-                    User Area Mapping
-                </Typography>
-
-                <Box>
-                    <Box variant="5">
-                        <Typography
-                            variant="body1"
-                            sx={(theme) => ({
-                                color: theme.palette.text.secondary,
-                                mb: 3,
-                            })}
-                        >
-                            Map users to their territories and working areas.
-                        </Typography>
-                    </Box>
-
                     <Box
                         sx={(theme) => ({
                             backgroundColor: theme.palette.background.paper,
@@ -89,24 +57,38 @@ function UserAreaMappingMaster() {
                         >
                             <Box>
                                 <Typography
-                                    variant="h6"
-                                    sx={(theme) => ({
-                                        color: theme.palette.text.primary,
-                                        fontWeight: 700,
-                                        mb: 0.5,
-                                    })}
+                                    sx={{
+                                        mb: 0.55,
+                                        color: "primary.main",
+                                        fontSize: 10.5,
+                                        fontWeight: 800,
+                                        letterSpacing: "0.14em",
+                                        lineHeight: 1,
+                                        textTransform: "uppercase",
+                                    }}
                                 >
-                                    Manage User Area Mapping
+                                    Access & Coverage
                                 </Typography>
 
                                 <Typography
-                                    variant="body2"
-                                    sx={(theme) => ({
-                                        color: theme.palette.text.secondary,
-                                    })}
+                                    sx={{
+                                        fontSize: 18,
+                                        fontWeight: 750,
+                                        color: "text.primary",
+                                        letterSpacing: "-0.02em",
+                                    }}
                                 >
-                                    View existing mappings or create a new
-                                    user area mapping.
+                                    User Area Mappings
+                                </Typography>
+
+                                <Typography
+                                    sx={{
+                                        mt: 0.35,
+                                        fontSize: 12.5,
+                                        color: "text.secondary",
+                                    }}
+                                >
+                                    Review user territory coverage and available areas.
                                 </Typography>
                             </Box>
 
@@ -207,8 +189,6 @@ function UserAreaMappingMaster() {
                     </Box>
 
 
-                    <Box />
-                </Box>
             </Box>
         </Box>
     )

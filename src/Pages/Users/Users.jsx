@@ -2,6 +2,8 @@ import {
     Box,
     Tab,
     Tabs,
+    Paper,
+    Typography,
     IconButton,
     Tooltip,
 } from "@mui/material";
@@ -68,13 +70,20 @@ function Users() {
 
     return (
 
-        <Box
+        <Paper
+            elevation={0}
             sx={{
                 width: "100%",
+                borderRadius: 2.5,
+                border: "1px solid",
+                borderColor: "divider",
+                backgroundColor: "background.paper",
+                overflow: "hidden",
+                boxShadow: "0 8px 30px rgba(32, 37, 34, 0.055)",
             }}
         >
 
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, pt: 2, display: "flex", justifyContent: "flex-end" }}>
                 <Tooltip title="Close">
                     <IconButton
                         onClick={() => navigate(-1)}
@@ -100,16 +109,30 @@ function Users() {
                 </Tooltip>
             </Box>
 
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, pb: 2.5 }}>
+                <Typography
+                    sx={{
+                        fontSize: 15,
+                        fontWeight: 700,
+                        color: "text.primary",
+                        mb: 0.5,
+                    }}
+                >
+                    Manage Users
+                </Typography>
+                <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+                    View existing users or create a new user.
+                </Typography>
+            </Box>
+
             {/* ================================================= */}
             {/* MODULE NAVIGATION */}
             {/* ================================================= */}
 
             <Box
                 sx={{
-                    mb: 2.5,
-
+                    px: { xs: 2, sm: 3, md: 4 },
                     borderBottom: "1px solid",
-
                     borderColor: "divider",
                 }}
             >
@@ -118,89 +141,45 @@ function Users() {
                     value={activeTab}
                     onChange={handleTabChange}
                     sx={{
-
                         minHeight: 40,
-
-                        "& .MuiTabs-flexContainer": {
-                            gap: 0.5,
-                        },
-
+                        "& .MuiTabs-flexContainer": { gap: 0.5 },
                         "& .MuiTabs-indicator": {
-
                             height: 2,
-
-                            borderRadius:
-                                "2px 2px 0 0",
-
-                            backgroundColor:
-                                "primary.main",
-
+                            borderRadius: "2px 2px 0 0",
+                            backgroundColor: "primary.main",
                         },
-
-
                         "& .MuiTab-root": {
-
                             minHeight: 40,
-
                             minWidth: 0,
-
-                            px: 1.25,
-
+                            px: 1.5,
                             py: 0.75,
-
                             textTransform: "none",
-
                             fontSize: 13,
-
                             fontWeight: 500,
-
                             color: "text.secondary",
-
-                            borderRadius:
-                                "6px 6px 0 0",
-
-                            transition:
-                                "color 160ms ease, background-color 160ms ease",
-
+                            borderRadius: "6px 6px 0 0",
                             "&:hover": {
-
-                                color:
-                                    "primary.main",
-
-                                backgroundColor:
-                                    "action.hover",
-
+                                color: "primary.main",
+                                backgroundColor: "action.hover",
                             },
-
                         },
-
-
                         "& .MuiTab-root.Mui-selected": {
-
-                            color:
-                                "primary.main",
-
+                            color: "primary.main",
                             fontWeight: 700,
-
                         },
-
                     }}
                 >
-
-                    <Tab
-                        value="list"
-                        label="Users List"
-                    />
-
-
-                    <Tab
-                        value="new"
-                        label="+ New User"
-                    />
-
+                    <Tab value="list" label="Users List" />
+                    <Tab value="new" label="+ New User" />
                 </Tabs>
-
             </Box>
+
+            <Box
+                sx={{
+                    px: { xs: 2, sm: 3, md: 4 },
+                    py: 3,
+                }}
+            >
 
 
             {/* ================================================= */}
@@ -233,7 +212,9 @@ function Users() {
 
             )}
 
-        </Box>
+            </Box>
+
+        </Paper>
 
     );
 }

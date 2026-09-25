@@ -107,6 +107,11 @@ function App() {
                         element={<UserAreaMappingMaster />}
                     >
                         <Route
+                            index
+                            element={<UserAreaMappingList />}
+                        />
+
+                        <Route
                             path="list"
                             element={<UserAreaMappingList />}
                         />
