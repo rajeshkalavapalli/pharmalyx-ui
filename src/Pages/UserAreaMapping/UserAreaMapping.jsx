@@ -12,6 +12,7 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import {
     getAreas,
@@ -23,6 +24,7 @@ import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
 function UserAreaMapping() {
+    const navigate = useNavigate();
 
     const toIdArray = (value) => {
         if (Array.isArray(value)) {
@@ -192,7 +194,7 @@ function UserAreaMapping() {
                 response?.message || "Mapping saved successfully",
                 "success"
             );
-            handleReset();
+            navigate("/admin/UserAreaMapping/list");
         } catch (error) {
             console.error("Error saving user area mapping", error);
             showSnackbar(

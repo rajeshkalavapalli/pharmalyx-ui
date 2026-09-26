@@ -43,3 +43,7 @@
    # V0.0.11
  
  - fixed user area mapping  ui added status removed 
+
+  # V0.0.12
+ 
+ - fixed user area mapping  list change the routing 
