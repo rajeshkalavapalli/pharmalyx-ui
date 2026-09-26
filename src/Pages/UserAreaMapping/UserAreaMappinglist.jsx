@@ -20,54 +20,26 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutline from "@mui/icons-material/Delete";
 import { useEffect, useMemo, useState } from "react";
 
-import { getAreas, getTerritories, getUsers } from "./index.js";
+import { getUserAreaMappings, getUsers } from "./index.js";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
-
-
-const toIdArray = (value) => {
-    if (Array.isArray(value)) {
-        return value;
-    }
-
-    if (typeof value === "string") {
-        return value.split(",").map((id) => id.trim()).filter(Boolean);
-    }
-
-    return [];
-};
 
 
 function UserAreaMappingList() {
     const [users, setUsers] = useState([]);
-    const [territories, setTerritories] = useState([]);
-    const [areas, setAreas] = useState([]);
+    const [mappings, setMappings] = useState([]);
     const [search, setSearch] = useState("");
     const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
         const loadMappingData = async () => {
             try {
-                const [usersResponse, territoriesResponse, areasResponse] = await Promise.all([
+                const [usersResponse, mappingsResponse] = await Promise.all([
                     getUsers(),
-                    getTerritories(),
-                    getAreas(),
+                    getUserAreaMappings(),
                 ]);
 
                 setUsers(Array.isArray(usersResponse?.result) ? usersResponse.result : []);
-                setTerritories(
-                    Array.isArray(territoriesResponse?.territories)
-                        ? territoriesResponse.territories
-                        : Array.isArray(territoriesResponse)
-                            ? territoriesResponse
-                            : []
-                );
-                setAreas(
-                    Array.isArray(areasResponse?.result)
-                        ? areasResponse.result
-                        : Array.isArray(areasResponse)
-                            ? areasResponse
-                            : []
-                );
+                setMappings(Array.isArray(mappingsResponse?.result) ? mappingsResponse.result : []);
             } catch (error) {
                 console.error("Error loading user area mappings", error);
                 showSnackbar("Unable to load user area mappings", "error");
@@ -78,24 +50,49 @@ function UserAreaMappingList() {
     }, [showSnackbar]);
 
     const rows = useMemo(() => users.map((user) => {
-        const territoryIds = toIdArray(user.TerritoryIds);
-        const userTerritories = territories.filter((territory) =>
-            territoryIds.includes(territory.TerritoryId)
+        const userMappings = mappings.filter((mapping) =>
+            mapping.UserId === user.userId
         );
-        const territorySet = new Set(territoryIds);
+
+        const userTerritories = Array.from(
+            new Map(
+                userMappings.map((mapping) => [
+                    mapping.TerritoryId,
+                    {
+                        TerritoryId: mapping.TerritoryId,
+                        TerritoryName: mapping.TerritoryName,
+                    },
+                ])
+            ).values()
+        );
+
+        const coverageAreas = Array.from(
+            new Map(
+                userMappings.map((mapping) => [
+                    mapping.AreaId,
+                    {
+                        AreaId: mapping.AreaId,
+                        AreaName: mapping.AreaName,
+                        TerritoryName: mapping.TerritoryName,
+                    },
+                ])
+            ).values()
+        );
 
         return {
             ...user,
             userTerritories,
-            coverageAreas: areas.filter((area) => territorySet.has(area.TerritoryId)),
+            coverageAreas,
         };
-    }), [areas, territories, users]);
+    }), [mappings, users]);
 
     const filteredRows = rows.filter((row) => {
         const searchValue = [
             row.UserName,
+            row.EmailId,
             row.DivisionName,
             ...row.userTerritories.map((territory) => territory.TerritoryName),
+            ...row.coverageAreas.map((area) => area.AreaName),
         ].join(" ").toLowerCase();
 
         return searchValue.includes(search.trim().toLowerCase());
@@ -163,7 +160,6 @@ function UserAreaMappingList() {
                                 "Division",
                                 "Territories",
                                 "Areas in Coverage",
-                                "Status",
                             ].map((heading) => (
                                 <TableCell
                                     key={heading}
@@ -267,32 +263,40 @@ function UserAreaMappingList() {
                                 </TableCell>
                                 <TableCell>
                                     <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                                        {row.userTerritories.map((territory) => (
+                                        {row.userTerritories.slice(0, 3).map((territory) => (
                                             <Chip key={territory.TerritoryId} label={territory.TerritoryName} size="small" variant="outlined" />
                                         ))}
+                                        {row.userTerritories.length > 3 && (
+                                            <Chip
+                                                label={`+${row.userTerritories.length - 3} more`}
+                                                size="small"
+                                                variant="outlined"
+                                            />
+                                        )}
                                         {row.userTerritories.length === 0 && "-"}
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-                                    <Chip
-                                        label={row.coverageAreas.length}
-                                        size="small"
-                                        color="primary"
-                                        variant="outlined"
-                                    />
+                                    {row.coverageAreas.length > 0 ? (
+                                        <Tooltip
+                                            title={row.coverageAreas.map((area) => area.AreaName).join(", ")}
+                                            arrow
+                                        >
+                                            <Chip
+                                                label={`${row.coverageAreas.length} mapped`}
+                                                size="small"
+                                                color="primary"
+                                                variant="outlined"
+                                            />
+                                        </Tooltip>
+                                    ) : "-"}
                                 </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        label={row.IsActive === false ? "Inactive" : "Active"}
-                                        size="small"
-                                        color={row.IsActive === false ? "default" : "success"}
-                                    />
-                                </TableCell>
+                                
                             </TableRow>
                         ))}
                         {filteredRows.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={7} align="center" sx={{ py: 5, color: "text.secondary" }}>
+                                <TableCell colSpan={6} align="center" sx={{ py: 5, color: "text.secondary" }}>
                                     No user mappings found
                                 </TableCell>
                             </TableRow>

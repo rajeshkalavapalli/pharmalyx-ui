@@ -39,3 +39,7 @@
   # V0.0.10
  
  - fixed user area mapping  ui added 
+
+   # V0.0.11
+ 
+ - fixed user area mapping  ui added status removed 

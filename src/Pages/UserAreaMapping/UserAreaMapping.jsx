@@ -13,7 +13,12 @@ import {
     Typography,
 } from "@mui/material";
 
-import { getAreas, getTerritories, getUsers } from "./index.js";
+import {
+    getAreas,
+    getTerritories,
+    getUsers,
+    userAreaMaping,
+} from "./index.js";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
@@ -74,87 +79,129 @@ function UserAreaMapping() {
                 showSnackbar("Unable to load mapping data", "error");
             }
 
-            };
+        };
 
-            getusers();
+        getusers();
 
-        }, [showSnackbar]);
+    }, [showSnackbar]);
 
-        const mappedTerritoryIds = toIdArray(selectedUserDetails?.TerritoryIds);
+    const mappedTerritoryIds = toIdArray(selectedUserDetails?.TerritoryIds);
 
-        const availableTerritories = useMemo(() => {
-            const byUser = mappedTerritoryIds.length > 0
-                ? territories.filter((territory) =>
-                    mappedTerritoryIds.includes(territory.TerritoryId)
-                )
-                : [];
+    const availableTerritories = useMemo(() => {
+        const byUser = mappedTerritoryIds.length > 0
+            ? territories.filter((territory) =>
+                mappedTerritoryIds.includes(territory.TerritoryId)
+            )
+            : [];
 
-            return byUser.filter((territory) =>
-                (territory.TerritoryName || "")
-                    .toLowerCase()
-                    .includes(territorySearch.trim().toLowerCase())
+        return byUser.filter((territory) =>
+            (territory.TerritoryName || "")
+                .toLowerCase()
+                .includes(territorySearch.trim().toLowerCase())
+        );
+    }, [mappedTerritoryIds, territories, territorySearch]);
+
+    const availableAreas = useMemo(() => {
+        const selectedTerritorySet = new Set(selectedTerritories);
+
+        return areas.filter((area) =>
+            selectedTerritorySet.has(area.TerritoryId) &&
+            (area.AreaName || "")
+                .toLowerCase()
+                .includes(areaSearch.trim().toLowerCase())
+        );
+    }, [areas, selectedTerritories, areaSearch]);
+
+    const handleUserChange = (event) => {
+        const userId = event.target.value;
+        const user = users.find((item) => item.userId === userId);
+
+        setSelectedUser(userId);
+        setSelectedTerritories([]);
+        setSelectedAreas([]);
+        setTerritorySearch("");
+        setAreaSearch("");
+    };
+
+    const toggleTerritory = (territoryId) => {
+    const isSelected = selectedTerritories.includes(territoryId);
+
+    setSelectedTerritories((current) =>
+        isSelected
+            ? current.filter((id) => id !== territoryId)
+            : [...current, territoryId]
+    );
+
+    if (isSelected) {
+        setSelectedAreas((current) =>
+            current.filter((areaId) => {
+                const area = areas.find(
+                    (item) => item.AreaId === areaId
+                );
+
+                return area?.TerritoryId !== territoryId;
+            })
+        );
+    }
+};
+
+    const toggleArea = (areaId) => {
+        setSelectedAreas((current) =>
+            current.includes(areaId)
+                ? current.filter((id) => id !== areaId)
+                : [...current, areaId]
+        );
+    };
+
+    const handleReset = () => {
+        setSelectedTerritories([]);
+        setSelectedAreas([]);
+        setTerritorySearch("");
+        setAreaSearch("");
+    };
+
+    const handleSave = async () => {
+        if (!selectedUser) {
+            showSnackbar("Select a user first", "error");
+            return;
+        }
+
+        if (selectedTerritories.length === 0 || selectedAreas.length === 0) {
+            showSnackbar("Select at least one territory and area", "error");
+            return;
+        }
+
+         const mappings = selectedAreas.map((areaId) => {
+        const area = areas.find((item) => item.AreaId === areaId);
+
+        return {
+            territoryId: area.TerritoryId,
+            areaId: area.AreaId,
+        };
+    });
+
+        const payload = {
+            userId: selectedUser,
+            mappings,
+        };
+
+        try {
+            const response = await userAreaMaping(payload);
+
+            showSnackbar(
+                response?.message || "Mapping saved successfully",
+                "success"
             );
-        }, [mappedTerritoryIds, territories, territorySearch]);
-
-        const availableAreas = useMemo(() => {
-            const selectedTerritorySet = new Set(selectedTerritories);
-
-            return areas.filter((area) =>
-                selectedTerritorySet.has(area.TerritoryId) &&
-                (area.AreaName || "")
-                    .toLowerCase()
-                    .includes(areaSearch.trim().toLowerCase())
+            handleReset();
+        } catch (error) {
+            console.error("Error saving user area mapping", error);
+            showSnackbar(
+                error.response?.data?.message ||
+                    "Failed to save user area mapping",
+                "error"
             );
-        }, [areas, selectedTerritories, areaSearch]);
-
-        const handleUserChange = (event) => {
-            const userId = event.target.value;
-            const user = users.find((item) => item.userId === userId);
-
-            setSelectedUser(userId);
-            setSelectedTerritories([]);
-            setSelectedAreas([]);
-            setTerritorySearch("");
-            setAreaSearch("");
-        };
-
-        const toggleTerritory = (territoryId) => {
-            setSelectedTerritories((current) =>
-                current.includes(territoryId)
-                    ? current.filter((id) => id !== territoryId)
-                    : [...current, territoryId]
-            );
-            setSelectedAreas([]);
-        };
-
-        const toggleArea = (areaId) => {
-            setSelectedAreas((current) =>
-                current.includes(areaId)
-                    ? current.filter((id) => id !== areaId)
-                    : [...current, areaId]
-            );
-        };
-
-        const handleReset = () => {
-            setSelectedTerritories([]);
-            setSelectedAreas([]);
-            setTerritorySearch("");
-            setAreaSearch("");
-        };
-
-        const handleSave = () => {
-            if (!selectedUser) {
-                showSnackbar("Select a user first", "error");
-                return;
-            }
-
-            if (selectedTerritories.length === 0 || selectedAreas.length === 0) {
-                showSnackbar("Select at least one territory and area", "error");
-                return;
-            }
-
-            showSnackbar("Save Mapping API is not connected yet", "info");
-        };
+        }
+    };
 
 
     return (

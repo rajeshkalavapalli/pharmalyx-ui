@@ -36,7 +36,7 @@ function AddNewArea({ onAreaCreated, onClose }) {
     const [closeDialog, setCloseDialog] = useState(false);
 
     const [countries, setCountries] = useState([]);
-    const [states, setSates] = useState([]);
+    const [states, setStates] = useState([]);
     const [territories, setTerritories] = useState([]);
 
     const validationSchema = yup.object({
@@ -58,14 +58,17 @@ function AddNewArea({ onAreaCreated, onClose }) {
         validationSchema,
         onSubmit: async (values) => {
             try {
-                await createArea({
+                const response = await createArea({
                     TerritoryId: values.TerritoryId,
                     AreaName: values.AreaName.trim(),
                     AreaCode: values.AreaCode,
                     IsActive: values.IsActive,
                 });
 
-                showSnackbar("Area created successfully", "success");
+                showSnackbar(
+                    response?.message || "Area created successfully",
+                    "success"
+                );
                 formik.resetForm();
                 setStates([]);
                 setTerritories([]);
@@ -79,7 +82,9 @@ function AddNewArea({ onAreaCreated, onClose }) {
                 showSnackbar(
                     err.response?.status === 409
                         ? "Area already exists"
-                        : err.response?.data?.message || "Area was not created",
+                        : err.response?.data?.message ||
+                            err.message ||
+                            "Area was not created",
                     "error"
                 );
             }
@@ -216,7 +221,7 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
             const response = await getstates(values.CountryId);
 
-            setSates(response.states);
+            setStates(response.states);
         };
 
         loadStates();

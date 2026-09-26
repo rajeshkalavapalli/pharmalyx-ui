@@ -15,3 +15,13 @@ export const getAreas = async () => {
     const response = await api.get('/app/get-areas-code');
     return response.data;
 };
+
+export const getUserAreaMappings = async () => {
+    const response = await api.get('/app/get-user-area-mappings');
+    return response.data;
+};
+
+export const userAreaMaping = async (payload)=>{
+    const response = await api.post('app/create-user-area-mapping', payload)
+    return response.data 
+}
