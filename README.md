@@ -47,3 +47,7 @@
   # V0.0.12
  
  - fixed user area mapping  list change the routing 
+
+   # V0.0.13
+ 
+ - fixed Doctor creation
