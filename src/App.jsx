@@ -10,6 +10,8 @@ import Users from './Pages/Users/Users.jsx';
 import DivisionOrTerritoty from './Pages/Division/DivisionOrTerrototy.jsx';
 
 import AreaMaster from './Pages/Areas/AreaMaster.jsx';
+import ListAreas from './Pages/Areas/ListAreas.jsx';
+import AddNewArea from './Pages/Areas/AddNewArea.jsx';
 
 import Configuration from './Pages/Configuration/Configuration.jsx';
 
@@ -19,6 +21,10 @@ import UserAreaMappingList from './Pages/UserAreaMapping/UserAreaMappinglist.jsx
 
 import UserAreaMapping from './Pages/UserAreaMapping/UserAreaMapping.jsx';
 
+import { Doctormaster } from './Pages/Doctors/Doctormaster.jsx';
+
+import { DoctorList } from './Pages/Doctors/DoctorList.jsx';
+import { AddNewDoctors } from './Pages/Doctors/addNewDoctors/AddNewDoctors.jsx';
 function App() {
 
     return (
@@ -82,17 +88,22 @@ function App() {
                     <Route
                         path="admin/Areas"
                         element={<AreaMaster />}
-                    />
+                    >
+                        <Route
+                            index
+                            element={<ListAreas />}
+                        />
 
-                    <Route
-                        path="admin/Areas/list"
-                        element={<AreaMaster initialView="list" />}
-                    />
+                        <Route
+                            path="list"
+                            element={<ListAreas />}
+                        />
 
-                    <Route
-                        path="admin/Areas/add"
-                        element={<AreaMaster initialView="add" />}
-                    />
+                        <Route
+                            path="add"
+                            element={<AddNewArea />}
+                        />
+                    </Route>
 
 
                     {/* CONFIGURATION */}
@@ -119,6 +130,24 @@ function App() {
                         <Route
                             path="mapping"
                             element={<UserAreaMapping />}
+                        />
+                    </Route>
+                        {/* Doctors Route  */}
+                    <Route 
+                     path='/admin/Doctors'
+                     element={<Doctormaster />}
+                    >
+                        <Route
+                            index
+                            element={<DoctorList />}
+                        />
+                        <Route
+                            path="list"
+                            element={<DoctorList />}
+                        />
+                        <Route
+                            path="add"
+                            element={<AddNewDoctors />}
                         />
                     </Route>
 

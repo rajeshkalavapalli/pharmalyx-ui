@@ -10,17 +10,14 @@ import {
 } from "@mui/material";
 
 import CloseRounded from "@mui/icons-material/CloseRounded";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
-import ListAreas from "./ListAreas";
-import AddNewArea from "./AddNewArea";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 
 
-function AreaMaster({ initialView = "list" }) {
+function AreaMaster() {
 
     const navigate = useNavigate();
-    const [activeView, setActiveView] = useState(initialView);
+    const location = useLocation();
+    const activeView = location.pathname.endsWith("add") ? "add" : "list";
 
     return (
         <Paper
@@ -71,6 +68,11 @@ function AreaMaster({ initialView = "list" }) {
                 <ToggleButtonGroup
                     exclusive
                     value={activeView}
+                    onChange={(event, newValue) => {
+                        if (newValue) {
+                            navigate(newValue);
+                        }
+                    }}
                     sx={{
                         "& .MuiToggleButton-root": {
                             textTransform: "none",
@@ -100,9 +102,6 @@ function AreaMaster({ initialView = "list" }) {
 
                     <ToggleButton
                         value="list"
-                        onClick={() => {
-                            setActiveView("list");
-                        }}
                     >
                         List Areas
                     </ToggleButton>
@@ -110,9 +109,6 @@ function AreaMaster({ initialView = "list" }) {
 
                     <ToggleButton
                         value="add"
-                        onClick={() => {
-                            setActiveView("add");
-                        }}
                     >
                         + Add New Area
                     </ToggleButton>
@@ -124,14 +120,7 @@ function AreaMaster({ initialView = "list" }) {
             <Divider />
 
             <Box sx={{ px: { xs: 2, sm: 3, md: 4 }, py: 3 }}>
-                {activeView === "add" ? (
-                    <AddNewArea
-                        onAreaCreated={() => setActiveView("list")}
-                        onClose={() => setActiveView("list")}
-                    />
-                ) : (
-                    <ListAreas onAddArea={() => setActiveView("add")} />
-                )}
+                <Outlet />
             </Box>
 
         </Paper>

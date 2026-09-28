@@ -12,6 +12,7 @@ import {
     TextField,
     Typography,
     Tooltip,
+    InputAdornment,
 } from "@mui/material";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -100,6 +101,37 @@ function UserAreaMappingList() {
 
     return (
         <Box sx={{ width: "100%", minWidth: 0 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: { xs: "flex-start", sm: "center" },
+                    justifyContent: "space-between",
+                    gap: 2,
+                    mb: 2,
+                }}
+            >
+                <Box
+                    sx={{
+                        pl: 1.25,
+                        borderLeft: "3px solid",
+                        borderColor: "primary.main",
+                    }}
+                >
+                    <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+                        User Area Mappings
+                    </Typography>
+                    <Typography sx={{ mt: 0.35, fontSize: 12.5, color: "text.secondary" }}>
+                        Manage users&apos; territory and area coverage.
+                    </Typography>
+                </Box>
+                <Chip
+                    label={`${filteredRows.length} ${filteredRows.length === 1 ? "user" : "users"}`}
+                    color="primary"
+                    variant="outlined"
+                    sx={{ flexShrink: 0, alignSelf: { xs: "center", sm: "auto" } }}
+                />
+            </Box>
+
             <Paper
                 elevation={0}
                 sx={{
@@ -114,27 +146,24 @@ function UserAreaMappingList() {
                 <Box
                     sx={{
                         display: "flex",
+                        justifyContent: "space-between",
                         alignItems: "center",
-                        gap: 1.25,
+                        gap: 1.5,
                     }}
                 >
                     <TextField
                         size="small"
-                        placeholder="Search users, divisions, or territories"
+                        placeholder="Search users or territories"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
-                        sx={{ flex: 1 }}
+                        sx={{ width: { xs: "100%", sm: 360 }, maxWidth: "100%" }}
                         InputProps={{
                             startAdornment: (
+                                <InputAdornment position="start">
                                 <SearchOutlinedIcon sx={{ mr: 1, fontSize: 18, color: "text.secondary" }} />
+                                </InputAdornment>
                             ),
                         }}
-                    />
-                    <Chip
-                        label={`${filteredRows.length} ${filteredRows.length === 1 ? "user" : "users"}`}
-                        color="primary"
-                        variant="outlined"
-                        sx={{ flexShrink: 0 }}
                     />
                 </Box>
             </Paper>

@@ -17,6 +17,7 @@ import {
     PeopleAltRounded,
     AssignmentIndRounded,
     CloseRounded,
+    MedicalServicesRounded,
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
@@ -39,14 +40,14 @@ function Configuration() {
             label: "Area",
             description: "Working areas",
             icon: MapRounded,
-            color: "warning",
+            color: "success",
             path: "/admin/Areas",
         },
         {
             label: "Territory",
             description: "Territories and locations",
             icon: LocationOnRounded,
-            color: "info",
+            color: "warning",
             path: "/admin/Territories",
         },
         {
@@ -60,8 +61,15 @@ function Configuration() {
             label: "User Area Mapping",
             description: "Map users to territories and areas",
             icon: AssignmentIndRounded,
-            color: "secondary",
+            color: "warning",
             path: "/admin/UserAreaMapping",
+        },
+        {
+            label: "Doctor",
+            description: "Manage doctor information",
+            icon: MedicalServicesRounded,
+            color: "error",
+            path: "/admin/Doctors",
         },
     ];
 
@@ -233,9 +241,12 @@ function Configuration() {
 
                 <Box
                     sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 1.5,
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "minmax(0, 1fr)",
+                            sm: "repeat(auto-fill, minmax(190px, 220px))",
+                        },
+                        gap: 1.25,
                     }}
                 >
 
@@ -251,14 +262,11 @@ function Configuration() {
                                 }
 
                                 sx={(theme) => ({
-                                    minWidth: {
-                                        xs: "100%",
-                                        sm: 165,
-                                    },
-
+                                    width: "100%",
+                                    minWidth: 0,
                                     minHeight: 52,
 
-                                    px: 1.5,
+                                    px: 1.25,
 
                                     borderRadius: 1.75,
 
@@ -312,9 +320,9 @@ function Configuration() {
 
                                 <Box
                                     sx={(theme) => ({
-                                        width: 32,
-                                        height: 32,
-                                        mr: 1.25,
+                                        width: 28,
+                                        height: 28,
+                                        mr: 1,
 
                                         borderRadius: 1.25,
 
@@ -341,7 +349,7 @@ function Configuration() {
 
                                     <Icon
                                         sx={{
-                                            fontSize: 19,
+                                            fontSize: 17,
                                         }}
                                     />
 
@@ -350,14 +358,15 @@ function Configuration() {
 
                                 {/* TEXT */}
 
-                                <Box>
+                                <Box sx={{ minWidth: 0 }}>
 
                                     <Typography
                                         sx={{
-                                            fontSize: 13,
+                                            fontSize: 12.5,
                                             fontWeight: 700,
                                             color: "text.primary",
                                             lineHeight: 1.3,
+                                            overflowWrap: "anywhere",
                                         }}
                                     >
                                         {master.label}
@@ -365,10 +374,11 @@ function Configuration() {
 
                                     <Typography
                                         sx={{
-                                            mt: 0.25,
-                                            fontSize: 10.5,
+                                            mt: 0.15,
+                                            fontSize: 10,
                                             color: "text.secondary",
                                             lineHeight: 1.3,
+                                            overflowWrap: "anywhere",
                                         }}
                                     >
                                         {master.description}
