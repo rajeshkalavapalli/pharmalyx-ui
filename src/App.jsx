@@ -25,6 +25,10 @@ import { Doctormaster } from './Pages/Doctors/Doctormaster.jsx';
 
 import { DoctorList } from './Pages/Doctors/DoctorList.jsx';
 import { AddNewDoctors } from './Pages/Doctors/addNewDoctors/AddNewDoctors.jsx';
+
+import UserDoctorMappingMaster from './Pages/UserDoctorMapping/UserDoctorMappingmaster.jsx';
+import UserDoctorMappingList from './Pages/UserDoctorMapping/UserDoctorMappinglist.jsx';
+import UserDoctorMapping from './Pages/UserDoctorMapping/UserDoctorMapping.jsx';
 function App() {
 
     return (
@@ -148,6 +152,27 @@ function App() {
                         <Route
                             path="add"
                             element={<AddNewDoctors />}
+                        />
+                    </Route>
+
+                    {/* User Doctor Mapping */}
+                    <Route
+                        path="admin/UserDoctorMapping"
+                        element={<UserDoctorMappingMaster />}
+                    >
+                        <Route
+                            index
+                            element={<UserDoctorMappingList />}
+                        />
+
+                        <Route
+                            path="list"
+                            element={<UserDoctorMappingList />}
+                        />
+
+                        <Route
+                            path="mapping"
+                            element={<UserDoctorMapping />}
                         />
                     </Route>
 
