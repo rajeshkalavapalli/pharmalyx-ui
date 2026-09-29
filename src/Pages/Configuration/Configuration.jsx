@@ -71,6 +71,13 @@ function Configuration() {
             color: "error",
             path: "/admin/Doctors",
         },
+        {
+             label: "User Doctor maping ",
+            description: "Manage User doctor mapping",
+            icon: MedicalServicesRounded,
+            color: "success",
+            path: "/admin/UserDoctorMapping",
+        },
     ];
 
 
