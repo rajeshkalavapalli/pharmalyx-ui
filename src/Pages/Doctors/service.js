@@ -9,3 +9,13 @@ export const getDoctors = async () => {
     const response = await api.get('app/get-doctors');
     return response.data;
 }
+
+export const updateDoctor = async (doctorId, payload) => {
+    const response = await api.put(`app/update-doctor/${doctorId}`, payload);
+    return response.data;
+}
+
+export const deleteDoctor = async (doctorId) => {
+    const response = await api.delete(`app/delete-doctor/${doctorId}`);
+    return response.data;
+}

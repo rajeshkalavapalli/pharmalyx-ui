@@ -12,11 +12,12 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
     getAreas,
     getTerritories,
+    getUserAreaMappings,
     getUsers,
     userAreaMaping,
 } from "./index.js";
@@ -25,6 +26,7 @@ import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 function UserAreaMapping() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const toIdArray = (value) => {
         if (Array.isArray(value)) {
@@ -52,40 +54,77 @@ function UserAreaMapping() {
         (user) => user.userId === selectedUser
     );
 
-    useEffect(() => {
-        const getusers = async () => {
-            try {
-                const [usersList, territoriesList, areasList] = await Promise.all([
+  useEffect(() => {
+    const activeUserId = selectedUser || location.state?.userId;
+
+    if (!selectedUser && location.state?.userId) {
+        setSelectedUser(location.state.userId);
+    }
+
+    const getusers = async () => {
+        try {
+            const [usersList, territoriesList, areasList, mappingsList] =
+                await Promise.all([
                     getUsers(),
                     getTerritories(),
                     getAreas(),
+                    getUserAreaMappings(),
                 ]);
 
-                setUsers(Array.isArray(usersList?.result) ? usersList.result : []);
-                setTerritories(
-                    Array.isArray(territoriesList?.territories)
-                        ? territoriesList.territories
-                        : Array.isArray(territoriesList)
-                            ? territoriesList
-                            : []
-                );
-                setAreas(
-                    Array.isArray(areasList?.result)
-                        ? areasList.result
-                        : Array.isArray(areasList)
-                            ? areasList
-                            : []
-                );
-            } catch (error) {
-                console.error("Error loading user area mapping data", error);
-                showSnackbar("Unable to load mapping data", "error");
-            }
+            const userMappings = (mappingsList?.result || []).filter(
+                (mapping) => mapping.UserId === activeUserId
+            );
 
-        };
+            setUsers(
+                Array.isArray(usersList?.result)
+                    ? usersList.result
+                    : []
+            );
 
-        getusers();
+            setSelectedTerritories([
+                ...new Set(
+                    userMappings.map((mapping) => mapping.TerritoryId)
+                ),
+            ]);
 
-    }, [showSnackbar]);
+            setSelectedAreas([
+                ...new Set(
+                    userMappings.map((mapping) => mapping.AreaId)
+                ),
+            ]);
+
+            setTerritories(
+                Array.isArray(territoriesList?.territories)
+                    ? territoriesList.territories
+                    : Array.isArray(territoriesList)
+                        ? territoriesList
+                        : []
+            );
+
+            setAreas(
+                Array.isArray(areasList?.result)
+                    ? areasList.result
+                    : Array.isArray(areasList)
+                        ? areasList
+                        : []
+            );
+
+        } catch (error) {
+            console.error(
+                "Error loading user area mapping data",
+                error
+            );
+
+            showSnackbar(
+                "Unable to load mapping data",
+                "error"
+            );
+        }
+    };
+
+    getusers();
+
+}, [showSnackbar, location.state?.userId, selectedUser]);
 
     const mappedTerritoryIds = toIdArray(selectedUserDetails?.TerritoryIds);
 

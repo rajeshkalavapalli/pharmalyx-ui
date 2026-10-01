@@ -13,6 +13,11 @@ import {
     Typography,
     Tooltip,
     InputAdornment,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
 } from "@mui/material";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -20,15 +25,20 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutline from "@mui/icons-material/Delete";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { getUserAreaMappings, getUsers } from "./index.js";
+import { deleteUserAreaMapping, getUserAreaMappings, getUsers } from "./index.js";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
+import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 
 
 function UserAreaMappingList() {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [mappings, setMappings] = useState([]);
     const [search, setSearch] = useState("");
+    const [viewRow, setViewRow] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
     const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
@@ -50,42 +60,64 @@ function UserAreaMappingList() {
         loadMappingData();
     }, [showSnackbar]);
 
-    const rows = useMemo(() => users.map((user) => {
-        const userMappings = mappings.filter((mapping) =>
-            mapping.UserId === user.userId
+    const handleDelete = async () => {
+        try {
+            await deleteUserAreaMapping(deleteTarget.userId);
+            setMappings((current) => current.filter((mapping) => mapping.UserId !== deleteTarget.userId));
+            setDeleteTarget(null);
+            showSnackbar("User area mappings deleted", "success");
+        } catch (error) {
+            console.error("Error deleting user area mappings", error);
+            showSnackbar(error.response?.data?.message || "Failed to delete user area mappings", "error");
+        }
+    };
+
+    const rows = useMemo(() => {
+        const mappedUserIds = new Set(
+            mappings
+                .map((mapping) => mapping.UserId)
+                .filter(Boolean)
         );
 
-        const userTerritories = Array.from(
-            new Map(
-                userMappings.map((mapping) => [
-                    mapping.TerritoryId,
-                    {
-                        TerritoryId: mapping.TerritoryId,
-                        TerritoryName: mapping.TerritoryName,
-                    },
-                ])
-            ).values()
-        );
+        return users
+            .filter((user) => mappedUserIds.has(user.userId))
+            .map((user) => {
+                const userMappings = mappings.filter((mapping) =>
+                    mapping.UserId === user.userId
+                );
 
-        const coverageAreas = Array.from(
-            new Map(
-                userMappings.map((mapping) => [
-                    mapping.AreaId,
-                    {
-                        AreaId: mapping.AreaId,
-                        AreaName: mapping.AreaName,
-                        TerritoryName: mapping.TerritoryName,
-                    },
-                ])
-            ).values()
-        );
+                const userTerritories = Array.from(
+                    new Map(
+                        userMappings.map((mapping) => [
+                            mapping.TerritoryId,
+                            {
+                                TerritoryId: mapping.TerritoryId,
+                                TerritoryName: mapping.TerritoryName,
+                            },
+                        ])
+                    ).values()
+                );
 
-        return {
-            ...user,
-            userTerritories,
-            coverageAreas,
-        };
-    }), [mappings, users]);
+                const coverageAreas = Array.from(
+                    new Map(
+                        userMappings.map((mapping) => [
+                            mapping.AreaId,
+                            {
+                                AreaId: mapping.AreaId,
+                                AreaName: mapping.AreaName,
+                                TerritoryName: mapping.TerritoryName,
+                            },
+                        ])
+                    ).values()
+                );
+
+                return {
+                    ...user,
+                    userTerritories,
+                    coverageAreas,
+                };
+            });
+    }, [mappings, users]);
 
     const filteredRows = rows.filter((row) => {
         const searchValue = [
@@ -223,6 +255,7 @@ function UserAreaMappingList() {
                                         <Tooltip title="View Mapping" arrow>
                                             <IconButton
                                                 size="small"
+                                                onClick={() => setViewRow(row)}
                                                 sx={{
                                                     width: 31,
                                                     height: 31,
@@ -240,6 +273,7 @@ function UserAreaMappingList() {
                                         <Tooltip title="Edit Mapping" arrow>
                                             <IconButton
                                                 size="small"
+                                                onClick={() => navigate("/admin/UserAreaMapping/mapping", { state: { userId: row.userId } })}
                                                 sx={{
                                                     width: 31,
                                                     height: 31,
@@ -257,6 +291,7 @@ function UserAreaMappingList() {
                                         <Tooltip title="Delete Mapping" arrow>
                                             <IconButton
                                                 size="small"
+                                                onClick={() => setDeleteTarget(row)}
                                                 sx={{
                                                     width: 31,
                                                     height: 31,
@@ -333,6 +368,25 @@ function UserAreaMappingList() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Dialog open={Boolean(viewRow)} onClose={() => setViewRow(null)} maxWidth="sm" fullWidth>
+                <DialogTitle>{viewRow?.UserName || "User Area Mapping"}</DialogTitle>
+                <DialogContent dividers>
+                    <Typography>Division: {viewRow?.DivisionName || "-"}</Typography>
+                    <Typography sx={{ mt: 1 }}>Territories: {viewRow?.userTerritories.map((item) => item.TerritoryName).join(", ") || "-"}</Typography>
+                    <Typography sx={{ mt: 1 }}>Areas: {viewRow?.coverageAreas.map((item) => item.AreaName).join(", ") || "-"}</Typography>
+                </DialogContent>
+                <DialogActions><Button onClick={() => setViewRow(null)}>Close</Button></DialogActions>
+            </Dialog>
+
+            <ConfirmationDialog
+                open={Boolean(deleteTarget)}
+                title="Delete User Area Mapping"
+                message={`Are you sure you want to delete all area mappings for ${deleteTarget?.UserName || "this user"}?`}
+                confirmText="Yes, Delete"
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={handleDelete}
+            />
         </Box>
     );
 }

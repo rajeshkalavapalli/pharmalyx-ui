@@ -78,6 +78,35 @@ function Configuration() {
             color: "success",
             path: "/admin/UserDoctorMapping",
         },
+         {
+             label: "Add Pharmacy",
+            description: "Manage Pharmacy Information",
+            icon: MedicalServicesRounded,
+            color: "error",
+            path: "/admin/Pharmacies",
+        },
+        {
+            label: "User pharmacy mapping",
+            description: "Map users to pharmacies mapping",
+            icon: AssignmentIndRounded,
+            color: "primary",
+            path: "/admin/UserPharmacyMapping",
+        },
+        {
+            label: "Add Stockist/Retailer ",
+            description: "Manage stockist information",
+            icon: AssignmentIndRounded,
+            color: "warning",
+            path: "/admin/Stockist",
+        },
+        {
+            label: "User Stockist Mapping",
+            description: "Map users to stockists",
+            icon: AssignmentIndRounded,
+            color: "success",
+            path: "/admin/UserStockistMapping",
+        }
+
     ];
 
 

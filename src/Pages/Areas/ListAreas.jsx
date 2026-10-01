@@ -25,7 +25,9 @@ import DeleteOutline from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getAreas } from "./index";
+import { deleteArea, getAreas } from "./index";
+import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
+import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
 function ListAreas ({ onAddArea }){
@@ -33,6 +35,8 @@ function ListAreas ({ onAddArea }){
     const [areas, setAreas] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All");
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
         const loadAreas = async () => {
@@ -76,6 +80,18 @@ function ListAreas ({ onAddArea }){
                 month: "short",
                 year: "numeric",
             });
+    };
+
+    const confirmDeleteArea = async () => {
+        try {
+            await deleteArea(deleteTarget.AreaId);
+            setAreas((current) => current.filter((area) => area.AreaId !== deleteTarget.AreaId));
+            setDeleteTarget(null);
+            showSnackbar("Area deleted successfully", "success");
+        } catch (error) {
+            console.error("Error deleting area", error);
+            showSnackbar(error.response?.data?.message || "Failed to delete area", "error");
+        }
     };
 
     return(
@@ -160,6 +176,7 @@ function ListAreas ({ onAddArea }){
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`View ${area.AreaName || "area"}`}
+                                                    onClick={() => navigate("/admin/Areas/add", { state: { mode: "view", area } })}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -179,6 +196,7 @@ function ListAreas ({ onAddArea }){
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`Edit ${area.AreaName || "area"}`}
+                                                    onClick={() => navigate("/admin/Areas/add", { state: { mode: "edit", area } })}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -198,6 +216,7 @@ function ListAreas ({ onAddArea }){
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`Delete ${area.AreaName || "area"}`}
+                                                    onClick={() => setDeleteTarget(area)}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -238,6 +257,14 @@ function ListAreas ({ onAddArea }){
                     </Table>
                 </TableContainer>
             </Box>
+            <ConfirmationDialog
+                open={Boolean(deleteTarget)}
+                title="Delete Area"
+                message={`Are you sure you want to delete ${deleteTarget?.AreaName || "this area"}?`}
+                confirmText="Yes, Delete"
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={confirmDeleteArea}
+            />
         </Box>
     )
 }

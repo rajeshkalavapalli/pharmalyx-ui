@@ -48,6 +48,10 @@
  
  - fixed user area mapping  list change the routing 
 
-   # V0.0.13
+  # V0.0.13
  
  - fixed Doctor creation
+
+  # V0.0.14
+ 
+ - fixed stockist and pharmacy create and edit 
