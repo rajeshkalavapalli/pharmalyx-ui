@@ -25,3 +25,8 @@ export const userAreaMaping = async (payload)=>{
     const response = await api.post('app/create-user-area-mapping', payload)
     return response.data 
 }
+
+export const deleteUserAreaMapping = async (userId) => {
+    const response = await api.delete(`/app/delete-user-area-mapping/${userId}`);
+    return response.data;
+};

@@ -10,3 +10,13 @@ export const getDivisions = async()=>{
     return response.data
 
 }
+
+export const updateDivision = async (divisionId, payload) => {
+    const response = await api.put(`/app/update-division/${divisionId}`, payload);
+    return response.data;
+};
+
+export const deleteDivision = async (divisionId) => {
+    const response = await api.delete(`/app/delete-division/${divisionId}`);
+    return response.data;
+};

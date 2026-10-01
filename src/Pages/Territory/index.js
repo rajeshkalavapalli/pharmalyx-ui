@@ -33,3 +33,13 @@ export const getTerritories = async () =>{
     return response.data
 
 }
+
+export const updateTerritory = async (territoryId, payload) => {
+    const response = await api.put(`app/update-territory/${territoryId}`, payload);
+    return response.data;
+};
+
+export const deleteTerritory = async (territoryId) => {
+    const response = await api.delete(`app/delete-territory/${territoryId}`);
+    return response.data;
+};

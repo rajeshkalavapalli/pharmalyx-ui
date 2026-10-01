@@ -13,6 +13,11 @@ import {
     TextField,
     MenuItem,
     Chip,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 
 import { alpha } from "@mui/material/styles";
@@ -29,7 +34,9 @@ import {
     useMemo,
 } from "react";
 
-import { getUsers } from "../service/index";
+import { deleteUser, getUsers, updateUser } from "../service/index";
+import ConfirmationDialog from "../../../components/conformationDialog/ConformationDialog";
+import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
 
 function UserList({ onViewUser }) {
@@ -39,6 +46,10 @@ function UserList({ onViewUser }) {
     const [searchText, setSearchText] = useState("");
 
     const [searchField, setSearchField] = useState("Username");
+    const [viewUser, setViewUser] = useState(null);
+    const [editingUser, setEditingUser] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const { showSnackbar } = useSnackbar();
 
 
     // =================================================
@@ -127,6 +138,40 @@ function UserList({ onViewUser }) {
 
         }
 
+    };
+
+    const handleUpdate = async () => {
+        const { userId, ...userData } = editingUser;
+        const payload = {
+            ...userData,
+            UserId: userId || editingUser.UserId,
+        };
+        try {
+            await updateUser(payload);
+            setUsers((current) => current.map((user) =>
+                (user.userId || user.UserId) === payload.UserId
+                    ? { ...user, ...payload, userId: payload.UserId }
+                    : user
+            ));
+            setEditingUser(null);
+            showSnackbar("User updated successfully", "success");
+        } catch (error) {
+            console.error("Error updating user", error);
+            showSnackbar(error.response?.data?.message || "Failed to update user", "error");
+        }
+    };
+
+    const handleDelete = async () => {
+        const userId = deleteTarget.userId || deleteTarget.UserId;
+        try {
+            await deleteUser(userId);
+            setUsers((current) => current.filter((user) => (user.userId || user.UserId) !== userId));
+            setDeleteTarget(null);
+            showSnackbar("User deleted successfully", "success");
+        } catch (error) {
+            console.error("Error deleting user", error);
+            showSnackbar(error.response?.data?.message || "Failed to delete user", "error");
+        }
     };
 
 
@@ -847,11 +892,7 @@ function UserList({ onViewUser }) {
                                                 <IconButton
                                                     size="small"
 
-                                                    onClick={() =>
-                                                        onViewUser?.(
-                                                            user
-                                                        )
-                                                    }
+                                                    onClick={() => setViewUser(user)}
 
                                                     sx={{
                                                         width: 31,
@@ -903,6 +944,7 @@ function UserList({ onViewUser }) {
 
                                                 <IconButton
                                                     size="small"
+                                                    onClick={() => setEditingUser({ ...user })}
 
                                                     sx={{
                                                         width: 31,
@@ -954,6 +996,7 @@ function UserList({ onViewUser }) {
 
                                                 <IconButton
                                                     size="small"
+                                                    onClick={() => setDeleteTarget(user)}
 
                                                     sx={{
                                                         width: 31,
@@ -1448,6 +1491,45 @@ function UserList({ onViewUser }) {
                 </Table>
 
             </TableContainer>
+
+            <Dialog open={Boolean(viewUser)} onClose={() => setViewUser(null)} maxWidth="sm" fullWidth>
+                <DialogTitle>{viewUser?.UserName || "User details"}</DialogTitle>
+                <DialogContent dividers>
+                    <Typography>Email: {viewUser?.EmailId || "-"}</Typography>
+                    <Typography>Mobile: {viewUser?.MobileNumber || "-"}</Typography>
+                    <Typography>Designation: {viewUser?.SldName || "-"}</Typography>
+                    <Typography>Division: {viewUser?.DivisionName || "-"}</Typography>
+                    <Typography>Manager: {viewUser?.ManagerName || "-"}</Typography>
+                </DialogContent>
+                <DialogActions><Button onClick={() => setViewUser(null)}>Close</Button></DialogActions>
+            </Dialog>
+
+            <Dialog open={Boolean(editingUser)} onClose={() => setEditingUser(null)} maxWidth="xs" fullWidth>
+                <DialogTitle>Edit User</DialogTitle>
+                <DialogContent sx={{ display: "grid", gap: 2, pt: "12px !important" }}>
+                    {["UserName", "FirstName", "LastName", "EmailId", "CountryCode", "MobileNumber"].map((field) => (
+                        <TextField
+                            key={field}
+                            label={field}
+                            value={editingUser?.[field] || ""}
+                            onChange={(event) => setEditingUser((current) => ({ ...current, [field]: event.target.value }))}
+                        />
+                    ))}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setEditingUser(null)}>Cancel</Button>
+                    <Button variant="contained" onClick={handleUpdate}>Update</Button>
+                </DialogActions>
+            </Dialog>
+
+            <ConfirmationDialog
+                open={Boolean(deleteTarget)}
+                title="Delete User"
+                message={`Are you sure you want to delete ${deleteTarget?.UserName || "this user"}?`}
+                confirmText="Yes, Delete"
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={handleDelete}
+            />
 
         </Box>
 

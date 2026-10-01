@@ -43,3 +43,13 @@ export const getAreas = async () => {
     const response = await api.get('app/get-areas-code');
     return response.data;
 };
+
+export const updateArea = async (areaId, payload) => {
+    const response = await api.put(`app/update-area/${areaId}`, payload);
+    return response.data;
+};
+
+export const deleteArea = async (areaId) => {
+    const response = await api.delete(`app/delete-area/${areaId}`);
+    return response.data;
+};

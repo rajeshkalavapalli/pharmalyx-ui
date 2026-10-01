@@ -29,6 +29,14 @@ import { AddNewDoctors } from './Pages/Doctors/addNewDoctors/AddNewDoctors.jsx';
 import UserDoctorMappingMaster from './Pages/UserDoctorMapping/UserDoctorMappingmaster.jsx';
 import UserDoctorMappingList from './Pages/UserDoctorMapping/UserDoctorMappinglist.jsx';
 import UserDoctorMapping from './Pages/UserDoctorMapping/UserDoctorMapping.jsx';
+
+import { PharmacyMaster } from './Pages/Pharmacy/Pharmacymaster.jsx';
+import { PharmacyList } from './Pages/Pharmacy/Pharmacylist.jsx';
+import { AddNewPharmacy } from './Pages/Pharmacy/AddnewPharmacy.jsx';
+
+import { StockistOrRetailerMaster } from './Pages/StockistOrRetailer/StockistOrRetailerMaster.jsx';
+import { AddStockistOrRetailer } from './Pages/StockistOrRetailer/AddStockistOrRetailer.jsx';
+import { StockistOrRetailerList } from './Pages/StockistOrRetailer/StockistOrRetailerlist.jsx';
 function App() {
 
     return (
@@ -175,8 +183,34 @@ function App() {
                             element={<UserDoctorMapping />}
                         />
                     </Route>
+                    {/* Pharmacies Route  */}
+                    <Route
+                    path="admin/Pharmacies"
+                    element={<PharmacyMaster />}
+                    >
+                        <Route
+                            index
+                            element={<PharmacyList />}
+                        />
+                        <Route path='list'
+                        element={<PharmacyList />}
+                        />
+                         <Route path='add'
+                        element={<AddNewPharmacy/>}
+                        />
+                         
+                    </Route>
+                    {/* stockist Route  */}
 
-
+                    <Route
+                        path="admin/Stockists"
+                        element={<StockistOrRetailerMaster />}
+                    >
+                        <Route index element={<StockistOrRetailerList />} />
+                        <Route path="list" element={<StockistOrRetailerList />} />
+                        <Route path="add" element={<AddStockistOrRetailer />} />
+                    </Route>
+                    
                 </Route>
 
             </Routes>

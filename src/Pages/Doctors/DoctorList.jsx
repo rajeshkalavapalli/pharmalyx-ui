@@ -15,6 +15,10 @@ import {
     Typography,
     IconButton,
     Tooltip,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -25,13 +29,19 @@ import DeleteOutline from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getDoctors } from "./service";
+import { deleteDoctor, getDoctors, updateDoctor } from "./service";
+import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
+import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 export const DoctorList = function ({ onAddDoctor }) {
     const navigate = useNavigate();
     const [doctors, setDoctors] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All");
+    const [viewDoctor, setViewDoctor] = useState(null);
+    const [editingDoctor, setEditingDoctor] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+    const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
         const loadDoctors = async () => {
@@ -76,6 +86,30 @@ export const DoctorList = function ({ onAddDoctor }) {
                 month: "short",
                 year: "numeric",
             });
+    };
+
+    const handleUpdate = async () => {
+        try {
+            await updateDoctor(editingDoctor.DoctorId, editingDoctor);
+            setDoctors((current) => current.map((doctor) => doctor.DoctorId === editingDoctor.DoctorId ? editingDoctor : doctor));
+            setEditingDoctor(null);
+            showSnackbar("Doctor updated successfully", "success");
+        } catch (error) {
+            console.error("Error updating doctor", error);
+            showSnackbar(error.response?.data?.message || "Failed to update doctor", "error");
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteDoctor(deleteTarget.DoctorId);
+            setDoctors((current) => current.filter((doctor) => doctor.DoctorId !== deleteTarget.DoctorId));
+            setDeleteTarget(null);
+            showSnackbar("Doctor deleted successfully", "success");
+        } catch (error) {
+            console.error("Error deleting doctor", error);
+            showSnackbar(error.response?.data?.message || "Failed to delete doctor", "error");
+        }
     };
 
     return (
@@ -157,10 +191,17 @@ export const DoctorList = function ({ onAddDoctor }) {
                                 <TableRow key={doctor.DoctorId} hover>
                                     <TableCell>
                                         <Box sx={{ display: "flex", gap: 0.5 }}>
+                                            {editingDoctor?.DoctorId === doctor.DoctorId ? (
+                                                <>
+                                                    <Button size="small" onClick={handleUpdate}>Update</Button>
+                                                    <Button size="small" onClick={() => setEditingDoctor(null)}>Cancel</Button>
+                                                </>
+                                            ) : <>
                                             <Tooltip title="View Doctor" arrow>
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`View ${doctor.DoctorName || "doctor"}`}
+                                                    onClick={() => setViewDoctor(doctor)}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -180,6 +221,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`Edit ${doctor.DoctorName || "doctor"}`}
+                                                    onClick={() => setEditingDoctor({ ...doctor })}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -199,6 +241,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`Delete ${doctor.DoctorName || "doctor"}`}
+                                                    onClick={() => setDeleteTarget(doctor)}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -213,18 +256,36 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                     <DeleteOutline sx={{ fontSize: 17 }} />
                                                 </IconButton>
                                             </Tooltip>
+                                            </>}
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{doctor.DoctorName || "-"}</TableCell>
-                                    <TableCell>{doctor.Speciality || "-"}</TableCell>
-                                    <TableCell>{doctor.HospitalName || "-"}</TableCell>
+                                    <TableCell>
+                                        {editingDoctor?.DoctorId === doctor.DoctorId ? (
+                                            <TextField size="small" value={editingDoctor.DoctorName || ""} onChange={(event) => setEditingDoctor((current) => ({ ...current, DoctorName: event.target.value }))} />
+                                        ) : doctor.DoctorName || "-"}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingDoctor?.DoctorId === doctor.DoctorId ? (
+                                            <TextField size="small" value={editingDoctor.Speciality || ""} onChange={(event) => setEditingDoctor((current) => ({ ...current, Speciality: event.target.value }))} />
+                                        ) : doctor.Speciality || "-"}
+                                    </TableCell>
+                                    <TableCell>
+                                        {editingDoctor?.DoctorId === doctor.DoctorId ? (
+                                            <TextField size="small" value={editingDoctor.HospitalName || ""} onChange={(event) => setEditingDoctor((current) => ({ ...current, HospitalName: event.target.value }))} />
+                                        ) : doctor.HospitalName || "-"}
+                                    </TableCell>
                                     <TableCell>{doctor.TerritoryName || doctor.TerritoryId || "-"}</TableCell>
                                     <TableCell>
-                                        <Chip
+                                        {editingDoctor?.DoctorId === doctor.DoctorId ? (
+                                            <Select size="small" value={editingDoctor.IsActive === "No" ? "No" : "Yes"} onChange={(event) => setEditingDoctor((current) => ({ ...current, IsActive: event.target.value }))}>
+                                                <MenuItem value="Yes">Active</MenuItem>
+                                                <MenuItem value="No">Inactive</MenuItem>
+                                            </Select>
+                                        ) : <Chip
                                             size="small"
                                             label={isActive(doctor) ? "Active" : "Inactive"}
                                             color={isActive(doctor) ? "success" : "default"}
-                                        />
+                                        />}
                                     </TableCell>
                                     <TableCell>{formatDate(doctor.CreatedOn)}</TableCell>
                                 </TableRow>
@@ -240,6 +301,25 @@ export const DoctorList = function ({ onAddDoctor }) {
                     </Table>
                 </TableContainer>
             </Box>
+            <Dialog open={Boolean(viewDoctor)} onClose={() => setViewDoctor(null)} maxWidth="sm" fullWidth>
+                <DialogTitle>{viewDoctor?.DoctorName || "Doctor details"}</DialogTitle>
+                <DialogContent dividers>
+                    <Typography>Qualification: {viewDoctor?.Qualification || "-"}</Typography>
+                    <Typography>Speciality: {viewDoctor?.Speciality || "-"}</Typography>
+                    <Typography>Hospital: {viewDoctor?.HospitalName || "-"}</Typography>
+                    <Typography>Territory: {viewDoctor?.TerritoryName || viewDoctor?.TerritoryId || "-"}</Typography>
+                    <Typography>Status: {viewDoctor && (isActive(viewDoctor) ? "Active" : "Inactive")}</Typography>
+                </DialogContent>
+                <DialogActions><Button onClick={() => setViewDoctor(null)}>Close</Button></DialogActions>
+            </Dialog>
+            <ConfirmationDialog
+                open={Boolean(deleteTarget)}
+                title="Delete Doctor"
+                message={`Are you sure you want to delete ${deleteTarget?.DoctorName || "this doctor"}?`}
+                confirmText="Yes, Delete"
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={handleDelete}
+            />
         </Box>
     );
 };
