@@ -55,3 +55,7 @@
   # V0.0.14
  
  - fixed stockist and pharmacy create and edit 
+
+  # V0.0.15
+ 
+ - fixed  edit view delete for area, user, division, territoty

@@ -16,10 +16,6 @@ import {
     Chip,
     Tooltip,
     InputAdornment,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
 } from "@mui/material";
 
 import { alpha } from "@mui/material/styles";
@@ -32,13 +28,19 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddIcon from "@mui/icons-material/Add";
 
-import { deleteTerritory, getTerritories, updateTerritory } from "./index";
+import {
+    deleteTerritory,
+    getTerritories,
+} from "./index";
+
 import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
 function TerritoryList({
     handleAddTerritoty,
+    handleViewTerritory,
+    handleEditTerritory,
 }) {
 
     const [status, setStatus] =
@@ -49,10 +51,12 @@ function TerritoryList({
 
     const [territories, setTerritories] =
         useState([]);
-    const [viewTerritory, setViewTerritory] = useState(null);
-    const [editingTerritory, setEditingTerritory] = useState(null);
-    const [deleteTarget, setDeleteTarget] = useState(null);
-    const { showSnackbar } = useSnackbar();
+
+    const [deleteTarget, setDeleteTarget] =
+        useState(null);
+
+    const { showSnackbar } =
+        useSnackbar();
 
 
     // =====================================================
@@ -107,28 +111,50 @@ function TerritoryList({
 
         };
 
-    const handleUpdate = async () => {
-        try {
-            await updateTerritory(editingTerritory.TerritoryId, editingTerritory);
-            setTerritories((current) => current.map((territory) => territory.TerritoryId === editingTerritory.TerritoryId ? editingTerritory : territory));
-            setEditingTerritory(null);
-            showSnackbar("Territory updated successfully", "success");
-        } catch (error) {
-            console.error("Error updating territory", error);
-            showSnackbar(error.response?.data?.message || "Failed to update territory", "error");
-        }
-    };
+
+    // =====================================================
+    // DELETE TERRITORY
+    // =====================================================
 
     const handleDelete = async () => {
+
         try {
-            await deleteTerritory(deleteTarget.TerritoryId);
-            setTerritories((current) => current.filter((territory) => territory.TerritoryId !== deleteTarget.TerritoryId));
+
+            await deleteTerritory(
+                deleteTarget.TerritoryId
+            );
+
+            setTerritories(
+                (current) =>
+                    current.filter(
+                        (territory) =>
+                            territory.TerritoryId !==
+                            deleteTarget.TerritoryId
+                    )
+            );
+
             setDeleteTarget(null);
-            showSnackbar("Territory deleted successfully", "success");
+
+            showSnackbar(
+                "Territory deleted successfully",
+                "success"
+            );
+
         } catch (error) {
-            console.error("Error deleting territory", error);
-            showSnackbar(error.response?.data?.message || "Failed to delete territory", "error");
+
+            console.error(
+                "Error deleting territory",
+                error
+            );
+
+            showSnackbar(
+                error.response?.data?.message ||
+                "Failed to delete territory",
+                "error"
+            );
+
         }
+
     };
 
 
@@ -1118,7 +1144,11 @@ function TerritoryList({
 
                                                                 <IconButton
                                                                     size="small"
-                                                                    onClick={() => setViewTerritory(territory)}
+                                                                    onClick={() =>
+                                                                        handleViewTerritory(
+                                                                            territory
+                                                                        )
+                                                                    }
 
                                                                     sx={
                                                                         getActionButtonSx()
@@ -1145,7 +1175,11 @@ function TerritoryList({
 
                                                                 <IconButton
                                                                     size="small"
-                                                                    onClick={() => setEditingTerritory({ ...territory })}
+                                                                    onClick={() =>
+                                                                        handleEditTerritory(
+                                                                            territory
+                                                                        )
+                                                                    }
 
                                                                     sx={
                                                                         getActionButtonSx()
@@ -1172,7 +1206,11 @@ function TerritoryList({
 
                                                                 <IconButton
                                                                     size="small"
-                                                                    onClick={() => setDeleteTarget(territory)}
+                                                                    onClick={() =>
+                                                                        setDeleteTarget(
+                                                                            territory
+                                                                        )
+                                                                    }
 
                                                                     sx={
                                                                         getActionButtonSx(
@@ -1659,43 +1697,19 @@ function TerritoryList({
 
             </TableContainer>
 
-            <Dialog open={Boolean(viewTerritory)} onClose={() => setViewTerritory(null)} maxWidth="sm" fullWidth>
-                <DialogTitle>{viewTerritory?.TerritoryName || "Territory details"}</DialogTitle>
-                <DialogContent dividers>
-                    <Typography>State: {viewTerritory?.StateName || "-"}</Typography>
-                    <Typography>Status: {viewTerritory && (viewTerritory.IsActive ? "Active" : "Inactive")}</Typography>
-                </DialogContent>
-                <DialogActions><Button onClick={() => setViewTerritory(null)}>Close</Button></DialogActions>
-            </Dialog>
 
-            <Dialog open={Boolean(editingTerritory)} onClose={() => setEditingTerritory(null)} maxWidth="xs" fullWidth>
-                <DialogTitle>Edit Territory</DialogTitle>
-                <DialogContent sx={{ display: "grid", gap: 2, pt: "12px !important" }}>
-                    <TextField
-                        label="Territory Name"
-                        value={editingTerritory?.TerritoryName || ""}
-                        onChange={(event) => setEditingTerritory((current) => ({ ...current, TerritoryName: event.target.value }))}
-                    />
-                    <Select
-                        value={editingTerritory?.IsActive ? "true" : "false"}
-                        onChange={(event) => setEditingTerritory((current) => ({ ...current, IsActive: event.target.value === "true" }))}
-                    >
-                        <MenuItem value="true">Active</MenuItem>
-                        <MenuItem value="false">Inactive</MenuItem>
-                    </Select>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditingTerritory(null)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleUpdate}>Update</Button>
-                </DialogActions>
-            </Dialog>
+            {/* ================================================= */}
+            {/* DELETE CONFIRMATION */}
+            {/* ================================================= */}
 
             <ConfirmationDialog
                 open={Boolean(deleteTarget)}
                 title="Delete Territory"
                 message={`Are you sure you want to delete ${deleteTarget?.TerritoryName || "this territory"}?`}
                 confirmText="Yes, Delete"
-                onCancel={() => setDeleteTarget(null)}
+                onCancel={() =>
+                    setDeleteTarget(null)
+                }
                 onConfirm={handleDelete}
             />
 

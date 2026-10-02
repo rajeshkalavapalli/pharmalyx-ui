@@ -213,6 +213,90 @@ const PharmalyxTheme = createTheme({
         shadow: "0 8px 30px rgba(32, 37, 34, 0.055)",
     },
 
+    // =========================================================
+    // CONFIGURATION MODULE DESIGN TOKENS
+    // =========================================================
+
+    configuration: {
+        workspace: {
+            minHeight: "calc(100vh - 150px)",
+        },
+
+        header: {
+            paddingX: {
+                xs: 2,
+                sm: 3,
+                md: 4,
+            },
+
+            paddingY: 2.5,
+            gap: 1.5,
+
+            indicatorWidth: 4,
+            indicatorHeight: 42,
+        },
+
+        content: {
+            paddingX: {
+                xs: 2,
+                sm: 3,
+                md: 4,
+            },
+
+            paddingY: 3,
+        },
+
+        grid: {
+            columns: {
+                xs: "minmax(0, 1fr)",
+                sm: "repeat(2, minmax(0, 1fr))",
+                md: "repeat(3, minmax(0, 1fr))",
+                lg: "repeat(4, minmax(0, 1fr))",
+            },
+
+            gap: 1.25,
+        },
+
+        item: {
+            minHeight: 58,
+            paddingX: 1.25,
+            radius: 1.75,
+
+            icon: {
+                containerSize: 30,
+                marginRight: 1,
+                radius: 1.25,
+                fontSize: 17,
+            },
+
+            title: {
+                fontSize: 12.5,
+                lineHeight: 1.3,
+                fontWeight: 700,
+            },
+
+            description: {
+                marginTop: 0.15,
+                fontSize: 10,
+                lineHeight: 1.3,
+            },
+        },
+
+        section: {
+            titleFontSize: 15,
+            titleMarginBottom: 0.5,
+
+            descriptionFontSize: 12,
+            descriptionMarginBottom: 2.5,
+        },
+
+        closeButton: {
+            size: 36,
+            radius: 1.5,
+            iconSize: 19,
+        },
+    },
+
     field: {
         minHeight: 46,
         radius: 1.5,
@@ -579,6 +663,11 @@ const PharmalyxTheme = createTheme({
                     "& .MuiOutlinedInput-notchedOutline": {
                         borderColor:
                             theme.palette.divider,
+                    },
+
+                    "&:hover .MuiOutlinedInput-notchedInput": {
+                        borderColor:
+                            theme.palette.primary.light,
                     },
 
                     "&:hover .MuiOutlinedInput-notchedOutline": {

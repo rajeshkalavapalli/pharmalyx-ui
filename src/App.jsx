@@ -5,7 +5,7 @@ import AppShell from './screen/sidebarshell/Appshell';
 
 import Dashboard from './screen/dashboard/Dashboard';
 
-import Users from './Pages/Users/Users.jsx';
+import Users from './Pages/Users/UserMaster.jsx';
 
 import DivisionOrTerritoty from './Pages/Division/DivisionOrTerrototy.jsx';
 
@@ -37,6 +37,11 @@ import { AddNewPharmacy } from './Pages/Pharmacy/AddnewPharmacy.jsx';
 import { StockistOrRetailerMaster } from './Pages/StockistOrRetailer/StockistOrRetailerMaster.jsx';
 import { AddStockistOrRetailer } from './Pages/StockistOrRetailer/AddStockistOrRetailer.jsx';
 import { StockistOrRetailerList } from './Pages/StockistOrRetailer/StockistOrRetailerlist.jsx';
+
+import UserStockistMappingMaster from './Pages/UserStockistMapping/UserStockistMappingMaster.jsx';
+import UserStockistMappingList from './Pages/UserStockistMapping/UserStockistMappingList.jsx';
+import UserStockistMapping from './Pages/UserStockistMapping/UserStockistMapping.jsx';
+
 function App() {
 
     return (
@@ -201,14 +206,23 @@ function App() {
                          
                     </Route>
                     {/* stockist Route  */}
-
                     <Route
-                        path="admin/Stockists"
+                        path="/admin/Stockist"
                         element={<StockistOrRetailerMaster />}
                     >
                         <Route index element={<StockistOrRetailerList />} />
                         <Route path="list" element={<StockistOrRetailerList />} />
                         <Route path="add" element={<AddStockistOrRetailer />} />
+                    </Route>
+
+                   {/* stockist user mapping */}
+                    <Route
+                        path="/admin/UserstockistMapping"
+                        element={<UserStockistMappingMaster />}
+                    >
+                        <Route index element={<UserStockistMappingList />} />
+                        <Route path="list" element={<UserStockistMappingList />} />
+                        <Route path="add" element={<UserStockistMapping />} />
                     </Route>
                     
                 </Route>

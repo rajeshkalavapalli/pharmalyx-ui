@@ -16,10 +16,6 @@ import {
     Chip,
     Tooltip,
     InputAdornment,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
 } from "@mui/material";
 
 import { alpha } from "@mui/material/styles";
@@ -32,20 +28,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddIcon from "@mui/icons-material/Add";
 
-import { deleteDivision, getDivisions, updateDivision } from "../Division/index";
+import { deleteDivision, getDivisions,  } from "../Division/index";
 import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
 
-function DivisionList({ handleAddDiv }) {
+function DivisionList({ handleAddDiv, handleViewDivision, handleEditDivision }) {
 
     const [status, setStatus] = useState("All");
 
     const [search, setSearch] = useState("");
 
     const [divisions, setDivisions] = useState([]);
-    const [viewDivision, setViewDivision] = useState(null);
-    const [editingDivision, setEditingDivision] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const { showSnackbar } = useSnackbar();
 
@@ -91,16 +85,6 @@ function DivisionList({ handleAddDiv }) {
 
     };
 
-    const handleUpdate = async () => {
-        try {
-            await updateDivision(editingDivision.DivisionId, editingDivision);
-            setDivisions((current) => current.map((division) => division.DivisionId === editingDivision.DivisionId ? editingDivision : division));
-            setEditingDivision(null);
-            showSnackbar("Division updated successfully", "success");
-        } catch (error) {
-            showSnackbar(error.response?.data?.message || "Failed to update division", "error");
-        }
-    };
 
     const handleDelete = async () => {
         try {
@@ -971,7 +955,7 @@ function DivisionList({ handleAddDiv }) {
 
                                                     <IconButton
                                                         size="small"
-                                                        onClick={() => setViewDivision(division)}
+                                                        onClick={() => handleViewDivision(division)}
 
                                                         sx={
                                                             getActionButtonSx()
@@ -998,7 +982,7 @@ function DivisionList({ handleAddDiv }) {
 
                                                     <IconButton
                                                         size="small"
-                                                        onClick={() => setEditingDivision({ ...division })}
+                                                        onClick={() => handleEditDivision(division)}
 
                                                         sx={
                                                             getActionButtonSx()
@@ -1408,42 +1392,6 @@ function DivisionList({ handleAddDiv }) {
                 </Table>
 
             </TableContainer>
-
-            <Dialog open={Boolean(viewDivision)} onClose={() => setViewDivision(null)} maxWidth="sm" fullWidth>
-                <DialogTitle>{viewDivision?.DivisionName || "Division details"}</DialogTitle>
-                <DialogContent dividers>
-                    <Typography>Description: {viewDivision?.Description || "-"}</Typography>
-                    <Typography>Status: {viewDivision?.IsActive ? "Active" : "Inactive"}</Typography>
-                </DialogContent>
-                <DialogActions><Button onClick={() => setViewDivision(null)}>Close</Button></DialogActions>
-            </Dialog>
-
-            <Dialog open={Boolean(editingDivision)} onClose={() => setEditingDivision(null)} maxWidth="xs" fullWidth>
-                <DialogTitle>Edit Division</DialogTitle>
-                <DialogContent sx={{ display: "grid", gap: 2, pt: "12px !important" }}>
-                    <TextField
-                        label="Division Name"
-                        value={editingDivision?.DivisionName || ""}
-                        onChange={(event) => setEditingDivision((current) => ({ ...current, DivisionName: event.target.value }))}
-                    />
-                    <TextField
-                        label="Description"
-                        value={editingDivision?.Description || ""}
-                        onChange={(event) => setEditingDivision((current) => ({ ...current, Description: event.target.value }))}
-                    />
-                    <Select
-                        value={editingDivision?.IsActive ? "true" : "false"}
-                        onChange={(event) => setEditingDivision((current) => ({ ...current, IsActive: event.target.value === "true" }))}
-                    >
-                        <MenuItem value="true">Active</MenuItem>
-                        <MenuItem value="false">Inactive</MenuItem>
-                    </Select>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditingDivision(null)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleUpdate}>Update</Button>
-                </DialogActions>
-            </Dialog>
 
             <ConfirmationDialog
                 open={Boolean(deleteTarget)}

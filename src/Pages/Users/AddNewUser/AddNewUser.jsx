@@ -24,6 +24,7 @@ import {
     getDesignation,
     createUser,
     getUsers,
+    updateUser,
 } from "../../Users/service/index";
 
 import { getDivisions } from "../../Division/index";
@@ -37,7 +38,15 @@ import {
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
 
-function AddNewUser({ onUserCreated }) {
+function AddNewUser({
+    onUserCreated,
+    onClose,
+    mode = "create",
+    user = null,
+}) {
+    const isEditMode = mode === "edit";
+    const isViewMode = mode === "view";
+
 
     /* ================================================= */
     /* COMMON FIELD STYLE */
@@ -114,8 +123,8 @@ function AddNewUser({ onUserCreated }) {
     /* STATE */
     /* ================================================= */
 
-    const [firstName, setfirstName] = useState("");
-    const [Lastname, setLastname] = useState("");
+    const [firstName, setfirstName] = useState(user?.FirstName || "");
+    const [Lastname, setLastname] = useState(user?.LastName || "");
     const [designations, setDesignations] = useState([]);
     const [ReportingManager, setReportingManager] = useState("");
     const [openCloseDialog, setOpenCloseDialog] = useState(false);
@@ -175,11 +184,13 @@ function AddNewUser({ onUserCreated }) {
 
         password: yup
             .string()
-            .required("Password is required")
-            .min(
-                8,
-                "Password must be at least 8 characters"
-            ),
+            .when([], {
+                is: () => !isEditMode && !isViewMode,
+                then: (schema) => schema
+                    .required("Password is required")
+                    .min(8, "Password must be at least 8 characters"),
+                otherwise: (schema) => schema.notRequired(),
+            }),
 
         Designation: yup
             .string()
@@ -264,22 +275,20 @@ function AddNewUser({ onUserCreated }) {
             };
 
 
-            console.log(
-                "before create user data",
-                userData
-            );
-
-
-            const result =
-                await createUser(
-                    userData
-                );
-
+            const result = isEditMode
+                ? await updateUser({
+                    UserId: user?.UserId || user?.userId,
+                    ...userData,
+                })
+                : await createUser(userData);
+                console.log("USER UPDATE PAYLOAD:", {
+    UserId: user?.UserId || user?.userId,
+    ...userData,})
             const payload =
                 result?.createUser || result;
 
             console.log(
-                "created user details",
+                isEditMode ? "updated user details" : "created user details",
                 payload
             );
 
@@ -295,7 +304,7 @@ function AddNewUser({ onUserCreated }) {
 
             showSnackbar(
                 payload?.message ||
-                "User created successfully",
+                (isEditMode ? "User updated successfully" : "User created successfully"),
                 "success"
             );
 
@@ -311,7 +320,8 @@ function AddNewUser({ onUserCreated }) {
 
 
             showSnackbar(
-                "Failed to create user",
+                err.response?.data?.message ||
+                    (isEditMode ? "Failed to update user" : "Failed to create user"),
                 "error"
             );
 
@@ -326,18 +336,24 @@ function AddNewUser({ onUserCreated }) {
 
     const formik = useFormik({
 
+        enableReinitialize: true,
+
         initialValues: {
 
-            Username: "",
-            email: "",
-            Mobile: "",
+            Username: user?.UserName || user?.Username || "",
+            email: user?.EmailId || "",
+            Mobile: user?.MobileNumber || "",
             password: "",
-            Designation: "",
-            countryCode: "",
-            CountryId: "",
-            StateIds: [],
-            TerritoryIds: [],
-            DivisionId: "",
+            Designation: user?.DesignationId || "",
+            countryCode: user?.CountryCode || "",
+            CountryId: user?.CountryId || "",
+            StateIds: Array.isArray(user?.StateIds)
+                ? user.StateIds
+                : (user?.StateIds || "").split(",").filter(Boolean),
+            TerritoryIds: Array.isArray(user?.TerritoryIds)
+                ? user.TerritoryIds
+                : (user?.TerritoryIds || "").split(",").filter(Boolean),
+            DivisionId: user?.DivisionId || "",
 
         },
 
@@ -362,6 +378,31 @@ function AddNewUser({ onUserCreated }) {
 
 
     /* ================================================= */
+    /* LOAD SELECTED USER */
+    /* ================================================= */
+
+    useEffect(() => {
+        if (!user) return;
+
+        const countryId = user.CountryId || user.countryId;
+        const stateIds = Array.isArray(user.StateIds)
+            ? user.StateIds
+            : (user.StateIds || "").split(",").filter(Boolean);
+        const territoryIds = Array.isArray(user.TerritoryIds)
+            ? user.TerritoryIds
+            : (user.TerritoryIds || "").split(",").filter(Boolean);
+
+        setfirstName(user.FirstName || "");
+        setLastname(user.LastName || "");
+        setReportingManager(user.ManagerId || "");
+
+        if (countryId) loadStates(countryId);
+        if (stateIds.length) loadTerritories(stateIds);
+        if (territoryIds.length) loadDivisionsByTerritory(territoryIds[0]);
+        if (user.DivisionId) loadManagersByDivision(user.DivisionId);
+    }, [user]);
+
+
     /* LOAD COUNTRIES */
     /* ================================================= */
 
@@ -715,9 +756,12 @@ function AddNewUser({ onUserCreated }) {
     /* ================================================= */
 
     const handleClosed = () => {
+        if (isViewMode) {
+            onClose?.();
+            return;
+        }
 
         setOpenCloseDialog(true);
-
     };
 
 
@@ -795,7 +839,7 @@ function AddNewUser({ onUserCreated }) {
                                 lineHeight: 1.25,
                             }}
                         >
-                            Create User
+                            {isViewMode ? "View User" : isEditMode ? "Edit User" : "Create User"}
                         </Typography>
 
                         <Typography
@@ -807,8 +851,9 @@ function AddNewUser({ onUserCreated }) {
                                 maxWidth: 640,
                             }}
                         >
-                            Add a new user and configure
-                            their organizational access.
+                            {isViewMode
+                                ? "Review the user's account and organizational access."
+                                : "Add a user and configure their organizational access."}
                         </Typography>
 
                     </Box>
@@ -910,6 +955,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
+                                disabled={isViewMode}
                                 label="Username *"
                                 name="Username"
                                 placeholder="Enter username"
@@ -942,6 +988,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
+                                disabled={isViewMode}
                                 label="First Name"
                                 placeholder="Enter first name"
                                 sx={fieldSx}
@@ -960,6 +1007,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
+                                disabled={isViewMode}
                                 label="Last Name"
                                 placeholder="Enter last name"
                                 sx={fieldSx}
@@ -978,6 +1026,7 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
+                                disabled={isViewMode}
                                 label="Email * "
                                 name="email"
                                 placeholder="Enter email address"
@@ -1018,6 +1067,7 @@ function AddNewUser({ onUserCreated }) {
 
                                     <Autocomplete
                                         fullWidth
+                                        disabled={isViewMode}
                                         options={mobileCountries}
                                         getOptionLabel={
                                             (country) =>
@@ -1055,6 +1105,7 @@ function AddNewUser({ onUserCreated }) {
                                                 <TextField
                                                     {...params}
                                                     fullWidth
+                                                    disabled={isViewMode}
                                                     label="Country Code"
                                                     sx={fieldSx}
                                                     error={
@@ -1080,6 +1131,7 @@ function AddNewUser({ onUserCreated }) {
 
                                     <TextField
                                         fullWidth
+                                        disabled={isViewMode}
                                         label="Mobile Number * "
                                         name="Mobile"
                                         placeholder="Enter mobile number"
@@ -1116,7 +1168,8 @@ function AddNewUser({ onUserCreated }) {
 
                             <TextField
                                 fullWidth
-                                label="Password * "
+                                disabled={isViewMode}
+                                label={isEditMode || isViewMode ? "Password" : "Password * "}
                                 name="password"
                                 placeholder="Enter password"
                                 type="password"
@@ -1224,6 +1277,7 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
+                                disabled={isViewMode}
                                 label="Designation * "
                                 name="Designation"
                                 value={
@@ -1281,6 +1335,7 @@ function AddNewUser({ onUserCreated }) {
                         <Grid size={{ xs: 12, md: 6 }}>
 
                             <Autocomplete
+                                disabled={isViewMode}
                                 options={countries}
                                 value={
                                     countries.find(
@@ -1378,7 +1433,7 @@ function AddNewUser({ onUserCreated }) {
                                     ) || null
                                 }
                                 disabled={
-                                    !formik.values.CountryId
+                                    isViewMode || !formik.values.CountryId
                                 }
                                 getOptionLabel={(state) =>
                                     state.StateName || ""
@@ -1503,6 +1558,7 @@ function AddNewUser({ onUserCreated }) {
                                     )
                                 }
                                 disabled={
+                                    isViewMode ||
                                     !formik.values.StateIds ||
                                     formik.values.StateIds.length === 0
                                 }
@@ -1548,6 +1604,11 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
+                                disabled={
+                                    isViewMode ||
+                                    !formik.values.TerritoryIds ||
+                                    formik.values.TerritoryIds.length === 0
+                                }
                                 label="Division * "
                                 name="DivisionId"
                                 value={
@@ -1580,10 +1641,6 @@ function AddNewUser({ onUserCreated }) {
                                 }}
                                 onBlur={
                                     formik.handleBlur
-                                }
-                                disabled={
-                                    !formik.values.TerritoryIds ||
-                                    formik.values.TerritoryIds.length === 0
                                 }
                                 error={
                                     formik.touched.DivisionId &&
@@ -1639,6 +1696,7 @@ function AddNewUser({ onUserCreated }) {
                             <TextField
                                 fullWidth
                                 select
+                                disabled={isViewMode || !formik.values.DivisionId}
                                 label="Reporting Manager"
                                 value={
                                     ReportingManager
@@ -1647,9 +1705,6 @@ function AddNewUser({ onUserCreated }) {
                                     setReportingManager(
                                         event.target.value
                                     )
-                                }
-                                disabled={
-                                    !formik.values.DivisionId
                                 }
                                 sx={fieldSx}
                             >
@@ -1762,28 +1817,26 @@ function AddNewUser({ onUserCreated }) {
 
                 {/* CREATE USER */}
 
-                <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={
-                        formik.isSubmitting
-                    }
-                    sx={{
-                        minWidth: 135,
-                        height: 40,
-                        borderRadius: 1.5,
-                        textTransform: "none",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        boxShadow: "none",
-                    }}
-                >
-                    {
-                        formik.isSubmitting
-                            ? "Creating..."
-                            : "Create User"
-                    }
-                </Button>
+                {!isViewMode && (
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={formik.isSubmitting}
+                        sx={{
+                            minWidth: 135,
+                            height: 40,
+                            borderRadius: 1.5,
+                            textTransform: "none",
+                            fontSize: 13,
+                            fontWeight: 700,
+                            boxShadow: "none",
+                        }}
+                    >
+                        {formik.isSubmitting
+                            ? isEditMode ? "Updating..." : "Creating..."
+                            : isEditMode ? "Update User" : "Create User"}
+                    </Button>
+                )}
 
             </Box>
 
@@ -1796,8 +1849,10 @@ function AddNewUser({ onUserCreated }) {
                 open={
                     openCloseDialog
                 }
-                title="Close User Creation"
-                message="Are you sure you want to close the user creation?"
+                title={isEditMode ? "Close User Edit" : "Close User Creation"}
+                message={isEditMode
+                    ? "Are you sure you want to close the user edit?"
+                    : "Are you sure you want to close the user creation?"}
                 onCancel={() =>
                     setOpenCloseDialog(
                         false
@@ -1809,7 +1864,7 @@ function AddNewUser({ onUserCreated }) {
                         false
                     );
 
-                    onUserCreated();
+                    onClose?.();
 
                 }}
             />
