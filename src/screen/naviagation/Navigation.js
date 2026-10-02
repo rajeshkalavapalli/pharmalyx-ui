@@ -120,7 +120,6 @@ const navigation = [
         children: [
             { label: 'Roles & Permissions', path: '/admin/roles' },
             { label: 'Configuration', path: '/admin/configuration' },
-            { label: 'Stockist / Retailer Masters', path: '/admin/stockist-retailer' },
             { label: 'Approvals', path: '/admin/approvals' },
             { label: 'Integrations', path: '/admin/integrations' },
         ],

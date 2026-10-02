@@ -24,88 +24,223 @@ import {
     getstates,
     getTerritorie,
     createArea,
+    updateArea,
     previewAreaCode,
-
 } from "../Areas/index";
 
 
-function AddNewArea({ onAreaCreated, onClose }) {
+function AddNewArea({
+    onAreaCreated,
+    onClose,
+    mode = "create",
+    area = null,
+}) {
 
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
+
     const [closeDialog, setCloseDialog] = useState(false);
 
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [territories, setTerritories] = useState([]);
 
+
+    // =====================================================
+    // MODE
+    // =====================================================
+
+    const isEditMode = mode === "edit";
+    const isViewMode = mode === "view";
+
+
+    // =====================================================
+    // VALIDATION
+    // =====================================================
+
     const validationSchema = yup.object({
-        CountryId: yup.string().required("Country is required"),
-        StateId: yup.string().required("State is required"),
-        TerritoryId: yup.string().required("Territory is required"),
-        AreaName: yup.string().trim().required("Area name is required"),
+        CountryId: yup
+            .string()
+            .required("Country is required"),
+
+        StateId: yup
+            .string()
+            .required("State is required"),
+
+        TerritoryId: yup
+            .string()
+            .required("Territory is required"),
+
+        AreaName: yup
+            .string()
+            .trim()
+            .required("Area name is required"),
     });
 
+
+    // =====================================================
+    // FORMIK
+    // =====================================================
+
     const formik = useFormik({
+
+        enableReinitialize: true,
+
         initialValues: {
-            CountryId: "",
-            StateId: "",
-            TerritoryId: "",
-            AreaName: "",
-            AreaCode: "",
-            IsActive: "YES",
+            CountryId: area?.CountryId || "",
+            StateId: area?.StateId || "",
+            TerritoryId: area?.TerritoryId || "",
+            AreaName: area?.AreaName || "",
+            AreaCode: area?.AreaCode || "",
+            IsActive:
+                area?.IsActive ??
+                "YES",
         },
+
         validationSchema,
+
         onSubmit: async (values) => {
+
             try {
-                const response = await createArea({
+
+                const AreaPayload = {
                     TerritoryId: values.TerritoryId,
                     AreaName: values.AreaName.trim(),
                     AreaCode: values.AreaCode,
                     IsActive: values.IsActive,
-                });
+                };
+
+
+                // =================================================
+                // UPDATE
+                // =================================================
+
+                if (isEditMode) {
+
+                    const response =
+                        await updateArea(
+                            area.AreaId,
+                            AreaPayload
+                        );
+
+                    console.log(
+                        "area updated successfully",
+                        response
+                    );
+
+                    onAreaCreated(
+                        "Area updated successfully",
+                        "success"
+                    );
+
+                    return;
+                }
+
+
+                // =================================================
+                // CREATE
+                // =================================================
+
+                const response =
+                    await createArea(
+                        AreaPayload
+                    );
+
+                console.log(
+                    "area created successfully",
+                    response
+                );
 
                 showSnackbar(
-                    response?.message || "Area created successfully",
+                    response?.message ||
+                    "Area created successfully",
                     "success"
                 );
-                formik.resetForm();
-                setStates([]);
-                setTerritories([]);
+
                 if (onAreaCreated) {
-                    onAreaCreated();
+                    onAreaCreated(
+                        "Area created successfully",
+                        "success"
+                    );
                 } else {
-                    navigate("/admin/Areas/list");
+
+                    formik.resetForm();
+
+                    setStates([]);
+                    setTerritories([]);
+
+                    navigate(
+                        "/admin/Areas/list"
+                    );
                 }
+
             } catch (err) {
-                console.log("error creating area", err);
+
+                console.log(
+                    "error saving area",
+                    err
+                );
+
                 showSnackbar(
                     err.response?.status === 409
                         ? "Area already exists"
                         : err.response?.data?.message ||
                             err.message ||
-                            "Area was not created",
+                            (
+                                isEditMode
+                                    ? "Area was not updated"
+                                    : "Area was not created"
+                            ),
                     "error"
                 );
+
             }
+
         },
+
     });
 
-    const { values, touched, errors, setFieldValue, handleBlur, handleSubmit } = formik;
+
+    const {
+        values,
+        touched,
+        errors,
+        setFieldValue,
+        handleBlur,
+        handleSubmit,
+    } = formik;
+
+
+    // =====================================================
+    // CLOSE AREA
+    // =====================================================
 
     const closeArea = () => {
+
         formik.resetForm();
+
         setStates([]);
         setTerritories([]);
+
         if (onClose) {
+
             onClose();
+
         } else {
-            navigate("/admin/Areas/list");
+
+            navigate(
+                "/admin/Areas/list"
+            );
+
         }
+
     };
 
+
     const handleClose = () => {
+
         setCloseDialog(true);
+
     };
 
 
@@ -114,10 +249,16 @@ function AddNewArea({ onAreaCreated, onClose }) {
     // =====================================================
 
     const fieldSx = {
+
         "& .MuiOutlinedInput-root": {
+
             minHeight: 46,
+
             borderRadius: 1.5,
-            backgroundColor: "background.paper",
+
+            backgroundColor:
+                "background.paper",
+
             transition:
                 "border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease",
 
@@ -130,64 +271,126 @@ function AddNewArea({ onAreaCreated, onClose }) {
             },
 
             "&.Mui-focused": {
+
                 boxShadow: (theme) =>
                     `0 0 0 3px ${theme.palette.primary.main}12`,
+
             },
 
             "&.Mui-focused fieldset": {
-                borderColor: "primary.main",
+
+                borderColor:
+                    "primary.main",
+
                 borderWidth: 1,
+
             },
+
         },
 
         "& .MuiInputLabel-root": {
+
             fontSize: 13,
-            color: "text.secondary",
+
+            color:
+                "text.secondary",
+
         },
 
         "& .MuiInputLabel-root.Mui-focused": {
-            color: "primary.main",
+
+            color:
+                "primary.main",
+
         },
 
         "& .MuiInputBase-input": {
+
             fontSize: 13,
-            color: "text.primary",
+
+            color:
+                "text.primary",
+
         },
 
         "& .MuiSelect-select": {
+
             fontSize: 13,
+
         },
 
         "& .MuiFormHelperText-root": {
+
             fontSize: 11,
+
             marginLeft: 0.5,
+
             marginTop: 0.5,
+
         },
+
     };
 
+
+    // =====================================================
+    // AREA CODE PREVIEW
+    // =====================================================
 
     const handleAreaNameChange = async (e) => {
-        const value = e.target.value;
 
-        setFieldValue("AreaName", value);
+        const value =
+            e.target.value;
 
-        if (!values.TerritoryId || !value.trim()) {
-            setFieldValue("AreaCode", "");
-            return;
-        }
+        setFieldValue(
+            "AreaName",
+            value
+        );
 
-        try {
-            const result = await previewAreaCode(
-                values.TerritoryId,
-                value.trim()
+
+        if (
+            !values.TerritoryId ||
+            !value.trim()
+        ) {
+
+            setFieldValue(
+                "AreaCode",
+                ""
             );
 
-            setFieldValue("AreaCode", result.areaCode || "");
-        } catch (err) {
-            console.log("error previewing area code", err);
-            setFieldValue("AreaCode", "");
+            return;
+
         }
+
+
+        try {
+
+            const result =
+                await previewAreaCode(
+                    values.TerritoryId,
+                    value.trim()
+                );
+
+            setFieldValue(
+                "AreaCode",
+                result.areaCode || ""
+            );
+
+        } catch (err) {
+
+            console.log(
+                "error previewing area code",
+                err
+            );
+
+            setFieldValue(
+                "AreaCode",
+                ""
+            );
+
+        }
+
     };
+
 
     // =====================================================
     // LOAD COUNTRIES
@@ -197,9 +400,24 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
         const loadCountries = async () => {
 
-            const response = await getcountry();
+            try {
 
-            setCountries(response.country);
+                const response =
+                    await getcountry();
+
+                setCountries(
+                    response?.country || []
+                );
+
+            } catch (err) {
+
+                console.log(
+                    "error getting countries",
+                    err
+                );
+
+            }
+
         };
 
         loadCountries();
@@ -214,14 +432,38 @@ function AddNewArea({ onAreaCreated, onClose }) {
     useEffect(() => {
 
         if (!values.CountryId) {
+
+            setStates([]);
+
             return;
+
         }
+
 
         const loadStates = async () => {
 
-            const response = await getstates(values.CountryId);
+            try {
 
-            setStates(response.states);
+                const response =
+                    await getstates(
+                        values.CountryId
+                    );
+
+                setStates(
+                    response?.states || []
+                );
+
+            } catch (err) {
+
+                console.log(
+                    "error getting states",
+                    err
+                );
+
+                setStates([]);
+
+            }
+
         };
 
         loadStates();
@@ -236,19 +478,77 @@ function AddNewArea({ onAreaCreated, onClose }) {
     useEffect(() => {
 
         if (!values.StateId) {
+
+            setTerritories([]);
+
             return;
+
         }
+
 
         const loadTerritories = async () => {
 
-            const response = await getTerritorie(values.StateId);
+            try {
 
-            setTerritories(response.territories);
+                const response =
+                    await getTerritorie(
+                        values.StateId
+                    );
+
+                setTerritories(
+                    response?.territories || []
+                );
+
+            } catch (err) {
+
+                console.log(
+                    "error getting territories",
+                    err
+                );
+
+                setTerritories([]);
+
+            }
+
         };
 
         loadTerritories();
 
     }, [values.StateId]);
+
+
+    // =====================================================
+    // HEADER TEXT
+    // =====================================================
+
+    const getTitle = () => {
+
+        if (isViewMode) {
+            return "View Area";
+        }
+
+        if (isEditMode) {
+            return "Edit Area";
+        }
+
+        return "Create Area";
+
+    };
+
+
+    const getDescription = () => {
+
+        if (isViewMode) {
+            return "View the details of the selected area.";
+        }
+
+        if (isEditMode) {
+            return "Update the details of the selected area.";
+        }
+
+        return "Add a new area to your geographical structure.";
+
+    };
 
 
     return (
@@ -260,7 +560,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                 borderRadius: 2.5,
                 border: "1px solid",
                 borderColor: "divider",
-                backgroundColor: "background.paper",
+                backgroundColor:
+                    "background.paper",
                 overflow: "hidden",
 
                 boxShadow:
@@ -274,7 +575,11 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
             <Box
                 sx={{
-                    px: { xs: 2, sm: 3, md: 4 },
+                    px: {
+                        xs: 2,
+                        sm: 3,
+                        md: 4,
+                    },
                     py: 3,
 
                     display: "flex",
@@ -288,7 +593,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                         width: 4,
                         minHeight: 42,
                         borderRadius: 2,
-                        backgroundColor: "primary.main",
+                        backgroundColor:
+                            "primary.main",
                     }}
                 />
 
@@ -298,22 +604,24 @@ function AddNewArea({ onAreaCreated, onClose }) {
                         variant="h6"
                         sx={{
                             fontWeight: 700,
-                            color: "text.primary",
+                            color:
+                                "text.primary",
                             lineHeight: 1.3,
                         }}
                     >
-                        Create Area
+                        {getTitle()}
                     </Typography>
 
                     <Typography
                         variant="body2"
                         sx={{
                             mt: 0.5,
-                            color: "text.secondary",
+                            color:
+                                "text.secondary",
                             fontSize: 13,
                         }}
                     >
-                        Add a new area to your geographical structure.
+                        {getDescription()}
                     </Typography>
 
                 </Box>
@@ -333,7 +641,13 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     width: "100%",
                     maxWidth: 900,
                     mx: "auto",
-                    px: { xs: 2, sm: 3, md: 4 },
+
+                    px: {
+                        xs: 2,
+                        sm: 3,
+                        md: 4,
+                    },
+
                     py: 3.5,
                 }}
             >
@@ -347,7 +661,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     <Box
                         sx={{
                             display: "flex",
-                            alignItems: "flex-start",
+                            alignItems:
+                                "flex-start",
                             gap: 1.25,
                             mb: 2.5,
                         }}
@@ -358,7 +673,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 width: 3,
                                 minHeight: 28,
                                 borderRadius: 2,
-                                backgroundColor: "primary.main",
+                                backgroundColor:
+                                    "primary.main",
                             }}
                         />
 
@@ -368,7 +684,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 sx={{
                                     fontSize: 15,
                                     fontWeight: 700,
-                                    color: "text.primary",
+                                    color:
+                                        "text.primary",
                                 }}
                             >
                                 Location Information
@@ -378,7 +695,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 sx={{
                                     mt: 0.25,
                                     fontSize: 12,
-                                    color: "text.secondary",
+                                    color:
+                                        "text.secondary",
                                 }}
                             >
                                 Select the country, state, and territory for this area.
@@ -392,7 +710,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     <Box
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
+                            flexDirection:
+                                "column",
                             gap: 2.25,
                         }}
                     >
@@ -403,6 +722,7 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             fullWidth
                             size="small"
                             sx={fieldSx}
+                            disabled={isViewMode}
                         >
 
                             <InputLabel>
@@ -411,32 +731,64 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                             <Select
                                 name="CountryId"
-                                value={values.CountryId}
+                                value={
+                                    values.CountryId
+                                }
                                 label="Country"
+
                                 onChange={(event) => {
-                                    setFieldValue("CountryId", event.target.value);
-                                    setFieldValue("StateId", "");
-                                    setFieldValue("TerritoryId", "");
+
+                                    setFieldValue(
+                                        "CountryId",
+                                        event.target.value
+                                    );
+
+                                    setFieldValue(
+                                        "StateId",
+                                        ""
+                                    );
+
+                                    setFieldValue(
+                                        "TerritoryId",
+                                        ""
+                                    );
+
                                     setTerritories([]);
+
                                 }}
+
                                 onBlur={handleBlur}
-                                error={touched.CountryId && Boolean(errors.CountryId)}
+
+                                error={
+                                    touched.CountryId &&
+                                    Boolean(
+                                        errors.CountryId
+                                    )
+                                }
                             >
 
                                 <MenuItem value="">
                                     Select Country
                                 </MenuItem>
 
-                                {countries.map((item) => (
+                                {countries.map(
+                                    (item) => (
 
-                                    <MenuItem
-                                        key={item.CountryId}
-                                        value={item.CountryId}
-                                    >
-                                        {item.CountryName}
-                                    </MenuItem>
+                                        <MenuItem
+                                            key={
+                                                item.CountryId
+                                            }
+                                            value={
+                                                item.CountryId
+                                            }
+                                        >
+                                            {
+                                                item.CountryName
+                                            }
+                                        </MenuItem>
 
-                                ))}
+                                    )
+                                )}
 
                             </Select>
 
@@ -449,6 +801,7 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             fullWidth
                             size="small"
                             sx={fieldSx}
+                            disabled={isViewMode}
                         >
 
                             <InputLabel>
@@ -457,30 +810,57 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                             <Select
                                 name="StateId"
-                                value={values.StateId}
+                                value={
+                                    values.StateId
+                                }
                                 label="State"
+
                                 onChange={(event) => {
-                                    setFieldValue("StateId", event.target.value);
-                                    setFieldValue("TerritoryId", "");
+
+                                    setFieldValue(
+                                        "StateId",
+                                        event.target.value
+                                    );
+
+                                    setFieldValue(
+                                        "TerritoryId",
+                                        ""
+                                    );
+
                                 }}
+
                                 onBlur={handleBlur}
-                                error={touched.StateId && Boolean(errors.StateId)}
+
+                                error={
+                                    touched.StateId &&
+                                    Boolean(
+                                        errors.StateId
+                                    )
+                                }
                             >
 
                                 <MenuItem value="">
                                     Select State
                                 </MenuItem>
 
-                                {states.map((item) => (
+                                {states.map(
+                                    (item) => (
 
-                                    <MenuItem
-                                        key={item.StateId}
-                                        value={item.StateId}
-                                    >
-                                        {item.StateName}
-                                    </MenuItem>
+                                        <MenuItem
+                                            key={
+                                                item.StateId
+                                            }
+                                            value={
+                                                item.StateId
+                                            }
+                                        >
+                                            {
+                                                item.StateName
+                                            }
+                                        </MenuItem>
 
-                                ))}
+                                    )
+                                )}
 
                             </Select>
 
@@ -493,6 +873,7 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             fullWidth
                             size="small"
                             sx={fieldSx}
+                            disabled={isViewMode}
                         >
 
                             <InputLabel>
@@ -501,30 +882,57 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                             <Select
                                 name="TerritoryId"
-                                value={values.TerritoryId}
+                                value={
+                                    values.TerritoryId
+                                }
                                 label="Territory"
+
                                 onChange={(event) => {
-                                    setFieldValue("TerritoryId", event.target.value);
-                                    setFieldValue("AreaCode", "");
+
+                                    setFieldValue(
+                                        "TerritoryId",
+                                        event.target.value
+                                    );
+
+                                    setFieldValue(
+                                        "AreaCode",
+                                        ""
+                                    );
+
                                 }}
+
                                 onBlur={handleBlur}
-                                error={touched.TerritoryId && Boolean(errors.TerritoryId)}
+
+                                error={
+                                    touched.TerritoryId &&
+                                    Boolean(
+                                        errors.TerritoryId
+                                    )
+                                }
                             >
 
                                 <MenuItem value="">
                                     Select Territory
                                 </MenuItem>
 
-                                {territories.map((item) => (
+                                {territories.map(
+                                    (item) => (
 
-                                    <MenuItem
-                                        key={item.TerritoryId}
-                                        value={item.TerritoryId}
-                                    >
-                                        {item.TerritoryName}
-                                    </MenuItem>
+                                        <MenuItem
+                                            key={
+                                                item.TerritoryId
+                                            }
+                                            value={
+                                                item.TerritoryId
+                                            }
+                                        >
+                                            {
+                                                item.TerritoryName
+                                            }
+                                        </MenuItem>
 
-                                ))}
+                                    )
+                                )}
 
                             </Select>
 
@@ -547,7 +955,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     <Box
                         sx={{
                             display: "flex",
-                            alignItems: "flex-start",
+                            alignItems:
+                                "flex-start",
                             gap: 1.25,
                             mb: 2.5,
                         }}
@@ -558,7 +967,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 width: 3,
                                 minHeight: 28,
                                 borderRadius: 2,
-                                backgroundColor: "primary.main",
+                                backgroundColor:
+                                    "primary.main",
                             }}
                         />
 
@@ -568,7 +978,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 sx={{
                                     fontSize: 15,
                                     fontWeight: 700,
-                                    color: "text.primary",
+                                    color:
+                                        "text.primary",
                                 }}
                             >
                                 Area Information
@@ -578,10 +989,11 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                 sx={{
                                     mt: 0.25,
                                     fontSize: 12,
-                                    color: "text.secondary",
+                                    color:
+                                        "text.secondary",
                                 }}
                             >
-                                Enter the basic information for the new area.
+                                Enter the basic information for the area.
                             </Typography>
 
                         </Box>
@@ -592,7 +1004,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     <Box
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
+                            flexDirection:
+                                "column",
                             gap: 2.25,
                         }}
                     >
@@ -604,11 +1017,34 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             size="small"
                             label="Area Name"
                             name="AreaName"
-                            value={values.AreaName}
-                            onChange={handleAreaNameChange}
+
+                            value={
+                                values.AreaName
+                            }
+
+                            onChange={
+                                handleAreaNameChange
+                            }
+
                             onBlur={handleBlur}
-                            error={touched.AreaName && Boolean(errors.AreaName)}
-                            helperText={touched.AreaName ? errors.AreaName : ""}
+
+                            error={
+                                touched.AreaName &&
+                                Boolean(
+                                    errors.AreaName
+                                )
+                            }
+
+                            helperText={
+                                touched.AreaName
+                                    ? errors.AreaName
+                                    : ""
+                            }
+
+                            disabled={
+                                isViewMode
+                            }
+
                             sx={fieldSx}
                         />
 
@@ -619,29 +1055,44 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             fullWidth
                             size="small"
                             label="Area Code"
-                            value={values.AreaCode}
+
+                            value={
+                                values.AreaCode
+                            }
+
                             placeholder="Auto-generated"
+
                             helperText="Area code will be generated automatically."
+
                             InputProps={{
                                 readOnly: true,
                             }}
+
+                            disabled={
+                                isViewMode
+                            }
+
                             sx={{
                                 ...fieldSx,
 
-                                "& .MuiOutlinedInput-root": {
-                                    ...fieldSx[
-                                    "& .MuiOutlinedInput-root"
-                                    ],
+                                "& .MuiOutlinedInput-root":
+                                    {
+                                        ...fieldSx[
+                                            "& .MuiOutlinedInput-root"
+                                        ],
 
-                                    backgroundColor:
-                                        "action.hover",
-                                },
+                                        backgroundColor:
+                                            "action.hover",
+                                    },
 
-                                "& .MuiInputBase-input": {
-                                    fontSize: 13,
-                                    color: "text.secondary",
-                                    cursor: "not-allowed",
-                                },
+                                "& .MuiInputBase-input":
+                                    {
+                                        fontSize: 13,
+                                        color:
+                                            "text.secondary",
+                                        cursor:
+                                            "not-allowed",
+                                    },
                             }}
                         />
 
@@ -653,7 +1104,8 @@ function AddNewArea({ onAreaCreated, onClose }) {
                             <Typography
                                 sx={{
                                     fontSize: 13,
-                                    color: "text.secondary",
+                                    color:
+                                        "text.secondary",
                                     mb: 1,
                                 }}
                             >
@@ -663,14 +1115,23 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                             <Box
                                 sx={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
+                                    display:
+                                        "inline-flex",
+                                    alignItems:
+                                        "center",
                                     border: "1px solid",
-                                    borderColor: "divider",
+                                    borderColor:
+                                        "divider",
                                     borderRadius: 1.5,
-                                    overflow: "hidden",
+                                    overflow:
+                                        "hidden",
                                     backgroundColor:
                                         "background.paper",
+
+                                    opacity:
+                                        isViewMode
+                                            ? 0.7
+                                            : 1,
                                 }}
                             >
 
@@ -678,28 +1139,41 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                                 <Button
                                     type="button"
-                                    onClick={() =>
-                                        setFieldValue("IsActive", "YES")
+
+                                    disabled={
+                                        isViewMode
                                     }
+
+                                    onClick={() =>
+                                        setFieldValue(
+                                            "IsActive",
+                                            "YES"
+                                        )
+                                    }
+
                                     disableRipple
+
                                     sx={{
                                         minWidth: 70,
                                         height: 38,
                                         px: 1.75,
 
                                         borderRadius: 0,
-                                        textTransform: "none",
+                                        textTransform:
+                                            "none",
 
                                         fontSize: 12,
                                         fontWeight: 600,
 
                                         color:
-                                            values.IsActive === "YES"
+                                            values.IsActive ===
+                                            "YES"
                                                 ? "success.main"
                                                 : "text.secondary",
 
                                         backgroundColor:
-                                            values.IsActive === "YES"
+                                            values.IsActive ===
+                                            "YES"
                                                 ? "action.selected"
                                                 : "transparent",
 
@@ -714,11 +1188,13 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                         sx={{
                                             width: 7,
                                             height: 7,
-                                            borderRadius: "50%",
+                                            borderRadius:
+                                                "50%",
                                             mr: 0.75,
 
                                             backgroundColor:
-                                                values.IsActive === "YES"
+                                                values.IsActive ===
+                                                "YES"
                                                     ? "success.main"
                                                     : "text.disabled",
                                         }}
@@ -728,8 +1204,6 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                                 </Button>
 
-
-                                {/* DIVIDER */}
 
                                 <Divider
                                     orientation="vertical"
@@ -741,28 +1215,41 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
                                 <Button
                                     type="button"
-                                    onClick={() =>
-                                        setFieldValue("IsActive", "NO")
+
+                                    disabled={
+                                        isViewMode
                                     }
+
+                                    onClick={() =>
+                                        setFieldValue(
+                                            "IsActive",
+                                            "NO"
+                                        )
+                                    }
+
                                     disableRipple
+
                                     sx={{
                                         minWidth: 70,
                                         height: 38,
                                         px: 1.75,
 
                                         borderRadius: 0,
-                                        textTransform: "none",
+                                        textTransform:
+                                            "none",
 
                                         fontSize: 12,
                                         fontWeight: 600,
 
                                         color:
-                                            values.IsActive === "NO"
+                                            values.IsActive ===
+                                            "NO"
                                                 ? "error.main"
                                                 : "text.secondary",
 
                                         backgroundColor:
-                                            values.IsActive === "NO"
+                                            values.IsActive ===
+                                            "NO"
                                                 ? "action.selected"
                                                 : "transparent",
 
@@ -777,11 +1264,13 @@ function AddNewArea({ onAreaCreated, onClose }) {
                                         sx={{
                                             width: 7,
                                             height: 7,
-                                            borderRadius: "50%",
+                                            borderRadius:
+                                                "50%",
                                             mr: 0.75,
 
                                             backgroundColor:
-                                                values.IsActive === "NO"
+                                                values.IsActive ===
+                                                "NO"
                                                     ? "error.main"
                                                     : "text.disabled",
                                         }}
@@ -808,16 +1297,24 @@ function AddNewArea({ onAreaCreated, onClose }) {
 
             <Divider />
 
+
             <Box
                 sx={{
-                    px: { xs: 2, sm: 3, md: 4 },
+                    px: {
+                        xs: 2,
+                        sm: 3,
+                        md: 4,
+                    },
+
                     py: 2,
 
                     display: "flex",
-                    justifyContent: "flex-end",
+                    justifyContent:
+                        "flex-end",
                     gap: 1.5,
 
-                    backgroundColor: "background.default",
+                    backgroundColor:
+                        "background.default",
                 }}
             >
 
@@ -829,30 +1326,57 @@ function AddNewArea({ onAreaCreated, onClose }) {
                     Close
                 </Button>
 
-                <Button
-                    variant="contained"
-                    type="button"
-                    onClick={() => handleSubmit()}
-                >
-                    Create Area
-                </Button>
+
+                {!isViewMode && (
+
+                    <Button
+                        variant="contained"
+                        type="button"
+                        onClick={() =>
+                            handleSubmit()
+                        }
+                    >
+                        {isEditMode
+                            ? "Update Area"
+                            : "Create Area"}
+                    </Button>
+
+                )}
 
             </Box>
 
+
+            {/* ================================================= */}
+            {/* CLOSE CONFIRMATION */}
+            {/* ================================================= */}
+
             <ConfirmationDialog
                 open={closeDialog}
-                title="Close Area Creation"
+                title={
+                    isEditMode
+                        ? "Close Area Edit"
+                        : "Close Area Creation"
+                }
                 message="Are you sure you want to close? The entered data will be lost."
                 confirmText="Close"
-                onCancel={() => setCloseDialog(false)}
+
+                onCancel={() =>
+                    setCloseDialog(false)
+                }
+
                 onConfirm={() => {
+
                     setCloseDialog(false);
+
                     closeArea();
+
                 }}
             />
 
         </Paper>
+
     );
+
 }
 
 

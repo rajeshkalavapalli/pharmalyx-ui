@@ -25,11 +25,14 @@ import {
     getcountry,
     getstates,
     createTerriTory,
+    updateTerritory,
 } from "../index";
 
 function AddNewTerritoty({
     onTerritoryCreated,
     onClose,
+    mode = "create",
+    territory = null,
 }) {
     const [closeDialog, setcloseDialog] =
         useState(false);
@@ -40,9 +43,22 @@ function AddNewTerritoty({
     const [states, setStates] =
         useState([]);
 
+    const isEditMode = mode === "edit";
+    const isViewMode = mode === "view";
+
     useEffect(() => {
         HandleGetCountries();
     }, []);
+
+    // =====================================================
+    // LOAD EXISTING TERRITORY STATE
+    // =====================================================
+
+    useEffect(() => {
+        if (territory?.CountryId) {
+            HandleGetstates(territory.CountryId);
+        }
+    }, [territory]);
 
     // =====================================================
     // COMMON FIELD STYLE
@@ -131,11 +147,20 @@ function AddNewTerritoty({
     // =====================================================
 
     const formik = useFormik({
+        enableReinitialize: true,
+
         initialValues: {
-            TerritoryName: "",
-            CountryId: "",
-            StateId: "",
-            isActive: true,
+            TerritoryName:
+                territory?.TerritoryName || "",
+
+            CountryId:
+                territory?.CountryId || "",
+
+            StateId:
+                territory?.StateId || "",
+
+            isActive:
+                territory?.isActive ?? true,
         },
 
         validationSchema,
@@ -161,23 +186,41 @@ function AddNewTerritoty({
                     TerritoryPayload
                 );
 
-                const response =
-                    await createTerriTory(
-                        TerritoryPayload
+                if (isEditMode) {
+                    const response =
+                        await updateTerritory(
+                            territory.TerritoryId,
+                            TerritoryPayload
+                        );
+
+                    console.log(
+                        "territory updated successfully",
+                        response
                     );
 
-                onTerritoryCreated(
-                    "Territory created successfully",
-                    "success"
-                );
+                    onTerritoryCreated(
+                        "Territory updated successfully",
+                        "success"
+                    );
+                } else {
+                    const response =
+                        await createTerriTory(
+                            TerritoryPayload
+                        );
 
-                console.log(
-                    "territory cerated sucessfully ",
-                    response
-                );
+                    console.log(
+                        "territory created successfully",
+                        response
+                    );
+
+                    onTerritoryCreated(
+                        "Territory created successfully",
+                        "success"
+                    );
+                }
             } catch (err) {
                 console.log(
-                    "error creating territory:",
+                    "error saving territory:",
                     err
                 );
             }
@@ -243,7 +286,10 @@ function AddNewTerritoty({
             );
         }
     };
-
+    console.log("EDIT TERRITORY:", territory);
+console.log("FORMIK VALUES:", formik.values);
+console.log("COUNTRIES:", countries);
+console.log("STATES:", states);
     return (
         <Paper
             elevation={0}
@@ -285,8 +331,6 @@ function AddNewTerritoty({
                         gap: 1.25,
                     }}
                 >
-                    {/* HEADER ACCENT */}
-
                     <Box
                         sx={{
                             width: 3,
@@ -300,8 +344,6 @@ function AddNewTerritoty({
                                 "0 0 12px rgba(196, 93, 69, 0.07)",
                         }}
                     />
-
-                    {/* HEADER CONTENT */}
 
                     <Box>
                         <Typography
@@ -318,7 +360,11 @@ function AddNewTerritoty({
                                 lineHeight: 1.25,
                             }}
                         >
-                            Create Territory
+                            {isViewMode
+                                ? "View Territory"
+                                : isEditMode
+                                    ? "Edit Territory"
+                                    : "Create Territory"}
                         </Typography>
 
                         <Typography
@@ -331,8 +377,11 @@ function AddNewTerritoty({
                                 maxWidth: 640,
                             }}
                         >
-                            Add a new geographical
-                            territory.
+                            {isViewMode
+                                ? "View the territory details."
+                                : isEditMode
+                                    ? "Update the territory details."
+                                    : "Add a new geographical territory."}
                         </Typography>
                     </Box>
                 </Box>
@@ -428,6 +477,7 @@ function AddNewTerritoty({
 
                     <TextField
                         label="Territory Name"
+                        disabled={isViewMode}
                         placeholder="Enter territory name"
                         fullWidth
                         name="TerritoryName"
@@ -467,6 +517,15 @@ function AddNewTerritoty({
                         ) =>
                             country.CountryName
                         }
+                        value={
+                            countries.find(
+                                (country) =>
+                                    country.CountryId ===
+                                    formik.values
+                                        .CountryId
+                            ) || null
+                        }
+                        disabled={isViewMode}
                         onChange={(
                             event,
                             value
@@ -478,14 +537,13 @@ function AddNewTerritoty({
                                     : ""
                             );
 
-                            console.log(value);
-
                             if (value) {
                                 HandleGetstates(
                                     value.CountryId
                                 );
                             } else {
                                 setStates([]);
+
                                 formik.setFieldValue(
                                     "StateId",
                                     ""
@@ -504,6 +562,7 @@ function AddNewTerritoty({
                             <TextField
                                 {...params}
                                 label="Country"
+                                disabled={isViewMode}
                                 sx={fieldSx}
                                 error={
                                     formik.touched
@@ -525,15 +584,15 @@ function AddNewTerritoty({
                             ...fieldSx,
 
                             "& .MuiAutocomplete-inputRoot":
-                                {
-                                    minHeight: 46,
-                                    borderRadius: 1.5,
-                                },
+                            {
+                                minHeight: 46,
+                                borderRadius: 1.5,
+                            },
 
                             "& .MuiAutocomplete-input":
-                                {
-                                    fontSize: 13,
-                                },
+                            {
+                                fontSize: 13,
+                            },
                         }}
                     />
 
@@ -541,6 +600,7 @@ function AddNewTerritoty({
 
                     <Autocomplete
                         options={states}
+                        disabled={isViewMode}
                         getOptionLabel={(
                             state
                         ) =>
@@ -577,6 +637,7 @@ function AddNewTerritoty({
                             <TextField
                                 {...params}
                                 label="State"
+                                disabled={isViewMode}
                                 sx={fieldSx}
                                 error={
                                     formik.touched
@@ -598,15 +659,15 @@ function AddNewTerritoty({
                             ...fieldSx,
 
                             "& .MuiAutocomplete-inputRoot":
-                                {
-                                    minHeight: 46,
-                                    borderRadius: 1.5,
-                                },
+                            {
+                                minHeight: 46,
+                                borderRadius: 1.5,
+                            },
 
                             "& .MuiAutocomplete-input":
-                                {
-                                    fontSize: 13,
-                                },
+                            {
+                                fontSize: 13,
+                            },
                         }}
                     />
 
@@ -622,6 +683,7 @@ function AddNewTerritoty({
 
                         <Select
                             label="Status"
+                            disabled={isViewMode}
                             name="isActive"
                             value={
                                 formik.values
@@ -702,37 +764,43 @@ function AddNewTerritoty({
                     Close
                 </Button>
 
-                {/* CREATE */}
+                {/* CREATE / UPDATE */}
 
-                <Button
-                    variant="contained"
-                    onClick={
-                        formik.handleSubmit
-                    }
-                    disabled={
-                        formik.isSubmitting
-                    }
-                    sx={{
-                        minWidth: 150,
-                        height: 40,
-                        borderRadius: 1.5,
-                        textTransform: "none",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        boxShadow: "none",
+                {!isViewMode && (
+                    <Button
+                        variant="contained"
+                        onClick={
+                            formik.handleSubmit
+                        }
+                        disabled={
+                            formik.isSubmitting
+                        }
+                        sx={{
+                            minWidth: 150,
+                            height: 40,
+                            borderRadius: 1.5,
+                            textTransform: "none",
+                            fontSize: 13,
+                            fontWeight: 700,
+                            boxShadow: "none",
 
-                        "&:hover": {
-                            boxShadow: (
-                                theme
-                            ) =>
-                                theme.shadows[3],
-                        },
-                    }}
-                >
-                    {formik.isSubmitting
-                        ? "Creating..."
-                        : "Create Territory"}
-                </Button>
+                            "&:hover": {
+                                boxShadow: (
+                                    theme
+                                ) =>
+                                    theme.shadows[3],
+                            },
+                        }}
+                    >
+                        {formik.isSubmitting
+                            ? isEditMode
+                                ? "Updating..."
+                                : "Creating..."
+                            : isEditMode
+                                ? "Update Territory"
+                                : "Create Territory"}
+                    </Button>
+                )}
             </Box>
 
             {/* ================================================= */}
@@ -748,6 +816,7 @@ function AddNewTerritoty({
                 }}
                 onConfirm={() => {
                     setcloseDialog(false);
+                    onClose();
                 }}
             />
         </Paper>

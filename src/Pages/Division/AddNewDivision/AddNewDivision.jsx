@@ -16,12 +16,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import ConfirmationDialog from "../../../components/conformationDialog/ConformationDialog";
-import { createDivision } from "../../Division/index";
+import { createDivision, updateDivision } from "../../Division/index";
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
 function AddNewDivision({
     onDivisionCreated,
     onClose,
+    mode = 'create',
+    division = null,
 }) {
     const [closeDialog, setcloseDialog] = useState(false);
 
@@ -31,6 +33,8 @@ function AddNewDivision({
     // COMMON FIELD STYLE
     // =====================================================
 
+    const isEditMode = mode === 'edit';
+    const isViewMode = mode === 'view';
     const fieldSx = {
         "& .MuiOutlinedInput-root": {
             minHeight: 46,
@@ -118,10 +122,12 @@ function AddNewDivision({
     // =====================================================
 
     const formik = useFormik({
+        enableReinitialize: true,
+
         initialValues: {
-            DivisionName: "",
-            Description: "",
-            isActive: true,
+            DivisionName: division?.DivisionName || "",
+            Description: division?.Description || "",
+            isActive: division?.IsActive ?? true,
         },
 
         validationSchema,
@@ -133,30 +139,38 @@ function AddNewDivision({
                     Description: values.Description,
                     isActive: values.isActive,
                 };
+                if (isEditMode) {
+                    const result = await updateDivision(
+                        division.DivisionId,
+                        DivisionPayload
+                    );
 
-                const result = await createDivision(
-                    DivisionPayload
-                );
+                    console.log("division updated:", result);
 
-                console.log(
-                    "division created:",
-                    result
-                );
+                    onDivisionCreated(
+                        "Division updated successfully",
+                        "success"
+                    );
+                } else {
+                    const result = await createDivision(
+                        DivisionPayload
+                    );
 
-                showSnackbar(
-                    "Division created successfully",
-                    "success"
-                );
+                    console.log("division created:", result);
 
-                onDivisionCreated();
+                    onDivisionCreated(
+                        "Division created successfully",
+                        "success"
+                    );
+                }
             } catch (err) {
                 console.log(
-                    "error creating division:",
+                    "error creating/updating division:",
                     err
                 );
 
                 showSnackbar(
-                    "Failed to create division",
+                    isEditMode ? "Failed to update division" : "Failed to create division",
                     "error"
                 );
             }
@@ -334,6 +348,7 @@ function AddNewDivision({
 
                     <TextField
                         label="Division Name"
+                        disabled={isViewMode}
                         placeholder="Enter division name"
                         fullWidth
                         name="DivisionName"
@@ -363,6 +378,7 @@ function AddNewDivision({
 
                     <TextField
                         label="Description"
+                        disabled={isViewMode}
                         placeholder="Enter division description"
                         multiline
                         rows={4}
@@ -373,7 +389,7 @@ function AddNewDivision({
 
                             "& .MuiOutlinedInput-root": {
                                 ...fieldSx[
-                                    "& .MuiOutlinedInput-root"
+                                "& .MuiOutlinedInput-root"
                                 ],
                                 minHeight: "auto",
                                 alignItems: "flex-start",
@@ -414,6 +430,7 @@ function AddNewDivision({
                         <Select
                             label="Status"
                             name="isActive"
+                            disabled={isViewMode}
                             value={
                                 formik.values.isActive
                             }
@@ -494,7 +511,7 @@ function AddNewDivision({
 
                 {/* CREATE */}
 
-                <Button
+                {!isViewMode && <Button
                     variant="contained"
                     onClick={
                         formik.handleSubmit
@@ -516,11 +533,16 @@ function AddNewDivision({
                                 theme.shadows[3],
                         },
                     }}
-                >
+
+                >   {isEditMode ? "Edit" : "Create"}
                     {formik.isSubmitting
-                        ? "Creating..."
-                        : "Create Division"}
-                </Button>
+                        ? isEditMode
+                            ? "updating..."
+                            : "Creating..."
+                        : isEditMode
+                            ? "Edit Division"
+                            : "Create Division"}
+                </Button>}
             </Box>
 
             {/* ================================================= */}

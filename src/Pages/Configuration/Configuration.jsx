@@ -22,11 +22,8 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-
 function Configuration() {
-
     const navigate = useNavigate();
-
 
     const masters = [
         {
@@ -72,28 +69,28 @@ function Configuration() {
             path: "/admin/Doctors",
         },
         {
-             label: "User Doctor maping ",
-            description: "Manage User doctor mapping",
+            label: "User Doctor Mapping",
+            description: "Manage user doctor mapping",
             icon: MedicalServicesRounded,
             color: "success",
             path: "/admin/UserDoctorMapping",
         },
-         {
-             label: "Add Pharmacy",
-            description: "Manage Pharmacy Information",
+        {
+            label: "Add Pharmacy",
+            description: "Manage pharmacy information",
             icon: MedicalServicesRounded,
             color: "error",
             path: "/admin/Pharmacies",
         },
         {
-            label: "User pharmacy mapping",
-            description: "Map users to pharmacies mapping",
+            label: "User Pharmacy Mapping",
+            description: "Map users to pharmacies",
             icon: AssignmentIndRounded,
             color: "primary",
             path: "/admin/UserPharmacyMapping",
         },
         {
-            label: "Add Stockist/Retailer ",
+            label: "Add Stockist/Retailer",
             description: "Manage stockist information",
             icon: AssignmentIndRounded,
             color: "warning",
@@ -105,58 +102,44 @@ function Configuration() {
             icon: AssignmentIndRounded,
             color: "success",
             path: "/admin/UserStockistMapping",
-        }
-
+        },
     ];
-
 
     return (
         <Paper
             elevation={0}
-            sx={{
+            sx={(theme) => ({
                 width: "100%",
-                borderRadius: 2.5,
-                border: "1px solid",
-                borderColor: "divider",
-                backgroundColor: "background.paper",
+                minHeight: theme.configuration.workspace.minHeight,
+                borderRadius: theme.card.radius,
+                border: `${theme.card.borderWidth}px solid`,
+                borderColor: theme.palette.divider,
+                backgroundColor: theme.palette.background.paper,
                 overflow: "hidden",
-
-                boxShadow: (theme) =>
-                    `0 8px 30px ${alpha(
-                        theme.palette.common.black,
-                        0.055
-                    )}`,
-            }}
+                boxShadow: theme.card.shadow,
+            })}
         >
-
-            {/* ================================================= */}
             {/* HEADER */}
-            {/* ================================================= */}
 
             <Box
-                sx={{
-                    px: { xs: 2, sm: 3, md: 4 },
-                    py: 2.5,
+                sx={(theme) => ({
+                    px: theme.configuration.header.paddingX,
+                    py: theme.configuration.header.paddingY,
+
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
-                }}
+                    gap: theme.configuration.header.gap,
+                })}
             >
-
-                {/* HEADER ACCENT */}
-
                 <Box
-                    sx={{
-                        width: 4,
-                        height: 42,
-                        borderRadius: 2,
-                        backgroundColor: "primary.main",
+                    sx={(theme) => ({
+                        width: theme.configuration.header.indicatorWidth,
+                        height: theme.configuration.header.indicatorHeight,
+                        borderRadius: theme.shape.borderRadius,
+                        backgroundColor: theme.palette.primary.main,
                         flexShrink: 0,
-                    }}
+                    })}
                 />
-
-
-                {/* HEADER TEXT */}
 
                 <Box
                     sx={{
@@ -164,7 +147,6 @@ function Configuration() {
                         minWidth: 0,
                     }}
                 >
-
                     <Typography
                         variant="h6"
                         sx={{
@@ -185,145 +167,130 @@ function Configuration() {
                             fontSize: 13,
                         }}
                     >
-                        Manage the core master data that drives Pharmalyx operations.
+                        Manage the core master data that drives Pharmalyx
+                        operations.
                     </Typography>
-
                 </Box>
 
-
-                {/* CLOSE */}
-
                 <Tooltip title="Close">
-
                     <IconButton
                         onClick={() => navigate(-1)}
                         aria-label="Close configuration"
                         size="small"
-                        sx={{
-                            width: 36,
-                            height: 36,
+                        sx={(theme) => ({
+                            width: theme.configuration.closeButton.size,
+                            height: theme.configuration.closeButton.size,
                             border: "1px solid",
-                            borderColor: "divider",
-                            borderRadius: 1.5,
-                            color: "text.secondary",
+                            borderColor: theme.palette.divider,
+                            borderRadius:
+                                theme.configuration.closeButton.radius,
+                            color: theme.palette.text.secondary,
 
                             "&:hover": {
-                                color: "primary.main",
+                                color: theme.palette.primary.main,
 
-                                backgroundColor: (theme) =>
-                                    alpha(
-                                        theme.palette.primary.main,
-                                        0.07
-                                    ),
+                                backgroundColor: alpha(
+                                    theme.palette.primary.main,
+                                    0.07
+                                ),
 
-                                borderColor: "primary.main",
+                                borderColor: theme.palette.primary.main,
                             },
-                        }}
+                        })}
                     >
-
                         <CloseRounded
-                            sx={{
-                                fontSize: 19,
-                            }}
+                            sx={(theme) => ({
+                                fontSize:
+                                    theme.configuration.closeButton.iconSize,
+                            })}
                         />
-
                     </IconButton>
-
                 </Tooltip>
-
             </Box>
-
 
             <Divider />
 
-
-            {/* ================================================= */}
             {/* MASTERS */}
-            {/* ================================================= */}
 
             <Box
-                sx={{
-                    px: { xs: 2, sm: 3, md: 4 },
-                    py: 3,
-                }}
+                sx={(theme) => ({
+                    px: theme.configuration.content.paddingX,
+                    py: theme.configuration.content.paddingY,
+                })}
             >
-
                 <Typography
-                    sx={{
-                        fontSize: 15,
+                    sx={(theme) => ({
+                        fontSize:
+                            theme.configuration.section.titleFontSize,
                         fontWeight: 700,
-                        color: "text.primary",
-                        mb: 0.5,
-                    }}
+                        color: theme.palette.text.primary,
+                        mb:
+                            theme.configuration.section.titleMarginBottom,
+                    })}
                 >
                     Masters
                 </Typography>
 
-
                 <Typography
-                    sx={{
-                        fontSize: 12,
-                        color: "text.secondary",
-                        mb: 2.5,
-                    }}
+                    sx={(theme) => ({
+                        fontSize:
+                            theme.configuration.section.descriptionFontSize,
+                        color: theme.palette.text.secondary,
+                        mb:
+                            theme.configuration.section
+                                .descriptionMarginBottom,
+                    })}
                 >
-                    Configure organizational, geographic, and user master data.
+                    Configure organizational, geographic, and user master
+                    data.
                 </Typography>
 
-
-                {/* ================================================= */}
                 {/* MASTER BUTTONS */}
-                {/* ================================================= */}
 
                 <Box
-                    sx={{
+                    sx={(theme) => ({
                         display: "grid",
-                        gridTemplateColumns: {
-                            xs: "minmax(0, 1fr)",
-                            sm: "repeat(auto-fill, minmax(190px, 220px))",
-                        },
-                        gap: 1.25,
-                    }}
+
+                        gridTemplateColumns:
+                            theme.configuration.grid.columns,
+
+                        gap: theme.configuration.grid.gap,
+                    })}
                 >
-
                     {masters.map((master) => {
-
                         const Icon = master.icon;
 
                         return (
                             <ButtonBase
                                 key={master.label}
-                                onClick={() =>
-                                    navigate(master.path)
-                                }
-
+                                onClick={() => navigate(master.path)}
                                 sx={(theme) => ({
                                     width: "100%",
                                     minWidth: 0,
-                                    minHeight: 52,
 
-                                    px: 1.25,
+                                    minHeight:
+                                        theme.configuration.item.minHeight,
 
-                                    borderRadius: 1.75,
+                                    px:
+                                        theme.configuration.item.paddingX,
+
+                                    borderRadius:
+                                        theme.configuration.item.radius,
 
                                     border: "1px solid",
-
-                                    borderColor: "divider",
+                                    borderColor:
+                                        theme.palette.divider,
 
                                     backgroundColor:
-                                        "background.paper",
+                                        theme.palette.background.paper,
 
-                                    justifyContent:
-                                        "flex-start",
-
+                                    justifyContent: "flex-start",
                                     textAlign: "left",
 
                                     transition:
                                         "border-color 160ms ease, background-color 160ms ease, transform 160ms ease",
 
-
                                     "&:hover": {
-
                                         borderColor: alpha(
                                             theme.palette[
                                                 master.color
@@ -342,25 +309,31 @@ function Configuration() {
                                             "translateY(-1px)",
                                     },
 
-
                                     "&:focus-visible": {
-
                                         outline: `2px solid ${theme.palette[master.color].main}`,
-
                                         outlineOffset: 2,
                                     },
                                 })}
                             >
-
                                 {/* ICON */}
 
                                 <Box
                                     sx={(theme) => ({
-                                        width: 28,
-                                        height: 28,
-                                        mr: 1,
+                                        width:
+                                            theme.configuration.item.icon
+                                                .containerSize,
 
-                                        borderRadius: 1.25,
+                                        height:
+                                            theme.configuration.item.icon
+                                                .containerSize,
+
+                                        mr:
+                                            theme.configuration.item.icon
+                                                .marginRight,
+
+                                        borderRadius:
+                                            theme.configuration.item.icon
+                                                .radius,
 
                                         display: "flex",
                                         alignItems: "center",
@@ -368,13 +341,12 @@ function Configuration() {
 
                                         flexShrink: 0,
 
-                                        backgroundColor:
-                                            alpha(
-                                                theme.palette[
-                                                    master.color
-                                                ].main,
-                                                0.09
-                                            ),
+                                        backgroundColor: alpha(
+                                            theme.palette[
+                                                master.color
+                                            ].main,
+                                            0.09
+                                        ),
 
                                         color:
                                             theme.palette[
@@ -382,57 +354,75 @@ function Configuration() {
                                             ].main,
                                     })}
                                 >
-
                                     <Icon
-                                        sx={{
-                                            fontSize: 17,
-                                        }}
+                                        sx={(theme) => ({
+                                            fontSize:
+                                                theme.configuration.item
+                                                    .icon.fontSize,
+                                        })}
                                     />
-
                                 </Box>
-
 
                                 {/* TEXT */}
 
-                                <Box sx={{ minWidth: 0 }}>
-
+                                <Box
+                                    sx={{
+                                        minWidth: 0,
+                                    }}
+                                >
                                     <Typography
-                                        sx={{
-                                            fontSize: 12.5,
-                                            fontWeight: 700,
-                                            color: "text.primary",
-                                            lineHeight: 1.3,
+                                        sx={(theme) => ({
+                                            fontSize:
+                                                theme.configuration.item
+                                                    .title.fontSize,
+
+                                            fontWeight:
+                                                theme.configuration.item
+                                                    .title.fontWeight,
+
+                                            color:
+                                                theme.palette.text.primary,
+
+                                            lineHeight:
+                                                theme.configuration.item
+                                                    .title.lineHeight,
+
                                             overflowWrap: "anywhere",
-                                        }}
+                                        })}
                                     >
                                         {master.label}
                                     </Typography>
 
                                     <Typography
-                                        sx={{
-                                            mt: 0.15,
-                                            fontSize: 10,
-                                            color: "text.secondary",
-                                            lineHeight: 1.3,
+                                        sx={(theme) => ({
+                                            mt:
+                                                theme.configuration.item
+                                                    .description.marginTop,
+
+                                            fontSize:
+                                                theme.configuration.item
+                                                    .description.fontSize,
+
+                                            color:
+                                                theme.palette.text.secondary,
+
+                                            lineHeight:
+                                                theme.configuration.item
+                                                    .description.lineHeight,
+
                                             overflowWrap: "anywhere",
-                                        }}
+                                        })}
                                     >
                                         {master.description}
                                     </Typography>
-
                                 </Box>
-
                             </ButtonBase>
                         );
                     })}
-
                 </Box>
-
             </Box>
-
         </Paper>
     );
 }
-
 
 export default Configuration;
