@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     Box,
     Button,
@@ -82,9 +82,12 @@ const WORKFLOW_STEPS = [
 function UserPharmacyMapping() {
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const location = useLocation();
+    const mode = location.state?.mode || "create";
+    const isViewMode = mode === "view";
 
     const [users, setUsers] = useState([]);
-    const [selectedUserId, setSelectedUserId] = useState("");
+    const [selectedUserId, setSelectedUserId] = useState(location.state?.user?.userId || "");
 
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
@@ -228,6 +231,26 @@ function UserPharmacyMapping() {
         );
     }, [selectedUserId, mappings]);
 
+    // Saved location is applied through the cascade below so each level's options load first.
+    const pendingLocation = useRef(null);
+    const locationApplied = useRef(false);
+
+    useEffect(() => {
+        if (mode === "create" || locationApplied.current || !selectedUserId) return;
+
+        const mapped = mappings.find((mapping) => mapping.UserId === selectedUserId);
+        const saved = mapped && pharmacy.find((item) => item.PharmacyId === mapped.PharmacyId);
+        if (!saved) return;
+
+        locationApplied.current = true;
+        pendingLocation.current = {
+            StateId: saved.StateId,
+            TerritoryId: saved.TerritoryId,
+            AreaId: saved.AreaId,
+        };
+        setSelectedCountry(saved.CountryId || "");
+    }, [mode, selectedUserId, mappings, pharmacy]);
+
     useEffect(() => {
         const loadStates = async () => {
             if (!selectedCountry) {
@@ -240,7 +263,7 @@ function UserPharmacyMapping() {
         };
 
         loadStates();
-        setSelectedState("");
+        setSelectedState(pendingLocation.current?.StateId || "");
     }, [selectedCountry]);
 
     useEffect(() => {
@@ -257,7 +280,7 @@ function UserPharmacyMapping() {
         };
 
         loadTerritories();
-        setSelectedTerritory("");
+        setSelectedTerritory(pendingLocation.current?.TerritoryId || "");
     }, [selectedState]);
 
     useEffect(() => {
@@ -272,7 +295,8 @@ function UserPharmacyMapping() {
         };
 
         loadAreas();
-        setSelectedArea("");
+        setSelectedArea(pendingLocation.current?.AreaId || "");
+        pendingLocation.current = null;
     }, [selectedTerritory]);
 
     const isPharmacyActive = (item) =>
@@ -573,7 +597,7 @@ function UserPharmacyMapping() {
                 })}
             >
                 <Box sx={{ minWidth: 260 }}>
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" disabled={mode !== "create"}>
                         <InputLabel>Select User *</InputLabel>
                         <Select
                             label="Select User *"
@@ -676,6 +700,7 @@ function UserPharmacyMapping() {
                         size="small"
                         startIcon={<RestartAltRoundedIcon sx={{ fontSize: 17 }} />}
                         onClick={handleClearFilters}
+                        disabled={isViewMode}
                         sx={{ textTransform: "none", borderColor: "divider", color: "text.secondary" }}
                     >
                         Clear Filters
@@ -693,7 +718,7 @@ function UserPharmacyMapping() {
                         gap: 1.5,
                     }}
                 >
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" disabled={isViewMode}>
                         <InputLabel>Country</InputLabel>
                         <Select
                             label="Country"
@@ -708,7 +733,7 @@ function UserPharmacyMapping() {
                         </Select>
                     </FormControl>
 
-                    <FormControl fullWidth size="small" disabled={!selectedCountry}>
+                    <FormControl fullWidth size="small" disabled={isViewMode || !selectedCountry}>
                         <InputLabel>State</InputLabel>
                         <Select
                             label="State"
@@ -723,7 +748,7 @@ function UserPharmacyMapping() {
                         </Select>
                     </FormControl>
 
-                    <FormControl fullWidth size="small" disabled={!selectedState}>
+                    <FormControl fullWidth size="small" disabled={isViewMode || !selectedState}>
                         <InputLabel>Territory</InputLabel>
                         <Select
                             label="Territory"
@@ -738,7 +763,7 @@ function UserPharmacyMapping() {
                         </Select>
                     </FormControl>
 
-                    <FormControl fullWidth size="small" disabled={!selectedTerritory}>
+                    <FormControl fullWidth size="small" disabled={isViewMode || !selectedTerritory}>
                         <InputLabel>Area</InputLabel>
                         <Select
                             label="Area"
@@ -842,6 +867,7 @@ function UserPharmacyMapping() {
                                         <TableCell padding="checkbox">
                                             <Checkbox
                                                 size="small"
+                                                disabled={isViewMode}
                                                 checked={highlightedAvailable.includes(item.PharmacyId)}
                                                 onChange={() =>
                                                     toggleHighlight(
@@ -916,7 +942,7 @@ function UserPharmacyMapping() {
                     <Tooltip title="Move selected to assigned">
                         <IconButton
                             onClick={moveToAssigned}
-                            disabled={highlightedAvailable.length === 0}
+                            disabled={isViewMode || highlightedAvailable.length === 0}
                             sx={(theme) => ({
                                 border: "1px solid",
                                 borderColor: theme.palette.primary.main,
@@ -933,7 +959,7 @@ function UserPharmacyMapping() {
                     <Tooltip title="Move all to assigned">
                         <IconButton
                             onClick={moveAllToAssigned}
-                            disabled={availablePharmacies.length === 0}
+                            disabled={isViewMode || availablePharmacies.length === 0}
                             sx={(theme) => ({
                                 border: "1px solid",
                                 borderColor: theme.palette.border.default,
@@ -948,7 +974,7 @@ function UserPharmacyMapping() {
                     <Tooltip title="Move selected to available">
                         <IconButton
                             onClick={moveToAvailable}
-                            disabled={highlightedAssigned.length === 0}
+                            disabled={isViewMode || highlightedAssigned.length === 0}
                             sx={(theme) => ({
                                 border: "1px solid",
                                 borderColor: theme.palette.border.default,
@@ -963,7 +989,7 @@ function UserPharmacyMapping() {
                     <Tooltip title="Move all to available">
                         <IconButton
                             onClick={moveAllToAvailable}
-                            disabled={assignedPharmacyIds.length === 0}
+                            disabled={isViewMode || assignedPharmacyIds.length === 0}
                             sx={(theme) => ({
                                 border: "1px solid",
                                 borderColor: theme.palette.border.default,
@@ -1056,6 +1082,7 @@ function UserPharmacyMapping() {
                                         <TableCell padding="checkbox">
                                             <Checkbox
                                                 size="small"
+                                                disabled={isViewMode}
                                                 checked={highlightedAssigned.includes(item.PharmacyId)}
                                                 onChange={() =>
                                                     toggleHighlight(
@@ -1166,6 +1193,7 @@ function UserPharmacyMapping() {
                 </Box>
 
                 <Box sx={{ display: "flex", gap: 1.25, ml: "auto" }}>
+                    {!isViewMode && (<>
                     <Button
                         variant="outlined"
                         onClick={handleReset}
@@ -1179,8 +1207,9 @@ function UserPharmacyMapping() {
                         onClick={handleSaveMapping}
                         sx={{ textTransform: "none" }}
                     >
-                        Save Mapping
+                        {mode === "edit" ? "Update Mapping" : "Save Mapping"}
                     </Button>
+                    </>)}
                 </Box>
             </Paper>
         </Box>

@@ -15,7 +15,17 @@ export const getUserDoctorMappings = async () => {
     return response.data;
 };
 
-export const userDoctorMaping = async (payload) => {
-    const response = await api.post('app/create-user-doctor-mapping', payload)
+export const userDoctorMapping = async (payload) => {
+    const response = await api.post('/app/create-user-doctor-mapping', payload)
     return response.data
 }
+
+export const deleteUserDoctorMappings = async (payload) => {
+    const response = await api.delete('/app/delete-user-doctor-mappings', { data: payload });
+    return response.data;
+};
+
+export const updateUserDoctorMapping = async (payload) => {
+    const response = await api.put('/app/update-user-doctor-mapping', payload);
+    return response.data;
+};
