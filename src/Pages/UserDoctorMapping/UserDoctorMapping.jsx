@@ -40,7 +40,7 @@ import {
     getUsers,
     getDoctors,
     getUserDoctorMappings,
-    userDoctorMaping,
+    userDoctorMapping,
 } from "./index.js";
 import { getcountry, getstates, getTerritorie } from "../Territory/index";
 import { getAreasByTerritory } from "../Doctors/index";
@@ -403,7 +403,7 @@ function UserDoctorMapping() {
         };
 
         try {
-            const response = await userDoctorMaping(payload);
+            const response = await userDoctorMapping(payload);
             showSnackbar(response?.message || "Mapping saved successfully", "success");
 
             // Fresh page for the next mapping — clear user, filters and selections.

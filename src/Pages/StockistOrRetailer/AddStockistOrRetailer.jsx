@@ -107,7 +107,7 @@ export const AddStockistOrRetailer = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { showSnackbar } = useSnackbar();
-    const stockist = location.state?.pharmacy;
+    const stockist = location.state?.stockist;
     const mode = location.state?.mode || "create";
     const readOnly = mode === "view";
 
@@ -217,9 +217,9 @@ export const AddStockistOrRetailer = () => {
                 console.error("Error loading states", err);
                 setStates([]);
             }
-            setTerritories([]);
-            setAreas([]);
             if (stockist?.CountryId !== formik.values.countryId) {
+                setTerritories([]);
+                setAreas([]);
                 formik.setFieldValue("stateId", "");
                 formik.setFieldValue("territoryId", "");
                 formik.setFieldValue("areaId", "");
@@ -244,8 +244,8 @@ export const AddStockistOrRetailer = () => {
                 console.error("Error loading territories", error);
                 setTerritories([]);
             }
-            setAreas([]);
             if (stockist?.StateId !== formik.values.stateId) {
+                setAreas([]);
                 formik.setFieldValue("territoryId", "");
                 formik.setFieldValue("areaId", "");
             }

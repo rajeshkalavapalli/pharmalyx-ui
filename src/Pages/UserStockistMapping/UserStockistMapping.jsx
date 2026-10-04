@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
     Box,
@@ -37,15 +37,15 @@ import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import KeyboardDoubleArrowRightRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowRightRounded";
 import KeyboardDoubleArrowLeftRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftRounded";
 
-// import {
-//     getUsers,
-//     getUserStockistMappings,
-//     userStockistMapping,
-// } from "./index.js";
+import {
+    getUsers,
+    getStockist,
+    getUserStockistMappings,
+    userStockistMapping,
+} from "./index.js";
 
 import { getcountry, getstates, getTerritorie } from "../Territory/index";
 import { getAreasByTerritory } from "../Doctors/index";
-// import { getStockist } from "../Stockist/index";
 
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
@@ -84,9 +84,12 @@ function UserStockistMapping() {
 
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+    const location = useLocation();
+    const mode = location.state?.mode || "create";
+    const isViewMode = mode === "view";
 
     const [users, setUsers] = useState([]);
-    const [selectedUserId, setSelectedUserId] = useState("");
+    const [selectedUserId, setSelectedUserId] = useState(location.state?.user?.userId || "");
 
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
@@ -345,6 +348,26 @@ function UserStockistMapping() {
 
     }, [selectedUserId, mappings]);
 
+    // Saved location is applied through the cascade below so each level's options load first.
+    const pendingLocation = useRef(null);
+    const locationApplied = useRef(false);
+
+    useEffect(() => {
+        if (mode === "create" || locationApplied.current || !selectedUserId) return;
+
+        const mapped = mappings.find((mapping) => mapping.UserId === selectedUserId);
+        const saved = mapped && stockists.find((item) => item.StockistId === mapped.StockistId);
+        if (!saved) return;
+
+        locationApplied.current = true;
+        pendingLocation.current = {
+            StateId: saved.StateId,
+            TerritoryId: saved.TerritoryId,
+            AreaId: saved.AreaId,
+        };
+        setSelectedCountry(saved.CountryId || "");
+    }, [mode, selectedUserId, mappings, stockists]);
+
 
     /*
      * =========================================================
@@ -379,7 +402,7 @@ function UserStockistMapping() {
 
         loadStates();
 
-        setSelectedState("");
+        setSelectedState(pendingLocation.current?.StateId || "");
 
     }, [selectedCountry]);
 
@@ -417,7 +440,7 @@ function UserStockistMapping() {
 
         loadTerritories();
 
-        setSelectedTerritory("");
+        setSelectedTerritory(pendingLocation.current?.TerritoryId || "");
 
     }, [selectedState]);
 
@@ -457,7 +480,8 @@ function UserStockistMapping() {
 
         loadAreas();
 
-        setSelectedArea("");
+        setSelectedArea(pendingLocation.current?.AreaId || "");
+        pendingLocation.current = null;
 
     }, [selectedTerritory]);
 
@@ -1145,6 +1169,7 @@ function UserStockistMapping() {
                     <FormControl
                         fullWidth
                         size="small"
+                        disabled={mode !== "create"}
                     >
 
                         <InputLabel>
@@ -1387,6 +1412,7 @@ function UserStockistMapping() {
                             />
                         }
                         onClick={handleClearFilters}
+                        disabled={isViewMode}
                         sx={{
                             textTransform: "none",
                             borderColor: "divider",
@@ -1414,6 +1440,7 @@ function UserStockistMapping() {
                     <FormControl
                         fullWidth
                         size="small"
+                        disabled={isViewMode}
                     >
 
                         <InputLabel>
@@ -1449,7 +1476,7 @@ function UserStockistMapping() {
                     <FormControl
                         fullWidth
                         size="small"
-                        disabled={!selectedCountry}
+                        disabled={isViewMode || !selectedCountry}
                     >
 
                         <InputLabel>
@@ -1485,7 +1512,7 @@ function UserStockistMapping() {
                     <FormControl
                         fullWidth
                         size="small"
-                        disabled={!selectedState}
+                        disabled={isViewMode || !selectedState}
                     >
 
                         <InputLabel>
@@ -1521,7 +1548,7 @@ function UserStockistMapping() {
                     <FormControl
                         fullWidth
                         size="small"
-                        disabled={!selectedTerritory}
+                        disabled={isViewMode || !selectedTerritory}
                     >
 
                         <InputLabel>
@@ -1779,6 +1806,7 @@ function UserStockistMapping() {
 
                                                     <Checkbox
                                                         size="small"
+                                                        disabled={isViewMode}
                                                         checked={highlightedAvailable.includes(
                                                             stockistId
                                                         )}
@@ -1943,6 +1971,7 @@ function UserStockistMapping() {
                         <IconButton
                             onClick={moveToAssigned}
                             disabled={
+                                isViewMode ||
                                 highlightedAvailable.length === 0
                             }
                             sx={(theme) => ({
@@ -1971,6 +2000,7 @@ function UserStockistMapping() {
                         <IconButton
                             onClick={moveAllToAssigned}
                             disabled={
+                                isViewMode ||
                                 availableStockists.length === 0
                             }
                             sx={(theme) => ({
@@ -1992,6 +2022,7 @@ function UserStockistMapping() {
                         <IconButton
                             onClick={moveToAvailable}
                             disabled={
+                                isViewMode ||
                                 highlightedAssigned.length === 0
                             }
                             sx={(theme) => ({
@@ -2013,6 +2044,7 @@ function UserStockistMapping() {
                         <IconButton
                             onClick={moveAllToAvailable}
                             disabled={
+                                isViewMode ||
                                 assignedStockistIds.length === 0
                             }
                             sx={(theme) => ({
@@ -2239,6 +2271,7 @@ function UserStockistMapping() {
 
                                                     <Checkbox
                                                         size="small"
+                                                        disabled={isViewMode}
                                                         checked={highlightedAssigned.includes(
                                                             stockistId
                                                         )}
@@ -2549,6 +2582,7 @@ function UserStockistMapping() {
                     }}
                 >
 
+                    {!isViewMode && (<>
                     <Button
                         variant="outlined"
                         onClick={handleReset}
@@ -2578,8 +2612,9 @@ function UserStockistMapping() {
                             textTransform: "none",
                         }}
                     >
-                        Save Mapping
+                        {mode === "edit" ? "Update Mapping" : "Save Mapping"}
                     </Button>
+                    </>)}
 
                 </Box>
 

@@ -42,6 +42,10 @@ import UserStockistMappingMaster from './Pages/UserStockistMapping/UserStockistM
 import UserStockistMappingList from './Pages/UserStockistMapping/UserStockistMappingList.jsx';
 import UserStockistMapping from './Pages/UserStockistMapping/UserStockistMapping.jsx';
 
+import UserPharmacyMappingMaster from './Pages/UserPharmacyMapping/UserPharmacyMappingMaster.jsx';
+import UserPharmacyMappingList from './Pages/UserPharmacyMapping/UserPharmacyMappingList.jsx';
+import UserPharmacyMapping from './Pages/UserPharmacyMapping/UserPharmacyMapping.jsx';
+
 function App() {
 
     return (
@@ -217,12 +221,22 @@ function App() {
 
                    {/* stockist user mapping */}
                     <Route
-                        path="/admin/UserstockistMapping"
+                        path="/admin/UserStockistMapping"
                         element={<UserStockistMappingMaster />}
                     >
                         <Route index element={<UserStockistMappingList />} />
                         <Route path="list" element={<UserStockistMappingList />} />
-                        <Route path="add" element={<UserStockistMapping />} />
+                        <Route path="mapping" element={<UserStockistMapping />} />
+                    </Route>
+
+                    {/* pharmacy user mapping */}
+                    <Route
+                        path="/admin/UserPharmacyMapping"
+                        element={<UserPharmacyMappingMaster />}
+                    >
+                        <Route index element={<UserPharmacyMappingList />} />
+                        <Route path="list" element={<UserPharmacyMappingList />} />
+                        <Route path="mapping" element={<UserPharmacyMapping />} />
                     </Route>
                     
                 </Route>

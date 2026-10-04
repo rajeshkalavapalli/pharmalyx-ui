@@ -59,3 +59,7 @@
   # V0.0.15
  
  - fixed  edit view delete for area, user, division, territoty
+
+ # V0.0.16
+ 
+ - fixed mapping pharmacy , stockist 

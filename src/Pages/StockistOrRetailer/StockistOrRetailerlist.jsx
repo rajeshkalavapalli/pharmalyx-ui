@@ -79,7 +79,7 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
         const searchValue = `${
 
-            pharmacy.PharmacyName || ""
+            pharmacy.StockistName || ""
 
         } ${
 
@@ -309,16 +309,20 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                     Created On
                                 </TableCell>
 
+                                <TableCell>
+                                    Modified On
+                                </TableCell>
+
                             </TableRow>
 
                         </TableHead>
 
                         <TableBody>
 
-                            {filteredPharmacies.map((pharmacy) => (
+                            {filteredPharmacies.map((stockist) => (
 
                                 <TableRow
-                                    key={pharmacy.PharmacyId}
+                                    key={stockist.StockistId}
                                     hover
                                 >
 
@@ -338,8 +342,8 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
                                                 <IconButton
                                                     size="small"
-                                                    aria-label={`View ${pharmacy.StockistName || "stockist"}`}
-                                                    onClick={() => navigate("/admin/Stockist/add", { state: { mode: "view", pharmacy } })}
+                                                    aria-label={`View ${stockist.StockistName || "stockist"}`}
+                                                    onClick={() => navigate("/admin/Stockist/add", { state: { mode: "view", stockist } })}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -367,8 +371,8 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
                                                 <IconButton
                                                     size="small"
-                                                    aria-label={`Edit ${pharmacy.StockistName || "stockist"}`}
-                                                    onClick={() => navigate("/admin/Stockist/add", { state: { mode: "edit", pharmacy } })}
+                                                    aria-label={`Edit ${stockist.StockistName || "stockist"}`}
+                                                    onClick={() => navigate("/admin/Stockist/add", { state: { mode: "edit", stockist } })}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -396,8 +400,8 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
                                                 <IconButton
                                                     size="small"
-                                                    aria-label={`Delete ${pharmacy.StockistName || "stockist"}`}
-                                                    onClick={() => setDeleteTarget(pharmacy)}
+                                                    aria-label={`Delete ${stockist.StockistName || "stockist"}`}
+                                                    onClick={() => setDeleteTarget(stockist)}
                                                     sx={{
                                                         width: 31,
                                                         height: 31,
@@ -423,20 +427,19 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                     </TableCell>
 
                                     <TableCell>
-                                        {pharmacy.StockistName || "-"}
+                                        {stockist.StockistName || "-"}
                                     </TableCell>
 
                                     <TableCell>
-                                        {pharmacy.OwnerName || "-"}
+                                        {stockist.OwnerName || "-"}
                                     </TableCell>
 
                                     <TableCell>
-                                        {pharmacy.ContactNumber || "-"}
+                                        {stockist.ContactNumber || "-"}
                                     </TableCell>
 
                                     <TableCell>
-                                        {pharmacy.TerritoryName ||
-                                            pharmacy.TerritoryId ||
+                                        {stockist.TerritoryName ||
                                             "-"}
                                     </TableCell>
 
@@ -444,14 +447,18 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
                                         <Chip
                                             size="small"
-                                            label={isActive(pharmacy) ? "Active" : "Inactive"}
-                                            color={isActive(pharmacy) ? "success" : "default"}
+                                            label={isActive(stockist) ? "Active" : "Inactive"}
+                                            color={isActive(stockist) ? "success" : "default"}
                                         />
 
                                     </TableCell>
 
                                     <TableCell>
-                                        {formatDate(pharmacy.CreatedOn)}
+                                        {formatDate(stockist.CreatedOn)}
+                                    </TableCell>
+
+                                    <TableCell>
+                                        {formatDate(stockist.ModifiedOn)}
                                     </TableCell>
 
                                 </TableRow>
@@ -463,7 +470,7 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                 <TableRow>
 
                                     <TableCell
-                                        colSpan={7}
+                                        colSpan={8}
                                         align="center"
                                         sx={{
                                             py: 5,
