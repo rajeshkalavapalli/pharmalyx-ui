@@ -46,6 +46,8 @@ import UserPharmacyMappingMaster from './Pages/UserPharmacyMapping/UserPharmacyM
 import UserPharmacyMappingList from './Pages/UserPharmacyMapping/UserPharmacyMappingList.jsx';
 import UserPharmacyMapping from './Pages/UserPharmacyMapping/UserPharmacyMapping.jsx';
 
+import TourPlan from './Pages/Tourplan/TourPlan.jsx'
+
 function App() {
 
     return (
@@ -239,6 +241,14 @@ function App() {
                         <Route path="mapping" element={<UserPharmacyMapping />} />
                     </Route>
                     
+                    {/* Tour plan */}
+
+                    <Route
+                        path='/tour-plan'
+                        element = {<TourPlan/>}
+                    >
+                        
+                    </Route>
                 </Route>
 
             </Routes>

@@ -63,3 +63,7 @@
  # V0.0.16
  
  - fixed mapping pharmacy , stockist 
+
+  # V0.0.17
+ 
+ - Added Tour plan for the users 
