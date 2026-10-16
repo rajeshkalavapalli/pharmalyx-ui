@@ -894,8 +894,8 @@ function DivisionList({ handleAddDiv, handleViewDivision, handleEditDivision }) 
 
                                                 backgroundColor:
                                                     index % 2 === 0
-                                                        ? "#FFFFFF"
-                                                        : "#F7F5F1",
+                                                        ? theme.palette.background.paper
+                                                        : theme.palette.surface.subtle,
 
                                             },
 

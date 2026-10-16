@@ -189,7 +189,14 @@ function AddNewUser({
                 then: (schema) => schema
                     .required("Password is required")
                     .min(8, "Password must be at least 8 characters"),
-                otherwise: (schema) => schema.notRequired(),
+                // Editing: optional, but a new password must still be 8+ characters.
+                otherwise: (schema) => schema
+                    .notRequired()
+                    .test(
+                        "min-if-set",
+                        "Password must be at least 8 characters",
+                        (value) => !value || value.length >= 8
+                    ),
             }),
 
         Designation: yup
@@ -778,8 +785,7 @@ function AddNewUser({
                 borderColor: "divider",
                 backgroundColor: "background.paper",
                 overflow: "hidden",
-                boxShadow:
-                    "0 8px 30px rgba(32, 37, 34, 0.055)",
+                boxShadow: "none",
             }}
         >
 
@@ -1171,7 +1177,7 @@ function AddNewUser({
                                 disabled={isViewMode}
                                 label={isEditMode || isViewMode ? "Password" : "Password * "}
                                 name="password"
-                                placeholder="Enter password"
+                                placeholder={isEditMode ? "Leave blank to keep the current password" : "Enter password"}
                                 type="password"
                                 sx={fieldSx}
                                 value={

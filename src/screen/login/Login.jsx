@@ -1,897 +1,411 @@
-import {
-    Box,
-    Typography,
-    TextField,
-    Button,
-} from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
-    BarChartOutlined,
-    GpsFixedOutlined,
-    GroupsOutlined,
-    ShieldOutlined,
+    Alert,
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
+    Stack,
+    TextField,
+    Typography,
+} from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
+import {
+    ArrowForwardRounded,
+    CheckCircleRounded,
+    InsightsRounded,
+    LockOutlined,
+    PersonOutlineRounded,
+    PlaceRounded,
+    RouteRounded,
+    VisibilityOffRounded,
+    VisibilityRounded,
 } from "@mui/icons-material";
 
-import {
-    alpha,
-    useTheme,
-} from "@mui/material/styles";
-
-import PharmalyxLogo from "../../assets/PharmalyxLogo.png";
-import PharmalyxLoginillustrationLight from "../../assets/PharmalyxLoginillustrationLight.png";
-
-
-function Login() {
-
-    const theme = useTheme();
-
-
-    // =====================================================
-    // LOGIN FIELD STYLES
-    // =====================================================
-
-    const loginFieldSx = {
-
-        "& .MuiOutlinedInput-root": {
-
-            height: 52,
-
-            backgroundColor:
-                alpha(
-                    theme.palette.background.paper,
-                    0.82
-                ),
-
-            transition:
-                "all 180ms ease",
-
-            "& fieldset": {
-
-                borderColor:
-                    alpha(
-                        theme.palette.divider,
-                        0.85
-                    ),
-
-            },
-
-            "&:hover fieldset": {
-
-                borderColor:
-                    alpha(
-                        theme.palette.primary.main,
-                        0.60
-                    ),
-
-            },
-
-            "&.Mui-focused": {
-
-                backgroundColor:
-                    theme.palette.background.paper,
-
-                boxShadow:
-                    `0 0 0 3px ${alpha(
-                        theme.palette.primary.main,
-                        0.10
-                    )}`,
-
-            },
-
-            "&.Mui-focused fieldset": {
-
-                borderColor:
-                    theme.palette.primary.main,
-
-                borderWidth:
-                    "1px",
-
-            },
-
-        },
-
-
-        "& .MuiInputBase-input": {
-
-            fontSize: 14,
-
-            color:
-                theme.palette.text.primary,
-
-            "&::placeholder": {
-
-                color:
-                    theme.palette.text.disabled,
-
-                opacity: 1,
-
-            },
-
-        },
-
-    };
-
-
-    // =====================================================
-    // FEATURE ICON STYLE
-    // =====================================================
-
-    const featureIconSx = {
-
-        width: 44,
-
-        height: 44,
-
-        display:
-            "flex",
-
-        alignItems:
-            "center",
-
-        justifyContent:
-            "center",
-
-        border:
-            `1px solid ${alpha(
-                theme.palette.sidebar.activeText,
-                0.24
-            )}`,
-
-        borderRadius:
-            "50%",
-
-        color:
-            theme.palette.sidebar.activeText,
-
-        backgroundColor:
-            alpha(
-                theme.palette.sidebar.active,
-                0.58
-            ),
-
-        backdropFilter:
-            "blur(8px)",
-
-        boxShadow:
-            `0 6px 18px ${alpha(
-                theme.palette.secondary.dark,
-                0.16
-            )}`,
-
-        mb: 1,
-
-    };
-
-
-    // =====================================================
-    // FEATURE LABEL STYLE
-    // =====================================================
-
-    const featureLabelSx = {
-
-        fontSize: {
-
-            md: 9,
-
-            lg: 9.5,
-
-        },
-
-        lineHeight:
-            1.25,
-
-        fontWeight:
-            600,
-
-        color:
-            theme.palette.sidebar.activeText,
-
-        textShadow:
-            `0 1px 5px ${alpha(
-                theme.palette.secondary.dark,
-                0.28
-            )}`,
-
-    };
-
+import BrandMark from "../../components/BrandMark/BrandMark";
+import api from "../../configurations/api-config";
+
+const FEATURES = [
+    { icon: RouteRounded, text: "Tour plans, visits and DCRs in one flow" },
+    { icon: PlaceRounded, text: "GPS-verified calls that work offline" },
+    { icon: InsightsRounded, text: "Coverage, deviations and team insights" },
+];
+
+// Illustrative card on the brand panel (not live data).
+function PreviewCard() {
+    const rows = [
+        { label: "Doctor coverage", value: 82, color: "primary" },
+        { label: "Calls as planned", value: 91, color: "success" },
+        { label: "DCRs on time", value: 76, color: "warning" },
+    ];
 
     return (
-
         <Box
-            sx={{
-
-                width:
-                    "100%",
-
-                height:
-                    "100vh",
-
-                minHeight:
-                    "100dvh",
-
-                position:
-                    "relative",
-
-                overflow:
-                    "hidden",
-
-                boxSizing:
-                    "border-box",
-
-                backgroundImage: `
-                    linear-gradient(
-                        90deg,
-                        ${alpha(
-                            theme.palette.background.default,
-                            0.06
-                        )} 0%,
-                        ${alpha(
-                            theme.palette.background.default,
-                            0.02
-                        )} 45%,
-                        ${alpha(
-                            theme.palette.background.default,
-                            0.42
-                        )} 100%
-                    ),
-                    url(${PharmalyxLoginillustrationLight})
-                `,
-
-                backgroundSize:
-                    "cover",
-
-                backgroundPosition: {
-
-                    xs:
-                        "30% center",
-
-                    md:
-                        "center center",
-
-                },
-
-                backgroundRepeat:
-                    "no-repeat",
-
-            }}
+            aria-hidden
+            sx={(theme) => ({
+                width: theme.login.previewWidth,
+                maxWidth: "100%",
+                p: 2.5,
+                borderRadius: theme.panel.radius,
+                border: "1px solid",
+                borderColor: theme.palette.sidebar.border,
+                backgroundColor: alpha(theme.palette.sidebar.surface, 0.72),
+                backdropFilter: "blur(16px)",
+                boxShadow: theme.elevation.lg,
+            })}
         >
-
-
-            {/* ================================================= */}
-            {/* BACKGROUND OVERLAY */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    position:
-                        "absolute",
-
-                    inset: 0,
-
-                    background:
-                        `linear-gradient(
-                            90deg,
-                            ${alpha(
-                                theme.palette.background.default,
-                                0.04
-                            )} 0%,
-                            ${alpha(
-                                theme.palette.background.default,
-                                0.02
-                            )} 45%,
-                            ${alpha(
-                                theme.palette.background.default,
-                                0.32
-                            )} 100%
-                        )`,
-
-                    pointerEvents:
-                        "none",
-
-                }}
-            />
-
-
-            {/* ================================================= */}
-            {/* BRAND LOGO */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    position:
-                        "absolute",
-
-                    top: {
-
-                        xs: 20,
-
-                        sm: 28,
-
-                        md: 32,
-
-                    },
-
-                    left: {
-
-                        xs: 20,
-
-                        sm: 32,
-
-                        md: 40,
-
-                    },
-
-                    zIndex: 2,
-
-                }}
-            >
-
+            <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                <Typography variant="subtitle2" sx={(theme) => ({ color: theme.palette.sidebar.activeText })}>
+                    This month
+                </Typography>
                 <Box
-                    component="img"
+                    component="span"
+                    sx={(theme) => ({
+                        ...theme.typography.micro,
+                        px: 1,
+                        py: 0.25,
+                        borderRadius: theme.statusChip.radius,
+                        color: theme.palette.success.light,
+                        backgroundColor: alpha(theme.palette.success.main, theme.tint.border),
+                    })}
+                >
+                    ▲ 12%
+                </Box>
+            </Stack>
 
-                    src={PharmalyxLogo}
+            <Stack spacing={1.75}>
+                {rows.map((row) => (
+                    <Box key={row.label}>
+                        <Stack direction="row" sx={{ justifyContent: "space-between", mb: 0.75 }}>
+                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.sidebar.text })}>
+                                {row.label}
+                            </Typography>
+                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.sidebar.activeText, fontWeight: 700 })}>
+                                {row.value}%
+                            </Typography>
+                        </Stack>
+                        <Box
+                            sx={(theme) => ({
+                                height: theme.stat.progressHeight,
+                                borderRadius: theme.stat.progressHeight,
+                                backgroundColor: theme.palette.sidebar.hover,
+                                overflow: "hidden",
+                            })}
+                        >
+                            <Box
+                                sx={(theme) => ({
+                                    width: `${row.value}%`,
+                                    height: "100%",
+                                    borderRadius: "inherit",
+                                    backgroundImage:
+                                        row.color === "primary"
+                                            ? theme.palette.brand.gradient
+                                            : `linear-gradient(90deg, ${theme.palette[row.color].main}, ${theme.palette[row.color].light})`,
+                                })}
+                            />
+                        </Box>
+                    </Box>
+                ))}
+            </Stack>
+        </Box>
+    );
+}
 
-                    alt="Pharmalyx"
+function BrandPanel() {
+    const theme = useTheme();
 
-                    sx={{
+    return (
+        <Box
+            sx={(theme) => ({
+                position: "relative",
+                overflow: "hidden",
+                display: { xs: "none", md: "flex" },
+                flexDirection: "column",
+                justifyContent: "space-between",
+                px: theme.login.brandPaddingX,
+                py: theme.login.brandPaddingY,
+                backgroundColor: theme.palette.sidebar.background,
+                backgroundImage: theme.palette.sidebar.backgroundImage,
 
-                        width: {
-
-                            xs: 140,
-
-                            sm: 170,
-
-                            md: 190,
-
-                        },
-
-                        height:
-                            "auto",
-
-                    }}
-                />
-
+                // Glowing gradient orbs.
+                "&::before, &::after": {
+                    content: '""',
+                    position: "absolute",
+                    width: theme.login.glowSize,
+                    height: theme.login.glowSize,
+                    borderRadius: "50%",
+                    filter: "blur(90px)",
+                    pointerEvents: "none",
+                },
+                "&::before": {
+                    top: -theme.login.glowSize / 3,
+                    right: -theme.login.glowSize / 3,
+                    backgroundColor: alpha(theme.palette.brand.indigo, 0.45),
+                },
+                "&::after": {
+                    bottom: -theme.login.glowSize / 2.5,
+                    left: -theme.login.glowSize / 4,
+                    backgroundColor: alpha(theme.palette.brand.violet, 0.35),
+                },
+            })}
+        >
+            <Box sx={{ position: "relative", zIndex: 1 }}>
+                <BrandMark size={theme.login.brandMarkSize} showWordmark tagline="Field intelligence" />
             </Box>
 
-
-            {/* ================================================= */}
-            {/* LEFT SIDE PROMOTIONAL CONTENT */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    position:
-                        "absolute",
-
-                    zIndex: 2,
-
-                    left: {
-
-                        xs: 20,
-
-                        sm: 32,
-
-                        md: 64,
-
-                        lg: 78,
-
-                    },
-
-                    top: {
-
-                        md: "56%",
-
-                        lg: "57%",
-
-                    },
-
-                    transform:
-                        "translateY(-50%)",
-
-                    width: {
-
-                        md: 430,
-
-                        lg: 470,
-
-                    },
-
-                    display: {
-
-                        xs: "none",
-
-                        md: "block",
-
-                    },
-
-                }}
-            >
-
-
-            </Box>            
-
-            <Box
-                sx={{
-
-                    position:
-                        "relative",
-
-                    zIndex: 2,
-
-                    width:
-                        "100%",
-
-                    height:
-                        "100%",
-
-                    boxSizing:
-                        "border-box",
-
-                    display:
-                        "flex",
-
-                    alignItems:
-                        "center",
-
-                    justifyContent: {
-
-                        xs:
-                            "center",
-
-                        md:
-                            "flex-end",
-
-                    },
-
-                    px: {
-
-                        xs: 2,
-
-                        sm: 4,
-
-                        md: 7,
-
-                        lg: 10,
-
-                    },
-
-                    py: {
-
-                        xs: 3,
-
-                        md: 3,
-
-                    },
-
-                }}
-            >
-
-
-                {/* ================================================= */}
-                {/* LOGIN CARD */}
-                {/* ================================================= */}
-
-                <Box
-                    sx={{
-
-                        width:
-                            "100%",
-
-                        maxWidth:
-                            400,
-
-                        position:
-                            "relative",
-
-                        backgroundColor:
-                            alpha(
-                                theme.palette.background.paper,
-                                0.94
-                            ),
-
-                        borderRadius:
-                            3,
-
-                        border:
-                            `1px solid ${alpha(
-                                theme.palette.background.paper,
-                                0.90
-                            )}`,
-
-                        boxShadow:
-                            `0 28px 80px ${alpha(
-                                theme.palette.secondary.dark,
-                                0.16
-                            )}`,
-
-                        backdropFilter:
-                            "blur(20px)",
-
-                        boxSizing:
-                            "border-box",
-
-                        px: {
-
-                            xs: 3,
-
-                            sm: 4,
-
-                        },
-
-                        py: {
-
-                            xs: 3.25,
-
-                            sm: 3.5,
-
-                        },
-
-                        overflow:
-                            "hidden",
-
-                        "&::before": {
-
-                            content:
-                                '""',
-
-                            position:
-                                "absolute",
-
-                            top: 0,
-
-                            left: 0,
-
-                            right: 0,
-
-                            height: 3,
-
-                            background:
-                                `linear-gradient(
-                                    90deg,
-                                    ${theme.palette.secondary.main} 0%,
-                                    ${theme.palette.primary.main} 55%,
-                                    ${theme.palette.primary.light} 100%
-                                )`,
-
-                        },
-
-                    }}
+            <Box sx={(theme) => ({ position: "relative", zIndex: 1, maxWidth: theme.login.headlineMaxWidth })}>
+                <Typography
+                    variant="h1"
+                    component="p"
+                    sx={(theme) => ({ color: theme.palette.sidebar.activeText })}
                 >
-
-
-                    {/* ================================================= */}
-                    {/* LOGO */}
-                    {/* ================================================= */}
-
+                    Field intelligence for{" "}
                     <Box
-                        sx={{
-
-                            display:
-                                "flex",
-
-                            justifyContent:
-                                "center",
-
-                            mb: 2.25,
-
-                        }}
+                        component="span"
+                        sx={(theme) => ({
+                            backgroundImage: theme.palette.brand.gradient,
+                            filter: "brightness(1.4)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            color: "transparent",
+                        })}
                     >
+                        modern pharma teams
+                    </Box>
+                </Typography>
 
-                        <Box
-                            component="img"
+                <Typography
+                    variant="body1"
+                    sx={(theme) => ({ mt: 2, color: theme.palette.sidebar.text })}
+                >
+                    Plan, execute and review every doctor call with clarity — from the
+                    representative's phone to the manager's dashboard.
+                </Typography>
 
-                            src={PharmalyxLogo}
+                <Stack spacing={1.5} sx={{ mt: 4 }}>
+                    {FEATURES.map(({ icon: Icon, text }) => (
+                        <Stack key={text} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+                            <Box
+                                sx={(theme) => ({
+                                    width: theme.avatar.sizeSmall,
+                                    height: theme.avatar.sizeSmall,
+                                    display: "grid",
+                                    placeItems: "center",
+                                    borderRadius: theme.sidebarLayout.radius,
+                                    color: theme.palette.sidebar.active,
+                                    backgroundColor: theme.palette.sidebar.activeLight,
+                                })}
+                            >
+                                <Icon fontSize="small" />
+                            </Box>
+                            <Typography variant="body2" sx={(theme) => ({ color: theme.palette.sidebar.text })}>
+                                {text}
+                            </Typography>
+                        </Stack>
+                    ))}
+                </Stack>
+            </Box>
 
-                            alt="Pharmalyx"
+            <Stack
+                direction="row"
+                sx={{ position: "relative", zIndex: 1, alignItems: "flex-end", justifyContent: "space-between", gap: 3 }}
+            >
+                <PreviewCard />
+                <Typography
+                    variant="caption"
+                    sx={(theme) => ({ color: theme.palette.sidebar.mutedText, display: { md: "none", lg: "block" } })}
+                >
+                    © {new Date().getFullYear()} Pharmalyx
+                </Typography>
+            </Stack>
+        </Box>
+    );
+}
 
-                            sx={{
+function Login() {
+    const theme = useTheme();
+    const navigate = useNavigate();
 
-                                width: {
+    const [login, setLogin] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
 
-                                    xs: 140,
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-                                    sm: 155,
+        if (!login.trim() || !password) {
+            setError("Enter your username and password.");
+            return;
+        }
 
+        setSubmitting(true);
+        setError("");
+
+        try {
+            const response = await api.post("/app/login", { login: login.trim(), password });
+            const user = response.data?.user;
+
+            localStorage.setItem("userId", user.UserId);
+            window.dispatchEvent(new Event("pharmalyx:acting-user"));
+            navigate("/dashboard");
+        } catch (err) {
+            setError(
+                err.response?.data?.message ||
+                    (err.response ? "Sign-in failed. Please try again." : "Can't reach the server. Check your connection.")
+            );
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const fieldSx = (theme) => ({
+        "& .MuiOutlinedInput-root": { minHeight: theme.login.fieldHeight },
+    });
+
+    return (
+        <Box
+            sx={(theme) => ({
+                minHeight: "100dvh",
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1.1fr) minmax(0, 1fr)" },
+                backgroundColor: theme.palette.background.default,
+            })}
+        >
+            <BrandPanel />
+
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    px: { xs: 2.5, sm: 4 },
+                    py: 6,
+                }}
+            >
+                <Box
+                    component="form"
+                    noValidate
+                    onSubmit={handleSubmit}
+                    sx={(theme) => ({ width: "100%", maxWidth: theme.login.formMaxWidth })}
+                >
+                    {/* Brand on phones, where the panel is hidden */}
+                    <Box
+                        sx={(theme) => ({
+                            display: { xs: "inline-flex", md: "none" },
+                            mb: 4,
+                            p: 1.25,
+                            pr: 2,
+                            borderRadius: theme.panel.radius,
+                            backgroundColor: theme.palette.sidebar.background,
+                        })}
+                    >
+                        <BrandMark size={theme.sidebarLayout.markSize} showWordmark />
+                    </Box>
+
+                    <Typography variant="h2" component="h1">
+                        Welcome back
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={(theme) => ({ mt: 1, mb: 4, color: theme.palette.text.secondary })}
+                    >
+                        Sign in to your Pharmalyx workspace.
+                    </Typography>
+
+                    <Stack spacing={2.25}>
+                        {error && (
+                            <Alert severity="error" variant="outlined">
+                                {error}
+                            </Alert>
+                        )}
+
+                        <TextField
+                            fullWidth
+                            autoFocus
+                            label="Username or email"
+                            autoComplete="username"
+                            value={login}
+                            onChange={(event) => setLogin(event.target.value)}
+                            sx={fieldSx}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PersonOutlineRounded fontSize="small" />
+                                        </InputAdornment>
+                                    ),
                                 },
-
-                                height:
-                                    "auto",
-
                             }}
                         />
 
-                    </Box>
-
-
-                    {/* ================================================= */}
-                    {/* WELCOME */}
-                    {/* ================================================= */}
-
-                    <Typography
-                        sx={{
-
-                            textAlign:
-                                "center",
-
-                            color:
-                                theme.palette.text.primary,
-
-                            fontWeight:
-                                700,
-
-                            fontSize: {
-
-                                xs: "24px",
-
-                                sm: "26px",
-
-                            },
-
-                            letterSpacing:
-                                "-0.025em",
-
-                            lineHeight:
-                                1.2,
-
-                            mb: 0.75,
-
-                        }}
-                    >
-
-                        Welcome back
-
-                    </Typography>
-
-
-                    <Typography
-                        sx={{
-
-                            textAlign:
-                                "center",
-
-                            color:
-                                theme.palette.text.secondary,
-
-                            fontSize:
-                                13.5,
-
-                            lineHeight:
-                                1.5,
-
-                            mb: 3,
-
-                        }}
-                    >
-
-                        Sign in to your Pharmalyx account
-
-                    </Typography>
-
-
-                    {/* ================================================= */}
-                    {/* EMAIL / MOBILE */}
-                    {/* ================================================= */}
-
-                    <TextField
-                        fullWidth
-
-                        placeholder="Email or Mobile Number"
-
-                        variant="outlined"
-
-                        sx={{
-
-                            ...loginFieldSx,
-
-                            mb: 1.5,
-
-                        }}
-
-                        inputProps={{
-
-                            "aria-label":
-                                "Email or Mobile Number",
-
-                        }}
-                    />
-
-
-                    {/* ================================================= */}
-                    {/* PASSWORD */}
-                    {/* ================================================= */}
-
-                    <TextField
-                        fullWidth
-
-                        placeholder="Password"
-
-                        type="password"
-
-                        variant="outlined"
-
-                        sx={{
-
-                            ...loginFieldSx,
-
-                            mb: 1,
-
-                        }}
-
-                        inputProps={{
-
-                            "aria-label":
-                                "Password",
-
-                        }}
-                    />
-
-
-                    {/* ================================================= */}
-                    {/* FORGOT PASSWORD */}
-                    {/* ================================================= */}
-
-                    <Box
-                        sx={{
-
-                            display:
-                                "flex",
-
-                            justifyContent:
-                                "flex-end",
-
-                            mb: 2.25,
-
-                        }}
-                    >
-
-                        <Typography
-                            sx={{
-
-                                fontSize:
-                                    "13px",
-
-                                fontWeight:
-                                    600,
-
-                                color:
-                                    theme.palette.primary.main,
-
-                                cursor:
-                                    "pointer",
-
-                                transition:
-                                    "all 160ms ease",
-
-                                "&:hover": {
-
-                                    color:
-                                        theme.palette.primary.dark,
-
-                                    textDecoration:
-                                        "underline",
-
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type={showPassword ? "text" : "password"}
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                            sx={fieldSx}
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockOutlined fontSize="small" />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                edge="end"
+                                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                                onClick={() => setShowPassword((value) => !value)}
+                                            >
+                                                {showPassword ? (
+                                                    <VisibilityOffRounded fontSize="small" />
+                                                ) : (
+                                                    <VisibilityRounded fontSize="small" />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
                                 },
-
                             }}
+                        />
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            disabled={submitting}
+                            endIcon={submitting ? <CircularProgress size={theme.login.spinnerSize} color="inherit" /> : <ArrowForwardRounded />}
+                            sx={(theme) => ({
+                                minHeight: theme.login.fieldHeight,
+                                boxShadow: theme.palette.brand.glow,
+                            })}
                         >
+                            {submitting ? "Signing in…" : "Sign in"}
+                        </Button>
+                    </Stack>
 
-                            Forgot Password?
-
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={(theme) => ({ mt: 4, alignItems: "center", color: theme.palette.text.secondary })}
+                    >
+                        <CheckCircleRounded fontSize="small" sx={(theme) => ({ color: theme.palette.success.main })} />
+                        <Typography variant="caption">
+                            Passwords are encrypted. Forgot yours? Ask your administrator to reset it.
                         </Typography>
-
-                    </Box>
-
-
-                    {/* ================================================= */}
-                    {/* SIGN IN */}
-                    {/* ================================================= */}
-
-                    <Button
-                        fullWidth
-
-                        variant="contained"
-
-                        size="large"
-
-                        sx={{
-
-                            height:
-                                50,
-
-                            borderRadius:
-                                1.75,
-
-                            fontSize:
-                                "14px",
-
-                            fontWeight:
-                                650,
-
-                            textTransform:
-                                "none",
-
-                            backgroundColor:
-                                theme.palette.primary.main,
-
-                            color:
-                                theme.palette.primary.contrastText,
-
-                            boxShadow:
-                                `0 10px 24px ${alpha(
-                                    theme.palette.primary.main,
-                                    0.22
-                                )}`,
-
-                            transition:
-                                "all 180ms ease",
-
-                            "&:hover": {
-
-                                backgroundColor:
-                                    theme.palette.primary.dark,
-
-                                boxShadow:
-                                    `0 12px 28px ${alpha(
-                                        theme.palette.primary.main,
-                                        0.28
-                                    )}`,
-
-                                transform:
-                                    "translateY(-1px)",
-
-                            },
-
-                        }}
-                    >
-
-                        Sign In
-
-                    </Button>
-
-
-                    {/* ================================================= */}
-                    {/* SECURITY */}
-                    {/* ================================================= */}
-
-                    <Typography
-                        sx={{
-
-                            display:
-                                "block",
-
-                            textAlign:
-                                "center",
-
-                            mt: 2,
-
-                            fontSize:
-                                11.5,
-
-                            color:
-                                theme.palette.text.secondary,
-
-                            letterSpacing:
-                                "0.01em",
-
-                        }}
-                    >
-
-                        Secure access to Pharmalyx
-
-                    </Typography>
-
+                    </Stack>
                 </Box>
-
             </Box>
-
         </Box>
-
     );
-
 }
-
 
 export default Login;

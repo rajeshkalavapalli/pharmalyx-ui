@@ -3,161 +3,193 @@ import { alpha, createTheme } from "@mui/material/styles";
 const PharmalyxTheme = createTheme({
     // =========================================================
     // PHARMALYX DESIGN SYSTEM
-    // PREMIUM LIGHT MODE • TERRACOTTA + GRAPHITE + SAGE + IVORY
+    // HORIZON PRO • NAVY NAVIGATION + BLUE PRIMARY + TEAL PERFORMANCE + SLATE SURFACES
     // =========================================================
 
     palette: {
         mode: "light",
 
+        // Horizon Pro: blue primary actions, navy navigation, teal performance.
         primary: {
-            main: "#C45D45",
-            dark: "#9F4937",
-            light: "#E29A88",
+            main: "#2563EB",
+            dark: "#1D4ED8",
+            light: "#93C5FD",
             contrastText: "#FFFFFF",
         },
 
+        // Neutral slate for drafts, "soon" badges and quiet actions.
         secondary: {
-            main: "#303632",
-            dark: "#202522",
-            light: "#68716B",
+            main: "#64748B",
+            dark: "#334155",
+            light: "#94A3B8",
             contrastText: "#FFFFFF",
         },
 
         brand: {
-            terracotta: "#C45D45",
-            terracottaDark: "#9F4937",
-            terracottaLight: "#E29A88",
+            blue: "#2563EB",
+            cyan: "#0EA5E9",
+            teal: "#10B981",
+            navy: "#102B50",
 
-            graphite: "#202522",
-            charcoal: "#303632",
-            slate: "#68716B",
+            gradient: "linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)",
+            gradientSoft: "linear-gradient(135deg, #EFF6FF 0%, #ECFEFF 100%)",
+            glow: "0 8px 24px rgba(37, 99, 235, 0.30)",
 
-            sage: "#6F8175",
-            sageDark: "#53665A",
-            sageLight: "#A8B6AC",
-
-            terracottaSoft: "#F9EEEB",
-            terracottaMuted: "#FCF5F2",
-
-            sageSoft: "#E9EFEB",
-
-            ivory: "#F7F5F1",
-            ivoryDark: "#F1EFEA",
-
+            glass: "rgba(255, 255, 255, 0.94)",
+            glassStrong: "rgba(255, 255, 255, 0.98)",
             white: "#FFFFFF",
 
-            gradient:
-                "linear-gradient(135deg, #C45D45 0%, #6F8175 100%)",
-
-            glass: "rgba(255, 255, 255, 0.72)",
-            glassStrong: "rgba(255,255,255,0.85)",
+            // Names used by existing components, mapped to Horizon Pro.
+            indigo: "#2563EB",
+            violet: "#0EA5E9",
+            ink: "#0B1E3A",
+            terracotta: "#2563EB",
+            terracottaDark: "#1D4ED8",
+            terracottaLight: "#93C5FD",
+            terracottaSoft: "#EFF6FF",
+            terracottaMuted: "#F5F9FF",
+            graphite: "#0F172A",
+            charcoal: "#1E293B",
+            slate: "#64748B",
+            sage: "#0EA5E9",
+            sageDark: "#0369A1",
+            sageLight: "#7DD3FC",
+            sageSoft: "#ECFEFF",
+            ivory: "#F8FAFC",
+            ivoryDark: "#F1F5F9",
         },
 
         chart: {
-            primary: "#C45D45",
-            secondary: "#6F8175",
-            success: "#238B68",
-            warning: "#C58A2A",
-            error: "#C94B4B",
-            neutral: "#98A19A",
-            accent: "#E29A88",
+            primary: "#2563EB",
+            secondary: "#0EA5E9",
+            success: "#10B981",
+            warning: "#F59E0B",
+            error: "#EF4444",
+            neutral: "#94A3B8",
+            accent: "#0EA5E9",
+            // Two-series comparison (validated pair): our brand vs competitors / expected.
+            ours: "#2563EB",
+            competitor: "#10B981",
         },
 
         command: {
-            background: "#F7F5F1",
+            background: "#F8FAFC",
             surface: "#FFFFFF",
             elevated: "#FFFFFF",
-
-            border: "#E4E1DB",
-
-            text: "#202522",
-            mutedText: "#68716B",
+            border: "#E2E8F0",
+            text: "#0F172A",
+            mutedText: "#64748B",
         },
 
         intelligence: {
-            background: "#F8F7F4",
+            background: "#F8FAFC",
             surface: "#FFFFFF",
             elevated: "#FFFFFF",
-
-            primary: "#C45D45",
-            accent: "#6F8175",
-
-            border: "#E4E1DB",
-
-            text: "#202522",
-            mutedText: "#68716B",
+            primary: "#2563EB",
+            accent: "#10B981",
+            border: "#E2E8F0",
+            text: "#0F172A",
+            mutedText: "#64748B",
         },
 
+        // Navy navigation rail.
         sidebar: {
-            background: "#FFFFFF",
-            surface: "#FFFFFF",
+            background: "#102B50",
+            backgroundImage: "linear-gradient(180deg, #13335E 0%, #102B50 50%, #0C2242 100%)",
+            surface: "#173B6A",
 
-            active: "#C45D45",
-            activeLight: "#F9EEEB",
+            active: "#60A5FA",
+            activeLight: "rgba(37, 99, 235, 0.32)",
             activeText: "#FFFFFF",
+            activeGlow: "0 0 0 1px rgba(96, 165, 250, 0.30), 0 6px 18px rgba(37, 99, 235, 0.40)",
 
-            text: "#303632",
-            mutedText: "#68716B",
+            text: "#CBD5E1",
+            mutedText: "#8DA3C2",
+            hoverText: "#FFFFFF",
+            hover: "rgba(255, 255, 255, 0.07)",
 
-            border: "#E8E5DF",
+            border: "rgba(255, 255, 255, 0.09)",
+            guide: "rgba(255, 255, 255, 0.12)",
+            scrollbar: "rgba(255, 255, 255, 0.18)",
 
-            hover: "#F7F5F1",
-
-            scrollbar: "#C9C6BF",
+            badgeBackground: "rgba(255, 255, 255, 0.09)",
+            badgeText: "#A9BBD3",
         },
 
         background: {
-            default: "#F7F5F1",
+            default: "#F8FAFC",
             paper: "#FFFFFF",
         },
 
         surface: {
-            workspace: "#F7F5F1",
+            workspace: "#F8FAFC",
             default: "#FFFFFF",
-            subtle: "#FAF9F7",
-            muted: "#F1EFEA",
+            subtle: "#F8FAFC",
+            muted: "#F1F5F9",
             elevated: "#FFFFFF",
         },
 
         border: {
-            subtle: "#EEECE7",
-            default: "#E4E1DB",
-            strong: "#CCC9C1",
+            subtle: "#EDF2F7",
+            default: "#E2E8F0",
+            strong: "#CBD5E1",
         },
 
         text: {
-            primary: "#202522",
-            secondary: "#68716B",
-            disabled: "#9AA19B",
+            primary: "#0F172A",
+            secondary: "#64748B",
+            disabled: "#94A3B8",
         },
 
-        divider: "#E4E1DB",
+        divider: "#E2E8F0",
+
+        // Day states on planning calendars (tour plan, leave, attendance).
+        plan: {
+            working: "#2563EB",
+            workingSoft: "#EFF6FF",
+            workingBorder: "#BFDBFE",
+
+            off: "#64748B",
+            offSoft: "#F1F5F9",
+            offHatch: "#E2E8F0",
+
+            empty: "#CBD5E1",
+        },
 
         success: {
-            main: "#238B68",
-            dark: "#176A50",
-            light: "#67B99C",
+            main: "#10B981",
+            dark: "#047857",
+            light: "#6EE7B7",
             contrastText: "#FFFFFF",
         },
 
         warning: {
-            main: "#C58A2A",
-            dark: "#94671D",
-            light: "#E0B15E",
+            main: "#F59E0B",
+            dark: "#B45309",
+            light: "#FCD34D",
             contrastText: "#FFFFFF",
         },
 
         error: {
-            main: "#C94B4B",
-            dark: "#A43737",
-            light: "#E17D7D",
+            main: "#EF4444",
+            dark: "#B91C1C",
+            light: "#FCA5A5",
             contrastText: "#FFFFFF",
         },
 
+        // Secondary cyan: highlights and informational states.
         info: {
-            main: "#68716B",
-            dark: "#4D5650",
-            light: "#98A19A",
+            main: "#0EA5E9",
+            dark: "#0369A1",
+            light: "#7DD3FC",
+            contrastText: "#FFFFFF",
+        },
+
+        // Workflow state "Submitted" (sent for approval).
+        submitted: {
+            main: "#3B82F6",
+            dark: "#1D4ED8",
+            light: "#93C5FD",
             contrastText: "#FFFFFF",
         },
     },
@@ -210,95 +242,37 @@ const PharmalyxTheme = createTheme({
     card: {
         radius: 2.5,
         borderWidth: 1,
-        shadow: "0 8px 30px rgba(32, 37, 34, 0.055)",
+        shadow: "0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06)",
+    },
+
+    // Layered shadows (ink-tinted) for surfaces that float.
+    elevation: {
+        sm: "0 1px 2px rgba(15, 23, 42, 0.05)",
+        md: "0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06)",
+        lg: "0 12px 40px rgba(15, 23, 42, 0.12)",
+        focus: "0 0 0 4px rgba(37, 99, 235, 0.16)",
     },
 
     // =========================================================
     // CONFIGURATION MODULE DESIGN TOKENS
     // =========================================================
 
+    // Settings-style layout: section label column + compact item list.
     configuration: {
-        workspace: {
-            minHeight: "calc(100vh - 150px)",
-        },
-
-        header: {
-            paddingX: {
-                xs: 2,
-                sm: 3,
-                md: 4,
-            },
-
-            paddingY: 2.5,
-            gap: 1.5,
-
-            indicatorWidth: 4,
-            indicatorHeight: 42,
-        },
-
-        content: {
-            paddingX: {
-                xs: 2,
-                sm: 3,
-                md: 4,
-            },
-
-            paddingY: 3,
-        },
-
-        grid: {
-            columns: {
-                xs: "minmax(0, 1fr)",
-                sm: "repeat(2, minmax(0, 1fr))",
-                md: "repeat(3, minmax(0, 1fr))",
-                lg: "repeat(4, minmax(0, 1fr))",
-            },
-
-            gap: 1.25,
-        },
-
-        item: {
-            minHeight: 58,
-            paddingX: 1.25,
-            radius: 1.75,
-
-            icon: {
-                containerSize: 30,
-                marginRight: 1,
-                radius: 1.25,
-                fontSize: 17,
-            },
-
-            title: {
-                fontSize: 12.5,
-                lineHeight: 1.3,
-                fontWeight: 700,
-            },
-
-            description: {
-                marginTop: 0.15,
-                fontSize: 10,
-                lineHeight: 1.3,
-            },
-        },
-
-        section: {
-            titleFontSize: 15,
-            titleMarginBottom: 0.5,
-
-            descriptionFontSize: 12,
-            descriptionMarginBottom: 2.5,
-        },
-
-        closeButton: {
-            size: 36,
-            radius: 1.5,
-            iconSize: 19,
-        },
+        labelColumnWidth: 280,
+        sectionPaddingY: 3,
+        rowMinHeight: 56,
+        rowPaddingX: 2,
+        rowPaddingY: 1.25,
+        iconSize: 32,
+        iconFontSize: 18,
+        countMinWidth: 96,
     },
 
     field: {
         minHeight: 46,
+        // Inputs placed in toolbars next to buttons.
+        compactHeight: 40,
         radius: 1.5,
 
         label: {
@@ -328,6 +302,212 @@ const PharmalyxTheme = createTheme({
     },
 
     // =========================================================
+    // SHARED PAGE BUILDING BLOCKS
+    // =========================================================
+
+    // Alpha levels for tinting a palette color (hover, selected, chips...).
+    tint: {
+        hover: 0.04,
+        selected: 0.08,
+        soft: 0.1,
+        border: 0.22,
+        strong: 0.32,
+    },
+
+    pageHeader: {
+        marginBottom: 3,
+        gap: 2,
+        eyebrowMarginBottom: 0.75,
+        subtitleMarginTop: 0.5,
+        actionsGap: 1.25,
+    },
+
+    // Radii are multiples of shape.borderRadius (9px) when used in sx.
+    panel: {
+        radius: 1.5,
+        padding: { xs: 2, md: 2.5 },
+        headerPaddingY: 2,
+        gap: 2,
+    },
+
+    stat: {
+        padding: { xs: 2, md: 2.25 },
+        gap: 2,
+        iconSize: 42,
+        iconFontSize: 22,
+        iconRadius: 1.25,
+        valueMarginTop: 0.5,
+        progressMarginTop: 1.5,
+        progressHeight: 6,
+    },
+
+    statusChip: {
+        height: 30,
+        paddingX: 1.5,
+        gap: 1,
+        radius: 999,
+        dotSize: 8,
+    },
+
+    timeline: {
+        dotSize: 28,
+        iconSize: 16,
+        connectorWidth: 2,
+        stepGap: 2.25,
+    },
+
+    calendar: {
+        weekdayPaddingY: 1.25,
+        gridGap: { xs: 0.5, sm: 0.75 },
+        cell: {
+            minHeight: { xs: 64, sm: 92, lg: 108 },
+            padding: { xs: 0.5, sm: 1 },
+            radius: 1,
+            markerWidth: 3,
+        },
+        dateBadge: {
+            size: 26,
+        },
+        hatchSize: 6,
+        legendSwatch: 12,
+        loadingOpacity: 0.55,
+        transition:
+            "background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease",
+    },
+
+    dialog: {
+        width: 520,
+        paddingX: { xs: 2, sm: 3 },
+        paddingY: { xs: 2, sm: 2.5 },
+        phoneMargin: 2,
+    },
+
+    // Doctor engagement pages (RCPA lines, business charts, legends).
+    engagement: {
+        dateColumn: 160,
+        quantityColumn: 100,
+        groupedBarWidth: "28%",
+        percentColumn: 36,
+        swatchRadius: 0.5,
+    },
+
+    // Dashboard: hero banner and the visit trend chart.
+    dashboard: {
+        heroPadding: { xs: 2.5, md: 3.5 },
+        chartHeight: 180,
+        barGap: 2,
+        barRadius: 4,
+        gridLines: 4,
+        barWidth: "62%",
+        barMinWidth: 4,
+        tooltipOffset: 8,
+        sideColumnWidth: 44, // spacing units
+        skeleton: { hero: 180, stat: 120, chart: 280 },
+    },
+
+    // Sign-in screen.
+    login: {
+        formMaxWidth: 400,
+        brandPaddingX: { md: 6, lg: 8 },
+        brandPaddingY: 6,
+        glowSize: 520,
+        previewWidth: 360,
+        fieldHeight: 48,
+        brandMarkSize: 40,
+        headlineMaxWidth: 520,
+        spinnerSize: 18,
+    },
+
+    // Page frame: content padding, header and the phone menu drawer.
+    appShell: {
+        contentPadding: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
+        headerHeight: 68,
+        headerPaddingX: { xs: 1.5, sm: 2, md: 3 },
+        drawerMaxWidth: "85vw",
+    },
+
+    table: {
+        loadingOpacity: 0.55,
+        textMaxWidth: 260,
+        emptyPaddingY: 7,
+        emptyIconSize: 44,
+        emptyMessageMaxWidth: 420,
+    },
+
+    // Grid cards for people/entities (doctors, chemists, stockists).
+    entityCard: {
+        minWidth: 280,
+        padding: 2,
+        gap: 1.5,
+        badgeSize: 26,
+        hoverLift: "translateY(-2px)",
+    },
+
+    search: {
+        minWidth: { xs: "100%", sm: 240 },
+    },
+
+    dcr: {
+        calendarWidth: 56, // spacing units
+        cellMinHeight: { xs: 48, sm: 64 },
+        dotSize: 6,
+    },
+
+    visitList: {
+        timeColumnWidth: 104,
+        sidePanelWidth: 40, // spacing units
+        sideListMaxHeight: 360,
+    },
+
+    // App navigation rail. Colors live in palette.sidebar.
+    sidebarLayout: {
+        width: 264,
+        collapsedWidth: 76,
+        headerHeight: 72,
+        paddingX: 1.5,
+        logoWidth: 148,
+        markSize: 36,
+        itemHeight: 40,
+        childItemHeight: 36,
+        railItemSize: 44,
+        iconSize: 20,
+        radius: 1,
+        childIndent: 2.25,
+        guideOffset: 2.5,
+        indicatorWidth: 3,
+        flyoutMinWidth: 220,
+        scrollbarWidth: 5,
+        transition: "width 200ms ease",
+        itemTransition: "background-color 140ms ease, color 140ms ease",
+        chevronTransition: "transform 160ms ease",
+    },
+
+    // Right-side detail / review panels.
+    drawer: {
+        width: { xs: "100%", sm: 560 },
+        paddingX: { xs: 2, sm: 3 },
+        paddingY: 2.5,
+        sectionGap: 3,
+    },
+
+    avatar: {
+        size: 44,
+        sizeSmall: 32,
+    },
+
+    segmented: {
+        padding: 0.5,
+        gap: 0.5,
+        radius: 1.25,
+        itemRadius: 1,
+        itemHeight: 38,
+        itemPaddingX: 1.75,
+        itemGap: 1,
+        iconSize: 18,
+        selectedShadow: "0 1px 3px rgba(15, 23, 42, 0.12)",
+    },
+
+    // =========================================================
     // GLOBAL SHAPE
     // =========================================================
 
@@ -340,9 +520,11 @@ const PharmalyxTheme = createTheme({
     // =========================================================
 
     typography: {
-        fontFamily: "Inter, Arial, Helvetica, sans-serif",
+        fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+        displayFontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
 
         h1: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "34px",
             lineHeight: 1.15,
             fontWeight: 800,
@@ -350,6 +532,7 @@ const PharmalyxTheme = createTheme({
         },
 
         h2: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "28px",
             lineHeight: 1.22,
             fontWeight: 700,
@@ -357,6 +540,7 @@ const PharmalyxTheme = createTheme({
         },
 
         h3: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "24px",
             lineHeight: 1.28,
             fontWeight: 700,
@@ -364,6 +548,7 @@ const PharmalyxTheme = createTheme({
         },
 
         h4: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "20px",
             lineHeight: 1.35,
             fontWeight: 650,
@@ -371,12 +556,14 @@ const PharmalyxTheme = createTheme({
         },
 
         h5: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "18px",
             lineHeight: 1.4,
             fontWeight: 650,
         },
 
         h6: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
             fontSize: "16px",
             lineHeight: 1.45,
             fontWeight: 650,
@@ -394,6 +581,50 @@ const PharmalyxTheme = createTheme({
             fontWeight: 400,
         },
 
+        subtitle1: {
+            fontSize: "15px",
+            lineHeight: 1.45,
+            fontWeight: 650,
+        },
+
+        subtitle2: {
+            fontSize: "13px",
+            lineHeight: 1.4,
+            fontWeight: 650,
+        },
+
+        caption: {
+            fontSize: "12px",
+            lineHeight: 1.4,
+            fontWeight: 400,
+        },
+
+        // Eyebrow labels above page and section titles.
+        overline: {
+            fontSize: "11px",
+            lineHeight: 1.4,
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+        },
+
+        // Large numbers on stat cards.
+        metric: {
+            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+            fontSize: "26px",
+            lineHeight: 1.15,
+            fontWeight: 750,
+            letterSpacing: "-0.02em",
+            fontVariantNumeric: "tabular-nums",
+        },
+
+        // Tiny labels inside dense UI (calendar cells, badges).
+        micro: {
+            fontSize: "11px",
+            lineHeight: 1.3,
+            fontWeight: 500,
+        },
+
         button: {
             fontSize: "14px",
             fontWeight: 600,
@@ -408,24 +639,28 @@ const PharmalyxTheme = createTheme({
 
     components: {
         MuiCssBaseline: {
-            styleOverrides: {
+            styleOverrides: (theme) => ({
                 html: {
-                    backgroundColor: "#F7F5F1",
+                    backgroundColor: theme.palette.background.default,
                 },
 
                 body: {
                     margin: 0,
                     padding: 0,
-                    backgroundColor: "#F7F5F1",
-                    color: "#202522",
-                    fontFamily: "Inter, Arial, Helvetica, sans-serif",
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                    fontFamily: theme.typography.fontFamily,
                     WebkitFontSmoothing: "antialiased",
                     MozOsxFontSmoothing: "grayscale",
                 },
 
+                "::selection": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.18),
+                },
+
                 "*": {
                     scrollbarWidth: "thin",
-                    scrollbarColor: "#C9C6BF transparent",
+                    scrollbarColor: `${theme.palette.border.strong} transparent`,
                 },
 
                 "*::-webkit-scrollbar": {
@@ -438,14 +673,14 @@ const PharmalyxTheme = createTheme({
                 },
 
                 "*::-webkit-scrollbar-thumb": {
-                    background: "#C9C6BF",
+                    background: theme.palette.border.strong,
                     borderRadius: "10px",
                 },
 
                 "*::-webkit-scrollbar-thumb:hover": {
-                    background: "#AAA69E",
+                    background: theme.palette.text.disabled,
                 },
-            },
+            }),
         },
 
         MuiPaper: {
@@ -457,7 +692,7 @@ const PharmalyxTheme = createTheme({
                     border:
                         "1px solid " + theme.palette.divider,
                     boxShadow:
-                        "0 4px 18px rgba(32, 37, 34, 0.035)",
+                        "0 4px 18px rgba(15, 23, 42, 0.035)",
                 }),
 
                 rounded: ({ theme }) => ({
@@ -887,7 +1122,7 @@ const PharmalyxTheme = createTheme({
                         theme.palette.divider,
 
                     boxShadow:
-                        "0 24px 70px rgba(32, 37, 34, 0.16)",
+                        "0 24px 70px rgba(15, 23, 42, 0.16)",
 
                     backgroundImage: "none",
 
@@ -895,6 +1130,13 @@ const PharmalyxTheme = createTheme({
                         theme.palette.brand.glass,
 
                     backdropFilter: "blur(12px)",
+
+                    // Phones: small, even margins instead of MUI's 32px.
+                    [theme.breakpoints.down("sm")]: {
+                        margin: theme.spacing(theme.dialog.phoneMargin),
+                        width: `calc(100% - ${theme.spacing(theme.dialog.phoneMargin * 2)})`,
+                        maxHeight: `calc(100% - ${theme.spacing(theme.dialog.phoneMargin * 2)})`,
+                    },
                 }),
             },
         },
@@ -909,7 +1151,7 @@ const PharmalyxTheme = createTheme({
                         theme.palette.divider,
 
                     boxShadow:
-                        "0 12px 32px rgba(32, 37, 34, 0.12)",
+                        "0 12px 32px rgba(15, 23, 42, 0.12)",
 
                     marginTop: 4,
                 }),
@@ -965,7 +1207,7 @@ const PharmalyxTheme = createTheme({
                     padding: "7px 10px",
 
                     boxShadow:
-                        "0 6px 18px rgba(32, 37, 34, 0.16)",
+                        "0 6px 18px rgba(15, 23, 42, 0.16)",
                 }),
 
                 arrow: ({ theme }) => ({
@@ -990,7 +1232,7 @@ const PharmalyxTheme = createTheme({
                     borderRadius: 9,
 
                     boxShadow:
-                        "0 12px 32px rgba(32, 37, 34, 0.08)",
+                        "0 12px 32px rgba(15, 23, 42, 0.08)",
                 }),
             },
         },
@@ -1002,7 +1244,7 @@ const PharmalyxTheme = createTheme({
                         borderRadius: 8,
 
                         boxShadow:
-                            "0 8px 20px rgba(32,37,34,0.08)",
+                            "0 8px 20px rgba(15,23,42,0.08)",
                     },
                 },
             },
@@ -1062,7 +1304,7 @@ const PharmalyxTheme = createTheme({
                     borderRadius: 10,
 
                     boxShadow:
-                        "0 8px 24px rgba(32,37,34,0.06)",
+                        "0 8px 24px rgba(15,23,42,0.06)",
 
                     "&.Mui-expanded": {
                         margin: "12px 0",
@@ -1228,6 +1470,13 @@ const PharmalyxTheme = createTheme({
         },
 
         MuiTypography: {
+            defaultProps: {
+                variantMapping: {
+                    metric: "p",
+                    micro: "span",
+                },
+            },
+
             styleOverrides: {
                 root: ({ theme }) => ({
                     color:

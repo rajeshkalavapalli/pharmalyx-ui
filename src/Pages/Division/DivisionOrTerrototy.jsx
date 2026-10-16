@@ -1,613 +1,97 @@
-import {
-    Box,
-    ToggleButtonGroup,
-    ToggleButton,
-    Paper,
-    Divider,
-    Snackbar,
-    Alert,
-    Typography,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AccountTreeRounded, MapRounded } from "@mui/icons-material";
 
-import { useState } from "react";
-
+import MasterLayout from "../../components/MasterLayout/MasterLayout";
+import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 import TerritoryList from "../Territory/TerritoryList";
 import DivisionList from "./DivisionList";
 import AddNewDivision from "./AddNewDivision/AddNewDivision";
 import AddNewTerritoty from "../Territory/AddTerritory/AddNewTerritory";
 
+const TABS = [
+    { value: "division", label: "Divisions", icon: AccountTreeRounded },
+    { value: "territory", label: "Territories", icon: MapRounded },
+];
 
-function DivisionOrTerritoty({
-    initialTab = "division",
-}) {
+const ROUTES = {
+    division: "/admin/Divisions",
+    territory: "/admin/Territories",
+};
 
-    const [selectedTab, setSelectedTab] =
-        useState(initialTab);
+const CLOSED = { open: false, mode: "create", item: null };
 
+// Divisions and territories share one page; the tab follows the route.
+function DivisionOrTerritoty({ initialTab = "division" }) {
+    const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
-    // =====================================================
-    // DIVISION FORM
-    // =====================================================
+    const [form, setForm] = useState(CLOSED);
 
-    const [divisionForm, setDivisionForm] =
-        useState({
-            open: false,
-            mode: "create",
-            division: null,
-        });
+    // The same component instance serves both routes, so close any open form on switch.
+    useEffect(() => {
+        setForm(CLOSED);
+    }, [initialTab]);
 
+    const open = (mode, item = null) => setForm({ open: true, mode, item });
+    const close = () => setForm(CLOSED);
 
-    // =====================================================
-    // TERRITORY FORM
-    // =====================================================
-
-    const [territoryForm, setTerritoryForm] =
-        useState({
-            open: false,
-            mode: "create",
-            territory: null,
-        });
-
-
-    // =====================================================
-    // SNACKBAR
-    // =====================================================
-
-    const [snackbar, setSnackbar] =
-        useState({
-            open: false,
-            message: "",
-            severity: "success",
-        });
-
-
-    // =====================================================
-    // ADD DIVISION
-    // =====================================================
-
-    const handleAddDiv = () => {
-
-        setDivisionForm({
-            open: true,
-            mode: "create",
-            division: null,
-        });
-
+    // Forms report (message, severity); keep the form open on errors.
+    const handleSaved = (fallback) => (message = fallback, severity = "success") => {
+        if (severity === "success") close();
+        showSnackbar(message, severity);
     };
 
-
-    // =====================================================
-    // VIEW DIVISION
-    // =====================================================
-
-    const handleViewDivision = (
-        division
-    ) => {
-
-        setDivisionForm({
-            open: true,
-            mode: "view",
-            division,
-        });
-
-    };
-
-
-    // =====================================================
-    // EDIT DIVISION
-    // =====================================================
-
-    const handleEditDivision = (
-        division
-    ) => {
-
-        setDivisionForm({
-            open: true,
-            mode: "edit",
-            division,
-        });
-
-    };
-
-
-    // =====================================================
-    // DIVISION CREATED / UPDATED
-    // =====================================================
-
-    const handleDivisionCreated = (
-        message = "Division created successfully",
-        severity = "success"
-    ) => {
-
-        if (severity === "success") {
-
-            setDivisionForm({
-                open: false,
-                mode: "create",
-                division: null,
-            });
-
-        }
-
-
-        setSnackbar({
-            open: true,
-            message,
-            severity,
-        });
-
-    };
-
-
-    // =====================================================
-    // ADD TERRITORY
-    // =====================================================
-
-    const handleAddTerritoty = () => {
-
-        setTerritoryForm({
-            open: true,
-            mode: "create",
-            territory: null,
-        });
-
-    };
-
-
-    // =====================================================
-    // VIEW TERRITORY
-    // =====================================================
-
-    const handleViewTerritory = (
-        territory
-    ) => {
-
-        setTerritoryForm({
-            open: true,
-            mode: "view",
-            territory,
-        });
-
-    };
-
-
-    // =====================================================
-    // EDIT TERRITORY
-    // =====================================================
-
-    const handleEditTerritory = (
-        territory
-    ) => {
-
-        setTerritoryForm({
-            open: true,
-            mode: "edit",
-            territory,
-        });
-
-    };
-
-
-    // =====================================================
-    // TERRITORY CREATED / UPDATED
-    // =====================================================
-
-    const handleTerritoryCreated = (
-        message = "Territory created successfully",
-        severity = "success"
-    ) => {
-
-        if (severity === "success") {
-
-            setTerritoryForm({
-                open: false,
-                mode: "create",
-                territory: null,
-            });
-
-        }
-
-
-        setSnackbar({
-            open: true,
-            message,
-            severity,
-        });
-
-    };
-
-
-    // =====================================================
-    // TAB CHANGE
-    // =====================================================
-
-    const handleTabChange = (
-        event,
-        newValue
-    ) => {
-
-        setSelectedTab(newValue);
-
-
-        // Reset Division form
-
-        setDivisionForm({
-            open: false,
-            mode: "create",
-            division: null,
-        });
-
-
-        // Reset Territory form
-
-        setTerritoryForm({
-            open: false,
-            mode: "create",
-            territory: null,
-        });
-
-    };
-
+    const isDivision = initialTab === "division";
 
     return (
-
-        <Box
-            sx={{
-                width: "100%",
-            }}
+        <MasterLayout
+            eyebrow="Configuration · Organisation"
+            title={isDivision ? "Divisions" : "Territories"}
+            subtitle={
+                isDivision
+                    ? "Business units and product lines your field force is organised into."
+                    : "Regions each division operates in. Areas sit inside territories."
+            }
+            tabs={TABS}
+            value={initialTab}
+            onTabChange={(next) => navigate(ROUTES[next])}
         >
-
-            {/* ================================================= */}
-            {/* PAGE HEADER */}
-            {/* ================================================= */}
-
-            <Paper
-                elevation={0}
-                sx={{
-                    width: "100%",
-                    borderRadius: 2.5,
-                    border: "1px solid",
-                    borderColor: "divider",
-                    backgroundColor:
-                        "background.paper",
-                    overflow: "hidden",
-                    boxShadow:
-                        "0 8px 30px rgba(32, 37, 34, 0.055)",
-                }}
-            >
-
-                <Box
-                    sx={{
-                        px: {
-                            xs: 2,
-                            sm: 3,
-                            md: 4,
-                        },
-                        py: 3,
-                    }}
-                >
-
-                    <Typography
-                        sx={{
-                            mb: 0.75,
-                            color: "primary.main",
-                            fontSize: 10.5,
-                            fontWeight: 800,
-                            letterSpacing:
-                                "0.14em",
-                            lineHeight: 1,
-                            textTransform:
-                                "uppercase",
-                        }}
-                    >
-                        Administration / Master Data
-                    </Typography>
-
-
-                    <Typography
-                        sx={{
-                            fontSize: 15,
-                            fontWeight: 700,
-                            color: "text.primary",
-                            mb: 0.5,
-                        }}
-                    >
-                        Manage Organization Structure
-                    </Typography>
-
-
-                    <Typography
-                        sx={{
-                            fontSize: 12,
-                            color: "text.secondary",
-                            mb: 2,
-                        }}
-                    >
-                        View existing divisions and territories or create new ones.
-                    </Typography>
-
-
-                    <ToggleButtonGroup
-                        exclusive
-                        value={selectedTab}
-                        sx={{
-                            "& .MuiToggleButton-root": {
-
-                                textTransform:
-                                    "none",
-
-                                fontSize: 13,
-
-                                fontWeight: 600,
-
-                                px: 2.5,
-
-                                py: 1,
-
-                                borderColor:
-                                    "divider",
-
-                                color:
-                                    "text.secondary",
-
-
-                                "&:hover": {
-
-                                    backgroundColor:
-                                        "action.hover",
-
-                                },
-
-
-                                "&.Mui-selected": {
-
-                                    color:
-                                        "primary.main",
-
-                                    backgroundColor:
-                                        "action.selected",
-
-                                    borderColor:
-                                        "primary.main",
-
-
-                                    "&:hover": {
-
-                                        backgroundColor:
-                                            "action.selected",
-
-                                    },
-
-                                },
-
-                            },
-                        }}
-                    >
-
-                        <ToggleButton
-                            value="division"
-                            onClick={() =>
-                                handleTabChange(
-                                    null,
-                                    "division"
-                                )
-                            }
-                        >
-                            Divisions
-                        </ToggleButton>
-
-
-                        <ToggleButton
-                            value="territory"
-                            onClick={() =>
-                                handleTabChange(
-                                    null,
-                                    "territory"
-                                )
-                            }
-                        >
-                            Territories
-                        </ToggleButton>
-
-                    </ToggleButtonGroup>
-
-                </Box>
-
-
-                <Divider />
-
-
-                <Box
-                    sx={{
-                        px: {
-                            xs: 2,
-                            sm: 3,
-                            md: 4,
-                        },
-                        py: 3,
-                    }}
-                >
-
-
-                    {/* ================================================= */}
-                    {/* DIVISION LIST */}
-                    {/* ================================================= */}
-
-                    {selectedTab === "division" &&
-                        !divisionForm.open && (
-
-                            <DivisionList
-                                handleAddDiv={
-                                    handleAddDiv
-                                }
-
-                                handleViewDivision={
-                                    handleViewDivision
-                                }
-
-                                handleEditDivision={
-                                    handleEditDivision
-                                }
-                            />
-
-                        )
-                    }
-
-
-                    {/* ================================================= */}
-                    {/* TERRITORY LIST */}
-                    {/* ================================================= */}
-
-                    {selectedTab === "territory" &&
-                        !territoryForm.open && (
-
-                            <TerritoryList
-                                handleAddTerritoty={
-                                    handleAddTerritoty
-                                }
-
-                                handleViewTerritory={
-                                    handleViewTerritory
-                                }
-
-                                handleEditTerritory={
-                                    handleEditTerritory
-                                }
-                            />
-
-                        )
-                    }
-
-
-                    {/* ================================================= */}
-                    {/* DIVISION FORM */}
-                    {/* ================================================= */}
-
-                    {divisionForm.open && (
-
-                        <AddNewDivision
-                            mode={
-                                divisionForm.mode
-                            }
-
-                            division={
-                                divisionForm.division
-                            }
-
-                            onDivisionCreated={
-                                handleDivisionCreated
-                            }
-
-                            onClose={() =>
-                                setDivisionForm({
-                                    open: false,
-                                    mode: "create",
-                                    division: null,
-                                })
-                            }
-                        />
-
-                    )}
-
-
-                    {/* ================================================= */}
-                    {/* TERRITORY FORM */}
-                    {/* ================================================= */}
-
-                    {territoryForm.open && (
-
-                        <AddNewTerritoty
-                            mode={
-                                territoryForm.mode
-                            }
-
-                            territory={
-                                territoryForm.territory
-                            }
-
-                            onTerritoryCreated={
-                                handleTerritoryCreated
-                            }
-
-                            onClose={() =>
-                                setTerritoryForm({
-                                    open: false,
-                                    mode: "create",
-                                    territory: null,
-                                })
-                            }
-                        />
-
-                    )}
-
-
-                    {/* ================================================= */}
-                    {/* SUCCESS / ERROR SNACKBAR */}
-                    {/* ================================================= */}
-
-                    <Snackbar
-                        open={snackbar.open}
-                        autoHideDuration={3000}
-                        onClose={() => {
-
-                            setSnackbar({
-                                ...snackbar,
-                                open: false,
-                            });
-
-                        }}
-
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                    >
-
-                        <Alert
-                            severity={
-                                snackbar.severity
-                            }
-
-                            variant="filled"
-
-                            onClose={() => {
-
-                                setSnackbar({
-                                    ...snackbar,
-                                    open: false,
-                                });
-
-                            }}
-
-                            sx={(theme) => ({
-
-                                width: "100%",
-
-                                borderRadius: 2,
-
-                                fontSize: 13,
-
-                                fontWeight: 600,
-
-                                boxShadow:
-                                    theme.shadows[6],
-
-                            })}
-                        >
-
-                            {snackbar.message}
-
-                        </Alert>
-
-                    </Snackbar>
-
-                </Box>
-
-            </Paper>
-
-        </Box>
+            {isDivision && !form.open && (
+                <DivisionList
+                    handleAddDiv={() => open("create")}
+                    handleViewDivision={(division) => open("view", division)}
+                    handleEditDivision={(division) => open("edit", division)}
+                />
+            )}
+
+            {!isDivision && !form.open && (
+                <TerritoryList
+                    handleAddTerritoty={() => open("create")}
+                    handleViewTerritory={(territory) => open("view", territory)}
+                    handleEditTerritory={(territory) => open("edit", territory)}
+                />
+            )}
+
+            {isDivision && form.open && (
+                <AddNewDivision
+                    mode={form.mode}
+                    division={form.item}
+                    onDivisionCreated={handleSaved("Division created successfully")}
+                    onClose={close}
+                />
+            )}
+
+            {!isDivision && form.open && (
+                <AddNewTerritoty
+                    mode={form.mode}
+                    territory={form.item}
+                    onTerritoryCreated={handleSaved("Territory created successfully")}
+                    onClose={close}
+                />
+            )}
+        </MasterLayout>
     );
 }
-
 
 export default DivisionOrTerritoty;

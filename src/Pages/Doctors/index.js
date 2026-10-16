@@ -29,3 +29,14 @@ export const deleteDoctor = async (doctorId) => {
     const response = await api.delete(`app/delete-doctor/${doctorId}`);
     return response.data;
 }
+
+// =========================================================
+// ENGAGEMENT
+// =========================================================
+
+// `color` is a palette key. Visits are the suggested monthly call frequency.
+export const DOCTOR_CATEGORY = {
+    A: { label: 'Class A', hint: 'High potential', color: 'primary', visits: 4 },
+    B: { label: 'Class B', hint: 'Medium potential', color: 'warning', visits: 2 },
+    C: { label: 'Class C', hint: 'Developing', color: 'info', visits: 1 },
+};

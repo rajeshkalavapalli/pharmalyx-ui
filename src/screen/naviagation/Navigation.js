@@ -1,28 +1,32 @@
+// Sidebar menu.
+// - `ready: true` marks modules that are built; others show a "Soon" badge.
+// - `match` lists extra path prefixes that should highlight an item.
 const navigation = [
     {
         label: 'Dashboard',
         path: '/dashboard',
+        ready: true,
     },
 
     {
         label: 'Field Operations',
         children: [
-            { label: 'Doctors', path: '/doctors' },
-            { label: 'Tour Plan', path: '/tour-plan' },
-            { label: 'Visits', path: '/visits' },
-            { label: 'DCR', path: '/dcr' },
-            { label: 'Deviation', path: '/deviation' },
+            { label: 'Doctors', path: '/field-operation/doctors', ready: true },
+            { label: 'Tour Plan', path: '/field-operation/tour-plan', ready: true },
+            { label: 'Visits', path: '/field-operation/visits', ready: true },
+            { label: 'DCR', path: '/field-operation/dcr', ready: true },
+            { label: 'Plan Deviation', path: '/field-operation/plan-deviation', ready: true },
         ],
     },
 
     {
         label: 'Doctor Engagement',
         children: [
-            { label: 'RCPA', path: '/rcpa' },
-            { label: 'Samples', path: '/samples' },
-            { label: 'Gifts', path: '/gifts' },
-            { label: 'Feedback', path: '/feedback' },
-            { label: 'Doctor Business', path: '/doctor-business' },
+            { label: 'RCPA', path: '/doctor-engagement/rcpa', ready: true },
+            { label: 'Samples', path: '/doctor-engagement/samples', ready: true },
+            { label: 'Gifts', path: '/doctor-engagement/gifts', ready: true },
+            { label: 'Feedback', path: '/doctor-engagement/feedback', ready: true },
+            { label: 'Doctor Business', path: '/doctor-engagement/doctor-business', ready: true },
         ],
     },
 
@@ -119,7 +123,26 @@ const navigation = [
         label: 'Administration',
         children: [
             { label: 'Roles & Permissions', path: '/admin/roles' },
-            { label: 'Configuration', path: '/admin/configuration' },
+            {
+                label: 'Configuration',
+                path: '/admin/configuration',
+                ready: true,
+                // Master data screens opened from the Configuration page.
+                match: [
+                    '/admin/catalogue',
+                    '/admin/Users',
+                    '/admin/Divisions',
+                    '/admin/Territories',
+                    '/admin/Areas',
+                    '/admin/UserAreaMapping',
+                    '/admin/Doctors',
+                    '/admin/UserDoctorMapping',
+                    '/admin/Pharmacies',
+                    '/admin/UserPharmacyMapping',
+                    '/admin/Stockist',
+                    '/admin/UserStockistMapping',
+                ],
+            },
             { label: 'Approvals', path: '/admin/approvals' },
             { label: 'Integrations', path: '/admin/integrations' },
         ],

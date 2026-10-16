@@ -27,6 +27,8 @@ import {
 
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 
+import EngagementFields from "./EngagementFields";
+
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
@@ -116,6 +118,11 @@ export const AddNewDoctors = function () {
                 doctor?.IsActive === "No"
                     ? "no"
                     : "yes",
+
+            category: doctor?.Category || "",
+            visitsPerMonth: doctor?.VisitsPerMonth ?? "",
+            dateOfBirth: doctor?.DateOfBirth || "",
+            anniversaryDate: doctor?.AnniversaryDate || "",
         },
 
 
@@ -135,6 +142,14 @@ export const AddNewDoctors = function () {
             hospitalName: Yup.string().required(
                 "Hospital Name is required"
             ),
+
+            visitsPerMonth: Yup.number()
+                .transform((value, original) => (original === "" ? null : value))
+                .nullable()
+                .typeError("Enter a number")
+                .integer("Enter a whole number")
+                .min(0, "Cannot be negative")
+                .max(31, "At most 31 visits"),
         }),
 
 
@@ -160,6 +175,10 @@ export const AddNewDoctors = function () {
                     state: values.state,
                     territory: values.territory,
                     area: values.area,
+                    category: values.category,
+                    visitsPerMonth: values.visitsPerMonth,
+                    dateOfBirth: values.dateOfBirth,
+                    anniversaryDate: values.anniversaryDate,
                     isActive:
                         values.status === "no"
                             ? "No"
@@ -184,6 +203,10 @@ export const AddNewDoctors = function () {
                     StateId: values.state,
                     TerritoryId: values.territory,
                     AreaId: values.area,
+                    Category: values.category,
+                    VisitsPerMonth: values.visitsPerMonth,
+                    DateOfBirth: values.dateOfBirth,
+                    AnniversaryDate: values.anniversaryDate,
                     IsActive:
                         values.status === "no"
                             ? "No"
@@ -659,6 +682,12 @@ export const AddNewDoctors = function () {
                         formik.touched.hospitalName &&
                         formik.errors.hospitalName
                     }
+                    disabled={isViewMode}
+                />
+
+
+                <EngagementFields
+                    formik={formik}
                     disabled={isViewMode}
                 />
 
