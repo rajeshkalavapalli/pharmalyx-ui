@@ -48,6 +48,22 @@ import UserPharmacyMapping from './Pages/UserPharmacyMapping/UserPharmacyMapping
 
 import TourPlan from './Pages/Tourplan/TourPlan.jsx'
 
+import TourPlanDeviation from './Pages/TourPlanDeviation/TourPlanDeviation.jsx';
+
+import MyDoctors from './Pages/MyDoctors/MyDoctors.jsx';
+
+import Visits from './Pages/Visits/Visits.jsx';
+
+import Dcr from './Pages/Dcr/Dcr.jsx';
+
+import ComingSoon from './Pages/ComingSoon/ComingSoon.jsx';
+
+import Catalogue from './Pages/Catalogue/Catalogue.jsx';
+import StockPage from './Pages/Engagement/Stock/StockPage.jsx';
+import Rcpa from './Pages/Engagement/Rcpa/Rcpa.jsx';
+import Feedback from './Pages/Engagement/Feedback/Feedback.jsx';
+import DoctorBusiness from './Pages/Engagement/DoctorBusiness/DoctorBusiness.jsx';
+
 function App() {
 
     return (
@@ -241,14 +257,65 @@ function App() {
                         <Route path="mapping" element={<UserPharmacyMapping />} />
                     </Route>
                     
+                    {/* Field operations: my doctors */}
+
+                    <Route
+                        path='field-operation/doctors'
+                        element={<MyDoctors />}
+                    />
+
+                    {/* Field operations: visits */}
+
+                    <Route
+                        path='field-operation/visits'
+                        element={<Visits />}
+                    />
+
+                    {/* Field operations: daily call reports */}
+
+                    <Route
+                        path='field-operation/dcr'
+                        element={<Dcr />}
+                    />
+
                     {/* Tour plan */}
 
                     <Route
-                        path='/tour-plan'
+                        path='field-operation/tour-plan'
                         element = {<TourPlan/>}
                     >
                         
                     </Route>
+
+                    {/* tour plan deviation */}
+
+                    <Route
+                        path='field-operation/plan-deviation'
+                        element={<TourPlanDeviation/>}
+                    >
+
+                    </Route>
+
+                    {/* Doctor engagement */}
+
+                    <Route path='doctor-engagement/rcpa' element={<Rcpa />} />
+                    <Route path='doctor-engagement/samples' element={<StockPage key='samples' itemType='SAMPLE' />} />
+                    <Route path='doctor-engagement/gifts' element={<StockPage key='gifts' itemType='GIFT' />} />
+                    <Route path='doctor-engagement/feedback' element={<Feedback />} />
+                    <Route path='doctor-engagement/doctor-business' element={<DoctorBusiness />} />
+
+                    {/* Catalogue (products & gifts) */}
+
+                    <Route path='admin/catalogue' element={<Catalogue key='products' kind='products' />} />
+                    <Route path='admin/catalogue/products' element={<Catalogue key='products' kind='products' />} />
+                    <Route path='admin/catalogue/gifts' element={<Catalogue key='gifts' kind='gifts' />} />
+
+                    {/* Sidebar modules not built yet, and unknown URLs */}
+
+                    <Route
+                        path='*'
+                        element={<ComingSoon />}
+                    />
                 </Route>
 
             </Routes>

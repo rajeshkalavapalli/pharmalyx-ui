@@ -67,3 +67,51 @@
   # V0.0.17
  
  - Added Tour plan for the users 
+
+  # V0.0.18
+ 
+ - Tour plan redesigned with new calendar, quick fill, drag select, day remarks and approval timeline
+
+  # V0.0.19
+ 
+ - Plan deviation page redesigned with filters, status tabs and details drawer
+
+  # V0.0.20
+ 
+ - Added Field Operations Doctors page and doctor category, visits per month, birthday, anniversary in doctor master
+
+  # V0.0.21
+ 
+ - Added Visits with GPS check-in, offline sync and auto deviation
+
+  # V0.0.22
+ 
+ - Added DCR (daily call report) with manager review
+
+  # V0.0.23
+ 
+ - Sidebar and configuration page redesigned and responsive layout for mobile
+
+  # V0.0.24
+ 
+ - Added login, dashboard and new header, admin master pages updated with common layout
+
+  # V0.0.25
+ 
+ - Added Doctor Engagement module (products and gifts catalogue, samples, gifts, RCPA, feedback, doctor business) and samples / gifts in log visit
+
+  # V0.0.26
+ 
+ - Dashboard updated with doctor engagement, team view for managers and new charts
+
+  # V0.0.27
+ 
+ - Added Horizon Pro theme
+
+  # V0.0.28
+ 
+ - Fixed user password update and added last updated column in users list
+
+  # V0.0.29
+ 
+ - Added role based tour plan with team reviews for managers and plan history 

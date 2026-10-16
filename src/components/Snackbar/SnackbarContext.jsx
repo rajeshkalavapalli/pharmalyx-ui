@@ -1,5 +1,6 @@
 import {
     createContext,
+    useCallback,
     useContext,
     useState
 } from "react";
@@ -34,7 +35,8 @@ export function SnackbarProvider({
     // SHOW SNACKBAR
     // =====================================================
 
-    const showSnackbar = (
+    // Memoised so consumers can safely list it as an effect dependency.
+    const showSnackbar = useCallback((
         message,
         severity = "success"
     ) => {
@@ -49,7 +51,7 @@ export function SnackbarProvider({
 
         });
 
-    };
+    }, []);
 
 
     // =====================================================

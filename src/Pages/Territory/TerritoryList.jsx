@@ -1077,9 +1077,9 @@ function TerritoryList({
 
                                                                 index % 2 === 0
 
-                                                                    ? "#FFFFFF"
+                                                                    ? theme.palette.background.paper
 
-                                                                    : "#F7F5F1",
+                                                                    : theme.palette.surface.subtle,
 
                                                         },
 

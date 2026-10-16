@@ -27,6 +27,18 @@ import { deleteUser, getUsers } from "./service/index";
 import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
+const formatDateTime = (value) =>
+    value
+        ? new Date(value).toLocaleString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+          })
+        : "-";
+
+
 function UserList({ onAddUser, onViewUser, onEditUser }) {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
@@ -225,6 +237,10 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
 
                             <TableCell>
                                 Manager
+                            </TableCell>
+
+                            <TableCell>
+                                Last updated
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -425,6 +441,21 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     >
                                         {user.ManagerName || "-"}
                                     </TableCell>
+
+                                    {/* Last updated (falls back to created) */}
+                                    <TableCell
+                                        sx={{
+                                            color: "text.secondary",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Typography variant="body2">
+                                            {formatDateTime(user.ModifiedOn || user.CreatedOn)}
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                            {user.ModifiedOn ? "Modified" : "Created"}
+                                        </Typography>
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}
@@ -432,7 +463,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                         {!filteredUsers.length && (
                             <TableRow>
                                 <TableCell
-                                    colSpan={7}
+                                    colSpan={8}
                                     align="center"
                                     sx={{
                                         py: 5,

@@ -3,1097 +3,581 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import {
     Box,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
+    ButtonBase,
     Collapse,
+    Divider,
     IconButton,
+    Menu,
+    MenuItem,
     Tooltip,
+    Typography,
+    useMediaQuery,
 } from "@mui/material";
+import { alpha, useTheme } from "@mui/material/styles";
 
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
-import MapRoundedIcon from "@mui/icons-material/MapRounded";
-import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-
+import DirectionsWalkRoundedIcon from "@mui/icons-material/DirectionsWalkRounded";
 import LocalHospitalRoundedIcon from "@mui/icons-material/LocalHospitalRounded";
-import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
-import CardGiftcardRoundedIcon from "@mui/icons-material/CardGiftcardRounded";
-import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
-import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
-
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
-import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import PresentToAllRoundedIcon from "@mui/icons-material/PresentToAllRounded";
-
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import StorefrontRoundedIcon from "@mui/icons-material/StorefrontRounded";
-import WarehouseRoundedIcon from "@mui/icons-material/WarehouseRounded";
-import InventoryRoundedIcon from "@mui/icons-material/InventoryRounded";
-import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
-
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
-
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
-import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
-import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
-
+import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
-import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
-
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import AnnouncementRoundedIcon from "@mui/icons-material/AnnouncementRounded";
-
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
-import SpeedRoundedIcon from "@mui/icons-material/SpeedRounded";
-import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
+import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import KeyboardDoubleArrowLeftRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftRounded";
+import KeyboardDoubleArrowRightRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowRightRounded";
 
-import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
-import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
-
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-
+import Tag from "../../components/Tag/Tag";
 import navigation from "../naviagation/Navigation";
-import PharmalyxLogo from "../../assets/PharmalyxLogo.png";
+import BrandMark from "../../components/BrandMark/BrandMark";
 
-
-const iconMap = {
+// Icons for top-level entries; child items are text-only under a guide line.
+const SECTION_ICONS = {
     Dashboard: DashboardRoundedIcon,
-
-    "Field Operations": PeopleAltRoundedIcon,
+    "Field Operations": DirectionsWalkRoundedIcon,
     "Doctor Engagement": LocalHospitalRoundedIcon,
     "Products & Promotion": MedicationRoundedIcon,
     "Sales & Distribution": ShoppingCartRoundedIcon,
     Planning: EventNoteRoundedIcon,
     Expenses: AccountBalanceWalletRoundedIcon,
-    "HR / Employee": PersonRoundedIcon,
+    "HR / Employee": BadgeRoundedIcon,
     Resources: FolderRoundedIcon,
     Communication: ChatRoundedIcon,
     "Reports & Analytics": AssessmentRoundedIcon,
     Insights: InsightsRoundedIcon,
-    Administration: ManageAccountsRoundedIcon,
-
-    Doctors: PeopleAltRoundedIcon,
-    "Tour Plan": MapRoundedIcon,
-    Visits: LocationOnRoundedIcon,
-    DCR: AssignmentRoundedIcon,
-    Deviation: WarningAmberRoundedIcon,
-
-    RCPA: LocalHospitalRoundedIcon,
-    Samples: Inventory2RoundedIcon,
-    Gifts: CardGiftcardRoundedIcon,
-    Feedback: FeedbackRoundedIcon,
-    "Doctor Business": TrendingUpRoundedIcon,
-
-    Products: MedicationRoundedIcon,
-    Promotions: CampaignRoundedIcon,
-    Campaigns: AutoAwesomeRoundedIcon,
-    "E-Detailing": PresentToAllRoundedIcon,
-
-    "POB / Orders": ShoppingCartRoundedIcon,
-    Retailers: StorefrontRoundedIcon,
-    Stockists: WarehouseRoundedIcon,
-    Stock: InventoryRoundedIcon,
-    "Secondary Sales": BarChartRoundedIcon,
-    Business: TrendingUpRoundedIcon,
-
-    "Doctor Business Plan": EventNoteRoundedIcon,
-    "Sales Plan": BarChartRoundedIcon,
-
-    "TA / Claims": AccountBalanceWalletRoundedIcon,
-
-    Attendance: PersonRoundedIcon,
-    Leave: EventAvailableRoundedIcon,
-    Activity: HistoryRoundedIcon,
-    Appraisals: TrendingUpRoundedIcon,
-    "Learning / Quiz": SchoolRoundedIcon,
-
-    Files: FolderRoundedIcon,
-    "Shared Content": ShareRoundedIcon,
-
-    "Internal Communication": ChatRoundedIcon,
-    Announcements: AnnouncementRoundedIcon,
-    Notifications: NotificationsRoundedIcon,
-
-    "MIS Reports": AssessmentRoundedIcon,
-    "DCR / Call Reports": AssignmentRoundedIcon,
-    Coverage: MapRoundedIcon,
-    KPI: SpeedRoundedIcon,
-    "Missed Visits": ErrorOutlineRoundedIcon,
-    "POB Reports": ShoppingCartRoundedIcon,
-    "Sales Reports": BarChartRoundedIcon,
-    "Graphical Reports": AssessmentRoundedIcon,
-
-    "Performance Insights": InsightsRoundedIcon,
-    "Field Intelligence": SpeedRoundedIcon,
-    "Risk & Alerts": ErrorOutlineRoundedIcon,
-    "Advanced Analytics": BarChartRoundedIcon,
-
-    Users: PeopleAltRoundedIcon,
-    "Roles & Permissions": SecurityRoundedIcon,
-    Masters: ManageAccountsRoundedIcon,
-    Divisions: MapRoundedIcon,
-    Areas: MapRoundedIcon,
-    "Stockist / Retailer Masters": StorefrontRoundedIcon,
-    Configuration: SecurityRoundedIcon,
-    Approvals: AssignmentRoundedIcon,
-    Integrations: ShareRoundedIcon,
+    Administration: AdminPanelSettingsRoundedIcon,
 };
 
-
-function Sidebar() {
-
-    const [openSections, setOpenSections] = useState({});
-    const [collapsed, setCollapsed] = useState(false);
-
-    const location = useLocation();
-
-    useEffect(() => {
-        const activeSection = navigation.find((item) =>
-            item.children && isSectionActive(item)
-        );
-
-        if (activeSection) {
-            setOpenSections((previous) => ({
-                ...previous,
-                [activeSection.label]: true,
-            }));
-        }
-    }, [location.pathname]);
-
-
-    // =====================================================
-    // GET ICON
-    // =====================================================
-
-    const getIcon = (label) => {
-
-        return iconMap[label] || DashboardRoundedIcon;
-
-    };
-
-
-    // =====================================================
-    // CHECK ACTIVE
-    // =====================================================
-
-    const isItemActive = (item) => {
-
-        if (!item.path) {
-            return false;
-        }
-
-        return (
-            location.pathname === item.path ||
-            location.pathname.startsWith(`${item.path}/`)
-        );
-
-    };
-
-
-    // =====================================================
-    // CHECK SECTION ACTIVE
-    // =====================================================
-
-    const isSectionActive = (item) => {
-
-        if (!item.children) {
-            return isItemActive(item);
-        }
-
-        return item.children.some((child) => {
-
-            if (child.children) {
-                return isSectionActive(child);
-            }
-
-            return isItemActive(child);
-
-        });
-
-    };
-
-
-    // =====================================================
-    // SECTION CLICK
-    // =====================================================
-
-    const handleSectionClick = (label) => {
-
-        if (collapsed) {
-
-            setCollapsed(false);
-
-            setOpenSections((previous) => ({
-                ...previous,
-                [label]: true,
-            }));
-
-            return;
-        }
-
-        setOpenSections((previous) => ({
-            ...previous,
-            [label]: !previous[label],
-        }));
-
-    };
-
-
-    // =====================================================
-    // CHILD NAVIGATION
-    // =====================================================
-
-    const renderChildren = (children, level = 1) => {
-
-        return (
-
-            <List
-                disablePadding
-                sx={{
-                    mt: 0.75,
-                    mb: 1,
-
-                    pl: level === 1 ? 1 : 1.5,
-
-                    borderLeft:
-                        level > 1
-                            ? "1px solid"
-                            : "none",
-
-                    borderColor: "sidebar.border",
-                }}
-            >
-
-                {children.map((child) => {
-
-                    const ChildIcon = getIcon(child.label);
-
-                    const hasChildren =
-                        Boolean(child.children);
-
-                    const childActive =
-                        hasChildren
-                            ? isSectionActive(child)
-                            : isItemActive(child);
-
-
-                    return (
-
-                        <Box
-                            key={
-                                child.path ||
-                                child.label
-                            }
-                        >
-
-                            {/* ===================================== */}
-                            {/* NESTED SECTION */}
-                            {/* ===================================== */}
-
-                            {hasChildren ? (
-
-                                <>
-
-                                    <Tooltip
-                                        title={child.label}
-                                        placement="right"
-                                        arrow
-                                    >
-
-                                        <ListItemButton
-                                            onClick={() =>
-                                                handleSectionClick(
-                                                    child.label
-                                                )
-                                            }
-
-                                            sx={{
-                                                minHeight: 42,
-
-                                                px: 1.25,
-
-                                                mb: 0.5,
-
-                                                borderRadius: 1.5,
-
-                                                color:
-                                                    childActive
-                                                        ? "sidebar.text"
-                                                        : "sidebar.mutedText",
-
-                                                backgroundColor:
-                                                    childActive
-                                                        ? "sidebar.activeLight"
-                                                        : "transparent",
-
-                                                border: "1px solid transparent",
-
-                                                borderColor:
-                                                    childActive
-                                                        ? "sidebar.active"
-                                                        : "transparent",
-
-                                                transition:
-                                                    "all 160ms ease",
-
-                                                "&:hover": {
-                                                    backgroundColor:
-                                                        "sidebar.hover",
-
-                                                    color:
-                                                        "sidebar.text",
-
-                                                    borderColor:
-                                                        "transparent",
-                                                },
-                                            }}
-                                        >
-
-                                            <ListItemIcon
-                                                sx={{
-                                                    minWidth: 34,
-
-                                                    color:
-                                                        "inherit",
-                                                }}
-                                            >
-
-                                                <ChildIcon
-                                                    sx={{
-                                                        fontSize: 18,
-                                                    }}
-                                                />
-
-                                            </ListItemIcon>
-
-
-                                            <ListItemText
-                                                primary={
-                                                    child.label
-                                                }
-
-                                                slotProps={{
-                                                    primary: {
-                                                        fontSize: 13,
-
-                                                        fontWeight:
-                                                            childActive
-                                                                ? 600
-                                                                : 500,
-                                                    },
-                                                }}
-                                            />
-
-
-                                        </ListItemButton>
-
-                                    </Tooltip>
-
-
-                                    <Collapse
-                                        in={
-                                            !collapsed &&
-                                            openSections[
-                                                child.label
-                                            ]
-                                        }
-
-                                        timeout="auto"
-
-                                        unmountOnExit
-                                    >
-
-                                        {renderChildren(
-                                            child.children,
-                                            level + 1
-                                        )}
-
-                                    </Collapse>
-
-                                </>
-
-                            ) : (
-
-                                /* ===================================== */
-                                /* NORMAL CHILD */
-                                /* ===================================== */
-
-                                <Tooltip
-                                    title={child.label}
-                                    placement="right"
-                                    arrow
-                                >
-
-                                    <ListItemButton
-                                        component={NavLink}
-
-                                        to={child.path}
-
-                                        sx={{
-                                            minHeight: 40,
-
-                                            px: 1.25,
-
-                                            mb: 0.5,
-
-                                            borderRadius: 1.5,
-
-                                            color:
-                                                "sidebar.mutedText",
-
-                                            backgroundColor:
-                                                "transparent",
-
-                                            border: "1px solid transparent",
-
-                                            borderColor:
-                                                "transparent",
-
-                                            transition:
-                                                "all 160ms ease",
-
-                                            "&:hover": {
-                                                backgroundColor:
-                                                    "sidebar.hover",
-
-                                                color:
-                                                    "sidebar.text",
-                                            },
-
-                                            "&.active": {
-                                                backgroundColor:
-                                                    "sidebar.activeLight",
-
-                                                borderColor:
-                                                    "transparent",
-
-                                                borderLeftColor:
-                                                    "sidebar.active",
-
-                                                color:
-                                                    "sidebar.text",
-                                            },
-                                        }}
-                                    >
-
-                                        <ListItemIcon
-                                            sx={{
-                                                minWidth: 34,
-
-                                                color:
-                                                    "inherit",
-                                            }}
-                                        >
-
-                                            <ChildIcon
-                                                sx={{
-                                                    fontSize: 17,
-                                                }}
-                                            />
-
-                                        </ListItemIcon>
-
-
-                                        <ListItemText
-                                            primary={
-                                                child.label
-                                            }
-
-                                            slotProps={{
-                                                primary: {
-                                                    fontSize: 12.5,
-
-                                                    fontWeight: 500,
-                                                },
-                                            }}
-                                        />
-
-                                    </ListItemButton>
-
-                                </Tooltip>
-
-                            )}
-
-                        </Box>
-
-                    );
-
-                })}
-
-            </List>
-
-        );
-
-    };
-
-
-    // =====================================================
-    // MAIN NAVIGATION ITEM
-    // =====================================================
-
-    const renderMainItem = (item) => {
-
-        const MainIcon =
-            getIcon(item.label);
-
-        const hasChildren =
-            Boolean(item.children);
-
-        const active =
-            hasChildren
-                ? isSectionActive(item)
-                : isItemActive(item);
-
-
-        const itemContent = (
-
-            <ListItemButton
-
-                component={
-                    hasChildren
-                        ? "button"
-                        : NavLink
-                }
-
-                to={
-                    !hasChildren
-                        ? item.path
-                        : undefined
-                }
-
-                onClick={
-                    hasChildren
-                        ? () =>
-                            handleSectionClick(
-                                item.label
-                            )
-                        : undefined
-                }
-
-                sx={{
-
-                    /* ============================================= */
-                    /* COMPACT / EXPANDED SIZE */
-                    /* ============================================= */
-
-                    width:
-                        collapsed
-                            ? 56
-                            : "100%",
-
-                    minHeight: 64,
-
-                    p:
-                        collapsed
-                            ? 0.75
-                            : 0.75,
-
-                    mb:
-                        collapsed
-                            ? 0.75
-                            : 0.5,
-
-
-                    /* ============================================= */
-                    /* LAYOUT */
-                    /* ============================================= */
-
-                    borderRadius: 2,
-
-                    display: "flex",
-
-                    flexDirection: "column",
-
-                    alignItems: "center",
-
-                    justifyContent: "center",
-
-                    gap:
-                        collapsed
-                            ? 0
-                            : 0.35,
-
-
-                    /* ============================================= */
-                    /* COLORS */
-                    /* ============================================= */
-
-                    color:
-                        active
-                            ? "sidebar.activeText"
-                            : "sidebar.text",
-
-                    backgroundColor:
-                        active
-                            ? "sidebar.active"
-                            : "transparent",
-
-                    border: "1px solid transparent",
-
-                    borderColor:
-                        active
-                            ? "sidebar.active"
-                            : "transparent",
-
-
-                    /* ============================================= */
-                    /* TRANSITION */
-                    /* ============================================= */
-
-                    position: "relative",
-
-                    transition:
-                        "all 180ms ease",
-
-
-                    /* ============================================= */
-                    /* HOVER */
-                    /* ============================================= */
-
-                    "&:hover": {
-
-                        borderColor:
-                            active
-                                ? "sidebar.active"
-                                : "transparent",
-
-                        backgroundColor:
-                            active
-                                ? "sidebar.active"
-                                : "action.hover",
-                    },
-
-
-                    /* ============================================= */
-                    /* ACTIVE */
-                    /* ============================================= */
-
-                    "&.active": {
-
-                        color:
-                            "sidebar.activeText",
-
-                        backgroundColor:
-                            "sidebar.active",
-
-                        borderColor:
-                            "transparent",
-
-                        borderLeftColor:
-                            "sidebar.active",
-                    },
-                }}
-            >
-
-
-                {/* ============================================= */}
-                {/* ICON */}
-                {/* ============================================= */}
-
-                <ListItemIcon
-
-                    sx={{
-
-                        minWidth: 0,
-
-                        color: "inherit",
-
-                        display: "flex",
-
-                        alignItems: "center",
-
-                        justifyContent: "center",
-
-                        m: 0,
-                    }}
-                >
-
-                    <MainIcon
-
-                        sx={{
-
-                            fontSize:
-                                collapsed
-                                    ? 24
-                                    : 22,
-                        }}
-                    />
-
-                </ListItemIcon>
-
-
-                {/* ============================================= */}
-                {/* EXPANDED LABEL */}
-                {/* ============================================= */}
-
-                {!collapsed && (
-
-                    <ListItemText
-
-                        primary={
-                            item.label
-                        }
-
-                        sx={{
-
-                            m: 0,
-
-                            width: "100%",
-
-                            textAlign: "center",
-                        }}
-
-                        slotProps={{
-
-                            primary: {
-
-                                sx: {
-
-                                    fontSize: 12.5,
-
-                                    fontWeight:
-                                        active
-                                            ? 600
-                                            : 500,
-
-                                    lineHeight: 1.2,
-
-                                    whiteSpace: "nowrap",
-
-                                    overflow: "hidden",
-
-                                    textOverflow: "ellipsis",
-                                },
-                            },
-                        }}
-                    />
-
-                )}
-
-
-                {/* ============================================= */}
-                {/* EXPAND ICON */}
-                {/* ============================================= */}
-
-            </ListItemButton>
-
-        );
-
-
-        return (
-
-            <Box
-                key={item.label}
-            >
-
-                {/* ============================================= */}
-                {/* TOOLTIP - COMPACT MODE ONLY */}
-                {/* ============================================= */}
-
-                <Tooltip
-
-                    title={item.label}
-
-                    placement="right"
-
-                    arrow
-
-                    disableHoverListener={
-                        !collapsed
-                    }
-
-                    disableFocusListener={
-                        !collapsed
-                    }
-
-                    disableTouchListener={
-                        !collapsed
-                    }
-                >
-
-                    <Box>
-
-                        {itemContent}
-
-                    </Box>
-
-                </Tooltip>
-
-
-                {/* ============================================= */}
-                {/* CHILDREN */}
-                {/* ============================================= */}
-
-                {hasChildren && (
-
-                    <Collapse
-
-                        in={
-                            !collapsed &&
-                            openSections[
-                                item.label
-                            ]
-                        }
-
-                        timeout="auto"
-
-                        unmountOnExit
-                    >
-
-                        {renderChildren(
-                            item.children
-                        )}
-
-                    </Collapse>
-
-                )}
-
-            </Box>
-
-        );
-
-    };
-
-
+const STORAGE_KEY = "pharmalyx.sidebarCollapsed";
+
+// =========================================================
+// ACTIVE STATE
+// =========================================================
+
+const normalize = (path) => String(path || "").toLowerCase().replace(/\/+$/, "");
+
+const matchesPath = (pathname, path) => {
+    const current = normalize(pathname);
+    const target = normalize(path);
+
+    return Boolean(target) && (current === target || current.startsWith(`${target}/`));
+};
+
+const isItemActive = (item, pathname) =>
+    matchesPath(pathname, item.path) || (item.match || []).some((path) => matchesPath(pathname, path));
+
+const isSectionActive = (section, pathname) =>
+    section.children
+        ? section.children.some((child) => isItemActive(child, pathname))
+        : isItemActive(section, pathname);
+
+const readCollapsed = () => {
+    try {
+        return localStorage.getItem(STORAGE_KEY) === "true";
+    } catch {
+        return false;
+    }
+};
+
+const writeCollapsed = (value) => {
+    try {
+        localStorage.setItem(STORAGE_KEY, String(value));
+    } catch {
+        // Preference just won't persist.
+    }
+};
+
+// =========================================================
+// SHARED STYLES
+// =========================================================
+
+const railButtonSx = (theme) => ({
+    color: theme.palette.sidebar.mutedText,
+    "&:hover": {
+        color: theme.palette.sidebar.hoverText,
+        backgroundColor: theme.palette.sidebar.hover,
+    },
+});
+
+function SoonBadge() {
     return (
-
         <Box
-            sx={{
-
-                width:
-                    collapsed
-                        ? 72
-                        : 250,
-
-                height: "100vh",
-
+            component="span"
+            sx={(theme) => ({
+                ...theme.typography.micro,
+                px: 0.75,
+                py: 0.125,
                 flexShrink: 0,
-
-                backgroundColor:
-                    "sidebar.background",
-
-                display: "flex",
-
-                flexDirection: "column",
-
-                boxSizing: "border-box",
-
-                transition:
-                    "width 180ms ease",
-
-                overflow: "hidden",
-
-                borderRight:
-                    "1px solid",
-
-                borderColor:
-                    "sidebar.border",
-            }}
+                borderRadius: theme.statusChip.radius,
+                color: theme.palette.sidebar.badgeText,
+                backgroundColor: theme.palette.sidebar.badgeBackground,
+            })}
         >
-
-
-            {/* ================================================= */}
-            {/* BRAND */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    height: 88,
-
-                    px:
-                        collapsed
-                            ? 1
-                            : 2,
-
-                    display: "flex",
-
-                    alignItems: "center",
-
-                    justifyContent:
-                        "center",
-
-                    flexShrink: 0,
-                }}
-            >
-
-                <Box
-                    component="img"
-
-                    src={PharmalyxLogo}
-
-                    alt="Pharmalyx"
-
-                    sx={{
-
-                        width:
-                            collapsed
-                                ? 48
-                                : 165,
-
-                        height: "auto",
-
-                        maxHeight: 54,
-
-                        objectFit:
-                            "contain",
-
-                        transition:
-                            "width 180ms ease",
-                    }}
-                />
-
-            </Box>
-
-
-            {/* ================================================= */}
-            {/* COLLAPSE BUTTON */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    height: 54,
-
-                    display: "flex",
-
-                    alignItems: "center",
-
-                    justifyContent:
-                        "center",
-
-                    flexShrink: 0,
-                }}
-            >
-
-                <Tooltip
-                    title={
-                        collapsed
-                            ? "Expand menu"
-                            : "Collapse menu"
-                    }
-
-                    placement="right"
-
-                    arrow
-                >
-
-                    <IconButton
-
-                        onClick={() =>
-                            setCollapsed(
-                                (previous) =>
-                                    !previous
-                            )
-                        }
-
-                        sx={{
-
-                            width: 42,
-
-                            height: 42,
-
-                            color:
-                                "sidebar.text",
-
-                            borderRadius: 1.5,
-
-                            "&:hover": {
-                                backgroundColor:
-                                    "action.hover",
-                            },
-                        }}
-                    >
-
-                        <MenuRoundedIcon
-                            sx={{
-                                fontSize: 28,
-                            }}
-                        />
-
-                    </IconButton>
-
-                </Tooltip>
-
-            </Box>
-
-
-            {/* ================================================= */}
-            {/* NAVIGATION */}
-            {/* ================================================= */}
-
-            <Box
-                sx={{
-
-                    flex: 1,
-
-                    overflowY:
-                        "auto",
-
-                    overflowX:
-                        "hidden",
-
-                    px:
-                        collapsed
-                            ? 0.5
-                            : 2.5,
-
-                    pb: 1.5,
-
-                    display:
-                        "flex",
-
-                    justifyContent:
-                        "center",
-
-                    "&::-webkit-scrollbar": {
-                        width: 5,
-                    },
-
-                    "&::-webkit-scrollbar-track": {
-                        background:
-                            "transparent",
-                    },
-
-                    "&::-webkit-scrollbar-thumb": {
-                        backgroundColor:
-                            "sidebar.scrollbar",
-
-                        borderRadius: 10,
-                    },
-                }}
-            >
-
-                <List
-                    disablePadding
-
-                    sx={{
-                        width: "100%",
-                    }}
-                >
-
-                    {navigation.map(
-                        renderMainItem
-                    )}
-
-                </List>
-
-            </Box>
-
+            Soon
         </Box>
-
     );
-
 }
 
+const rowSx = (theme, { active, height, emphasis }) => ({
+    width: "100%",
+    minHeight: height,
+    px: 1.25,
+    gap: 1.25,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    textAlign: "left",
+    position: "relative",
+    borderRadius: theme.sidebarLayout.radius,
+    color: active ? theme.palette.sidebar.activeText : theme.palette.sidebar.text,
+    backgroundColor: active && emphasis ? theme.palette.sidebar.activeLight : "transparent",
+    transition: theme.sidebarLayout.itemTransition,
+
+    "&:hover": {
+        backgroundColor: active && emphasis ? theme.palette.sidebar.activeLight : theme.palette.sidebar.hover,
+        color: theme.palette.sidebar.hoverText,
+    },
+
+    "&:focus-visible": {
+        outline: "none",
+        boxShadow: `0 0 0 2px ${alpha(theme.palette.sidebar.active, theme.tint.strong * 2)}`,
+    },
+});
+
+const labelSx = (theme, active) => ({
+    ...theme.typography.body2,
+    flex: 1,
+    minWidth: 0,
+    fontWeight: active ? theme.typography.subtitle2.fontWeight : theme.typography.body2.fontWeight,
+    color: "inherit",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+});
+
+// =========================================================
+// EXPANDED: TOP-LEVEL LINK (e.g. Dashboard)
+// =========================================================
+
+function LeafItem({ item, active }) {
+    const Icon = SECTION_ICONS[item.label] || DashboardRoundedIcon;
+
+    return (
+        <ButtonBase
+            component={NavLink}
+            to={item.path}
+            aria-current={active ? "page" : undefined}
+            sx={(theme) => ({
+                ...rowSx(theme, { active, height: theme.sidebarLayout.itemHeight, emphasis: true }),
+
+                "&::before": active
+                    ? {
+                          content: '""',
+                          position: "absolute",
+                          left: 0,
+                          top: "20%",
+                          bottom: "20%",
+                          width: theme.sidebarLayout.indicatorWidth,
+                          borderRadius: theme.sidebarLayout.indicatorWidth,
+                          backgroundColor: theme.palette.sidebar.active,
+                      }
+                    : undefined,
+            })}
+        >
+            <Icon
+                sx={(theme) => ({
+                    fontSize: theme.sidebarLayout.iconSize,
+                    color: active ? theme.palette.sidebar.active : theme.palette.sidebar.mutedText,
+                })}
+            />
+            <Typography component="span" sx={(theme) => labelSx(theme, active)}>
+                {item.label}
+            </Typography>
+        </ButtonBase>
+    );
+}
+
+// =========================================================
+// EXPANDED: SECTION WITH CHILDREN
+// =========================================================
+
+function SectionItem({ section, active, open, onToggle, pathname }) {
+    const Icon = SECTION_ICONS[section.label] || DashboardRoundedIcon;
+    const id = `sidebar-section-${section.label.replace(/\W+/g, "-").toLowerCase()}`;
+
+    return (
+        <Box>
+            <ButtonBase
+                onClick={onToggle}
+                aria-expanded={open}
+                aria-controls={id}
+                sx={(theme) => rowSx(theme, { active, height: theme.sidebarLayout.itemHeight })}
+            >
+                <Icon
+                    sx={(theme) => ({
+                        fontSize: theme.sidebarLayout.iconSize,
+                        color: active ? theme.palette.sidebar.active : theme.palette.sidebar.mutedText,
+                    })}
+                />
+                <Typography component="span" sx={(theme) => labelSx(theme, active)}>
+                    {section.label}
+                </Typography>
+                <ExpandMoreRoundedIcon
+                    sx={(theme) => ({
+                        fontSize: theme.sidebarLayout.iconSize,
+                        color: theme.palette.sidebar.mutedText,
+                        transform: open ? "rotate(180deg)" : "none",
+                        transition: theme.sidebarLayout.chevronTransition,
+                    })}
+                />
+            </ButtonBase>
+
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                <Box
+                    id={id}
+                    role="group"
+                    sx={(theme) => ({
+                        position: "relative",
+                        pl: theme.sidebarLayout.childIndent,
+                        py: 0.5,
+
+                        // Tree guide line under the section icon.
+                        "&::before": {
+                            content: '""',
+                            position: "absolute",
+                            left: theme.spacing(theme.sidebarLayout.guideOffset),
+                            top: theme.spacing(0.5),
+                            bottom: theme.spacing(0.5),
+                            width: "1px",
+                            backgroundColor: theme.palette.sidebar.guide,
+                        },
+                    })}
+                >
+                    {section.children.map((child) => (
+                        <ChildItem key={child.path} item={child} active={isItemActive(child, pathname)} />
+                    ))}
+                </Box>
+            </Collapse>
+        </Box>
+    );
+}
+
+function ChildItem({ item, active }) {
+    return (
+        <ButtonBase
+            component={NavLink}
+            to={item.path}
+            aria-current={active ? "page" : undefined}
+            sx={(theme) => ({
+                ...rowSx(theme, { active, height: theme.sidebarLayout.childItemHeight, emphasis: true }),
+                pl: 2,
+                color: active
+                    ? theme.palette.sidebar.activeText
+                    : item.ready
+                      ? theme.palette.sidebar.text
+                      : theme.palette.sidebar.mutedText,
+
+                // Highlights the guide line next to the active page.
+                "&::before": active
+                    ? {
+                          content: '""',
+                          position: "absolute",
+                          left: `calc(${theme.spacing(theme.sidebarLayout.guideOffset - theme.sidebarLayout.childIndent)} - 1px)`,
+                          top: "22%",
+                          bottom: "22%",
+                          width: theme.sidebarLayout.indicatorWidth,
+                          borderRadius: theme.sidebarLayout.indicatorWidth,
+                          backgroundColor: theme.palette.sidebar.active,
+                      }
+                    : undefined,
+            })}
+        >
+            <Typography component="span" sx={(theme) => labelSx(theme, active)}>
+                {item.label}
+            </Typography>
+            {!item.ready && <SoonBadge />}
+        </ButtonBase>
+    );
+}
+
+// =========================================================
+// COLLAPSED RAIL
+// =========================================================
+
+function RailItem({ section, active, onOpenFlyout }) {
+    const Icon = SECTION_ICONS[section.label] || DashboardRoundedIcon;
+    const isLeaf = !section.children;
+
+    return (
+        <Tooltip title={section.label} placement="right" arrow>
+            <ButtonBase
+                {...(isLeaf
+                    ? { component: NavLink, to: section.path }
+                    : { onClick: (event) => onOpenFlyout(event.currentTarget, section) })}
+                aria-label={section.label}
+                aria-haspopup={isLeaf ? undefined : "menu"}
+                aria-current={isLeaf && active ? "page" : undefined}
+                sx={(theme) => ({
+                    width: theme.sidebarLayout.railItemSize,
+                    height: theme.sidebarLayout.railItemSize,
+                    mx: "auto",
+                    display: "grid",
+                    placeItems: "center",
+                    borderRadius: theme.sidebarLayout.radius,
+                    color: active ? theme.palette.sidebar.activeText : theme.palette.sidebar.mutedText,
+                    backgroundColor: "transparent",
+                    backgroundImage: active ? theme.palette.brand.gradient : "none",
+                    boxShadow: active ? theme.palette.sidebar.activeGlow : "none",
+                    transition: theme.sidebarLayout.itemTransition,
+
+                    "&:hover": {
+                        color: theme.palette.sidebar.hoverText,
+                        backgroundColor: active ? "transparent" : theme.palette.sidebar.hover,
+                    },
+
+                    "&:focus-visible": {
+                        outline: "none",
+                        boxShadow: `0 0 0 2px ${alpha(theme.palette.sidebar.active, theme.tint.strong * 2)}`,
+                    },
+                })}
+            >
+                <Icon sx={(theme) => ({ fontSize: theme.sidebarLayout.iconSize })} />
+            </ButtonBase>
+        </Tooltip>
+    );
+}
+
+function Flyout({ anchor, section, pathname, onClose }) {
+    return (
+        <Menu
+            anchorEl={anchor}
+            open={Boolean(anchor)}
+            onClose={onClose}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+            slotProps={{
+                paper: { sx: (theme) => ({ minWidth: theme.sidebarLayout.flyoutMinWidth, ml: 1 }) },
+            }}
+        >
+            {section && (
+                <Typography
+                    variant="overline"
+                    component="p"
+                    sx={(theme) => ({ px: 2, pt: 1, pb: 0.5, color: theme.palette.text.secondary })}
+                >
+                    {section.label}
+                </Typography>
+            )}
+
+            {section?.children.map((child) => {
+                const active = isItemActive(child, pathname);
+
+                return (
+                    <MenuItem
+                        key={child.path}
+                        component={NavLink}
+                        to={child.path}
+                        selected={active}
+                        onClick={onClose}
+                        sx={(theme) => ({
+                            gap: 1.5,
+                            justifyContent: "space-between",
+                            color: child.ready ? theme.palette.text.primary : theme.palette.text.secondary,
+                            fontWeight: active ? theme.typography.subtitle2.fontWeight : undefined,
+                        })}
+                    >
+                        {child.label}
+                        {!child.ready && <Tag label="Soon" color="secondary" />}
+                    </MenuItem>
+                );
+            })}
+        </Menu>
+    );
+}
+
+// =========================================================
+// SIDEBAR
+// =========================================================
+
+// `mobile`: rendered inside the phone drawer, always expanded, with a close button.
+function Sidebar({ mobile = false, onClose }) {
+    const theme = useTheme();
+    const { pathname } = useLocation();
+
+    // Tablets get the icon rail; phones use the drawer instead.
+    const compactScreen = useMediaQuery(theme.breakpoints.down("md")) && !mobile;
+    const [pinnedCollapsed, setPinnedCollapsed] = useState(readCollapsed);
+    const collapsed = !mobile && (compactScreen || pinnedCollapsed);
+
+    const activeSection = navigation.find((section) => isSectionActive(section, pathname))?.label;
+
+    // One section open at a time; follows the current page.
+    const [openSection, setOpenSection] = useState(activeSection || null);
+
+    useEffect(() => {
+        if (activeSection) setOpenSection(activeSection);
+    }, [activeSection]);
+
+    const [flyout, setFlyout] = useState({ anchor: null, section: null });
+
+    const toggleCollapsed = () => {
+        setPinnedCollapsed((previous) => {
+            writeCollapsed(!previous);
+            return !previous;
+        });
+    };
+
+    return (
+        <Box
+            component="nav"
+            aria-label="Main navigation"
+            sx={(theme) => ({
+                width: collapsed ? theme.sidebarLayout.collapsedWidth : theme.sidebarLayout.width,
+                height: mobile ? "100%" : "100vh",
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                backgroundColor: theme.palette.sidebar.background,
+                backgroundImage: theme.palette.sidebar.backgroundImage,
+                borderRight: mobile ? "none" : "1px solid",
+                borderColor: theme.palette.sidebar.border,
+                transition: theme.sidebarLayout.transition,
+            })}
+        >
+            {/* BRAND + COLLAPSE */}
+
+            <Box
+                sx={(theme) => ({
+                    height: theme.sidebarLayout.headerHeight,
+                    flexShrink: 0,
+                    px: collapsed ? 0 : theme.sidebarLayout.paddingX,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: collapsed ? "center" : "space-between",
+                    gap: 1,
+                })}
+            >
+                {collapsed ? (
+                    <Tooltip title={compactScreen ? "Pharmalyx" : "Expand menu"} placement="right" arrow>
+                        <ButtonBase
+                            onClick={compactScreen ? undefined : toggleCollapsed}
+                            aria-label={compactScreen ? "Pharmalyx" : "Expand menu"}
+                            sx={(theme) => ({ borderRadius: theme.sidebarLayout.radius })}
+                        >
+                            <BrandMark size={theme.sidebarLayout.markSize} />
+                        </ButtonBase>
+                    </Tooltip>
+                ) : (
+                    <>
+                        <BrandMark
+                            size={theme.sidebarLayout.markSize}
+                            showWordmark
+                            tagline="Field intelligence"
+                        />
+
+                        {mobile ? (
+                            <IconButton size="small" aria-label="Close menu" onClick={onClose} sx={railButtonSx}>
+                                <CloseRoundedIcon fontSize="small" />
+                            </IconButton>
+                        ) : (
+                            <Tooltip title="Collapse menu" placement="right" arrow>
+                                <IconButton
+                                    size="small"
+                                    aria-label="Collapse menu"
+                                    onClick={toggleCollapsed}
+                                    sx={railButtonSx}
+                                >
+                                    <KeyboardDoubleArrowLeftRoundedIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </>
+                )}
+            </Box>
+
+            <Divider sx={(theme) => ({ borderColor: theme.palette.sidebar.border })} />
+
+            {/* NAVIGATION */}
+
+            <Box
+                sx={(theme) => ({
+                    flex: 1,
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    px: collapsed ? 0 : theme.sidebarLayout.paddingX,
+                    py: 1.5,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: collapsed ? 0.75 : 0.25,
+
+                    "&::-webkit-scrollbar": { width: theme.sidebarLayout.scrollbarWidth },
+                    "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: theme.palette.sidebar.scrollbar,
+                        borderRadius: theme.sidebarLayout.scrollbarWidth,
+                    },
+                })}
+            >
+                {navigation.map((section) => {
+                    const active = isSectionActive(section, pathname);
+
+                    if (collapsed) {
+                        return (
+                            <RailItem
+                                key={section.label}
+                                section={section}
+                                active={active}
+                                onOpenFlyout={(anchor, item) => setFlyout({ anchor, section: item })}
+                            />
+                        );
+                    }
+
+                    return section.children ? (
+                        <SectionItem
+                            key={section.label}
+                            section={section}
+                            active={active}
+                            open={openSection === section.label}
+                            pathname={pathname}
+                            onToggle={() =>
+                                setOpenSection((current) => (current === section.label ? null : section.label))
+                            }
+                        />
+                    ) : (
+                        <LeafItem key={section.label} item={section} active={active} />
+                    );
+                })}
+            </Box>
+
+            {/* EXPAND (collapsed, large screens) */}
+
+            {collapsed && !compactScreen && (
+                <>
+                    <Divider sx={(theme) => ({ borderColor: theme.palette.sidebar.border })} />
+                    <Box sx={{ py: 1.5, display: "grid", placeItems: "center" }}>
+                        <Tooltip title="Expand menu" placement="right" arrow>
+                            <IconButton size="small" aria-label="Expand menu" onClick={toggleCollapsed} sx={railButtonSx}>
+                                <KeyboardDoubleArrowRightRoundedIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </>
+            )}
+
+            <Flyout
+                anchor={flyout.anchor}
+                section={flyout.section}
+                pathname={pathname}
+                onClose={() => setFlyout({ anchor: null, section: null })}
+            />
+        </Box>
+    );
+}
 
 export default Sidebar;

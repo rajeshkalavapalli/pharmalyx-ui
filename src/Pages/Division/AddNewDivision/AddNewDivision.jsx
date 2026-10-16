@@ -187,8 +187,7 @@ function AddNewDivision({
                 borderColor: "divider",
                 backgroundColor: "background.paper",
                 overflow: "hidden",
-                boxShadow:
-                    "0 8px 30px rgba(32, 37, 34, 0.055)",
+                boxShadow: "none",
             }}
         >
             {/* ================================================= */}

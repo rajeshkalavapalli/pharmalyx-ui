@@ -1,265 +1,191 @@
-import {
-  AppBar,
-  Toolbar,
-  Box,
-  Typography,
-  IconButton,
-  Badge,
-  Avatar,
-  Tooltip,
-} from "@mui/material";
-
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-
 import { useLocation } from "react-router-dom";
 
-function Header() {
-  const location = useLocation();
+import {
+  AppBar,
+  Avatar,
+  Box,
+  IconButton,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 
-  // =====================================================
-  // PAGE DETAILS
-  // =====================================================
+import useActingUser from "../../components/ActingUserSelect/useActingUser";
+import navigation from "../naviagation/Navigation";
 
-  const getPageDetails = () => {
-    switch (location.pathname) {
-      case "/dashboard":
-        return {
-          title: "Dashboard",
-          subtitle: "Welcome to Pharmalyx",
-        };
+const normalize = (path) => String(path || "").toLowerCase().replace(/\/+$/, "");
 
-      case "/admin/Users":
-        return {
-          title: "Users",
-          subtitle: "Manage users and their organizational access.",
-        };
+const matches = (pathname, path) => {
+  const current = normalize(pathname);
+  const target = normalize(path);
+  return Boolean(target) && (current === target || current.startsWith(`${target}/`));
+};
 
-      default:
-        return {
-          title: "",
-          subtitle: "",
-        };
+// Section › page, from the sidebar definition.
+const breadcrumbFor = (pathname) => {
+  for (const section of navigation) {
+    if (!section.children) {
+      if (matches(pathname, section.path)) return [section.label];
+      continue;
     }
-  };
 
-  const { title, subtitle } = getPageDetails();
+    const child = section.children.find(
+      (item) => matches(pathname, item.path) || (item.match || []).some((path) => matches(pathname, path))
+    );
+
+    if (child) return [section.label, child.label];
+  }
+
+  return [];
+};
+
+const initials = (name) =>
+  String(name || "")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("") || "?";
+
+// `onMenuClick` is passed on phones, where the sidebar lives in a drawer.
+function Header({ onMenuClick }) {
+  const { pathname } = useLocation();
+  const { actingUserId, users } = useActingUser();
+
+  const crumbs = breadcrumbFor(pathname);
+  const user = users.find((item) => item.id === actingUserId);
 
   return (
     <AppBar
       position="static"
       elevation={0}
-      sx={{
-        backgroundColor: "background.paper",
-        color: "text.primary",
-        borderBottom: "1px solid",
-        borderColor: "divider",
+      sx={(theme) => ({
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.brand.glass,
         backgroundImage: "none",
-      }}
+        backdropFilter: "blur(12px)",
+        border: 0,
+        borderBottom: "1px solid",
+        borderColor: theme.palette.border.default,
+        boxShadow: "none",
+      })}
     >
       <Toolbar
-        sx={{
-          minHeight: "68px !important",
-
-          px: {
-            xs: 2,
-            md: 3,
-          },
-
-          gap: 2,
-        }}
+        sx={(theme) => ({
+          minHeight: `${theme.appShell.headerHeight}px !important`,
+          px: theme.appShell.headerPaddingX,
+          gap: { xs: 1, sm: 2 },
+        })}
       >
-        {/* ================================================= */}
-        {/* LEFT — PAGE INFORMATION */}
-        {/* ================================================= */}
+        {onMenuClick && (
+          <IconButton edge="start" aria-label="Open menu" onClick={onMenuClick}>
+            <MenuRoundedIcon />
+          </IconButton>
+        )}
 
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: 0,
-          }}
+        {/* BREADCRUMB */}
+
+        <Stack
+          component="nav"
+          aria-label="Breadcrumb"
+          direction="row"
+          sx={{ flex: 1, minWidth: 0, alignItems: "center", gap: 0.75 }}
         >
-          <Typography
-            sx={{
-              fontSize: 18,
-              fontWeight: 650,
-              color: "text.primary",
-              letterSpacing: "-0.025em",
-              lineHeight: 1.3,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {title}
-          </Typography>
+          {crumbs.map((crumb, index) => {
+            const last = index === crumbs.length - 1;
 
-          {subtitle && (
-            <Typography
-              sx={{
-                fontSize: 12,
-                fontWeight: 400,
-                color: "text.secondary",
-                mt: 0.35,
-                lineHeight: 1.35,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {subtitle}
-            </Typography>
-          )}
-        </Box>
+            return (
+              <Stack key={crumb} direction="row" sx={{ alignItems: "center", gap: 0.75, minWidth: 0 }}>
+                {index > 0 && (
+                  <ChevronRightRoundedIcon
+                    fontSize="small"
+                    sx={(theme) => ({ color: theme.palette.text.disabled })}
+                  />
+                )}
+                <Typography
+                  variant={last ? "subtitle2" : "body2"}
+                  aria-current={last ? "page" : undefined}
+                  sx={(theme) => ({
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    color: last ? theme.palette.text.primary : theme.palette.text.secondary,
+                    display: { xs: last ? "block" : "none", sm: "block" },
+                  })}
+                >
+                  {crumb}
+                </Typography>
+              </Stack>
+            );
+          })}
+        </Stack>
 
-        {/* ================================================= */}
-        {/* RIGHT — USER AREA */}
-        {/* ================================================= */}
+        {/* ACTIONS */}
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 0.75,
-          }}
-        >
-          {/* ================================================= */}
-          {/* NOTIFICATIONS */}
-          {/* ================================================= */}
-
+        <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
           <Tooltip title="Notifications">
             <IconButton
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 1.5,
-                color: "text.secondary",
-
-                transition:
-                  "background-color 160ms ease, color 160ms ease",
-
+              aria-label="Notifications"
+              sx={(theme) => ({
+                border: "1px solid",
+                borderColor: theme.palette.border.default,
+                color: theme.palette.text.secondary,
                 "&:hover": {
-                  backgroundColor: "action.hover",
-                  color: "primary.main",
+                  color: theme.palette.primary.main,
+                  borderColor: alpha(theme.palette.primary.main, theme.tint.border),
                 },
-              }}
+              })}
             >
-              <Badge
-                badgeContent={3}
-                color="error"
-                sx={{
-                  "& .MuiBadge-badge": {
-                    fontSize: 9,
-                    fontWeight: 700,
-                    minWidth: 16,
-                    height: 16,
-                    padding: "0 4px",
-                    border: "2px solid",
-                    borderColor: "background.paper",
-                  },
-                }}
-              >
-                <NotificationsNoneRoundedIcon
-                  sx={{
-                    fontSize: 21,
-                  }}
-                />
-              </Badge>
+              <NotificationsNoneRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
 
-          {/* ================================================= */}
-          {/* USER ACCOUNT */}
-          {/* ================================================= */}
-
-          <Box
-            sx={{
-              display: "flex",
+          <Stack
+            direction="row"
+            sx={(theme) => ({
               alignItems: "center",
-              gap: 1,
-              ml: 0.5,
-              px: 1,
+              gap: 1.25,
+              pl: 0.5,
+              pr: { xs: 0.5, sm: 1.5 },
               py: 0.5,
-              borderRadius: 1.5,
-              cursor: "pointer",
-              border: "1px solid transparent",
-
-              transition:
-                "background-color 160ms ease, border-color 160ms ease",
-
-              "&:hover": {
-                backgroundColor: "action.hover",
-                borderColor: "divider",
-              },
-            }}
+              borderRadius: theme.statusChip.radius,
+              border: "1px solid",
+              borderColor: theme.palette.border.default,
+              backgroundColor: theme.palette.background.paper,
+            })}
           >
-            {/* Avatar */}
-
             <Avatar
-              sx={{
-                width: 34,
-                height: 34,
-
-                // Centralized theme color
-                backgroundColor: "primary.main",
-                color: "primary.contrastText",
-
-                fontSize: 12,
-                fontWeight: 700,
-
-                boxShadow: 1,
-              }}
+              sx={(theme) => ({
+                width: theme.avatar.sizeSmall,
+                height: theme.avatar.sizeSmall,
+                ...theme.typography.caption,
+                fontWeight: theme.typography.subtitle2.fontWeight,
+                color: theme.palette.primary.contrastText,
+                backgroundImage: theme.palette.brand.gradient,
+              })}
             >
-              M
+              {initials(user?.name)}
             </Avatar>
 
-            {/* User information */}
-
-            <Box
-              sx={{
-                display: {
-                  xs: "none",
-                  sm: "block",
-                },
-
-                minWidth: 82,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "text.primary",
-                  lineHeight: 1.3,
-                }}
-              >
-                Manager
+            <Box sx={{ display: { xs: "none", sm: "block" }, minWidth: 0 }}>
+              <Typography variant="subtitle2" sx={{ whiteSpace: "nowrap" }}>
+                {user?.name || "Not signed in"}
               </Typography>
-
               <Typography
-                sx={{
-                  fontSize: 11,
-                  fontWeight: 400,
-                  color: "text.secondary",
-                  lineHeight: 1.3,
-                  mt: 0.15,
-                }}
+                variant="micro"
+                component="p"
+                sx={(theme) => ({ color: theme.palette.text.secondary, whiteSpace: "nowrap" })}
               >
-                Administrator
+                {user ? "Pharmalyx workspace" : "Choose a user on any page"}
               </Typography>
             </Box>
-
-            {/* Dropdown */}
-
-            <KeyboardArrowDownRoundedIcon
-              sx={{
-                fontSize: 18,
-                color: "text.secondary",
-                ml: 0.15,
-              }}
-            />
-          </Box>
-        </Box>
+          </Stack>
+        </Stack>
       </Toolbar>
     </AppBar>
   );
