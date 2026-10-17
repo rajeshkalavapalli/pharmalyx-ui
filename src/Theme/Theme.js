@@ -430,6 +430,12 @@ const PharmalyxTheme = createTheme({
         donutGap: 4,
     },
 
+    // Doctor requests (add / edit / delete with approval).
+    doctorRequests: {
+        cameraMaxHeight: 320,
+        photoHeight: 160,
+    },
+
     // Insights pages.
     insights: {
         pickerWidth: 240,

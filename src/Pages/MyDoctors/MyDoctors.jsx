@@ -449,6 +449,7 @@ function MyDoctors() {
             <DoctorProfileDrawer
                 doctor={selected}
                 userId={viewUserId}
+                canRequest={!viewingOther}
                 onClose={() => setSelected(null)}
             />
         </Box>

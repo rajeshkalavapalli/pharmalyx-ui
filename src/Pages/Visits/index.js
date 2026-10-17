@@ -56,6 +56,15 @@ export const PLAN_STATUS = {
     NO_PLAN: { label: 'No tour plan', color: 'info' },
 };
 
+// Result of the server's clinic-distance check (null for visits logged before it existed).
+export const geofenceTag = (visit) => {
+    const distance = visit?.DistanceFromClinicM != null ? formatDistance(visit.DistanceFromClinicM) : null;
+    if (visit?.GeofenceStatus === 'INSIDE') return { label: distance ? `At clinic · ${distance}` : 'At clinic', color: 'success' };
+    if (visit?.GeofenceStatus === 'OUTSIDE') return { label: `Away from clinic · ${distance}`, color: 'warning' };
+    if (visit?.GeofenceStatus === 'NO_CLINIC_GPS') return { label: 'Clinic not pinned', color: 'secondary' };
+    return null;
+};
+
 export const LOCATION_STATUS = {
     CAPTURED: { label: 'Location captured', color: 'success' },
     DENIED: { label: 'Location denied', color: 'error' },
@@ -205,6 +214,22 @@ export const captureLocation = () =>
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
         );
     });
+
+// Same rule as the server: GPS accuracy (up to 100 m) is given to the MR before comparing with the limit.
+export const clinicDistance = (location, doctor) => {
+    if (location?.status !== 'CAPTURED' || doctor?.ClinicLatitude == null || doctor?.ClinicLongitude == null) return null;
+
+    const toRad = (deg) => (Number(deg) * Math.PI) / 180;
+    const dLat = toRad(doctor.ClinicLatitude - location.latitude);
+    const dLng = toRad(doctor.ClinicLongitude - location.longitude);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(location.latitude)) * Math.cos(toRad(doctor.ClinicLatitude)) * Math.sin(dLng / 2) ** 2;
+    const distance = Math.round(6371000 * 2 * Math.asin(Math.sqrt(h)));
+    const limit = Number(doctor.GeofenceMeters) || 200;
+
+    return { distance, limit, outside: distance - Math.min(Number(location.accuracy) || 0, 100) > limit };
+};
+
+export const formatDistance = (meters) => (meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${meters} m`);
 
 export const mapsUrl = (latitude, longitude) =>
     `https://www.google.com/maps?q=${latitude},${longitude}`;

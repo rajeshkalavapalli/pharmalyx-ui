@@ -12,6 +12,7 @@ const navigation = [
         label: 'Field Operations',
         children: [
             { label: 'Doctors', path: '/field-operation/doctors', ready: true },
+            { label: 'Doctor Requests', path: '/field-operation/doctor-requests', ready: true },
             { label: 'Tour Plan', path: '/field-operation/tour-plan', ready: true },
             { label: 'Pre-call Planning', path: '/field-operation/pre-call', ready: true },
             { label: 'Visits', path: '/field-operation/visits', ready: true },

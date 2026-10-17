@@ -87,6 +87,7 @@ import FieldIntelligence from './Pages/Insights/Field/FieldIntelligence.jsx';
 import AdvancedAnalytics from './Pages/Insights/Analytics/AdvancedAnalytics.jsx';
 import InsightRules from './Pages/Insights/Rules/InsightRules.jsx';
 import Approvals from './Pages/Approvals/Approvals.jsx';
+import DoctorRequests from './Pages/DoctorRequests/DoctorRequests.jsx';
 import Attendance from './Pages/HR/Attendance/Attendance.jsx';
 import Leave from './Pages/HR/Leave/Leave.jsx';
 import Activity from './Pages/HR/Activity/Activity.jsx';
@@ -307,6 +308,7 @@ function App() {
                     {/* Field operations: pre-call planning */}
 
                     <Route path='field-operation/pre-call' element={<PreCall />} />
+                    <Route path='field-operation/doctor-requests' element={<DoctorRequests />} />
 
                     {/* Field operations: daily call reports */}
 

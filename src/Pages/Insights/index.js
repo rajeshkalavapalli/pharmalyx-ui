@@ -27,6 +27,7 @@ export const GROUPS = [
     { value: "DOCTOR", label: "Doctor risk" },
     { value: "REP", label: "Rep performance" },
     { value: "STOCK", label: "Business & stock" },
+    { value: "GPS", label: "GPS & location" },
 ];
 
 export const SEGMENT_COLOR = { CHAMPION: "success", GROW: "primary", UNDERSERVED: "warning", RECONSIDER: "error", NO_DATA: "secondary" };

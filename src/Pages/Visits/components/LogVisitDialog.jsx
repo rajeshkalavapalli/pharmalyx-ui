@@ -39,6 +39,8 @@ import {
     NOTES_LIMIT,
     addDays,
     captureLocation,
+    clinicDistance,
+    formatDistance,
     formatDuration,
     minutesBetween,
     newId,
@@ -104,6 +106,7 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
     const [location, setLocation] = useState({ status: "PENDING" });
     const [items, setItems] = useState([]);
     const [saving, setSaving] = useState(false);
+    const [geofenceReason, setGeofenceReason] = useState("");
 
     const locate = () => {
         setLocation({ status: "PENDING" });
@@ -120,6 +123,7 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
     );
 
     const duration = minutesBetween(times.start, times.end);
+    const fence = clinicDistance(location, doctor);
 
     const error = (() => {
         if (visitDate > today) return "The visit date cannot be in the future.";
@@ -147,6 +151,7 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                 Notes: notes.trim() || null,
                 FollowUpDate: followUpDate || null,
                 Location: location,
+                GeofenceReason: fence?.outside && geofenceReason.trim() ? geofenceReason.trim() : null,
                 RecordedOffline: !online,
                 RecordedAt: new Date().toISOString(),
                 Items: items.map((item) => ({
@@ -222,6 +227,25 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                     )}
 
                     <LocationStatus location={location} onRetry={locate} />
+
+                    {fence?.outside && (
+                        <Alert severity="warning" variant="outlined">
+                            You are about {formatDistance(fence.distance)} from Dr. {doctor.DoctorName}&apos;s clinic (limit {fence.limit} m). You can still log the visit; it will be flagged for your manager.
+                            <TextField
+                                fullWidth
+                                size="small"
+                                sx={{ mt: 1.25 }}
+                                label="Reason (optional), e.g. met the doctor at the hospital"
+                                value={geofenceReason}
+                                onChange={(event) => setGeofenceReason(event.target.value.slice(0, 300))}
+                            />
+                        </Alert>
+                    )}
+                    {doctor && fence === null && location.status === "CAPTURED" && doctor.ClinicLatitude == null && (
+                        <Alert severity="info" variant="outlined">
+                            This doctor&apos;s clinic is not pinned yet. Ask to pin it from My Doctors (Request edit, then "The clinic has moved") while you are there.
+                        </Alert>
+                    )}
 
                     <Autocomplete
                         options={doctors}

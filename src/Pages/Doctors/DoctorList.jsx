@@ -27,6 +27,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { deleteDoctor, getDoctors } from "./index";
+import { getMyPermissions } from "../DoctorRequests/index";
+import ChangeRequestDialog from "../DoctorRequests/components/ChangeRequestDialog";
 import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
@@ -37,8 +39,34 @@ export const DoctorList = function ({ onAddDoctor }) {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All");
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [permissions, setPermissions] = useState(new Set());
+
+    // Only admins change doctors here; everyone else uses Doctor Requests (manager approval).
+    const canCreate = permissions.has("masters.create");
+    const canEdit = permissions.has("masters.edit");
+    const canDelete = permissions.has("masters.delete");
+    const seesAll = permissions.has("masters.view");
+    // Everyone else asks: add / edit / delete go to the manager with a reason.
+    const canRequest = permissions.has("doctorrequests.create");
+    const [requestTarget, setRequestTarget] = useState(null);
+
+    // Why a request can't be raised for this doctor (null when it can).
+    const requestBlocker = (doctor) => {
+        if (!isActive(doctor)) return "This doctor is inactive";
+        if (doctor.ApprovalStatus && doctor.ApprovalStatus !== "APPROVED")
+            return "Still waiting for manager approval";
+        if (!doctor.IsMine)
+            return "Only the MR this doctor is assigned to can request changes";
+        return null;
+    };
 
     const { showSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        getMyPermissions()
+            .then(setPermissions)
+            .catch(() => setPermissions(new Set()));
+    }, []);
 
     useEffect(() => {
         const loadDoctors = async () => {
@@ -46,10 +74,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                 const response = await getDoctors();
 
                 const data =
-                    response?.doctors ||
-                    response?.result ||
-                    response ||
-                    [];
+                    response?.doctors || response?.result || response || [];
 
                 setDoctors(Array.isArray(data) ? data : []);
             } catch (err) {
@@ -70,12 +95,9 @@ export const DoctorList = function ({ onAddDoctor }) {
 
     const filteredDoctors = doctors.filter((doctor) => {
         const searchValue =
-            `${doctor.DoctorName || ""} ${doctor.Speciality || ""} ${doctor.HospitalName || ""} ${doctor.TerritoryName || ""}`
-                .toLowerCase();
+            `${doctor.DoctorName || ""} ${doctor.Speciality || ""} ${doctor.HospitalName || ""} ${doctor.TerritoryName || ""}`.toLowerCase();
 
-        const matchesSearch = searchValue.includes(
-            search.toLowerCase()
-        );
+        const matchesSearch = searchValue.includes(search.toLowerCase());
 
         const matchesStatus =
             status === "All" ||
@@ -93,10 +115,10 @@ export const DoctorList = function ({ onAddDoctor }) {
         return Number.isNaN(parsedDate.getTime())
             ? "-"
             : parsedDate.toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            });
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+              });
     };
 
     const handleViewDoctor = (doctor) => {
@@ -123,24 +145,19 @@ export const DoctorList = function ({ onAddDoctor }) {
 
             setDoctors((current) =>
                 current.filter(
-                    (doctor) =>
-                        doctor.DoctorId !== deleteTarget.DoctorId
-                )
+                    (doctor) => doctor.DoctorId !== deleteTarget.DoctorId,
+                ),
             );
 
             setDeleteTarget(null);
 
-            showSnackbar(
-                "Doctor deleted successfully",
-                "success"
-            );
+            showSnackbar("Doctor deleted successfully", "success");
         } catch (error) {
             console.error("Error deleting doctor", error);
 
             showSnackbar(
-                error.response?.data?.message ||
-                "Failed to delete doctor",
-                "error"
+                error.response?.data?.message || "Failed to delete doctor",
+                "error",
             );
         }
     };
@@ -170,30 +187,50 @@ export const DoctorList = function ({ onAddDoctor }) {
                                 color: "text.secondary",
                             }}
                         >
-                            Manage the doctors mapped to each area.
+                            {seesAll
+                                ? "Manage the doctors mapped to each area."
+                                : "Doctors assigned to you and your team. To add, change or remove a doctor, use Doctor Requests (your manager approves)."}
                         </Typography>
                     </Box>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={() => {
-                            if (onAddDoctor) {
-                                onAddDoctor();
-                            } else {
-                                navigate("/admin/Doctors/add");
-                            }
-                        }}
-                        sx={{
-                            textTransform: "none",
-                            alignSelf: {
-                                xs: "flex-start",
-                                sm: "center",
-                            },
-                        }}
-                    >
-                        Add Doctor
-                    </Button>
+                    {canCreate && (
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={() => {
+                                if (onAddDoctor) {
+                                    onAddDoctor();
+                                } else {
+                                    navigate("/admin/Doctors/add");
+                                }
+                            }}
+                            sx={{
+                                textTransform: "none",
+                                alignSelf: {
+                                    xs: "flex-start",
+                                    sm: "center",
+                                },
+                            }}
+                        >
+                            Add Doctor
+                        </Button>
+                    )}
+                    {!canCreate && canRequest && (
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={() => navigate("/admin/Doctors/add")}
+                            sx={{
+                                textTransform: "none",
+                                alignSelf: {
+                                    xs: "flex-start",
+                                    sm: "center",
+                                },
+                            }}
+                        >
+                            Request new doctor
+                        </Button>
+                    )}
                 </Box>
 
                 <Paper
@@ -216,9 +253,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                         <TextField
                             size="small"
                             value={search}
-                            onChange={(event) =>
-                                setSearch(event.target.value)
-                            }
+                            onChange={(event) => setSearch(event.target.value)}
                             placeholder="Search doctors"
                             InputProps={{
                                 startAdornment: (
@@ -239,22 +274,14 @@ export const DoctorList = function ({ onAddDoctor }) {
                         <Select
                             size="small"
                             value={status}
-                            onChange={(event) =>
-                                setStatus(event.target.value)
-                            }
+                            onChange={(event) => setStatus(event.target.value)}
                             sx={{ minWidth: 140 }}
                         >
-                            <MenuItem value="All">
-                                All statuses
-                            </MenuItem>
+                            <MenuItem value="All">All statuses</MenuItem>
 
-                            <MenuItem value="Active">
-                                Active
-                            </MenuItem>
+                            <MenuItem value="Active">Active</MenuItem>
 
-                            <MenuItem value="Inactive">
-                                Inactive
-                            </MenuItem>
+                            <MenuItem value="Inactive">Inactive</MenuItem>
                         </Select>
                     </Box>
                 </Paper>
@@ -283,10 +310,7 @@ export const DoctorList = function ({ onAddDoctor }) {
 
                         <TableBody>
                             {filteredDoctors.map((doctor) => (
-                                <TableRow
-                                    key={doctor.DoctorId}
-                                    hover
-                                >
+                                <TableRow key={doctor.DoctorId} hover>
                                     <TableCell>
                                         <Box
                                             sx={{
@@ -294,17 +318,12 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                 gap: 0.5,
                                             }}
                                         >
-                                            <Tooltip
-                                                title="View Doctor"
-                                                arrow
-                                            >
+                                            <Tooltip title="View Doctor" arrow>
                                                 <IconButton
                                                     size="small"
                                                     aria-label={`View ${doctor.DoctorName || "doctor"}`}
                                                     onClick={() =>
-                                                        handleViewDoctor(
-                                                            doctor
-                                                        )
+                                                        handleViewDoctor(doctor)
                                                     }
                                                     sx={{
                                                         width: 31,
@@ -326,69 +345,114 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <Tooltip
-                                                title="Edit Doctor"
-                                                arrow
-                                            >
-                                                <IconButton
-                                                    size="small"
-                                                    aria-label={`Edit ${doctor.DoctorName || "doctor"}`}
-                                                    onClick={() =>
-                                                        handleEditDoctor(
-                                                            doctor
-                                                        )
+                                            {(canEdit || canRequest) && (
+                                                <Tooltip
+                                                    title={
+                                                        canEdit
+                                                            ? "Edit Doctor"
+                                                            : requestBlocker(
+                                                                  doctor,
+                                                              ) ||
+                                                              "Request an edit (manager approves)"
                                                     }
-                                                    sx={{
-                                                        width: 31,
-                                                        height: 31,
-                                                        borderRadius: 1.25,
-                                                        color: "text.secondary",
-                                                        "&:hover": {
-                                                            color: "primary.main",
-                                                            backgroundColor:
-                                                                "action.hover",
-                                                        },
-                                                    }}
+                                                    arrow
                                                 >
-                                                    <EditOutlinedIcon
-                                                        sx={{
-                                                            fontSize: 17,
-                                                        }}
-                                                    />
-                                                </IconButton>
-                                            </Tooltip>
+                                                    <span>
+                                                        <IconButton
+                                                            size="small"
+                                                            disabled={
+                                                                !canEdit &&
+                                                                Boolean(
+                                                                    requestBlocker(
+                                                                        doctor,
+                                                                    ),
+                                                                )
+                                                            }
+                                                            aria-label={`Edit ${doctor.DoctorName || "doctor"}`}
+                                                            onClick={() =>
+                                                                handleEditDoctor(
+                                                                    doctor,
+                                                                )
+                                                            }
+                                                            sx={{
+                                                                width: 31,
+                                                                height: 31,
+                                                                borderRadius: 1.25,
+                                                                color: "text.secondary",
+                                                                "&:hover": {
+                                                                    color: "primary.main",
+                                                                    backgroundColor:
+                                                                        "action.hover",
+                                                                },
+                                                            }}
+                                                        >
+                                                            <EditOutlinedIcon
+                                                                sx={{
+                                                                    fontSize: 17,
+                                                                }}
+                                                            />
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                            )}
 
-                                            <Tooltip
-                                                title="Delete Doctor"
-                                                arrow
-                                            >
-                                                <IconButton
-                                                    size="small"
-                                                    aria-label={`Delete ${doctor.DoctorName || "doctor"}`}
-                                                    onClick={() =>
-                                                        setDeleteTarget(
-                                                            doctor
-                                                        )
+                                            {(canDelete || canRequest) && (
+                                                <Tooltip
+                                                    title={
+                                                        canDelete
+                                                            ? "Delete Doctor"
+                                                            : requestBlocker(
+                                                                  doctor,
+                                                              ) ||
+                                                              "Request removal (manager approves)"
                                                     }
-                                                    sx={{
-                                                        width: 31,
-                                                        height: 31,
-                                                        borderRadius: 1.25,
-                                                        color: "text.secondary",
-                                                        "&:hover": {
-                                                            color: "error.main",
-                                                            backgroundColor:
-                                                                "error.lighter",
-                                                        },
-                                                    }}
+                                                    arrow
                                                 >
-                                                    <DeleteOutline
-                                                        sx={{
-                                                            fontSize: 17,
-                                                        }}
-                                                    />
-                                                </IconButton>
-                                            </Tooltip>
+                                                    <span>
+                                                        <IconButton
+                                                            size="small"
+                                                            disabled={
+                                                                !canDelete &&
+                                                                Boolean(
+                                                                    requestBlocker(
+                                                                        doctor,
+                                                                    ),
+                                                                )
+                                                            }
+                                                            aria-label={`Delete ${doctor.DoctorName || "doctor"}`}
+                                                            onClick={() =>
+                                                                canDelete
+                                                                    ? setDeleteTarget(
+                                                                          doctor,
+                                                                      )
+                                                                    : setRequestTarget(
+                                                                          {
+                                                                              doctor,
+                                                                              type: "DELETE",
+                                                                          },
+                                                                      )
+                                                            }
+                                                            sx={{
+                                                                width: 31,
+                                                                height: 31,
+                                                                borderRadius: 1.25,
+                                                                color: "text.secondary",
+                                                                "&:hover": {
+                                                                    color: "error.main",
+                                                                    backgroundColor:
+                                                                        "error.lighter",
+                                                                },
+                                                            }}
+                                                        >
+                                                            <DeleteOutline
+                                                                sx={{
+                                                                    fontSize: 17,
+                                                                }}
+                                                            />
+                                                        </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                            )}
                                         </Box>
                                     </TableCell>
 
@@ -427,9 +491,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                     </TableCell>
 
                                     <TableCell>
-                                        {formatDate(
-                                            doctor.CreatedOn
-                                        )}
+                                        {formatDate(doctor.CreatedOn)}
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -461,6 +523,15 @@ export const DoctorList = function ({ onAddDoctor }) {
                 onCancel={() => setDeleteTarget(null)}
                 onConfirm={handleDelete}
             />
+
+            {requestTarget && (
+                <ChangeRequestDialog
+                    doctor={requestTarget.doctor}
+                    initialType={requestTarget.type}
+                    onClose={() => setRequestTarget(null)}
+                    onSaved={() => setRequestTarget(null)}
+                />
+            )}
         </Box>
     );
 };
