@@ -207,3 +207,15 @@
   # V0.0.52
  
  - Added MIS, Coverage, KPI, Missed Visits, POB, Sales and Graphical reports (shared filters, KPI cards, charts, tables, CSV download)
+
+  # V0.0.53
+ 
+ - Added Insights for the users (Risk & alerts with acknowledge / resolve, Performance insights, Field intelligence, Advanced analytics, Insight rules for admin)
+
+  # V0.0.54
+ 
+ - Added Approvals inbox in Administration (tour plans, deviations, DCRs, secondary statements, doctor plans, expense claims and payments in one place, approve / return quick items) and removed Integrations from the sidebar
+
+  # V0.0.55
+ 
+ - Added HR / Employee for the users (Attendance check in / out with GPS and month calendar, Leave with balances and approvals, Activity timeline, Appraisals with KPI score, self review and manager rating) and removed Learning / Quiz from the sidebar

@@ -430,6 +430,12 @@ const PharmalyxTheme = createTheme({
         donutGap: 4,
     },
 
+    // Insights pages.
+    insights: {
+        pickerWidth: 240,
+        thresholdWidth: 170,
+    },
+
     // Report pages.
     reports: {
         tableMaxHeight: 560,
