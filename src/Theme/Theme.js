@@ -382,6 +382,21 @@ const PharmalyxTheme = createTheme({
         phoneMargin: 2,
     },
 
+    // Pill toggle (MuiSwitch): thumb sits inside the track.
+    toggle: {
+        medium: { width: 34, height: 20, thumb: 16, gap: 2 },
+        small: { width: 28, height: 16, thumb: 12, gap: 2 },
+    },
+
+    // Roles & permissions matrix.
+    permissionMatrix: {
+        featureColumnMinWidth: 260,
+        actionColumnWidth: 96,
+        minWidth: 820,
+        cellHeight: 60,
+        changedDotSize: 6,
+    },
+
     // Doctor engagement pages (RCPA lines, business charts, legends).
     engagement: {
         dateColumn: 160,
@@ -403,6 +418,21 @@ const PharmalyxTheme = createTheme({
         tooltipOffset: 8,
         sideColumnWidth: 44, // spacing units
         skeleton: { hero: 180, stat: 120, chart: 280 },
+        donutSize: 156,
+        donutStroke: 14,
+        scheduleTimeWidth: 52,
+        scheduleDotSize: 10,
+        scheduleMaxHeight: 300,
+        quickActionMinHeight: 92,
+        dateChipHeight: 40,
+        lineChartHeight: 180,
+        markerSize: 8,
+        donutGap: 4,
+    },
+
+    // Report pages.
+    reports: {
+        tableMaxHeight: 560,
     },
 
     // Sign-in screen.
@@ -1409,21 +1439,58 @@ const PharmalyxTheme = createTheme({
             },
         },
 
+        // Pill toggle: white thumb centred inside a filled track.
+        // Everything is set from the root with descendant selectors so MUI's built-in
+        // size variants (which also target the root) can't override the geometry.
         MuiSwitch: {
             styleOverrides: {
-                switchBase: ({ theme }) => ({
-                    "&.Mui-checked": {
-                        color:
-                            theme.palette.primary
-                                .contrastText,
+                root: ({ theme, ownerState }) => {
+                    const t = theme.toggle[ownerState.size === "small" ? "small" : "medium"];
+                    const travel = t.width - t.thumb - t.gap * 2;
 
-                        "& + .MuiSwitch-track": {
-                            backgroundImage:
-                                theme.palette.brand
-                                    .gradient,
+                    return {
+                        width: t.width,
+                        height: t.height,
+                        padding: 0,
+                        overflow: "visible",
+
+                        "& .MuiSwitch-switchBase": {
+                            padding: t.gap,
+                            color: theme.palette.common.white,
+                            transitionDuration: "180ms",
+
+                            "&:hover": { backgroundColor: "transparent" },
+
+                            "&.Mui-checked": {
+                                transform: `translateX(${travel}px)`,
+                                color: theme.palette.common.white,
+
+                                "& + .MuiSwitch-track": {
+                                    opacity: 1,
+                                    backgroundColor: theme.palette.primary.main,
+                                    backgroundImage: theme.palette.brand.gradient,
+                                },
+                            },
+
+                            "&.Mui-disabled": { color: theme.palette.common.white },
+                            "&.Mui-disabled + .MuiSwitch-track": { opacity: 0.45 },
+                            "&.Mui-focusVisible + .MuiSwitch-track": { boxShadow: theme.elevation.focus },
                         },
-                    },
-                }),
+
+                        "& .MuiSwitch-thumb": {
+                            width: t.thumb,
+                            height: t.thumb,
+                            boxShadow: theme.elevation.sm,
+                        },
+
+                        "& .MuiSwitch-track": {
+                            opacity: 1,
+                            borderRadius: t.height / 2,
+                            backgroundColor: theme.palette.border.strong,
+                            transition: theme.field.transition,
+                        },
+                    };
+                },
             },
         },
 
