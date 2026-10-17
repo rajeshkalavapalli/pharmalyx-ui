@@ -73,11 +73,10 @@ const navigation = [
     {
         label: 'HR / Employee',
         children: [
-            { label: 'Attendance', path: '/attendance' },
-            { label: 'Leave', path: '/leave' },
-            { label: 'Activity', path: '/activity' },
-            { label: 'Appraisals', path: '/appraisals' },
-            { label: 'Learning / Quiz', path: '/learning' },
+            { label: 'Attendance', path: '/hr/attendance', ready: true },
+            { label: 'Leave', path: '/hr/leave', ready: true },
+            { label: 'Activity', path: '/hr/activity', ready: true },
+            { label: 'Appraisals', path: '/hr/appraisals', ready: true },
         ],
     },
 
@@ -115,10 +114,11 @@ const navigation = [
     {
         label: 'Insights',
         children: [
-            { label: 'Performance Insights', path: '/insights/performance' },
-            { label: 'Field Intelligence', path: '/insights/field' },
-            { label: 'Risk & Alerts', path: '/insights/risk' },
-            { label: 'Advanced Analytics', path: '/insights/advanced' },
+            { label: 'Performance Insights', path: '/insights/performance', ready: true },
+            { label: 'Field Intelligence', path: '/insights/field', ready: true },
+            { label: 'Risk & Alerts', path: '/insights/risk', ready: true },
+            { label: 'Advanced Analytics', path: '/insights/advanced', ready: true },
+            { label: 'Insight Rules', path: '/insights/rules', ready: true },
         ],
     },
 
@@ -146,8 +146,7 @@ const navigation = [
                     '/admin/UserStockistMapping',
                 ],
             },
-            { label: 'Approvals', path: '/admin/approvals' },
-            { label: 'Integrations', path: '/admin/integrations' },
+            { label: 'Approvals', path: '/admin/approvals', ready: true },
         ],
     },
 ];

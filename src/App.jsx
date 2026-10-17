@@ -81,6 +81,16 @@ import MissedReport from './Pages/Reports/Missed/MissedReport.jsx';
 import PobReport from './Pages/Reports/Pob/PobReport.jsx';
 import SalesReport from './Pages/Reports/Sales/SalesReport.jsx';
 import GraphicalReport from './Pages/Reports/Graphical/GraphicalReport.jsx';
+import RiskAlerts from './Pages/Insights/Alerts/RiskAlerts.jsx';
+import PerformanceInsights from './Pages/Insights/Performance/PerformanceInsights.jsx';
+import FieldIntelligence from './Pages/Insights/Field/FieldIntelligence.jsx';
+import AdvancedAnalytics from './Pages/Insights/Analytics/AdvancedAnalytics.jsx';
+import InsightRules from './Pages/Insights/Rules/InsightRules.jsx';
+import Approvals from './Pages/Approvals/Approvals.jsx';
+import Attendance from './Pages/HR/Attendance/Attendance.jsx';
+import Leave from './Pages/HR/Leave/Leave.jsx';
+import Activity from './Pages/HR/Activity/Activity.jsx';
+import Appraisals from './Pages/HR/Appraisals/Appraisals.jsx';
 import StockPage from './Pages/Engagement/Stock/StockPage.jsx';
 import Rcpa from './Pages/Engagement/Rcpa/Rcpa.jsx';
 import Feedback from './Pages/Engagement/Feedback/Feedback.jsx';
@@ -334,6 +344,7 @@ function App() {
                     {/* Roles & permissions */}
 
                     <Route path='admin/roles' element={<RolesPermissions />} />
+                    <Route path='admin/approvals' element={<Approvals />} />
 
                     {/* Sales & distribution */}
 
@@ -365,6 +376,21 @@ function App() {
                     <Route path='reports/pob' element={<PobReport />} />
                     <Route path='reports/sales' element={<SalesReport />} />
                     <Route path='reports/graphical' element={<GraphicalReport />} />
+
+                    {/* HR / Employee */}
+
+                    <Route path='hr/attendance' element={<Attendance />} />
+                    <Route path='hr/leave' element={<Leave />} />
+                    <Route path='hr/activity' element={<Activity />} />
+                    <Route path='hr/appraisals' element={<Appraisals />} />
+
+                    {/* Insights */}
+
+                    <Route path='insights/performance' element={<PerformanceInsights />} />
+                    <Route path='insights/field' element={<FieldIntelligence />} />
+                    <Route path='insights/risk' element={<RiskAlerts />} />
+                    <Route path='insights/advanced' element={<AdvancedAnalytics />} />
+                    <Route path='insights/rules' element={<InsightRules />} />
 
                     {/* Catalogue (products & gifts) */}
 
