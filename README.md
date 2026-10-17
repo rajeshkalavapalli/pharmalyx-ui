@@ -219,3 +219,56 @@
   # V0.0.55
  
  - Added HR / Employee for the users (Attendance check in / out with GPS and month calendar, Leave with balances and approvals, Activity timeline, Appraisals with KPI score, self review and manager rating) and removed Learning / Quiz from the sidebar
+
+  # V0.0.56
+ 
+ - Added Doctor Requests (add doctor at the clinic with live GPS and in-app signboard photo, live duplicate check, edit / delete requests with a reason from My Doctors, manager review with duplicates side by side, possible duplicates list and admin scan) and provisional / verified tag on doctors
+
+  # V0.0.57
+ 
+ - Added doctor verification (verify doctor with registration no., phone, prescription pad / visiting card photo, manager joint visit; manager accept / reject; deadline with days left / overdue; admin extend deadline) in Doctor Requests and My Doctors
+
+
+  # V0.0.58
+ 
+ - Added GPS checks on visits: warning with optional reason when logging a visit away from the doctor's clinic, note when the clinic is not pinned, flagged message after saving, at clinic / away from clinic tag on visits, and GPS and location alerts in risk and alerts
+
+
+  # V0.0.59
+ 
+ - Added fix and send again for rejected doctor requests (add, edit, delete): opens the rejected request already filled in with the manager's reason, MR fixes it and writes what was fixed; manager sees it marked sent again with the old reason and what changed
+
+
+  # V0.0.60
+ 
+ - Fixed doctors list not opening for managers and field users: they now see doctors of their own and their team, add / edit / delete shown only for roles allowed to change doctors directly
+
+
+  # V0.0.61
+ 
+ - Doctors list shows view, edit and delete for everyone: admin changes directly, others send an edit / delete request with a reason for manager approval, and request new doctor button for non admins; edit / delete disabled with a reason for doctors not assigned to the user or still waiting for approval
+
+
+  # V0.0.62
+ 
+ - Doctors add / edit uses the same full doctor form for everyone: admins save directly, others get an extra clinic check section (live GPS, signboard photo, registration no., reason, duplicate warnings) and send to manager; delete still asks for a reason
+
+
+  # V0.0.63
+ 
+ - Doctor request details tell a manager when their role cannot approve doctor requests yet
+
+
+  # V0.0.64
+ 
+ - Doctor requests add doctor now opens the same full doctor form (with clinic check) instead of the small dialog, and returns to doctor requests after send or cancel
+
+
+  # V0.0.65
+ 
+ - Doctor form button reads add doctor when creating and send to manager only when a non admin edits
+
+
+  # V0.0.66
+ 
+ - Status yes / no toggle back on the doctor form for everyone: non admin edit sends the status change for manager approval, new doctor request starts active

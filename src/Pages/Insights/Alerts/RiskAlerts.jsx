@@ -7,6 +7,7 @@ import {
     CheckCircleRounded,
     DoneAllRounded,
     DownloadRounded,
+    GpsOffRounded,
     InventoryRounded,
     MedicalServicesRounded,
     NotificationsActiveRounded,
@@ -27,7 +28,7 @@ import { InsightsLayout } from "../components/InsightsLayout";
 import useInsight from "../components/useInsight";
 import { GROUPS, SEVERITY, actOnAlert, downloadCsv, errorMessage, formatDate, getAlerts } from "../index";
 
-const GROUP_ICON = { DOCTOR: MedicalServicesRounded, REP: PersonRounded, STOCK: InventoryRounded };
+const GROUP_ICON = { DOCTOR: MedicalServicesRounded, REP: PersonRounded, STOCK: InventoryRounded, GPS: GpsOffRounded };
 
 const ACTIONS = {
     ACKNOWLEDGED: { label: "Acknowledge", title: "Acknowledge this alert?", color: "info", icon: VisibilityRounded, remarks: "optional", remarksLabel: "Note (optional)" },
@@ -165,7 +166,7 @@ function RiskAlerts() {
             {(data) => (
                 <>
                     <Box sx={(theme) => ({ display: "grid", gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", lg: "repeat(4, minmax(0, 1fr))" }, gap: theme.stat.gap, mb: theme.stat.gap })}>
-                        <StatCard icon={NotificationsActiveRounded} label="Open alerts" value={counts.open} caption={`${byGroup.DOCTOR || 0} doctor · ${byGroup.REP || 0} rep · ${byGroup.STOCK || 0} stock`} color="primary" />
+                        <StatCard icon={NotificationsActiveRounded} label="Open alerts" value={counts.open} caption={`${byGroup.DOCTOR || 0} doctor · ${byGroup.REP || 0} rep · ${byGroup.STOCK || 0} stock · ${byGroup.GPS || 0} GPS`} color="primary" />
                         <StatCard icon={PriorityHighRounded} label="High priority" value={counts.high} caption="Open and marked high" color={counts.high ? "error" : "success"} />
                         <StatCard icon={VisibilityRounded} label="Acknowledged" value={counts.acknowledged} caption="Being worked on" color="info" />
                         <StatCard icon={CheckCircleRounded} label="Resolved" value={counts.resolved} caption="Hidden until the condition happens again" color="success" />

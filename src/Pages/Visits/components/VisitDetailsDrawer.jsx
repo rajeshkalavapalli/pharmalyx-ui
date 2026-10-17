@@ -22,6 +22,7 @@ import {
     formatDuration,
     formatShortDate,
     formatTimeRange,
+    geofenceTag,
     getVisit,
     mapsUrl,
     minutesBetween,
@@ -225,7 +226,16 @@ function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry }) {
 
                             <DetailSection title="GPS check-in">
                                 <Stack spacing={1.5} sx={{ alignItems: "flex-start" }}>
-                                    <Tag icon={MapRounded} label={location.label} color={location.color} />
+                                    <Stack direction="row" sx={{ gap: 0.75, flexWrap: "wrap" }}>
+                                        <Tag icon={MapRounded} label={location.label} color={location.color} />
+                                        {geofenceTag(visit) && <Tag label={geofenceTag(visit).label} color={geofenceTag(visit).color} />}
+                                        {visit.IsMockLocation && <Tag label="Mock GPS reported" color="error" />}
+                                    </Stack>
+                                    {visit.GeofenceReason && (
+                                        <Typography variant="body2" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                            Reason given: {visit.GeofenceReason}
+                                        </Typography>
+                                    )}
 
                                     {visit.LocationStatus === "CAPTURED" && (
                                         <>

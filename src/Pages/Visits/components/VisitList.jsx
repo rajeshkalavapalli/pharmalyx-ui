@@ -18,6 +18,7 @@ import {
     formatDuration,
     formatTimeRange,
     minutesBetween,
+    geofenceTag,
 } from "../index";
 
 const truncate = { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
@@ -136,7 +137,9 @@ function VisitRow({ visit, onOpen }) {
                         <Tag icon={EventRounded} label="Follow-up" color="primary" />
                     )}
 
-                    {visit.LocationStatus === "CAPTURED" ? (
+                    {visit.GeofenceStatus === "OUTSIDE" ? (
+                        <Tag icon={PlaceRounded} label={geofenceTag(visit).label} color="warning" title={visit.GeofenceReason || "Checked in away from the clinic"} />
+                    ) : visit.LocationStatus === "CAPTURED" ? (
                         <Tag icon={PlaceRounded} label="GPS" color="success" title="Location captured" />
                     ) : (
                         <Tag icon={LocationOffRounded} label="No GPS" color="info" title="No location" />

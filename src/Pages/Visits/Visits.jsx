@@ -251,9 +251,10 @@ function Visits() {
         try {
             const response = await createVisit(payload);
 
+            const gpsFlags = response?.data?.gpsFlags || response?.gpsFlags || [];
             showSnackbar(
-                response?.message || "Visit logged",
-                response?.data?.deviationCreated ? "warning" : "success"
+                gpsFlags.length ? `${response?.message || "Visit logged"}, flagged for your manager: ${gpsFlags[0].details}` : response?.message || "Visit logged",
+                response?.data?.deviationCreated || gpsFlags.length ? "warning" : "success"
             );
             load();
             return true;

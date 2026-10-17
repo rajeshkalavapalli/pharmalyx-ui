@@ -1,7 +1,12 @@
+import { useState } from "react";
+
 import { Box, Button, Chip, Divider, Drawer, IconButton, Stack, Typography } from "@mui/material";
 import {
     CallRounded,
     CloseRounded,
+    EditNoteRounded,
+    PersonRemoveRounded,
+    VerifiedRounded,
     MailOutlineRounded,
 } from "@mui/icons-material";
 
@@ -11,6 +16,9 @@ import {
     DetailSection,
 } from "../../../components/DetailSection/DetailSection";
 import StatusChip from "../../../components/StatusChip/StatusChip";
+import Tag from "../../../components/Tag/Tag";
+import ChangeRequestDialog from "../../DoctorRequests/components/ChangeRequestDialog";
+import VerifyDialog from "../../DoctorRequests/components/VerifyDialog";
 import DoctorAvatar from "./DoctorAvatar";
 import RecentVisits from "./RecentVisits";
 import {
@@ -47,8 +55,11 @@ function OccasionFact({ label, value }) {
     );
 }
 
-function DoctorProfileDrawer({ doctor, userId, onClose }) {
+// `canRequest`: the signed-in MR's own doctor, so they may ask to edit / remove it.
+function DoctorProfileDrawer({ doctor, userId, onClose, canRequest = false }) {
     const category = doctor ? DOCTOR_CATEGORY[doctor.Category] : null;
+    const [changeType, setChangeType] = useState(null);
+    const [verifying, setVerifying] = useState(false);
 
     return (
         <Drawer
@@ -102,6 +113,10 @@ function DoctorProfileDrawer({ doctor, userId, onClose }) {
                                 ) : (
                                     <Chip size="small" variant="outlined" label="No category" />
                                 )}
+                                {doctor.VerificationStatus === "VERIFIED" && <Tag label="Verified" color="success" />}
+                                {doctor.VerificationStatus === "PROVISIONAL" && (
+                                    <Tag label={`Provisional${doctor.VerificationDueOn ? ` · verify by ${formatLongDate(doctor.VerificationDueOn)}` : ""}`} color="warning" />
+                                )}
                             </Stack>
                         </Box>
 
@@ -136,6 +151,36 @@ function DoctorProfileDrawer({ doctor, userId, onClose }) {
                             Email
                         </Button>
                     </Stack>
+
+                    {canRequest && doctor.VerificationStatus === "PROVISIONAL" && (
+                        <Box sx={(theme) => ({ px: theme.drawer.paddingX, pb: 1.25 })}>
+                            <Button fullWidth variant="contained" color="success" startIcon={<VerifiedRounded />} onClick={() => setVerifying(true)}>
+                                Verify doctor
+                            </Button>
+                        </Box>
+                    )}
+
+                    {verifying && <VerifyDialog doctor={doctor} onClose={() => setVerifying(false)} onSaved={() => setVerifying(false)} />}
+
+                    {canRequest && (
+                        <Stack direction="row" spacing={1.25} sx={(theme) => ({ px: theme.drawer.paddingX, pb: theme.drawer.paddingY })}>
+                            <Button fullWidth size="small" startIcon={<EditNoteRounded />} onClick={() => setChangeType("EDIT")}>
+                                Request edit
+                            </Button>
+                            <Button fullWidth size="small" color="error" startIcon={<PersonRemoveRounded />} onClick={() => setChangeType("DELETE")}>
+                                Request removal
+                            </Button>
+                        </Stack>
+                    )}
+
+                    {changeType && (
+                        <ChangeRequestDialog
+                            doctor={doctor}
+                            initialType={changeType}
+                            onClose={() => setChangeType(null)}
+                            onSaved={() => setChangeType(null)}
+                        />
+                    )}
 
                     <Divider />
 
