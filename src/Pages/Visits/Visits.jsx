@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import {
     Alert,
@@ -6,9 +7,7 @@ import {
     Box,
     Button,
     IconButton,
-    MenuItem,
     Stack,
-    TextField,
     Typography,
 } from "@mui/material";
 import {
@@ -68,11 +67,6 @@ const errorMessage = (error, fallback) => {
     return data?.error && data.error !== message ? `${message} (${data.error})` : message;
 };
 
-const compactSelectSx = (theme) => ({
-    minWidth: theme.search.minWidth,
-    "& .MuiOutlinedInput-root": { minHeight: theme.field.compactHeight },
-    "& .MuiSelect-select": { py: 0 },
-});
 
 // Visits saved on the device, shaped like server rows for the list and drawer.
 const pendingRows = (queue, userId, month, users) =>
@@ -135,7 +129,24 @@ function Visits() {
     const [loadError, setLoadError] = useState("");
     const [offlineData, setOfflineData] = useState(false);
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
     const [logDoctorId, setLogDoctorId] = useState(null); // null = closed, "" = no preset
+    const [logDate, setLogDate] = useState(null);
+    const [logNotes, setLogNotes] = useState("");
+
+    // Opened from pre-call planning: start the visit for that doctor, then clean the URL.
+    useEffect(() => {
+        const presetDoctor = searchParams.get("doctorId");
+
+        if (!presetDoctor) return;
+
+        setLogDoctorId(presetDoctor);
+        setLogDate(searchParams.get("date"));
+        // A planned call passes its objective/products as the starting notes.
+        setLogNotes(location.state?.notes || "");
+        setSearchParams({}, { replace: true });
+    }, [searchParams, setSearchParams, location.state]);
     const [stock, setStock] = useState([]);
 
     // The user's sample & gift balances for the visit form (cached for offline use).
@@ -347,24 +358,6 @@ function Visits() {
                 actions={
                     <>
                         <ActingUserSelect users={users} value={actingUserId} onChange={setActingUserId} />
-
-                        {team.length > 1 && (
-                            <TextField
-                                select
-                                size="small"
-                                label="Viewing"
-                                value={viewUserId}
-                                onChange={(event) => setViewUserId(event.target.value)}
-                                sx={compactSelectSx}
-                            >
-                                {team.map((member) => (
-                                    <MenuItem key={member.UserId} value={member.UserId}>
-                                        {member.IsSelf ? "Me" : member.Name}
-                                        {member.DesignationName ? ` · ${member.DesignationName}` : ""}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )}
 
                         {viewingSelf && (
                             <Button
@@ -593,8 +586,14 @@ function Visits() {
                     colleagues={colleagues}
                     stock={availableStock}
                     initialDoctorId={logDoctorId}
+                    initialDate={logDate}
+                    initialNotes={logNotes}
                     online={sync.online}
-                    onClose={() => setLogDoctorId(null)}
+                    onClose={() => {
+                        setLogDoctorId(null);
+                        setLogDate(null);
+                        setLogNotes("");
+                    }}
                     onSave={handleSave}
                 />
             )}

@@ -88,18 +88,18 @@ function LocationStatus({ location, onRetry }) {
 }
 
 // Mounted only while open, so every visit starts with a fresh id and GPS fix.
-function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, online, onClose, onSave }) {
+function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, initialDate, initialNotes, online, onClose, onSave }) {
     const today = todayKey();
     const minDate = addDays(today, -MAX_BACKDATE_DAYS);
 
     const [visitId] = useState(newId);
     const [doctorId, setDoctorId] = useState(initialDoctorId || "");
-    const [visitDate, setVisitDate] = useState(today);
+    const [visitDate, setVisitDate] = useState(initialDate && initialDate <= today ? initialDate : today);
     const [times, setTimes] = useState(defaultTimes);
     const [jointWork, setJointWork] = useState(false);
     const [jointWorkUserId, setJointWorkUserId] = useState("");
     const [feedback, setFeedback] = useState(null);
-    const [notes, setNotes] = useState("");
+    const [notes, setNotes] = useState(() => String(initialNotes || "").slice(0, NOTES_LIMIT));
     const [followUpDate, setFollowUpDate] = useState("");
     const [location, setLocation] = useState({ status: "PENDING" });
     const [items, setItems] = useState([]);

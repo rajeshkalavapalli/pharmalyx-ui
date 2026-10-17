@@ -7,12 +7,11 @@ import {
     Button,
     CircularProgress,
     IconButton,
-    MenuItem,
     Stack,
-    TextField,
     Typography,
 } from "@mui/material";
 import {
+    ArrowBackRounded,
     AssignmentTurnedInRounded,
     ChevronLeftRounded,
     ChevronRightRounded,
@@ -54,11 +53,6 @@ const errorMessage = (error, fallback) => {
     return data?.error && data.error !== message ? `${message} (${data.error})` : message;
 };
 
-const compactSelectSx = (theme) => ({
-    minWidth: theme.search.minWidth,
-    "& .MuiOutlinedInput-root": { minHeight: theme.field.compactHeight },
-    "& .MuiSelect-select": { py: 0 },
-});
 
 // Picks the most useful day to open: today if it's in the month, else the first one needing action.
 const defaultDateFor = (month, days) => {
@@ -248,22 +242,11 @@ function Dcr() {
                     <>
                         <ActingUserSelect users={users} value={actingUserId} onChange={setActingUserId} />
 
-                        {team.length > 1 && (
-                            <TextField
-                                select
-                                size="small"
-                                label="Viewing"
-                                value={viewUserId}
-                                onChange={(event) => setViewUserId(event.target.value)}
-                                sx={compactSelectSx}
-                            >
-                                {team.map((member) => (
-                                    <MenuItem key={member.UserId} value={member.UserId}>
-                                        {member.IsSelf ? "Me" : member.Name}
-                                        {member.DesignationName ? ` · ${member.DesignationName}` : ""}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                        {/* Reached from the review queue: return to your own reports. */}
+                        {viewUserId !== actingUserId && (
+                            <Button variant="outlined" startIcon={<ArrowBackRounded />} onClick={() => setViewUserId(actingUserId)}>
+                                My reports
+                            </Button>
                         )}
                     </>
                 }

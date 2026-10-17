@@ -213,24 +213,6 @@ function MyDoctors() {
                 actions={
                     <>
                         <ActingUserSelect users={users} value={actingUserId} onChange={setActingUserId} />
-
-                        {team.length > 1 && (
-                            <TextField
-                                select
-                                size="small"
-                                label="Viewing"
-                                value={viewUserId}
-                                onChange={(event) => setViewUserId(event.target.value)}
-                                sx={compactSelectSx}
-                            >
-                                {team.map((member) => (
-                                    <MenuItem key={member.UserId} value={member.UserId}>
-                                        {member.IsSelf ? "Me" : member.Name}
-                                        {member.DesignationName ? ` · ${member.DesignationName}` : ""}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )}
                     </>
                 }
             />

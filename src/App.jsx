@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Login from './screen/login/Login';
 import AppShell from './screen/sidebarshell/Appshell';
+import RequireAuth from './configurations/RequireAuth';
 
 import Dashboard from './screen/dashboard/Dashboard';
 
@@ -56,9 +57,30 @@ import Visits from './Pages/Visits/Visits.jsx';
 
 import Dcr from './Pages/Dcr/Dcr.jsx';
 
+import PreCall from './Pages/PreCall/PreCall.jsx';
+
 import ComingSoon from './Pages/ComingSoon/ComingSoon.jsx';
 
 import Catalogue from './Pages/Catalogue/Catalogue.jsx';
+import RolesPermissions from './Pages/Roles/RolesPermissions.jsx';
+import Orders from './Pages/Sales/Orders/Orders.jsx';
+import Accounts from './Pages/Sales/Accounts/Accounts.jsx';
+import SecondarySales from './Pages/Sales/Secondary/SecondarySales.jsx';
+import StockPosition from './Pages/Sales/Secondary/StockPosition.jsx';
+import Business from './Pages/Sales/Business/Business.jsx';
+import SalesPlan from './Pages/Planning/SalesPlan/SalesPlan.jsx';
+import DoctorPlan from './Pages/Planning/DoctorPlan/DoctorPlan.jsx';
+import MyClaim from './Pages/Expenses/Claims/MyClaim.jsx';
+import ExpensePayments from './Pages/Expenses/Payments/ExpensePayments.jsx';
+import RateCard from './Pages/Expenses/Rates/RateCard.jsx';
+import CallReport from './Pages/Reports/CallReport/CallReport.jsx';
+import MisReport from './Pages/Reports/Mis/MisReport.jsx';
+import CoverageReport from './Pages/Reports/Coverage/CoverageReport.jsx';
+import KpiReport from './Pages/Reports/Kpi/KpiReport.jsx';
+import MissedReport from './Pages/Reports/Missed/MissedReport.jsx';
+import PobReport from './Pages/Reports/Pob/PobReport.jsx';
+import SalesReport from './Pages/Reports/Sales/SalesReport.jsx';
+import GraphicalReport from './Pages/Reports/Graphical/GraphicalReport.jsx';
 import StockPage from './Pages/Engagement/Stock/StockPage.jsx';
 import Rcpa from './Pages/Engagement/Rcpa/Rcpa.jsx';
 import Feedback from './Pages/Engagement/Feedback/Feedback.jsx';
@@ -82,6 +104,7 @@ function App() {
 
                 {/* PHARMALYX APPLICATION SHELL */}
 
+                <Route element={<RequireAuth />}>
                 <Route element={<AppShell />}>
 
                     {/* DASHBOARD */}
@@ -271,6 +294,10 @@ function App() {
                         element={<Visits />}
                     />
 
+                    {/* Field operations: pre-call planning */}
+
+                    <Route path='field-operation/pre-call' element={<PreCall />} />
+
                     {/* Field operations: daily call reports */}
 
                     <Route
@@ -304,6 +331,41 @@ function App() {
                     <Route path='doctor-engagement/feedback' element={<Feedback />} />
                     <Route path='doctor-engagement/doctor-business' element={<DoctorBusiness />} />
 
+                    {/* Roles & permissions */}
+
+                    <Route path='admin/roles' element={<RolesPermissions />} />
+
+                    {/* Sales & distribution */}
+
+                    <Route path='sales/orders' element={<Orders />} />
+                    <Route path='sales/retailers' element={<Accounts key='retailers' kind='retailers' />} />
+                    <Route path='sales/stockists' element={<Accounts key='stockists' kind='stockists' />} />
+                    <Route path='sales/secondary' element={<SecondarySales />} />
+                    <Route path='sales/stock' element={<StockPosition />} />
+                    <Route path='sales/business' element={<Business />} />
+
+                    {/* Planning */}
+
+                    <Route path='planning/sales-plan' element={<SalesPlan />} />
+                    <Route path='planning/doctor-plan' element={<DoctorPlan />} />
+
+                    {/* Expenses */}
+
+                    <Route path='expenses/claims' element={<MyClaim />} />
+                    <Route path='expenses/payments' element={<ExpensePayments />} />
+                    <Route path='expenses/rates' element={<RateCard />} />
+
+                    {/* Reports & analytics */}
+
+                    <Route path='reports/dcr' element={<CallReport />} />
+                    <Route path='reports/mis' element={<MisReport />} />
+                    <Route path='reports/coverage' element={<CoverageReport />} />
+                    <Route path='reports/kpi' element={<KpiReport />} />
+                    <Route path='reports/missed-visits' element={<MissedReport />} />
+                    <Route path='reports/pob' element={<PobReport />} />
+                    <Route path='reports/sales' element={<SalesReport />} />
+                    <Route path='reports/graphical' element={<GraphicalReport />} />
+
                     {/* Catalogue (products & gifts) */}
 
                     <Route path='admin/catalogue' element={<Catalogue key='products' kind='products' />} />
@@ -316,6 +378,7 @@ function App() {
                         path='*'
                         element={<ComingSoon />}
                     />
+                </Route>
                 </Route>
 
             </Routes>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import {
     Alert,
@@ -27,6 +27,7 @@ import {
 
 import BrandMark from "../../components/BrandMark/BrandMark";
 import api from "../../configurations/api-config";
+import { isSignedIn, saveSession } from "../../configurations/session";
 
 const FEATURES = [
     { icon: RouteRounded, text: "Tour plans, visits and DCRs in one flow" },
@@ -250,8 +251,7 @@ function Login() {
             const response = await api.post("/app/login", { login: login.trim(), password });
             const user = response.data?.user;
 
-            localStorage.setItem("userId", user.UserId);
-            window.dispatchEvent(new Event("pharmalyx:acting-user"));
+            saveSession({ token: response.data.token, expiresAt: response.data.expiresAt, userId: user.UserId });
             navigate("/dashboard");
         } catch (err) {
             setError(
@@ -262,6 +262,10 @@ function Login() {
             setSubmitting(false);
         }
     };
+
+    if (isSignedIn()) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const fieldSx = (theme) => ({
         "& .MuiOutlinedInput-root": { minHeight: theme.login.fieldHeight },

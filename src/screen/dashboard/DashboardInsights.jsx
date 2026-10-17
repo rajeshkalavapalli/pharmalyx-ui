@@ -219,11 +219,11 @@ export function CoverageByCategory({ rows }) {
     );
 }
 
-export function WeekdayChart({ rows, weeks }) {
+export function WeekdayChart({ rows, weeks, sx }) {
     const best = rows.reduce((top, row) => (row.average > (top?.average ?? 0) ? row : top), null);
 
     return (
-        <Panel title="Visits by weekday" subtitle={best ? `Average over ${weeks} weeks · busiest on ${best.label}` : `Average over ${weeks} weeks`}>
+        <Panel title="Visits by weekday" subtitle={best ? `Average over ${weeks} weeks · busiest on ${best.label}` : `Average over ${weeks} weeks`} sx={sx}>
             <BarChart
                 unit="visit"
                 ariaLabel={`Average visits per weekday over the last ${weeks} weeks`}
@@ -240,11 +240,11 @@ export function WeekdayChart({ rows, weeks }) {
     );
 }
 
-export function MonthlyChart({ rows }) {
+export function MonthlyChart({ rows, sx }) {
     const total = rows.reduce((sum, row) => sum + row.visits, 0);
 
     return (
-        <Panel title="Monthly visits" subtitle={`Last ${rows.length} months · ${total} visits`}>
+        <Panel title="Monthly visits" subtitle={`Last ${rows.length} months · ${total} visits`} sx={sx}>
             <BarChart
                 unit="visit"
                 ariaLabel={`Visits per month over the last ${rows.length} months`}

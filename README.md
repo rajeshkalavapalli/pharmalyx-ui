@@ -115,3 +115,95 @@
   # V0.0.29
  
  - Added role based tour plan with team reviews for managers and plan history 
+
+  # V0.0.30
+ 
+ - Added sign in protection for all pages, sign out button and removed the acting as user picker 
+
+  # V0.0.31
+ 
+ - Added Roles and Permissions screen with on / off switches per role and user role assignment 
+
+  # V0.0.32
+ 
+ - Roles and Permissions screen redesigned as feature wise view, create, edit, delete, approve switches 
+
+  # V0.0.33
+ 
+ - Roles and Permissions screen updated with role cards on top, full width permission table, sticky header and new toggle style 
+
+  # V0.0.34
+ 
+ - Roles and Permissions users tab redesigned with role filter, avatars, status and role picker 
+
+  # V0.0.35
+ 
+ - Role cards refined with role colours, full access badge and cleaner selected state 
+
+  # V0.0.36
+ 
+ - New pill style toggle switches across the app (thumb visible inside the track) 
+
+  # V0.0.37
+ 
+ - Toggle switches made compact 
+
+  # V0.0.38
+ 
+ - Fixed toggle switch alignment (thumb centred inside the track) 
+
+  # V0.0.39
+ 
+ - Added Pre-call Planning page with doctors to meet, priority, briefing and talking points 
+
+  # V0.0.40
+ 
+ - Added call planning in pre-call (plan call with objective and products, my call plan order, notes prefilled in log visit) 
+
+  # V0.0.41
+ 
+ - Removed viewing dropdown from all pages, every page shows the signed in user data 
+
+  # V0.0.42
+ 
+ - Added POB / Orders for the users (book order at doctor or chemist through stockist, free qty and discount, confirm / supplied / cancel, team orders)
+
+  # V0.0.43
+ 
+ - Added Retailers and Stockists for the users (contacts, order value this month, awaiting supply, recent orders, book order from retailer / stockist)
+
+  # V0.0.44
+ 
+ - Added Secondary Sales for the users (monthly stockist statement with opening, receipts, sales, returns and closing, save draft, submit, manager approve / return) and Stockist Stock (closing stock, cover days, out of stock and low stock)
+
+  # V0.0.45
+ 
+ - Added Business for the users (POB booked and supplied, secondary sales, stock at stockists, six month trend, top customers, products and stockists, team view)
+
+  # V0.0.46
+ 
+ - Added Sales Plan for the users (manager sets monthly product targets, achievement on secondary sales and POB supplied, team view) and Doctor Business Plan (plan visits, Rx units per product and support per doctor, submit, manager approve / return, achievement from visits, RCPA and POB)
+
+  # V0.0.47
+ 
+ - Added Expenses for the users (monthly TA / DA claim from approved DCR days with HQ / Ex-HQ / Outstation, other expenses with bill number, manager approve with reduce / return, finance approve and mark paid, DA / TA rate card per designation)
+
+  # V0.0.48
+ 
+ - Redesigned the dashboard (light header with date and Plan my day, KPI cards, visit performance, today schedule, coverage ring, call quality, recent visits table, quick actions, equal height cards)
+
+  # V0.0.49
+ 
+ - Dashboard: planned vs completed visit chart, territory coverage (covered / pending / not planned), top performing territories, territories covered card
+
+  # V0.0.50
+ 
+ - Redesigned the team dashboard (team visits planned vs completed, team today status, team territory coverage, top territories, team performance table, quick actions with pending counts, team this month)
+
+  # V0.0.51
+ 
+ - Added DCR / Call report (date range, employee and territory filters, calls / field days / GPS / in plan / DCR KPIs, calls per day chart, by employee and call details, CSV download)
+
+  # V0.0.52
+ 
+ - Added MIS, Coverage, KPI, Missed Visits, POB, Sales and Graphical reports (shared filters, KPI cards, charts, tables, CSV download)

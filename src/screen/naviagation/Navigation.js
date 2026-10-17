@@ -13,6 +13,7 @@ const navigation = [
         children: [
             { label: 'Doctors', path: '/field-operation/doctors', ready: true },
             { label: 'Tour Plan', path: '/field-operation/tour-plan', ready: true },
+            { label: 'Pre-call Planning', path: '/field-operation/pre-call', ready: true },
             { label: 'Visits', path: '/field-operation/visits', ready: true },
             { label: 'DCR', path: '/field-operation/dcr', ready: true },
             { label: 'Plan Deviation', path: '/field-operation/plan-deviation', ready: true },
@@ -43,27 +44,29 @@ const navigation = [
     {
         label: 'Sales & Distribution',
         children: [
-            { label: 'POB / Orders', path: '/orders' },
-            { label: 'Retailers', path: '/retailers' },
-            { label: 'Stockists', path: '/stockists' },
-            { label: 'Stock', path: '/stock' },
-            { label: 'Secondary Sales', path: '/secondary-sales' },
-            { label: 'Business', path: '/business' },
+            { label: 'POB / Orders', path: '/sales/orders', ready: true },
+            { label: 'Retailers', path: '/sales/retailers', ready: true },
+            { label: 'Stockists', path: '/sales/stockists', ready: true },
+            { label: 'Stock', path: '/sales/stock', ready: true },
+            { label: 'Secondary Sales', path: '/sales/secondary', ready: true },
+            { label: 'Business', path: '/sales/business', ready: true },
         ],
     },
 
     {
         label: 'Planning',
         children: [
-            { label: 'Doctor Business Plan', path: '/doctor-business-plan' },
-            { label: 'Sales Plan', path: '/sales-plan' },
+            { label: 'Doctor Business Plan', path: '/planning/doctor-plan', ready: true },
+            { label: 'Sales Plan', path: '/planning/sales-plan', ready: true },
         ],
     },
 
     {
         label: 'Expenses',
         children: [
-            { label: 'TA / Claims', path: '/expenses' },
+            { label: 'TA / Claims', path: '/expenses/claims', ready: true },
+            { label: 'Payments', path: '/expenses/payments', ready: true },
+            { label: 'Rate Card', path: '/expenses/rates', ready: true },
         ],
     },
 
@@ -98,14 +101,14 @@ const navigation = [
     {
         label: 'Reports & Analytics',
         children: [
-            { label: 'MIS Reports', path: '/reports/mis' },
-            { label: 'DCR / Call Reports', path: '/reports/dcr' },
-            { label: 'Coverage', path: '/reports/coverage' },
-            { label: 'KPI', path: '/reports/kpi' },
-            { label: 'Missed Visits', path: '/reports/missed-visits' },
-            { label: 'POB Reports', path: '/reports/pob' },
-            { label: 'Sales Reports', path: '/reports/sales' },
-            { label: 'Graphical Reports', path: '/reports/graphical' },
+            { label: 'MIS Reports', path: '/reports/mis', ready: true },
+            { label: 'DCR / Call Reports', path: '/reports/dcr', ready: true },
+            { label: 'Coverage', path: '/reports/coverage', ready: true },
+            { label: 'KPI', path: '/reports/kpi', ready: true },
+            { label: 'Missed Visits', path: '/reports/missed-visits', ready: true },
+            { label: 'POB Reports', path: '/reports/pob', ready: true },
+            { label: 'Sales Reports', path: '/reports/sales', ready: true },
+            { label: 'Graphical Reports', path: '/reports/graphical', ready: true },
         ],
     },
 
@@ -122,7 +125,7 @@ const navigation = [
     {
         label: 'Administration',
         children: [
-            { label: 'Roles & Permissions', path: '/admin/roles' },
+            { label: 'Roles & Permissions', path: '/admin/roles', ready: true },
             {
                 label: 'Configuration',
                 path: '/admin/configuration',

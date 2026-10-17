@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   AppBar,
@@ -12,10 +12,12 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 
 import useActingUser from "../../components/ActingUserSelect/useActingUser";
+import { clearSession } from "../../configurations/session";
 import navigation from "../naviagation/Navigation";
 
 const normalize = (path) => String(path || "").toLowerCase().replace(/\/+$/, "");
@@ -56,6 +58,13 @@ const initials = (name) =>
 function Header({ onMenuClick }) {
   const { pathname } = useLocation();
   const { actingUserId, users } = useActingUser();
+
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    clearSession();
+    navigate("/", { replace: true });
+  };
 
   const crumbs = breadcrumbFor(pathname);
   const user = users.find((item) => item.id === actingUserId);
@@ -181,10 +190,28 @@ function Header({ onMenuClick }) {
                 component="p"
                 sx={(theme) => ({ color: theme.palette.text.secondary, whiteSpace: "nowrap" })}
               >
-                {user ? "Pharmalyx workspace" : "Choose a user on any page"}
+                {user ? "Pharmalyx workspace" : "Loading…"}
               </Typography>
             </Box>
           </Stack>
+
+          <Tooltip title="Sign out">
+            <IconButton
+              aria-label="Sign out"
+              onClick={handleSignOut}
+              sx={(theme) => ({
+                border: "1px solid",
+                borderColor: theme.palette.border.default,
+                color: theme.palette.text.secondary,
+                "&:hover": {
+                  color: theme.palette.error.main,
+                  borderColor: alpha(theme.palette.error.main, theme.tint.border),
+                },
+              })}
+            >
+              <LogoutRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Stack>
       </Toolbar>
     </AppBar>
