@@ -1,15 +1,21 @@
 import { Link as RouterLink } from "react-router-dom";
 
-import { Box, Button, ButtonBase, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, ButtonBase, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import {
     AddLocationAltRounded,
     AssignmentTurnedInRounded,
+    BarChartRounded,
     CalendarMonthRounded,
     ChevronRightRounded,
     EventNoteRounded,
     FactCheckRounded,
+    FlagRounded,
+    FormatQuoteRounded,
     MapRounded,
+    ReceiptLongRounded,
+    RefreshRounded,
+    RouteRounded,
     ShoppingCartRounded,
 } from "@mui/icons-material";
 
@@ -39,44 +45,147 @@ const initials = (name) =>
 // HEADER
 // =========================================================
 
-// Light greeting header with today's date chip and the main actions.
-export function DashboardHeader({ title, subtitle, date, actions }) {
-    return (
-        <Stack
-            direction={{ xs: "column", md: "row" }}
-            sx={(theme) => ({ gap: 2, mb: theme.pageHeader.marginBottom, justifyContent: "space-between", alignItems: { xs: "flex-start", md: "center" } })}
-        >
-            <Box sx={{ minWidth: 0 }}>
-                <Typography variant="h3" component="h1">
-                    {title}
-                </Typography>
-                <Typography variant="body2" sx={(theme) => ({ mt: 0.5, color: theme.palette.text.secondary })}>
-                    {subtitle}
-                </Typography>
-            </Box>
+// A short line for the banner; changes each day.
+const QUOTES = [
+    "More meaningful doctor engagements for a healthier tomorrow.",
+    "Every visit counts. Every doctor matters.",
+    "Consistent calls build lasting doctor trust.",
+    "Plan the day, own the territory.",
+    "Small daily wins make a strong month.",
+];
 
-            <Stack direction="row" sx={{ gap: 1.25, flexWrap: "wrap", alignItems: "center" }}>
-                <Box
-                    sx={(theme) => ({
-                        height: theme.dashboard.dateChipHeight,
-                        px: 1.5,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 1,
-                        borderRadius: theme.calendar.cell.radius,
-                        border: "1px solid",
-                        borderColor: theme.palette.border.default,
-                        backgroundColor: theme.palette.background.paper,
-                    })}
-                >
-                    <CalendarMonthRounded fontSize="small" sx={(theme) => ({ color: theme.palette.primary.main })} />
-                    <Typography variant="body2" sx={(theme) => ({ fontWeight: theme.typography.subtitle2.fontWeight })}>
-                        {new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+// Greeting banner: accent bar, greeting with the name, a status line and a daily quote on the left;
+// date and view switch, the main action and when the data was loaded on the right.
+// status: palette key for the dot in front of the subtitle (null hides it).
+export function DashboardHeader({ greeting, name, subtitle, status, date, actions, primary, secondary, updatedAt, onRefresh }) {
+    const theme = useTheme();
+    const day = Number(String(date).slice(8, 10)) || 0;
+    const hero = theme.dashboard.hero;
+    const dot = status ? theme.palette[status]?.main || theme.palette.text.disabled : null;
+
+    const divider = <Divider orientation="vertical" flexItem sx={{ display: { xs: "none", lg: "block" } }} />;
+
+    return (
+        <Box
+            sx={{
+                mb: theme.stat.gap,
+                p: hero.padding,
+                display: "flex",
+                flexDirection: { xs: "column", lg: "row" },
+                gap: { xs: 2.5, lg: 3.5 },
+                alignItems: { lg: "center" },
+                borderRadius: theme.card.radius,
+                border: `1px solid ${theme.palette.divider}`,
+                backgroundColor: theme.palette.background.paper,
+                boxShadow: theme.card.shadow,
+            }}
+        >
+            {/* Left: who and how things stand */}
+            <Stack direction="row" sx={{ flex: 1, minWidth: 0, gap: 2.5 }}>
+                <Box sx={{ width: hero.accentWidth, flexShrink: 0, alignSelf: "stretch", borderRadius: hero.accentWidth, backgroundImage: hero.accentGradient(theme) }} />
+                <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="overline" sx={{ display: "block", lineHeight: 1.6, letterSpacing: "0.12em", color: theme.palette.text.secondary }}>
+                        Welcome back
                     </Typography>
+                    <Typography variant="h3" component="h1" sx={{ fontWeight: 800 }}>
+                        {greeting},{" "}
+                        <Box component="span" sx={{ color: theme.palette.primary.main }}>
+                            {name}
+                        </Box>
+                    </Typography>
+                    <Stack direction="row" sx={{ mt: 1, gap: 1.25, alignItems: "baseline" }}>
+                        {dot && (
+                            <Box
+                                sx={{
+                                    width: hero.statusDot,
+                                    height: hero.statusDot,
+                                    flexShrink: 0,
+                                    borderRadius: "50%",
+                                    alignSelf: "center",
+                                    backgroundColor: dot,
+                                    boxShadow: `0 0 0 4px ${alpha(dot, theme.tint.border)}`,
+                                }}
+                            />
+                        )}
+                        <Typography variant="body1" component="div" sx={{ color: theme.palette.text.secondary, "& b": { color: theme.palette.primary.main, fontWeight: 700 } }}>
+                            {subtitle}
+                        </Typography>
+                    </Stack>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            mt: 1.75,
+                            px: 1.5,
+                            py: 0.75,
+                            gap: 1,
+                            width: "fit-content",
+                            maxWidth: hero.quoteMaxWidth,
+                            alignItems: "center",
+                            borderRadius: theme.calendar.cell.radius,
+                            borderLeft: `3px solid ${theme.palette.primary.main}`,
+                            backgroundColor: alpha(theme.palette.primary.main, theme.tint.selected),
+                            display: { xs: "none", sm: "flex" },
+                        }}
+                    >
+                        <FormatQuoteRounded fontSize="small" sx={{ color: theme.palette.primary.main, transform: "scaleX(-1)" }} />
+                        <Typography variant="body2" sx={{ fontStyle: "italic", fontWeight: 700, color: theme.palette.primary.dark }}>
+                            {QUOTES[day % QUOTES.length]}
+                        </Typography>
+                    </Stack>
                 </Box>
-                {actions}
             </Stack>
-        </Stack>
+
+            {divider}
+
+            {/* Right: date and view, then the main action and freshness */}
+            <Stack sx={{ gap: 1.5, alignItems: { xs: "stretch", sm: "flex-start" }, flexShrink: 0 }}>
+                <Stack direction="row" sx={{ gap: 1.25, flexWrap: "wrap", alignItems: "center" }}>
+                    <Box
+                        sx={{
+                            height: theme.dashboard.dateChipHeight,
+                            px: 1.75,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 1,
+                            borderRadius: theme.calendar.cell.radius,
+                            border: "1px solid",
+                            borderColor: theme.palette.border.default,
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: theme.elevation.sm,
+                        }}
+                    >
+                        <CalendarMonthRounded fontSize="small" sx={{ color: theme.palette.primary.main }} />
+                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                            {new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+                        </Typography>
+                    </Box>
+                    {actions}
+                </Stack>
+
+                <Stack direction="row" sx={{ gap: 1.5, flexWrap: "wrap", alignItems: "center" }}>
+                    {primary}
+                    {secondary}
+                    {updatedAt && (
+                        <>
+                            {divider}
+                            <Stack direction="row" sx={{ gap: 0.75, alignItems: "center" }}>
+                                <Box sx={{ width: hero.statusDot, height: hero.statusDot, borderRadius: "50%", backgroundColor: theme.palette.success.main }} />
+                                <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+                                    Updated {updatedAt.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" })}
+                                </Typography>
+                                {onRefresh && (
+                                    <Tooltip title="Refresh">
+                                        <IconButton size="small" onClick={onRefresh} aria-label="Refresh the dashboard">
+                                            <RefreshRounded fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </Stack>
+                        </>
+                    )}
+                </Stack>
+            </Stack>
+        </Box>
     );
 }
 
@@ -330,41 +439,162 @@ const QUICK_ACTIONS = [
     { label: "Today's DCR", to: "/field-operation/dcr", icon: AssignmentTurnedInRounded, color: "warning" },
     { label: "RCPA", to: "/doctor-engagement/rcpa", icon: FactCheckRounded, color: "secondary" },
     { label: "Book order", to: "/sales/orders", icon: ShoppingCartRounded, color: "error" },
+    { label: "View reports", to: "/reports/mis", icon: BarChartRounded, color: "primary" },
 ];
 
-export function QuickActions({ sx }) {
+const TEAM_ACTIONS = [
+    { label: "Tour plans", to: "/field-operation/tour-plan", icon: MapRounded, color: "primary", countKey: "tourPlans" },
+    { label: "DCR reviews", to: "/field-operation/dcr", icon: AssignmentTurnedInRounded, color: "info", countKey: "dcrs" },
+    { label: "Deviations", to: "/field-operation/plan-deviation", icon: RouteRounded, color: "warning", countKey: "deviations" },
+    { label: "Expense claims", to: "/expenses/claims", icon: ReceiptLongRounded, color: "success" },
+    { label: "Team targets", to: "/planning/sales-plan", icon: FlagRounded, color: "secondary" },
+    { label: "Team orders", to: "/sales/orders", icon: ShoppingCartRounded, color: "error" },
+    { label: "View reports", to: "/reports/mis", icon: BarChartRounded, color: "primary" },
+];
+
+function QuickTile({ label, to, icon: Icon, color, count }) {
     return (
-        <Panel title="Quick actions" sx={sx}>
-            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 1.25 }}>
-                {QUICK_ACTIONS.map(({ label, to, icon: Icon, color }) => (
+        <ButtonBase
+            component={RouterLink}
+            to={to}
+            sx={(theme) => ({
+                position: "relative",
+                minHeight: theme.dashboard.quickTileMinHeight,
+                p: 1.25,
+                gap: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                borderRadius: theme.calendar.cell.radius,
+                border: "1px solid",
+                borderColor: alpha(theme.palette[color].main, theme.tint.selected),
+                backgroundColor: alpha(theme.palette[color].main, theme.tint.hover),
+                transition: theme.calendar.transition,
+                "&:hover": {
+                    borderColor: alpha(theme.palette[color].main, theme.tint.strong),
+                    backgroundColor: alpha(theme.palette[color].main, theme.tint.selected),
+                    transform: theme.entityCard.hoverLift,
+                },
+            })}
+        >
+            {count > 0 && (
+                <Box
+                    sx={(theme) => ({
+                        position: "absolute",
+                        top: theme.spacing(0.75),
+                        right: theme.spacing(0.75),
+                        minWidth: theme.spacing(2.5),
+                        height: theme.spacing(2.5),
+                        px: 0.5,
+                        display: "grid",
+                        placeItems: "center",
+                        borderRadius: theme.statusChip.radius,
+                        ...theme.typography.micro,
+                        fontWeight: 700,
+                        color: theme.palette.error.contrastText,
+                        backgroundColor: theme.palette.error.main,
+                    })}
+                >
+                    {count}
+                </Box>
+            )}
+            <Icon sx={(theme) => ({ fontSize: theme.stat.iconFontSize + 6, color: theme.palette[color].main })} />
+            <Typography variant="caption" sx={(theme) => ({ fontWeight: theme.typography.subtitle2.fontWeight, color: theme.palette.text.primary })}>
+                {label}
+            </Typography>
+        </ButtonBase>
+    );
+}
+
+// Full-width strip at the bottom of the dashboard: shortcuts as coloured tiles.
+// `approvals` (managers) shows team review shortcuts with their waiting counts.
+export function QuickActions({ approvals }) {
+    const theme = useTheme();
+    const items = approvals ? TEAM_ACTIONS.map((a) => ({ ...a, count: a.countKey ? approvals[a.countKey] : 0 })) : QUICK_ACTIONS;
+
+    return (
+        <Box
+            sx={{
+                p: 2,
+                display: "flex",
+                flexDirection: { xs: "column", lg: "row" },
+                gap: 2,
+                alignItems: { lg: "stretch" },
+                borderRadius: theme.card.radius,
+                border: `1px solid ${theme.palette.divider}`,
+                backgroundColor: theme.palette.background.paper,
+                boxShadow: theme.card.shadow,
+            }}
+        >
+            <Box sx={{ alignSelf: { lg: "center" }, flexShrink: 0 }}>
+                <Typography variant="h6" component="h2">
+                    Quick actions
+                </Typography>
+                <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+                    {approvals ? "Reviews and team tools" : "Jump straight in"}
+                </Typography>
+            </Box>
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: `repeat(auto-fill, minmax(${theme.dashboard.quickTileWidth}px, 1fr))`, lg: `repeat(${items.length}, minmax(0, 1fr))` },
+                    gap: 1.25,
+                    flex: 1,
+                    minWidth: 0,
+                }}
+            >
+                {items.map((item) => (
+                    <QuickTile key={item.label} {...item} />
+                ))}
+            </Box>
+        </Box>
+    );
+}
+
+// Manager review queues as a list: icon tile, name and a pending chip.
+export function ApprovalsPanel({ approvals, sx }) {
+    const rows = [
+        { label: "Tour plans", to: "/field-operation/tour-plan", icon: MapRounded, color: "primary", count: approvals.tourPlans },
+        { label: "DCRs", to: "/field-operation/dcr", icon: AssignmentTurnedInRounded, color: "info", count: approvals.dcrs },
+        { label: "Plan deviations", to: "/field-operation/plan-deviation", icon: RouteRounded, color: "warning", count: approvals.deviations },
+        { label: "Expense claims", to: "/expenses/claims", icon: ReceiptLongRounded, color: "success" },
+        { label: "All approvals", to: "/admin/approvals", icon: FactCheckRounded, color: "secondary" },
+    ];
+
+    return (
+        <Panel
+            title="Approvals & requests"
+            subtitle="Waiting for your review"
+            actions={
+                <Button size="small" endIcon={<ChevronRightRounded />} component={RouterLink} to="/admin/approvals">
+                    View all
+                </Button>
+            }
+            sx={sx}
+        >
+            <Stack sx={{ gap: 0.5 }}>
+                {rows.map(({ label, to, icon: Icon, color, count }) => (
                     <ButtonBase
                         key={label}
                         component={RouterLink}
                         to={to}
                         sx={(theme) => ({
-                            minHeight: theme.dashboard.quickActionMinHeight,
-                            p: 1.25,
-                            gap: 1,
+                            px: 1,
+                            py: 1,
+                            gap: 1.5,
                             display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            textAlign: "center",
+                            justifyContent: "flex-start",
                             borderRadius: theme.calendar.cell.radius,
-                            border: "1px solid",
-                            borderColor: theme.palette.border.subtle,
-                            transition: theme.calendar.transition,
-                            "&:hover": {
-                                borderColor: alpha(theme.palette[color].main, theme.tint.strong),
-                                backgroundColor: alpha(theme.palette[color].main, theme.tint.hover),
-                                transform: theme.entityCard.hoverLift,
-                            },
+                            "&:hover": { backgroundColor: alpha(theme.palette[color].main, theme.tint.hover) },
                         })}
                     >
                         <Box
                             sx={(theme) => ({
                                 width: theme.avatar.sizeSmall,
                                 height: theme.avatar.sizeSmall,
+                                flexShrink: 0,
                                 display: "grid",
                                 placeItems: "center",
                                 borderRadius: theme.sidebarLayout.radius,
@@ -374,12 +604,13 @@ export function QuickActions({ sx }) {
                         >
                             <Icon fontSize="small" />
                         </Box>
-                        <Typography variant="caption" sx={(theme) => ({ fontWeight: theme.typography.subtitle2.fontWeight, color: theme.palette.text.primary })}>
+                        <Typography variant="body2" sx={{ flex: 1, textAlign: "left", fontWeight: 600 }}>
                             {label}
                         </Typography>
+                        {count != null ? <Tag label={`${count} pending`} color={count ? "warning" : "success"} /> : <ChevronRightRounded fontSize="small" sx={(theme) => ({ color: theme.palette.text.disabled })} />}
                     </ButtonBase>
                 ))}
-            </Box>
+            </Stack>
         </Panel>
     );
 }

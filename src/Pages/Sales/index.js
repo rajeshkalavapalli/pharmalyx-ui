@@ -26,30 +26,38 @@ export const getStockPosition = () => get("/app/sales/stock");
 export const getBusiness = (month, scope = "self") => get("/app/sales/business", { month, scope });
 export const updateOrderStatus = (orderId, status, remarks) =>
     post(`/app/orders/${orderId}/status`, { Status: status, Remarks: remarks || null });
+export const uploadSlip = (blob) => post("/app/orders/slip", blob, { headers: { "Content-Type": blob.type || "image/jpeg" } });
+export const fetchSlipUrl = async (orderId) => URL.createObjectURL((await api.get(`/app/orders/${orderId}/slip`, { responseType: "blob" })).data);
 
 // =========================================================
 // CONSTANTS
 // =========================================================
 
+// POB follow-up (not used for incentives): Raised -> Under follow-up -> Supplied -> Verified.
 export const ORDER_STATUS = {
-    BOOKED: { label: "Booked", color: "info" },
-    CONFIRMED: { label: "Confirmed", color: "primary" },
+    BOOKED: { label: "Raised", color: "info" },
+    CONFIRMED: { label: "Under follow-up", color: "warning" },
     SUPPLIED: { label: "Supplied", color: "success" },
+    VERIFIED: { label: "Verified", color: "primary" },
     CANCELLED: { label: "Cancelled", color: "error" },
 };
 
-// Next steps offered for each status (the server enforces the same rules).
-export const ORDER_ACTIONS = {
-    BOOKED: [
-        { status: "CONFIRMED", label: "Stockist confirmed", color: "primary", remarks: "optional" },
-        { status: "CANCELLED", label: "Cancel order", color: "error", remarks: "required" },
-    ],
-    CONFIRMED: [
-        { status: "SUPPLIED", label: "Mark supplied", color: "success", remarks: "optional" },
-        { status: "CANCELLED", label: "Cancel order", color: "error", remarks: "required" },
-    ],
-    SUPPLIED: [],
-    CANCELLED: [],
+export const statusOf = (order) => (order.Status === "SUPPLIED" && order.VerifiedOn ? ORDER_STATUS.VERIFIED : ORDER_STATUS[order.Status]);
+
+// Next steps (the server enforces the same rules). The MR marks supplied or cancels; the manager follows up and verifies.
+export const orderActions = (order, role) => {
+    if (role === "manager") {
+        if (order.Status === "BOOKED") return [{ status: "CONFIRMED", label: "Follow up with MR", color: "warning", remarks: "optional" }];
+        if (order.Status === "SUPPLIED" && !order.VerifiedOn) return [{ status: "VERIFIED", label: "Verify", color: "primary", remarks: "none" }];
+        return [];
+    }
+    if (order.Status === "BOOKED" || order.Status === "CONFIRMED") {
+        return [
+            { status: "SUPPLIED", label: "Mark supplied", color: "success", remarks: "none" },
+            { status: "CANCELLED", label: "Cancel order", color: "error", remarks: "required" },
+        ];
+    }
+    return [];
 };
 
 export const CUSTOMER_TYPE = {

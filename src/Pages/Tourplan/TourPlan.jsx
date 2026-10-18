@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 
 import {
     Alert,
@@ -204,7 +204,8 @@ function TourPlan() {
 
     const viewingOther = Boolean(tourPlan.viewUserId);
 
-    const noApprover = owner?.isSelf && !owner?.ManagerId;
+    // Plans inside the territory no longer need a manager, so a missing manager never blocks saving.
+    const noApprover = false;
 
     const viewSwitch = isManager && !reviewing && (
         <SegmentedControl
@@ -237,6 +238,10 @@ function TourPlan() {
 
             {editable && (
                 <>
+                    <Button variant="outlined" component={RouterLink} to="/field-operation/stp">
+                        From standard tour plan
+                    </Button>
+
                     <Button
                         variant="outlined"
                         startIcon={<SaveOutlined />}
@@ -255,7 +260,7 @@ function TourPlan() {
                             title={noApprover ? "No reporting manager is assigned" : undefined}
                             onClick={() => setAction("submit")}
                         >
-                            {meta.status === "REJECTED" ? "Resend for approval" : "Send for approval"}
+                            Save plan
                         </Button>
                     )}
                 </>

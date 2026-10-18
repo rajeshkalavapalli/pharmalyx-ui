@@ -11,6 +11,7 @@ import {
 } from "../../../components/DetailSection/DetailSection";
 import Tag from "../../../components/Tag/Tag";
 import CategoryBadge from "../../MyDoctors/components/CategoryBadge";
+import { formatClock, formatDwell, validityOf } from "../../WorkDay/index";
 import DoctorAvatar from "../../MyDoctors/components/DoctorAvatar";
 import {
     FEEDBACK,
@@ -223,6 +224,41 @@ function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry }) {
                                     </Stack>
                                 </DetailSection>
                             )}
+
+                            <DetailSection title="Counts as work?">
+                                <Stack spacing={1} sx={{ alignItems: "flex-start" }}>
+                                    <Tag label={validityOf(visit).label} color={validityOf(visit).color} />
+                                    {visit.CheckInAt && (
+                                        <Typography variant="body2">
+                                            Checked in {formatClock(visit.CheckInAt)} · out {formatClock(visit.CheckOutAt)} · stayed {formatDwell(visit.DwellSeconds)}
+                                            {visit.MotionActivity ? ` · phone: ${String(visit.MotionActivity).toLowerCase().replace("_", " ")}` : ""}
+                                        </Typography>
+                                    )}
+                                    {(visit.reasons || []).map((reason) => (
+                                        <Typography key={reason.code} variant="body2" sx={(theme) => ({ color: theme.palette.error.main })}>
+                                            • {reason.text}
+                                        </Typography>
+                                    ))}
+                                    {(visit.notes || []).map((note) => (
+                                        <Typography key={note.code} variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                            Note: {note.text}
+                                        </Typography>
+                                    ))}
+                                    {visit.ValidityOverride && (
+                                        <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                            Changed by head office: {visit.OverrideReason}
+                                        </Typography>
+                                    )}
+                                    {!visit.FinalValidity && (
+                                        <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                            Logged before verified work started.
+                                        </Typography>
+                                    )}
+                                    <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                        Decided by the system. Only head office can change it.
+                                    </Typography>
+                                </Stack>
+                            </DetailSection>
 
                             <DetailSection title="GPS check-in">
                                 <Stack spacing={1.5} sx={{ alignItems: "flex-start" }}>

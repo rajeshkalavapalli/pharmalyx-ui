@@ -99,7 +99,7 @@ export const FEEDBACK_LABEL = { POSITIVE: "Positive", NEUTRAL: "Neutral", NEGATI
 
 export const formatMonth = (month) => new Date(`${month}-01T00:00:00`).toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
 
-export const ORDER_STATUS_LABEL = { BOOKED: "Booked", CONFIRMED: "Confirmed", SUPPLIED: "Supplied", CANCELLED: "Cancelled" };
+export const ORDER_STATUS_LABEL = { BOOKED: "Raised", CONFIRMED: "Under follow-up", SUPPLIED: "Supplied", CANCELLED: "Cancelled" };
 export const ORDER_STATUS_COLOR = { BOOKED: "warning", CONFIRMED: "info", SUPPLIED: "success", CANCELLED: "secondary" };
 export const CATEGORY_LABEL = { A: "Class A", B: "Class B", C: "Class C", U: "Unrated" };
 export const COVERAGE_STATUS = {

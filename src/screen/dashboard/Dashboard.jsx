@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 import {
     Alert,
@@ -13,6 +14,7 @@ import {
 } from "@mui/material";
 import {
     AddRounded,
+    ArrowForwardRounded,
     GroupsRounded,
     PersonRounded,
     CurrencyRupeeRounded,
@@ -26,17 +28,18 @@ import {
     RefreshRounded,
     RouteRounded,
     TrackChangesRounded,
+    VerifiedRounded,
 } from "@mui/icons-material";
 
 import useActingUser from "../../components/ActingUserSelect/useActingUser";
 import ActingUserSelect from "../../components/ActingUserSelect/ActingUserSelect";
 import Panel from "../../components/Panel/Panel";
-import StatCard from "../../components/StatCard/StatCard";
 import Tag from "../../components/Tag/Tag";
 import api from "../../configurations/api-config";
 import SegmentedControl from "../../components/SegmentedControl/SegmentedControl";
 import { EngagementRow, MonthlyChart, WeekdayChart } from "./DashboardInsights";
 import {
+    ApprovalsPanel,
     CoverageDonut,
     DashboardHeader,
     QuickActions,
@@ -45,8 +48,12 @@ import {
     TerritoryCoveragePanel,
     TopTerritoriesPanel,
 } from "./DashboardWidgets";
-import PlannedVsCompletedChart from "./PlannedVsCompletedChart";
-import { ManagerActions, TeamHighlights, TeamPerformancePanel, TeamTodayPanel } from "./TeamWidgets";
+import { GroupedBars, KpiCard } from "./ModuleCharts";
+import ModuleSection from "./ModuleSection";
+import { chartSeries, findStat, useModuleData } from "./moduleData";
+import SalesSection from "./SalesSection";
+import WorkSection from "./WorkSection";
+import { TeamHighlights, TeamPerformancePanel, TeamTodayPanel } from "./TeamWidgets";
 
 const getDashboard = async () => {
     const userId = localStorage.getItem("userId");
@@ -68,6 +75,22 @@ const DCR_STATUS = {
     APPROVED: { label: "DCR approved", color: "success" },
     RETURNED: { label: "DCR returned", color: "error" },
 };
+
+// Dashboard areas (tab bar under the greeting).
+// Same order as the sidebar; one tab per built module.
+const SECTIONS = [
+    { value: "field", label: "Field Operations" },
+    { value: "work", label: "Verified Work" },
+    { value: "engagement", label: "Doctor Engagement" },
+    { value: "sales", label: "Sales & Distribution" },
+    { value: "planning", label: "Planning" },
+    { value: "expenses", label: "Expenses" },
+    { value: "hr", label: "HR / Employee" },
+    { value: "reports", label: "Reports & Analytics" },
+    { value: "insights", label: "Insights" },
+    { value: "admin", label: "Administration" },
+];
+const SECTION_KEYS = new Set(SECTIONS.map((item) => item.value));
 
 const greeting = () => {
     const hour = new Date().getHours();
@@ -93,6 +116,22 @@ const formatMinutes = (minutes) => {
 };
 
 const percent = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
+
+const dayLabel = (key) => new Date(`${key}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+// Planned vs completed per day as paired bars.
+function VisitTrend({ data }) {
+    const theme = useTheme();
+    return (
+        <GroupedBars
+            rows={data.map((row) => ({ key: row.date, label: dayLabel(row.date), values: [row.planned, row.visits] }))}
+            series={[
+                { label: "Planned", color: theme.palette.chart.competitor },
+                { label: "Completed", color: theme.palette.chart.ours },
+            ]}
+        />
+    );
+}
 
 // =========================================================
 // SIDE CARDS
@@ -203,8 +242,26 @@ function Dashboard() {
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [loadedAt, setLoadedAt] = useState(null);
     const [error, setError] = useState("");
     const [view, setView] = useState("team");
+    const [section, setSection] = useState(() => {
+        try {
+            const saved = localStorage.getItem("dashboardSection");
+            return SECTION_KEYS.has(saved) ? saved : "field";
+        } catch {
+            return "field";
+        }
+    });
+
+    const chooseSection = (next) => {
+        setSection(next);
+        try {
+            localStorage.setItem("dashboardSection", next);
+        } catch {
+            // remembering the tab is only a convenience
+        }
+    };
 
     const load = useCallback(async () => {
         if (!actingUserId) return;
@@ -214,6 +271,7 @@ function Dashboard() {
 
         try {
             setData(await getDashboard());
+            setLoadedAt(new Date());
         } catch (err) {
             setData(null);
             setError(err.response?.data?.message || err.message || "Failed to load the dashboard");
@@ -225,6 +283,10 @@ function Dashboard() {
     useEffect(() => {
         load();
     }, [load]);
+
+    // Team or own view decides which numbers the field module returns.
+    const teamView = Boolean(data && data.team.length > 0 && data.teamSummary) && view === "team";
+    const field = useModuleData(data ? "field" : null, teamView);
 
     if (!actingUserId) {
         return (
@@ -305,14 +367,24 @@ function Dashboard() {
     });
     const span = (lg, md = 1) => ({ gridColumn: { xs: "auto", md: `span ${md}`, lg: `span ${lg}` }, minWidth: 0 });
 
-    const statGrid = (theme) => ({
+    const fill = { height: "100%" };
+
+    const kpiGrid = (theme) => ({
         display: "grid",
-        gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", lg: "repeat(4, minmax(0, 1fr))" },
+        gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", md: "repeat(3, minmax(0, 1fr))", lg: "repeat(6, minmax(0, 1fr))" },
         gap: theme.stat.gap,
         mb: theme.stat.gap,
     });
 
-    const fill = { height: "100%" };
+    const visitsStat = findStat(field.data, "visits");
+    const validStat = findStat(field.data, "valid");
+    const momentum =
+        visitsStat?.trend ? (
+            <>
+                {" "}
+                Visits are <b>{Math.abs(visitsStat.trend)}% {visitsStat.trend > 0 ? "ahead of" : "behind"}</b> last month.
+            </>
+        ) : null;
 
     const viewSwitch = isManager && (
         <SegmentedControl
@@ -328,58 +400,125 @@ function Dashboard() {
     return (
         <Box sx={(theme) => ({ opacity: loading ? theme.table.loadingOpacity : 1, transition: theme.calendar.transition })}>
             {showTeam ? (
-                <>
-                    <DashboardHeader
-                        title={`${greeting()}, ${firstName}`}
-                        subtitle={`${teamSummary.repsActiveToday} of ${teamSummary.reps} representative${teamSummary.reps === 1 ? " is" : "s are"} in the field today${
-                            pendingReviews ? ` · ${pendingReviews} item${pendingReviews === 1 ? "" : "s"} waiting for your review` : " · nothing waiting for review"
-                        }.`}
-                        date={today.date}
-                        actions={
-                            <>
-                                {viewSwitch}
-                                <Button variant="contained" startIcon={<AssignmentTurnedInRounded />} component={RouterLink} to="/field-operation/dcr">
-                                    Review DCRs
-                                </Button>
-                            </>
-                        }
-                    />
+                <DashboardHeader
+                    greeting={greeting()}
+                    name={firstName}
+                    status={teamSummary.repsActiveToday ? "success" : "warning"}
+                    updatedAt={loadedAt}
+                    onRefresh={load}
+                    subtitle={
+                        <>
+                            <b>
+                                {teamSummary.repsActiveToday} of {teamSummary.reps}
+                            </b>{" "}
+                            representative{teamSummary.reps === 1 ? " is" : "s are"} in the field today
+                            {pendingReviews ? (
+                                <>
+                                    {" "}
+                                    · <b>{pendingReviews} item{pendingReviews === 1 ? "" : "s"}</b> waiting for your review.
+                                </>
+                            ) : (
+                                " · nothing waiting for review."
+                            )}
+                            {momentum}
+                        </>
+                    }
+                    date={today.date}
+                    actions={viewSwitch}
+                    primary={
+                        <Button variant="contained" size="large" startIcon={<AssignmentTurnedInRounded />} endIcon={<ArrowForwardRounded />} component={RouterLink} to="/field-operation/dcr">
+                            Review DCRs
+                        </Button>
+                    }
+                />
+            ) : (
+                <DashboardHeader
+                    greeting={greeting()}
+                    name={firstName}
+                    status={today.visits ? "success" : "warning"}
+                    updatedAt={loadedAt}
+                    onRefresh={load}
+                    subtitle={
+                        <>
+                            <b>
+                                {today.visits} visit{today.visits === 1 ? "" : "s"}
+                            </b>{" "}
+                            today{planned ? ` of ${planned} planned` : ""} · {planText}.{momentum}
+                        </>
+                    }
+                    date={today.date}
+                    actions={viewSwitch || null}
+                    primary={
+                        <Button variant="contained" size="large" startIcon={<EventNoteRounded />} endIcon={<ArrowForwardRounded />} component={RouterLink} to="/field-operation/pre-call">
+                            Plan my day
+                        </Button>
+                    }
+                    secondary={
+                        <Button variant="outlined" size="large" startIcon={<AddRounded />} component={RouterLink} to="/field-operation/visits">
+                            Log visit
+                        </Button>
+                    }
+                />
+            )}
 
-                    <Box sx={statGrid}>
-                        <StatCard
+            {/* One area of the business at a time. */}
+            <Box sx={(theme) => ({ mb: theme.stat.gap, overflowX: "auto" })}>
+                <SegmentedControl value={section} onChange={chooseSection} options={SECTIONS} />
+            </Box>
+
+            {section === "field" &&
+                (showTeam ? (
+                    <>
+                    <Box sx={kpiGrid}>
+                        <KpiCard
                             icon={LocationOnRounded}
-                            label="Team visits today"
-                            value={teamSummary.plannedToday ? `${teamSummary.visitsToday}/${teamSummary.plannedToday}` : teamSummary.visitsToday}
-                            caption={
-                                teamSummary.plannedToday
-                                    ? `${percent(Math.min(teamSummary.visitsToday, teamSummary.plannedToday), teamSummary.plannedToday)}% of planned calls`
-                                    : `${teamVisits} this month`
-                            }
+                            label="Visits this month"
+                            value={visitsStat?.value ?? teamVisits}
+                            caption={`${teamSummary.visitsToday} today${teamSummary.plannedToday ? ` of ${teamSummary.plannedToday} planned` : ""}`}
                             color="primary"
-                            progress={teamSummary.plannedToday ? percent(Math.min(teamSummary.visitsToday, teamSummary.plannedToday), teamSummary.plannedToday) : undefined}
+                            spark={visitsStat?.spark}
+                            trend={visitsStat?.trend}
                         />
-                        <StatCard
+                        <KpiCard
+                            icon={TrackChangesRounded}
+                            label="Doctors covered"
+                            value={teamVisited}
+                            caption={`of ${teamMapped} assigned this month`}
+                            color="info"
+                            ring={percent(teamVisited, teamMapped)}
+                        />
+                        <KpiCard
                             icon={GroupsRounded}
                             label="Reps in the field"
                             value={`${teamSummary.repsActiveToday}/${teamSummary.reps}`}
-                            caption={`${percent(teamSummary.repsActiveToday, teamSummary.reps)}% active today`}
-                            color="success"
+                            caption="Active today"
+                            color="warning"
                             progress={percent(teamSummary.repsActiveToday, teamSummary.reps)}
                         />
-                        <StatCard
-                            icon={MapRounded}
-                            label="Territories covered"
-                            value={teamTerritories.total ? `${teamTerritories.covered}/${teamTerritories.total}` : "—"}
-                            caption={teamTerritories.total ? `${percent(teamTerritories.covered, teamTerritories.total)}% · ${teamTerritories.pending} pending` : "No team territories yet"}
-                            color="info"
-                            progress={teamTerritories.total ? percent(teamTerritories.covered, teamTerritories.total) : undefined}
+                        <KpiCard
+                            icon={VerifiedRounded}
+                            label="Valid visits"
+                            value={validStat?.value ?? "—"}
+                            caption={validStat?.caption || "Checked at the clinic"}
+                            color="success"
+                            bars={chartSeries(field.data, "valid")}
+                            trend={validStat?.trend}
                         />
-                        <StatCard
+                        <KpiCard
                             icon={AssignmentTurnedInRounded}
                             label="Pending approvals"
                             value={pendingReviews}
                             caption={`${approvals.tourPlans} tour plan · ${approvals.dcrs} DCR · ${approvals.deviations} deviation`}
-                            color={pendingReviews ? "error" : "warning"}
+                            color={pendingReviews ? "error" : "success"}
+                            bars={[approvals.tourPlans, approvals.dcrs, approvals.deviations]}
+                        />
+                        <KpiCard
+                            icon={MapRounded}
+                            label="Territories covered"
+                            value={teamTerritories.total ? `${teamTerritories.covered}/${teamTerritories.total}` : "—"}
+                            caption={teamTerritories.total ? `${teamTerritories.pending} pending` : "No team territories yet"}
+                            color="primary"
+                            ring={teamTerritories.total ? percent(teamTerritories.covered, teamTerritories.total) : undefined}
                         />
                     </Box>
 
@@ -395,7 +534,7 @@ function Dashboard() {
                                 }
                                 sx={fill}
                             >
-                                <PlannedVsCompletedChart data={teamSummary.trend} />
+                                <VisitTrend data={teamSummary.trend} />
                             </Panel>
                         </Box>
                         <Box sx={span(4)}>
@@ -414,84 +553,61 @@ function Dashboard() {
                             <TeamPerformancePanel team={team} sx={fill} />
                         </Box>
                         <Box sx={span(4, 2)}>
-                            <ManagerActions approvals={approvals} sx={fill} />
+                            <ApprovalsPanel approvals={approvals} sx={fill} />
                         </Box>
                     </Box>
-
-                    <TeamHighlights
-                        items={[
-                            {
-                                label: "Doctor coverage",
-                                value: `${percent(teamVisited, teamMapped)}%`,
-                                caption: `${teamVisited} of ${teamMapped} assignments visited`,
-                                progress: percent(teamVisited, teamMapped),
-                                icon: TrackChangesRounded,
-                                color: "success",
-                            },
-                            {
-                                label: "Business achieved",
-                                value: teamSummary.businessAchievement == null ? "—" : `${teamSummary.businessAchievement}%`,
-                                caption: teamSummary.businessExpected ? "Actual vs expected" : "No targets set yet",
-                                progress: teamSummary.businessAchievement == null ? undefined : Math.min(100, teamSummary.businessAchievement),
-                                icon: CurrencyRupeeRounded,
-                                color: "warning",
-                            },
-                            { label: "Visits this month", value: teamVisits, caption: `${teamDcrs} DCR(s) sent`, icon: LocationOnRounded, color: "primary" },
-                            { label: "Samples given", value: teamSummary.samplesGiven ?? "—", caption: "This month", icon: MedicationRounded, color: "info" },
-                            { label: "Plan deviations", value: teamSummary.deviationsMonth, caption: "This month", icon: RouteRounded, color: "error" },
-                        ]}
-                    />
-                </>
-            ) : (
-                <>
-                    <DashboardHeader
-                        title={`${greeting()}, ${firstName}`}
-                        subtitle="Here's your field performance overview for today."
-                        date={today.date}
-                        actions={
-                            <>
-                                {viewSwitch}
-                                <Button variant="outlined" startIcon={<AddRounded />} component={RouterLink} to="/field-operation/visits">
-                                    Log visit
-                                </Button>
-                                <Button variant="contained" startIcon={<EventNoteRounded />} component={RouterLink} to="/field-operation/pre-call">
-                                    Plan my day
-                                </Button>
-                            </>
-                        }
-                    />
-
-                    <Box sx={statGrid}>
-                        <StatCard
+                    </>
+                ) : (
+                    <>
+                    <Box sx={kpiGrid}>
+                        <KpiCard
                             icon={LocationOnRounded}
                             label="Today's visits"
                             value={planned ? `${today.visits}/${planned}` : today.visits}
-                            caption={planned ? `${percent(Math.min(today.visits, planned), planned)}% of planned calls` : planText}
+                            caption={planned ? "Of planned calls" : planText}
                             color="primary"
-                            progress={planned ? percent(Math.min(today.visits, planned), planned) : undefined}
+                            ring={planned ? percent(Math.min(today.visits, planned), planned) : undefined}
                         />
-                        <StatCard
+                        <KpiCard
+                            icon={EventNoteRounded}
+                            label="Visits this month"
+                            value={visitsStat?.value ?? "—"}
+                            caption={visitsStat?.caption || "This month"}
+                            color="info"
+                            spark={visitsStat?.spark}
+                            trend={visitsStat?.trend}
+                        />
+                        <KpiCard
+                            icon={VerifiedRounded}
+                            label="Valid visits"
+                            value={validStat?.value ?? "—"}
+                            caption={validStat?.caption || "Checked at the clinic"}
+                            color="success"
+                            bars={chartSeries(field.data, "valid")}
+                            trend={validStat?.trend}
+                        />
+                        <KpiCard
                             icon={TrackChangesRounded}
                             label="Doctors covered"
                             value={`${month.doctorsVisited}/${month.doctorsMapped}`}
-                            caption={`${percent(month.doctorsVisited, month.doctorsMapped)}% of your doctors this month`}
-                            color="success"
+                            caption="Your doctors this month"
+                            color="warning"
                             progress={percent(month.doctorsVisited, month.doctorsMapped)}
                         />
-                        <StatCard
+                        <KpiCard
                             icon={MapRounded}
                             label="Territories covered"
                             value={territories.total ? `${territories.covered}/${territories.total}` : "—"}
-                            caption={territories.total ? `${percent(territories.covered, territories.total)}% · ${territories.pending} pending` : "No territories yet"}
-                            color="info"
-                            progress={territories.total ? percent(territories.covered, territories.total) : undefined}
+                            caption={territories.total ? `${territories.pending} pending` : "No territories yet"}
+                            color="primary"
+                            ring={territories.total ? percent(territories.covered, territories.total) : undefined}
                         />
-                        <StatCard
+                        <KpiCard
                             icon={EventRepeatRounded}
                             label="Follow-ups due"
                             value={followUps.due}
                             caption={followUps.overdue ? `${followUps.overdue} overdue` : month.dcrMissed ? `${month.dcrMissed} DCR(s) missed` : "Next 7 days"}
-                            color={followUps.overdue || month.dcrMissed ? "error" : "warning"}
+                            color={followUps.overdue || month.dcrMissed ? "error" : "secondary"}
                         />
                     </Box>
 
@@ -507,7 +623,7 @@ function Dashboard() {
                                 }
                                 sx={fill}
                             >
-                                <PlannedVsCompletedChart data={trend} />
+                                <VisitTrend data={trend} />
                             </Panel>
                         </Box>
                         <Box sx={span(4)}>
@@ -531,10 +647,49 @@ function Dashboard() {
                             <RecentVisitsPanel visits={recentVisits} sx={fill} />
                         </Box>
                         <Box sx={span(4, 2)}>
-                            <QuickActions sx={fill} />
+                            <CoverageDonut visited={month.doctorsVisited} mapped={month.doctorsMapped} rows={charts.coverageByCategory} sx={fill} />
                         </Box>
                     </Box>
+                    <Box sx={row}>
+                        <Box sx={span(6)}>
+                            <WeekdayChart rows={charts.visitsByWeekday} weeks={charts.weekdayWeeks} sx={fill} />
+                        </Box>
+                        <Box sx={span(6)}>
+                            <MonthlyChart rows={charts.monthlyVisits} sx={fill} />
+                        </Box>
+                    </Box>
+                    </>
+                ))}
 
+            {section === "engagement" &&
+                (showTeam ? (
+                    <>
+                    <TeamHighlights
+                        items={[
+                            {
+                                label: "Doctor coverage",
+                                value: `${percent(teamVisited, teamMapped)}%`,
+                                caption: `${teamVisited} of ${teamMapped} assignments visited`,
+                                progress: percent(teamVisited, teamMapped),
+                                icon: TrackChangesRounded,
+                                color: "success",
+                            },
+                            {
+                                label: "Business achieved",
+                                value: teamSummary.businessAchievement == null ? "—" : `${teamSummary.businessAchievement}%`,
+                                caption: teamSummary.businessExpected ? "Actual vs expected" : "No targets set yet",
+                                progress: teamSummary.businessAchievement == null ? undefined : Math.min(100, teamSummary.businessAchievement),
+                                icon: CurrencyRupeeRounded,
+                                color: "warning",
+                            },
+                            { label: "Visits this month", value: teamVisits, caption: `${teamDcrs} DCR(s) sent`, icon: LocationOnRounded, color: "primary" },
+                            { label: "Samples given", value: teamSummary.samplesGiven ?? "—", caption: "This month", icon: MedicationRounded, color: "info" },
+                            { label: "Plan deviations", value: teamSummary.deviationsMonth, caption: "This month", icon: RouteRounded, color: "error" },
+                        ]}
+                    />
+                    </>
+                ) : (
+                    <>
                     <Box sx={row}>
                         <Box sx={span(4)}>
                             <QualityPanel month={month} />
@@ -581,17 +736,26 @@ function Dashboard() {
                     <Box sx={(theme) => ({ mb: theme.stat.gap })}>
                         <EngagementRow engagement={engagement} />
                     </Box>
+                    </>
+                ))}
 
-                    <Box sx={row}>
-                        <Box sx={span(6)}>
-                            <WeekdayChart rows={charts.visitsByWeekday} weeks={charts.weekdayWeeks} sx={fill} />
-                        </Box>
-                        <Box sx={span(6)}>
-                            <MonthlyChart rows={charts.monthlyVisits} sx={fill} />
-                        </Box>
+            {section === "field" && <ModuleSection section="field" team={showTeam} stats={false} module={field} />}
+            {section === "engagement" && <ModuleSection section="engagement" team={showTeam} stats={false} />}
+
+            {section === "sales" && (
+                <>
+                    <SalesSection key={showTeam ? "team" : "me"} team={showTeam} />
+                    <Box sx={(theme) => ({ mt: theme.stat.gap })}>
+                        <ModuleSection section="sales" team={showTeam} stats={false} />
                     </Box>
                 </>
             )}
+            {["planning", "expenses", "hr", "reports", "insights", "admin"].includes(section) && <ModuleSection section={section} team={showTeam} />}
+            {section === "work" && <WorkSection key={showTeam ? "team" : "me"} team={showTeam} userId={actingUserId} />}
+
+            <Box sx={(theme) => ({ mt: section === "work" ? theme.stat.gap : 0 })}>
+                <QuickActions approvals={showTeam ? approvals : null} />
+            </Box>
         </Box>
     );
 }

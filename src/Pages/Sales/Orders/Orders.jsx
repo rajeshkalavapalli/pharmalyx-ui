@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Box, Button, ButtonBase, Divider, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonBase, Divider, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import {
     AddRounded,
@@ -24,6 +24,7 @@ import StatusChip from "../../../components/StatusChip/StatusChip";
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 import {
     ORDER_STATUS,
+    statusOf,
     createOrder,
     customerLabel,
     errorMessage,
@@ -38,7 +39,7 @@ import OrderDialog from "./OrderDialog";
 import OrderDrawer from "./OrderDrawer";
 
 function OrderRow({ order, showOwner, onOpen }) {
-    const status = ORDER_STATUS[order.Status];
+    const status = statusOf(order);
     const Icon = order.CustomerType === "DOCTOR" ? MedicalServicesRounded : LocalPharmacyRounded;
 
     return (
@@ -129,7 +130,7 @@ function Orders() {
     }, [load]);
 
     const orders = useMemo(
-        () => (data?.orders || []).filter((order) => statusFilter === "ALL" || order.Status === statusFilter),
+        () => (data?.orders || []).filter((order) => statusFilter === "ALL" || statusOf(order) === ORDER_STATUS[statusFilter]),
         [data, statusFilter]
     );
 
@@ -166,10 +167,12 @@ function Orders() {
 
     const summary = data?.summary;
     const selected = (data?.orders || []).find((order) => order.OrderId === selectedId) || null;
-    const counts = summary?.byStatus || {};
     const statusOptions = [
         { value: "ALL", label: `All · ${data?.orders?.length ?? 0}` },
-        ...Object.entries(ORDER_STATUS).map(([value, status]) => ({ value, label: `${status.label} · ${counts[value] ?? 0}` })),
+        ...Object.entries(ORDER_STATUS).map(([value, status]) => ({
+            value,
+            label: `${status.label} · ${(data?.orders || []).filter((order) => statusOf(order) === status).length}`,
+        })),
     ];
     const maxTop = Math.max(1, ...(summary?.topProducts || []).map((product) => product.value));
 
@@ -178,7 +181,7 @@ function Orders() {
             <PageHeader
                 eyebrow="Sales & distribution · POB"
                 title={scope === "team" ? "Team orders" : "POB / Orders"}
-                subtitle="Orders booked at doctors and chemists, supplied through your stockists."
+                subtitle="Chemist orders are booked at the chemist with a photo of the stamped slip. Status is for daily follow-up only; business is measured on net sales."
                 actions={
                     <>
                         {data?.hasTeam && (
@@ -199,6 +202,14 @@ function Orders() {
                     </>
                 }
             />
+
+            {data?.followUpDue?.length > 0 && (
+                <Alert severity="warning" variant="outlined" sx={(theme) => ({ mb: theme.stat.gap })}>
+                    {data.followUpDue.length} team order(s) raised {data.followUpAfterDays}+ days ago are still not supplied:{" "}
+                    {data.followUpDue.slice(0, 4).map((order) => `${order.OrderNumber} (${order.UserName}, ${order.CustomerName})`).join(", ")}
+                    {data.followUpDue.length > 4 ? "…" : ""}. Open My team, then Follow up with MR.
+                </Alert>
+            )}
 
             <Box
                 sx={(theme) => ({
@@ -292,6 +303,7 @@ function Orders() {
             <OrderDrawer
                 order={selected}
                 canUpdate
+                role={scope === "team" ? "manager" : "owner"}
                 onClose={() => setSelectedId(null)}
                 onAction={(order, action) => setPendingAction({ order, action })}
             />

@@ -428,6 +428,19 @@ const PharmalyxTheme = createTheme({
         lineChartHeight: 180,
         markerSize: 8,
         donutGap: 4,
+        // Greeting banner: white card with a brand accent bar on the left.
+        hero: {
+            quoteMaxWidth: 460,
+            padding: { xs: 2.5, md: 3 },
+            accentWidth: 4,
+            statusDot: 8,
+            accentGradient: (theme) => `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.success.main} 100%)`,
+        },
+        // Mini visuals inside KPI cards.
+        kpi: { sparkWidth: 76, sparkHeight: 34, ringSize: 50, ringStroke: 6, barWidth: 6, barGap: 3, barHeight: 34 },
+        quickTileMinHeight: 96,
+        quickTileWidth: 88,
+        groupedBarGap: 0.18,
     },
 
     // Doctor requests (add / edit / delete with approval).

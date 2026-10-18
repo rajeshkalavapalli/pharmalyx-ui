@@ -6,6 +6,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import LocationTracker from "../../Pages/WorkDay/components/LocationTracker";
 
 function AppShell() {
   const theme = useTheme();
@@ -73,6 +74,7 @@ function AppShell() {
           })}
         >
           <Outlet />
+          <LocationTracker />
         </Box>
       </Box>
     </Box>

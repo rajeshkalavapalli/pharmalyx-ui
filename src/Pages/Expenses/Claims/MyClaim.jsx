@@ -6,14 +6,12 @@ import {
     Button,
     Divider,
     IconButton,
-    MenuItem,
     Stack,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
-    TextField,
     Tooltip,
     Typography,
 } from "@mui/material";
@@ -55,7 +53,6 @@ import {
     getClaimReviews,
     getMyClaim,
     monthKey,
-    saveDay,
     submitClaim,
 } from "../index";
 
@@ -70,7 +67,6 @@ function MyClaim() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const [savingDate, setSavingDate] = useState(null);
     const [itemOpen, setItemOpen] = useState(false);
     const [saving, setSaving] = useState(false);
     const [removing, setRemoving] = useState(null);
@@ -98,19 +94,6 @@ function MyClaim() {
     useEffect(() => {
         load();
     }, [load]);
-
-    const changeStation = async (day, stationType) => {
-        setSavingDate(day.ExpenseDate);
-
-        try {
-            await saveDay(data.month, { ExpenseDate: day.ExpenseDate, StationType: stationType, Remarks: day.Remarks });
-            await load();
-        } catch (err) {
-            showSnackbar(errorMessage(err, "Failed to update the day"), "error");
-        } finally {
-            setSavingDate(null);
-        }
-    };
 
     const handleAddItem = async (payload) => {
         setSaving(true);
@@ -169,7 +152,7 @@ function MyClaim() {
             <PageHeader
                 eyebrow="Expenses · TA / DA"
                 title={tab === "reviews" ? "Team claims to review" : "My expense claim"}
-                subtitle="Daily allowance and travel come from your approved DCRs and the rate card. Add other expenses with the bill number, then submit once a month."
+                subtitle="TA and DA come from verified work: distance actually travelled (GPS, work hours) and valid visits. Add other expenses with the bill number, then submit once a month."
                 actions={
                     <>
                         {canReview && (
@@ -263,7 +246,7 @@ function MyClaim() {
                         <Stack spacing={2} sx={{ minWidth: 0 }}>
                             <Panel
                                 title="Daily allowance & travel"
-                                subtitle={data?.canEdit ? "From your approved DCRs. Set where you worked each day: HQ, Ex-HQ or Outstation." : "From your approved DCRs."}
+                                subtitle={`Days with valid visits. TA = GPS km × your rate; DA needs ${data?.daMinValidVisits ?? 6} valid visits; HQ / Ex-HQ / Outstation comes from the patches you visited.`}
                                 actions={status && <StatusChip label={status.label} color={status.color} />}
                             >
                                 {data?.days?.length ? (
@@ -284,35 +267,20 @@ function MyClaim() {
                                                         <TableCell>
                                                             <Typography variant="subtitle2">{formatDate(day.ExpenseDate)}</Typography>
                                                             {day.VisitCount != null && (
-                                                                <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
-                                                                    {day.VisitCount} visit(s)
+                                                                <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                                                    {day.VisitCount} valid visit(s)
+                                                                </Typography>
+                                                            )}
+                                                            {day.DaEligible === false && (
+                                                                <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.warning.main })}>
+                                                                    No DA: needs {data.daMinValidVisits} valid visits
                                                                 </Typography>
                                                             )}
                                                         </TableCell>
                                                         <TableCell>
-                                                            {TRAVEL_LABEL[day.TravelMode] || day.TravelMode} · {day.DistanceKm} km
+                                                            {TRAVEL_LABEL[day.TravelMode] || day.TravelMode} · {day.DistanceKm} km (GPS)
                                                         </TableCell>
-                                                        <TableCell>
-                                                            {data.canEdit ? (
-                                                                <TextField
-                                                                    select
-                                                                    size="small"
-                                                                    value={day.StationType}
-                                                                    disabled={savingDate === day.ExpenseDate}
-                                                                    onChange={(event) => changeStation(day, event.target.value)}
-                                                                    slotProps={{ htmlInput: { "aria-label": `${day.ExpenseDate} station` } }}
-                                                                    sx={(theme) => ({ minWidth: theme.engagement.dateColumn })}
-                                                                >
-                                                                    {STATIONS.map((station) => (
-                                                                        <MenuItem key={station.value} value={station.value}>
-                                                                            {station.label}
-                                                                        </MenuItem>
-                                                                    ))}
-                                                                </TextField>
-                                                            ) : (
-                                                                STATIONS.find((station) => station.value === day.StationType)?.label
-                                                            )}
-                                                        </TableCell>
+                                                        <TableCell>{STATIONS.find((station) => station.value === day.StationType)?.label}</TableCell>
                                                         <TableCell align="right">{formatAmount(day.DaAmount)}</TableCell>
                                                         <TableCell align="right">{formatAmount(day.TaAmount)}</TableCell>
                                                     </TableRow>
@@ -323,8 +291,8 @@ function MyClaim() {
                                 ) : (
                                     <EmptyState
                                         icon={RestaurantRounded}
-                                        title={loading ? "Loading…" : "No approved DCR days yet"}
-                                        message={loading ? "" : "Days appear here once your manager approves your DCRs for this month."}
+                                        title={loading ? "Loading…" : "No days with valid visits yet"}
+                                        message={loading ? "" : "Days appear here once you have valid (checked-in) visits this month."}
                                     />
                                 )}
                             </Panel>

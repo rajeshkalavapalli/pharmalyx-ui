@@ -19,7 +19,10 @@ import {
 import { AddRounded, CloseRounded, DeleteOutlineRounded } from "@mui/icons-material";
 
 import SegmentedControl from "../../../components/SegmentedControl/SegmentedControl";
-import { CUSTOMER_TYPE, errorMessage, formatAmount, getOrderOptions, lineAmounts, toDateKey, todayKey } from "../index";
+import { CUSTOMER_TYPE, errorMessage, formatAmount, getOrderOptions, lineAmounts, toDateKey, todayKey, uploadSlip } from "../index";
+import { slipHash } from "../slipHash";
+import { CameraCapture, LocationStatus } from "../../DoctorRequests/components/LiveCapture";
+import useLiveLocation from "../../DoctorRequests/components/useLiveLocation";
 
 const newLine = () => ({ key: `${Date.now()}-${Math.random()}`, ProductId: "", Quantity: "", FreeQuantity: "", DiscountPercent: "" });
 
@@ -54,6 +57,17 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
     const [stockistId, setStockistId] = useState(initial.stockistId || "");
     const [lines, setLines] = useState([newLine()]);
     const [remarks, setRemarks] = useState("");
+    // Chemist POB: in-app photo of the stamped slip and live GPS at the chemist.
+    const [slip, setSlip] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [slipError, setSlipError] = useState("");
+    const location = useLiveLocation();
+    const chemist = customerType === "CHEMIST";
+
+    useEffect(() => {
+        if (chemist) location.start();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chemist]);
 
     useEffect(() => {
         getOrderOptions()
@@ -106,11 +120,31 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
         })
         .find(Boolean);
 
-    const canSave = options && orderDate && customerId && stockistId && !lineError;
+    const canSave = options && orderDate && customerId && stockistId && !lineError && (!chemist || (slip && location.status === "CAPTURED"));
 
-    const handleSave = () =>
+    const handleSave = async () => {
+        let slipFields = {};
+        if (chemist) {
+            setUploading(true);
+            setSlipError("");
+            try {
+                const [{ photoId }, hash] = await Promise.all([uploadSlip(slip), slipHash(slip)]);
+                slipFields = {
+                    SlipPhotoId: photoId,
+                    SlipDHash: hash,
+                    Location: { status: "CAPTURED", latitude: location.fix.latitude, longitude: location.fix.longitude, accuracy: location.fix.accuracy },
+                };
+            } catch (err) {
+                setUploading(false);
+                setSlipError(errorMessage(err, "The slip photo could not be uploaded. Try again."));
+                return;
+            }
+            setUploading(false);
+        }
+
         onSave({
-            OrderDate: orderDate,
+            ...slipFields,
+            OrderDate: chemist ? todayKey() : orderDate,
             CustomerType: customerType,
             DoctorId: customerType === "DOCTOR" ? customerId : null,
             PharmacyId: customerType === "CHEMIST" ? customerId : null,
@@ -123,6 +157,7 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
                 DiscountPercent: Number(line.DiscountPercent || 0),
             })),
         });
+    };
 
     const maxLines = options?.maxLines ?? 30;
     const minDate = shiftDays(todayKey(), -(options?.maxBackdateDays ?? 7));
@@ -178,7 +213,9 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
                                 label="Order date"
                                 type="date"
                                 required
-                                value={orderDate}
+                                value={chemist ? todayKey() : orderDate}
+                                disabled={chemist}
+                                helperText={chemist ? "Chemist orders are booked on the day" : " "}
                                 onChange={(event) => setOrderDate(event.target.value)}
                                 slotProps={{ inputLabel: { shrink: true }, htmlInput: { max: todayKey(), min: minDate } }}
                             />
@@ -296,7 +333,23 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
                                 alignItems: "start",
                             })}
                         >
-                            <TextField multiline minRows={3} label="Remarks (optional)" value={remarks} onChange={(event) => setRemarks(event.target.value.slice(0, 500))} />
+                            <Stack spacing={2}>
+                                {chemist && (
+                                    <>
+                                        <LocationStatus location={location} label="At the chemist" />
+                                        <CameraCapture value={slip} onChange={setSlip} label="Photo of the stamped order slip *" />
+                                        {slipError && (
+                                            <Alert severity="error" variant="outlined">
+                                                {slipError}
+                                            </Alert>
+                                        )}
+                                        <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                            Camera only (no gallery). Date, time, GPS and your name are saved with the order. Book it while you are at the chemist (within {options?.chemistRadius ?? 200} m).
+                                        </Typography>
+                                    </>
+                                )}
+                                <TextField multiline minRows={3} label="Remarks (optional)" value={remarks} onChange={(event) => setRemarks(event.target.value.slice(0, 500))} />
+                            </Stack>
                             <Stack
                                 spacing={1}
                                 sx={(theme) => ({
@@ -327,7 +380,7 @@ function OrderDialog({ initial = {}, saving, onClose, onSave }) {
                 <Button variant="outlined" onClick={onClose} disabled={saving}>
                     Cancel
                 </Button>
-                <Button variant="contained" disabled={!canSave || saving} onClick={handleSave}>
+                <Button variant="contained" disabled={!canSave || saving || uploading} onClick={handleSave}>
                     Book order
                 </Button>
             </DialogActions>

@@ -251,10 +251,18 @@ function Visits() {
         try {
             const response = await createVisit(payload);
 
-            const gpsFlags = response?.data?.gpsFlags || response?.gpsFlags || [];
+            const result = response?.data || response || {};
+            const gpsFlags = result.gpsFlags || [];
+            const notCounted = result.validity === "INVALID";
             showSnackbar(
-                gpsFlags.length ? `${response?.message || "Visit logged"}, flagged for your manager: ${gpsFlags[0].details}` : response?.message || "Visit logged",
-                response?.data?.deviationCreated || gpsFlags.length ? "warning" : "success"
+                notCounted
+                    ? `Visit saved but not counted: ${(result.reasons || []).map((reason) => reason.text).join("; ")}`
+                    : gpsFlags.length
+                      ? `${response?.message || "Visit logged"}, flagged for review: ${gpsFlags[0].details}`
+                      : result.validity === "VALID"
+                        ? "Visit logged and counted as valid work."
+                        : response?.message || "Visit logged",
+                notCounted || result.deviationCreated || gpsFlags.length ? "warning" : "success"
             );
             load();
             return true;

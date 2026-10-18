@@ -13,10 +13,10 @@ const ACTIONS = {
     submit: {
         icon: SendRounded,
         color: "primary",
-        title: "Send for approval?",
+        title: "Save the plan?",
         message:
-            "Your manager will review the plan. You won't be able to edit it unless it is returned.",
-        confirmLabel: "Send for approval",
+            "Inside your territory no manager approval is needed: the plan is ready to use straight away and you can still swap days later. Days outside your territory need special duty or leave cover from head office.",
+        confirmLabel: "Save plan",
         remarks: "none",
     },
     approve: {

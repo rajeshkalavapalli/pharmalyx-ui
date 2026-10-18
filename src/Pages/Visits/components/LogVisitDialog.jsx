@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
     Alert,
@@ -20,6 +20,7 @@ import {
 import {
     CloseRounded,
     CloudOffRounded,
+    HowToRegRounded,
     LocationOffRounded,
     MyLocationRounded,
     PlaceRounded,
@@ -47,6 +48,7 @@ import {
     timeNow,
     todayKey,
 } from "../index";
+import { checkIn } from "../../WorkDay/index";
 
 const FEEDBACK_OPTIONS = [
     { value: "POSITIVE", label: FEEDBACK.POSITIVE.label, icon: SentimentSatisfiedAltRounded },
@@ -108,6 +110,13 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
     const [saving, setSaving] = useState(false);
     const [geofenceReason, setGeofenceReason] = useState("");
 
+    // Live check-in: opening the visit at the clinic (today, online) checks in on the server;
+    // saving is the check-out. Server times decide how long the MR stayed.
+    const [visitCheckIn, setVisitCheckIn] = useState(null);
+    const [checkInError, setCheckInError] = useState("");
+    const [now, setNow] = useState(() => Date.now());
+    const checkingFor = useRef(null);
+
     const locate = () => {
         setLocation({ status: "PENDING" });
         captureLocation().then(setLocation);
@@ -125,6 +134,30 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
     const duration = minutesBetween(times.start, times.end);
     const fence = clinicDistance(location, doctor);
 
+    const live = online && visitDate === today;
+
+    useEffect(() => {
+        if (!live || !doctorId || location.status === "PENDING" || checkingFor.current === doctorId) return;
+        checkingFor.current = doctorId;
+        setCheckInError("");
+        checkIn(doctorId, location)
+            .then((result) => setVisitCheckIn({ id: result.CheckInId, at: new Date(result.CheckInAt).getTime(), doctorId, minMinutes: result.minDwellMinutes }))
+            .catch((err) => {
+                checkingFor.current = null;
+                setCheckInError(err?.response?.data?.message || "Could not check in. The visit will not count until you check in.");
+            });
+    }, [live, doctorId, location]);
+
+    useEffect(() => {
+        if (!visitCheckIn) return undefined;
+        const timer = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(timer);
+    }, [visitCheckIn]);
+
+    const stayedSeconds = visitCheckIn ? Math.max(0, Math.round((now - visitCheckIn.at) / 1000)) : 0;
+    const remainingSeconds = visitCheckIn ? Math.max(0, visitCheckIn.minMinutes * 60 - stayedSeconds) : 0;
+    const clock = (seconds) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+
     const error = (() => {
         if (visitDate > today) return "The visit date cannot be in the future.";
         if (visitDate < minDate) return `Visits older than ${MAX_BACKDATE_DAYS} days cannot be logged.`;
@@ -139,6 +172,9 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
     const handleSave = async () => {
         setSaving(true);
 
+        // Check-out: a fresh fix where the MR is now.
+        const checkOut = visitCheckIn && visitCheckIn.doctorId === doctorId ? await captureLocation() : location;
+
         const saved = await onSave(
             {
                 VisitId: visitId,
@@ -150,7 +186,8 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                 Feedback: feedback,
                 Notes: notes.trim() || null,
                 FollowUpDate: followUpDate || null,
-                Location: location,
+                Location: checkOut,
+                CheckInId: visitCheckIn && visitCheckIn.doctorId === doctorId ? visitCheckIn.id : null,
                 GeofenceReason: fence?.outside && geofenceReason.trim() ? geofenceReason.trim() : null,
                 RecordedOffline: !online,
                 RecordedAt: new Date().toISOString(),
@@ -159,6 +196,7 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                     ItemId: item.ItemId,
                     ItemName: item.ItemName,
                     Quantity: Number(item.Quantity),
+                    GivenBy: jointWork && item.GivenBy === "JOINT" ? "JOINT" : null,
                 })),
             },
             doctor
@@ -227,6 +265,27 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                     )}
 
                     <LocationStatus location={location} onRetry={locate} />
+
+                    {visitCheckIn && visitCheckIn.doctorId === doctorId && (
+                        <Alert severity={remainingSeconds ? "info" : "success"} variant="outlined" icon={<HowToRegRounded />}>
+                            Checked in at {new Date(visitCheckIn.at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })} · {clock(stayedSeconds)} at the clinic.{" "}
+                            {remainingSeconds
+                                ? `Stay at least ${visitCheckIn.minMinutes} min for the visit to count (${clock(remainingSeconds)} left).`
+                                : "This visit can count. Save when you finish."}
+                        </Alert>
+                    )}
+                    {checkInError && (
+                        <Alert severity="warning" variant="outlined">
+                            {checkInError}
+                        </Alert>
+                    )}
+                    {!live && (
+                        <Alert severity="info" variant="outlined">
+                            {online
+                                ? "Visits for an earlier date are kept in your records but do not count as work (no live check-in at the clinic)."
+                                : "Offline visits are saved, but they can't be checked in live, so they won't count as work."}
+                        </Alert>
+                    )}
 
                     {fence?.outside && (
                         <Alert severity="warning" variant="outlined">
@@ -385,7 +444,12 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                         </Box>
                     </Box>
 
-                    <VisitItemsField stock={stock} value={items} onChange={setItems} />
+                    <VisitItemsField
+                        stock={stock}
+                        value={items}
+                        onChange={setItems}
+                        jointName={jointWork && jointWorkUserId ? colleagues.find((user) => user.id === jointWorkUserId)?.name || "colleague" : null}
+                    />
 
                     {error && (
                         <Alert severity="error" variant="outlined">

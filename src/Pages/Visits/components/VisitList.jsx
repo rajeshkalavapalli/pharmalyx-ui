@@ -20,6 +20,7 @@ import {
     minutesBetween,
     geofenceTag,
 } from "../index";
+import { validityOf } from "../../WorkDay/index";
 
 const truncate = { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
 
@@ -123,6 +124,13 @@ function VisitRow({ visit, onOpen }) {
                         />
                     )}
 
+                    {visit.FinalValidity && (
+                        <Tag
+                            label={validityOf(visit).label}
+                            color={validityOf(visit).color}
+                            title={(visit.reasons || []).map((reason) => reason.text).join("; ") || "Counted as valid work"}
+                        />
+                    )}
                     {feedback && <Tag label={feedback.label} color={feedback.color} />}
 
                     {visit.JointWorkUserName && (
