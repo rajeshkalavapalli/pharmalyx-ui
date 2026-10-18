@@ -11,13 +11,16 @@ const navigation = [
     {
         label: 'Field Operations',
         children: [
+            { label: 'My Day', path: '/field-operation/my-day', ready: true },
             { label: 'Doctors', path: '/field-operation/doctors', ready: true },
             { label: 'Doctor Requests', path: '/field-operation/doctor-requests', ready: true },
+            { label: 'Standard Tour Plan', path: '/field-operation/stp', ready: true },
             { label: 'Tour Plan', path: '/field-operation/tour-plan', ready: true },
             { label: 'Pre-call Planning', path: '/field-operation/pre-call', ready: true },
             { label: 'Visits', path: '/field-operation/visits', ready: true },
             { label: 'DCR', path: '/field-operation/dcr', ready: true },
             { label: 'Plan Deviation', path: '/field-operation/plan-deviation', ready: true },
+            { label: 'Verified Work', path: '/field-operation/verified-work', ready: true },
         ],
     },
 
@@ -51,6 +54,8 @@ const navigation = [
             { label: 'Stock', path: '/sales/stock', ready: true },
             { label: 'Secondary Sales', path: '/sales/secondary', ready: true },
             { label: 'Business', path: '/sales/business', ready: true },
+            { label: 'Business Tracker', path: '/sales/tracker', ready: true },
+            { label: 'Business Data', path: '/sales/business-data', ready: true },
         ],
     },
 

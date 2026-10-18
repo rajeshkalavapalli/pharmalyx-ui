@@ -272,3 +272,73 @@
   # V0.0.66
  
  - Status yes / no toggle back on the doctor form for everyone: non admin edit sends the status change for manager approval, new doctor request starts active
+
+
+  # V0.0.67
+ 
+ - Added verified work: my day page (automatic day start, today's patch, doctors due ordered by usual timing, check in), live check-in and check-out in the visit form with minimum stay timer, valid / not counted result with reasons on visits, standard tour plan page (patches HQ / Ex-HQ / Outstation, weekday cycle, head office approval, generate month plan), tour plan saved without manager approval inside the territory, verified work page (visits review and head office override, coverage, red flags, sample stock count, boundaries, exceptions, hospitals, rule values), one-time location consent and work-hour location recording, TA / DA from GPS distance and valid visits in claims, samples given by the joint-work colleague
+
+
+  # V0.0.68
+ 
+ - Simpler standard tour plan screen: one row per weekday (pick the area, then HQ / Ex-HQ / Outstation), same every week by default with optional 2 or 4 week rotation, copy week 1, and a simple day list for approved plans
+
+
+  # V0.0.69
+ 
+ - Standard tour plan shown as a week strip of day cards coloured by HQ / Ex-HQ / Outstation with a summary (days per type, night stays, days off); plan of selector only for people with direct reports and shows me properly
+
+
+  # V0.0.70
+ 
+ - Standard tour plan: removed the plan of dropdown; view plan / create (edit) plan toggle for your own plan, head office opens a plan from the approval list with back to my plan
+
+
+  # V0.0.71
+ 
+ - Fixed edit plan doing nothing while the standard tour plan is with head office: it now asks to take the plan back and opens the editor
+
+
+  # V0.0.72
+ 
+ - Added business tracking: chemist POB with in-app slip photo and GPS at the chemist (raised / under follow-up / supplied / verified, follow-up alert for managers), business tracker page (monthly review, ramp-up milestones with cost vs business chart, incentives earned / held / deducted / released, near-expiry batches), business data page for head office (dispatch, returns and expiry with void, batches, stockist territories, joining date and salary, milestones and incentive slabs, run order checks), order flag names in red flags
+
+
+  # V0.0.73
+ 
+ - Dashboard split into areas: greeting on top, then a tab bar (Field Operations, Doctor Engagement, Sales & Business, Verified Work) showing one area at a time for my team or my work; the chosen tab is remembered
+
+
+  # V0.0.74
+ 
+ - Dashboard tab bar now has every built module (Field Operations, Verified Work, Doctor Engagement, Sales & Distribution, Planning, Expenses, HR / Employee, Insights, Administration), each with headline numbers and bar charts for my team or my work
+
+
+  # V0.0.75
+ 
+ - Added Reports & Analytics tab on the dashboard (call average, doctor coverage, missed doctors by class, top representatives, DCRs submitted, POB orders)
+
+
+  # V0.0.76
+ 
+ - Dashboard tabs redesigned: KPI cards with trend chip and sparkline, smooth line/area charts with round axis steps, donut charts with legend and percentages, ranked progress lists; charts laid out wide + narrow side by side instead of bar charts only
+
+
+  # V0.0.77
+ 
+ - Dashboard made more attractive (tab bar unchanged): illustrated greeting banner with highlights and a daily quote, six KPI cards with trend pill and mini ring / bars / sparkline, planned vs completed as paired bars, Approvals & requests list with pending chips, quick-actions strip with coloured tiles and a brand card under every tab; charts now keep real-size text
+
+
+  # V0.0.78
+ 
+ - Dashboard: removed the landscape picture from the greeting banner and the promotional brand card from the quick-actions strip; quick-action tiles now use the full width
+
+
+  # V0.0.79
+ 
+ - Dashboard greeting redesigned: white card with brand accent bar, WELCOME BACK label, name in brand colour, status dot (green when work has started, amber when not), muted daily quote, dividers, larger main action with arrow, "Updated hh:mm" with a refresh button
+
+
+  # V0.0.80
+ 
+ - Dashboard greeting: daily quote highlighted as a soft blue callout with a quote icon, blue left border and bold italic text

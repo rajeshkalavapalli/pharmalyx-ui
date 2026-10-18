@@ -76,7 +76,6 @@ function ClaimDialog({ claimId, onClose, onDone }) {
 
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
-    const [dayEdits, setDayEdits] = useState({});
     const [itemEdits, setItemEdits] = useState({});
     const [action, setAction] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -85,7 +84,6 @@ function ClaimDialog({ claimId, onClose, onDone }) {
         getClaim(claimId)
             .then((response) => {
                 setData(response);
-                setDayEdits(Object.fromEntries(response.days.map((day) => [day.DayId, { da: String(day.DaAmount), ta: String(day.TaAmount) }])));
                 setItemEdits(Object.fromEntries(response.items.map((item) => [item.ItemId, String(item.Amount)])));
             })
             .catch((err) => setError(errorMessage(err, "Couldn't load the claim")));
@@ -95,13 +93,11 @@ function ClaimDialog({ claimId, onClose, onDone }) {
     const claim = data?.claim;
     const status = claim ? CLAIM_STATUS[claim.Status] : null;
 
-    const invalid =
-        reviewing &&
-        (data.days.some((day) => !isAmount(dayEdits[day.DayId]?.da, day.DaAmount) || !isAmount(dayEdits[day.DayId]?.ta, day.TaAmount)) ||
-            data.items.some((item) => !isAmount(itemEdits[item.ItemId], item.Amount)));
+    // TA / DA are calculated from verified work: managers approve them as they are; other expenses can be reduced.
+    const invalid = reviewing && data.items.some((item) => !isAmount(itemEdits[item.ItemId], item.Amount));
 
     const approvedTotal = reviewing
-        ? (data.days.reduce((sum, day) => sum + Math.round(Number(dayEdits[day.DayId]?.da || 0) * 100) + Math.round(Number(dayEdits[day.DayId]?.ta || 0) * 100), 0) +
+        ? (data.days.reduce((sum, day) => sum + Math.round(Number(day.DaAmount || 0) * 100) + Math.round(Number(day.TaAmount || 0) * 100), 0) +
               data.items.reduce((sum, item) => sum + Math.round(Number(itemEdits[item.ItemId] || 0) * 100), 0)) /
           100
         : claim?.ApprovedAmount;
@@ -117,7 +113,6 @@ function ClaimDialog({ claimId, onClose, onDone }) {
             if (action === "approve") {
                 response = await managerApprove(claimId, {
                     Remarks: remarks || null,
-                    Days: data.days.map((day) => ({ DayId: day.DayId, ApprovedDa: Number(dayEdits[day.DayId].da), ApprovedTa: Number(dayEdits[day.DayId].ta) })),
                     Items: data.items.map((item) => ({ ItemId: item.ItemId, ApprovedAmount: Number(itemEdits[item.ItemId]) })),
                 });
             } else if (action === "return") {
@@ -225,30 +220,17 @@ function ClaimDialog({ claimId, onClose, onDone }) {
                                                         <TableCell>{stationLabel(day.StationType)}</TableCell>
                                                         <TableCell>
                                                             {TRAVEL_LABEL[day.TravelMode] || day.TravelMode} · {day.DistanceKm} km
-                                                        </TableCell>
-                                                        <TableCell align="right">
-                                                            {reviewing ? (
-                                                                <AmountInput
-                                                                    value={dayEdits[day.DayId]?.da ?? ""}
-                                                                    max={day.DaAmount}
-                                                                    label={`${day.ExpenseDate} approved DA`}
-                                                                    onChange={(value) => setDayEdits((current) => ({ ...current, [day.DayId]: { ...current[day.DayId], da: value } }))}
-                                                                />
-                                                            ) : (
-                                                                formatAmount(day.DaAmount)
+                                                            {day.ValidVisits != null && (
+                                                                <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                                                    GPS distance · {day.ValidVisits} valid visit(s){day.DaEligible === false ? " · no DA" : ""}
+                                                                </Typography>
                                                             )}
                                                         </TableCell>
                                                         <TableCell align="right">
-                                                            {reviewing ? (
-                                                                <AmountInput
-                                                                    value={dayEdits[day.DayId]?.ta ?? ""}
-                                                                    max={day.TaAmount}
-                                                                    label={`${day.ExpenseDate} approved TA`}
-                                                                    onChange={(value) => setDayEdits((current) => ({ ...current, [day.DayId]: { ...current[day.DayId], ta: value } }))}
-                                                                />
-                                                            ) : (
-                                                                formatAmount(day.TaAmount)
-                                                            )}
+                                                            {formatAmount(day.DaAmount)}
+                                                        </TableCell>
+                                                        <TableCell align="right">
+                                                            {formatAmount(day.TaAmount)}
                                                         </TableCell>
                                                         {!reviewing && claim.ApprovedAmount != null && (
                                                             <TableCell align="right">{formatAmount(approvedOf(day.ApprovedDa, day.DaAmount) + approvedOf(day.ApprovedTa, day.TaAmount))}</TableCell>

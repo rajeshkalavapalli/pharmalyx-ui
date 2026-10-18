@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
+
 import { Box, Button, Divider, Drawer, IconButton, Stack, Typography } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 
 import { DetailFact, DetailSection } from "../../../components/DetailSection/DetailSection";
 import StatusChip from "../../../components/StatusChip/StatusChip";
-import { ORDER_ACTIONS, ORDER_STATUS, customerLabel, formatAmount, formatDate } from "../index";
+import { customerLabel, fetchSlipUrl, formatAmount, formatDate, orderActions, statusOf } from "../index";
 
 const formatStamp = (value) =>
     value ? new Date(value).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : null;
@@ -19,16 +21,38 @@ function Row({ label, value, strong }) {
     );
 }
 
-// Order details with the next status steps for the MR or their manager.
-function OrderDrawer({ order, canUpdate, onClose, onAction }) {
-    const status = order ? ORDER_STATUS[order.Status] : null;
-    const actions = order && canUpdate ? ORDER_ACTIONS[order.Status] || [] : [];
+// Slip photo (fetched with the session; never cached in public).
+function SlipPhoto({ orderId }) {
+    const [url, setUrl] = useState(null);
+    const [failed, setFailed] = useState(false);
+
+    useEffect(() => {
+        let current = null;
+        fetchSlipUrl(orderId)
+            .then((value) => {
+                current = value;
+                setUrl(value);
+            })
+            .catch(() => setFailed(true));
+        return () => current && URL.revokeObjectURL(current);
+    }, [orderId]);
+
+    if (failed) return <Typography variant="body2">The slip photo could not be loaded.</Typography>;
+    if (!url) return <Typography variant="body2">Loading the slip…</Typography>;
+    return <Box component="img" src={url} alt="Order slip" sx={(theme) => ({ width: "100%", maxHeight: theme.doctorRequests.cameraMaxHeight, objectFit: "contain", borderRadius: theme.field.radius, backgroundColor: theme.palette.surface.subtle })} />;
+}
+
+// Order details with the next steps: the MR marks supplied; the manager follows up and verifies.
+function OrderDrawer({ order, canUpdate, role = "owner", onClose, onAction }) {
+    const status = order ? statusOf(order) : null;
+    const actions = order && canUpdate ? orderActions(order, role) : [];
 
     const history = order
         ? [
-              { label: "Booked", at: order.CreatedOn },
-              { label: "Confirmed", at: order.ConfirmedOn },
+              { label: "Raised", at: order.CreatedOn },
+              { label: `Under follow-up${order.FollowUpByName ? ` (${order.FollowUpByName})` : ""}`, at: order.FollowUpOn || order.ConfirmedOn },
               { label: "Supplied", at: order.SuppliedOn },
+              { label: `Verified${order.VerifiedByName ? ` (${order.VerifiedByName})` : ""}`, at: order.VerifiedOn },
               { label: "Cancelled", at: order.CancelledOn },
           ].filter((step) => step.at)
         : [];
@@ -103,6 +127,20 @@ function OrderDrawer({ order, canUpdate, onClose, onAction }) {
                                     <Row label="Order value" value={formatAmount(order.NetAmount)} strong />
                                 </Stack>
                             </DetailSection>
+
+                            {(order.HasSlip || order.BookedLatitude != null) && (
+                                <DetailSection title="Booked at the chemist">
+                                    <Stack spacing={1.5}>
+                                        {order.HasSlip && <SlipPhoto orderId={order.OrderId} />}
+                                        {order.BookedLatitude != null && (
+                                            <Typography variant="body2" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                                GPS {Number(order.BookedLatitude).toFixed(5)}, {Number(order.BookedLongitude).toFixed(5)}
+                                                {order.DistanceFromChemistM != null ? ` · ${order.DistanceFromChemistM} m from the chemist` : ""} · {formatStamp(order.CreatedOn)} · {order.UserName}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </DetailSection>
+                            )}
 
                             <DetailSection title="Progress">
                                 <Stack spacing={1}>

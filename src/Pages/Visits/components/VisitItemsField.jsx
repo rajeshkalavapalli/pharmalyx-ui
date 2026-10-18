@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { AddRounded, CardGiftcardRounded, CloseRounded, MedicationRounded } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -13,14 +13,16 @@ export const itemsError = (items, stock) => {
         const quantity = Number(item.Quantity);
 
         if (!Number.isInteger(quantity) || quantity < 1) return `Enter a quantity for ${item.ItemName}.`;
-        if (quantity > held) return `You only hold ${held} of ${item.ItemName}.`;
+        // Given by the joint-work colleague: comes from their stock (checked on the server).
+        if (item.GivenBy !== "JOINT" && quantity > held) return `You only hold ${held} of ${item.ItemName}.`;
     }
 
     return "";
 };
 
 // Samples and gifts handed over during the call, limited to what the user holds.
-function VisitItemsField({ stock, value, onChange }) {
+// With joint work, an item can be marked as given by the colleague (recorded as theirs, from their stock).
+function VisitItemsField({ stock, value, onChange, jointName = null }) {
     const [anchor, setAnchor] = useState(null);
 
     const chosen = new Set(value.map(itemKey));
@@ -35,6 +37,8 @@ function VisitItemsField({ stock, value, onChange }) {
         onChange(value.map((item) => (itemKey(item) === key ? { ...item, Quantity: quantity } : item)));
 
     const remove = (key) => onChange(value.filter((item) => itemKey(item) !== key));
+
+    const setGiver = (key, joint) => onChange(value.map((item) => (itemKey(item) === key ? { ...item, GivenBy: joint ? "JOINT" : null } : item)));
 
     return (
         <Box>
@@ -55,7 +59,8 @@ function VisitItemsField({ stock, value, onChange }) {
                     const key = itemKey(item);
                     const held = stock.find((row) => itemKey(row) === key)?.Balance ?? 0;
                     const Icon = ICONS[item.ItemType];
-                    const over = Number(item.Quantity) > held;
+                    const byJoint = Boolean(jointName) && item.GivenBy === "JOINT";
+                    const over = !byJoint && Number(item.Quantity) > held;
 
                     return (
                         <Stack
@@ -78,8 +83,15 @@ function VisitItemsField({ stock, value, onChange }) {
                                     {item.ItemName}
                                 </Typography>
                                 <Typography variant="caption" sx={(theme) => ({ color: over ? theme.palette.error.dark : theme.palette.text.secondary })}>
-                                    {held} in hand
+                                    {byJoint ? `Given by ${jointName}` : `${held} in hand`}
                                 </Typography>
+                                {jointName && (
+                                    <FormControlLabel
+                                        sx={{ display: "flex", m: 0 }}
+                                        control={<Checkbox size="small" checked={byJoint} onChange={(event) => setGiver(key, event.target.checked)} />}
+                                        label={<Typography variant="caption">Given by {jointName}</Typography>}
+                                    />
+                                )}
                             </Box>
                             <TextField
                                 size="small"

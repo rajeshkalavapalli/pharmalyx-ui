@@ -348,7 +348,7 @@ function useTourPlan() {
                     Submit: submit,
                     details: plansToDetails(plans, month),
                 }),
-            submit ? "Tour plan submitted for approval" : "Tour plan saved as draft"
+            submit ? "Tour plan saved. No manager approval is needed inside your territory." : "Tour plan saved"
         );
 
     const approve = (remarks) =>

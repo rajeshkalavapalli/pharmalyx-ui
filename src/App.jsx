@@ -68,6 +68,8 @@ import Accounts from './Pages/Sales/Accounts/Accounts.jsx';
 import SecondarySales from './Pages/Sales/Secondary/SecondarySales.jsx';
 import StockPosition from './Pages/Sales/Secondary/StockPosition.jsx';
 import Business from './Pages/Sales/Business/Business.jsx';
+import BusinessTracker from './Pages/Business/Tracker.jsx';
+import BusinessData from './Pages/Business/BusinessData.jsx';
 import SalesPlan from './Pages/Planning/SalesPlan/SalesPlan.jsx';
 import DoctorPlan from './Pages/Planning/DoctorPlan/DoctorPlan.jsx';
 import MyClaim from './Pages/Expenses/Claims/MyClaim.jsx';
@@ -88,6 +90,9 @@ import AdvancedAnalytics from './Pages/Insights/Analytics/AdvancedAnalytics.jsx'
 import InsightRules from './Pages/Insights/Rules/InsightRules.jsx';
 import Approvals from './Pages/Approvals/Approvals.jsx';
 import DoctorRequests from './Pages/DoctorRequests/DoctorRequests.jsx';
+import MyDay from './Pages/WorkDay/MyDay.jsx';
+import Stp from './Pages/WorkDay/Stp.jsx';
+import VerifiedWork from './Pages/WorkDay/VerifiedWork.jsx';
 import Attendance from './Pages/HR/Attendance/Attendance.jsx';
 import Leave from './Pages/HR/Leave/Leave.jsx';
 import Activity from './Pages/HR/Activity/Activity.jsx';
@@ -310,6 +315,11 @@ function App() {
                     <Route path='field-operation/pre-call' element={<PreCall />} />
                     <Route path='field-operation/doctor-requests' element={<DoctorRequests />} />
 
+                    {/* Verified work: my day, standard tour plan, head office review */}
+                    <Route path='field-operation/my-day' element={<MyDay />} />
+                    <Route path='field-operation/stp' element={<Stp />} />
+                    <Route path='field-operation/verified-work' element={<VerifiedWork />} />
+
                     {/* Field operations: daily call reports */}
 
                     <Route
@@ -356,6 +366,8 @@ function App() {
                     <Route path='sales/secondary' element={<SecondarySales />} />
                     <Route path='sales/stock' element={<StockPosition />} />
                     <Route path='sales/business' element={<Business />} />
+                    <Route path='sales/tracker' element={<BusinessTracker />} />
+                    <Route path='sales/business-data' element={<BusinessData />} />
 
                     {/* Planning */}
 
