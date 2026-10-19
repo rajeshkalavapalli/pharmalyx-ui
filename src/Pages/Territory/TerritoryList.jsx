@@ -272,9 +272,9 @@ function TerritoryList({
 
                 width,
 
-                fontSize: 11,
+                fontSize: "textXs",
 
-                fontWeight: 750,
+                fontWeight: "fontWeightBold",
 
                 color:
                     theme.palette.primary.main,
@@ -439,9 +439,9 @@ function TerritoryList({
                             <Typography
                                 sx={{
 
-                                    fontSize: 18,
+                                    fontSize: "text2xl",
 
-                                    fontWeight: 750,
+                                    fontWeight: "fontWeightBold",
 
                                     color:
                                         "text.primary",
@@ -462,7 +462,7 @@ function TerritoryList({
 
                                     mt: 0.35,
 
-                                    fontSize: 12.5,
+                                    fontSize: "textSm",
 
                                     color:
                                         "text.secondary",
@@ -487,7 +487,7 @@ function TerritoryList({
                     startIcon={
                         <AddIcon
                             sx={{
-                                fontSize: 18,
+                                fontSize: "text2xl",
                             }}
                         />
                     }
@@ -509,9 +509,9 @@ function TerritoryList({
                         textTransform:
                             "none",
 
-                        fontSize: 13,
+                        fontSize: "textMd",
 
-                        fontWeight: 700,
+                        fontWeight: "fontWeightBold",
 
                         alignSelf: {
                             xs: "flex-start",
@@ -653,7 +653,7 @@ function TerritoryList({
 
                                     borderRadius: 1.75,
 
-                                    fontSize: 13,
+                                    fontSize: "textMd",
 
                                     backgroundColor:
                                         theme.palette.background.paper,
@@ -716,7 +716,7 @@ function TerritoryList({
                                         <SearchOutlinedIcon
                                             sx={{
 
-                                                fontSize: 19,
+                                                fontSize: "text3xl",
 
                                                 color:
                                                     "text.secondary",
@@ -755,9 +755,9 @@ function TerritoryList({
 
                                 borderRadius: 1.75,
 
-                                fontSize: 13,
+                                fontSize: "textMd",
 
-                                fontWeight: 500,
+                                fontWeight: "fontWeightMedium",
 
                                 backgroundColor:
                                     theme.palette.background.paper,
@@ -867,9 +867,9 @@ function TerritoryList({
                         <Typography
                             sx={{
 
-                                fontSize: 12,
+                                fontSize: "textSm",
 
-                                fontWeight: 750,
+                                fontWeight: "fontWeightBold",
 
                                 color:
                                     "primary.main",
@@ -883,9 +883,9 @@ function TerritoryList({
                         <Typography
                             sx={{
 
-                                fontSize: 12,
+                                fontSize: "textSm",
 
-                                fontWeight: 500,
+                                fontWeight: "fontWeightMedium",
 
                                 color:
                                     "text.secondary",
@@ -1157,7 +1157,7 @@ function TerritoryList({
 
                                                                     <VisibilityOutlinedIcon
                                                                         sx={{
-                                                                            fontSize: 18,
+                                                                            fontSize: "text2xl",
                                                                         }}
                                                                     />
 
@@ -1188,7 +1188,7 @@ function TerritoryList({
 
                                                                     <EditOutlinedIcon
                                                                         sx={{
-                                                                            fontSize: 18,
+                                                                            fontSize: "text2xl",
                                                                         }}
                                                                     />
 
@@ -1221,7 +1221,7 @@ function TerritoryList({
 
                                                                     <DeleteIcon
                                                                         sx={{
-                                                                            fontSize: 18,
+                                                                            fontSize: "text2xl",
                                                                         }}
                                                                     />
 
@@ -1243,9 +1243,9 @@ function TerritoryList({
 
                                                             py: 1.1,
 
-                                                            fontSize: 13.5,
+                                                            fontSize: "textMd",
 
-                                                            fontWeight: 700,
+                                                            fontWeight: "fontWeightBold",
 
                                                             color:
                                                                 theme.palette.primary.dark,
@@ -1283,9 +1283,9 @@ function TerritoryList({
 
                                                             py: 1.1,
 
-                                                            fontSize: 12.5,
+                                                            fontSize: "textSm",
 
-                                                            fontWeight: 500,
+                                                            fontWeight: "fontWeightMedium",
 
                                                             color:
                                                                 "text.secondary",
@@ -1384,9 +1384,9 @@ function TerritoryList({
 
                                                                         sx={{
 
-                                                                            fontSize: 11,
+                                                                            fontSize: "textXs",
 
-                                                                            fontWeight: 700,
+                                                                            fontWeight: "fontWeightBold",
 
                                                                             lineHeight: 1,
 
@@ -1479,9 +1479,9 @@ function TerritoryList({
 
                                                             py: 1.1,
 
-                                                            fontSize: 12.5,
+                                                            fontSize: "textSm",
 
-                                                            fontWeight: 500,
+                                                            fontWeight: "fontWeightMedium",
 
                                                             color:
                                                                 "text.secondary",
@@ -1508,9 +1508,9 @@ function TerritoryList({
 
                                                             py: 1.1,
 
-                                                            fontSize: 12.5,
+                                                            fontSize: "textSm",
 
-                                                            fontWeight: 500,
+                                                            fontWeight: "fontWeightMedium",
 
                                                             color:
                                                                 "text.secondary",
@@ -1537,9 +1537,9 @@ function TerritoryList({
 
                                                             py: 1.1,
 
-                                                            fontSize: 12.5,
+                                                            fontSize: "textSm",
 
-                                                            fontWeight: 500,
+                                                            fontWeight: "fontWeightMedium",
 
                                                             color:
                                                                 "text.secondary",
@@ -1639,7 +1639,7 @@ function TerritoryList({
                                                     <SearchOutlinedIcon
                                                         sx={{
 
-                                                            fontSize: 23,
+                                                            fontSize: "text4xl",
 
                                                             color:
                                                                 "primary.main",
@@ -1653,9 +1653,9 @@ function TerritoryList({
                                                 <Typography
                                                     sx={{
 
-                                                        fontSize: 14,
+                                                        fontSize: "textBase",
 
-                                                        fontWeight: 700,
+                                                        fontWeight: "fontWeightBold",
 
                                                         color:
                                                             "text.primary",
@@ -1671,7 +1671,7 @@ function TerritoryList({
 
                                                         mt: 0.5,
 
-                                                        fontSize: 12,
+                                                        fontSize: "textSm",
 
                                                         color:
                                                             "text.secondary",

@@ -153,7 +153,7 @@ function CallPlanList({ doctors, canPlan, canLog, busy, onMove, onPlan, onLogVis
                                 </>
                             )}
                             {visited ? (
-                                <Typography variant="caption" sx={(theme) => ({ color: theme.palette.success.dark, fontWeight: 600 })}>
+                                <Typography variant="caption" sx={(theme) => ({ color: theme.palette.success.dark, fontWeight: "fontWeightSemibold" })}>
                                     Visited
                                 </Typography>
                             ) : (

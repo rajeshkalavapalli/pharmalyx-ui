@@ -241,7 +241,7 @@ export function ManagerActions({ approvals, sx }) {
                                     placeItems: "center",
                                     borderRadius: theme.statusChip.radius,
                                     ...theme.typography.micro,
-                                    fontWeight: 700,
+                                    fontWeight: "fontWeightBold",
                                     color: theme.palette.error.contrastText,
                                     backgroundColor: theme.palette.error.main,
                                 })}

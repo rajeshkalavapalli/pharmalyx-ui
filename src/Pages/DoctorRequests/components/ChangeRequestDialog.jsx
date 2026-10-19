@@ -112,7 +112,7 @@ function ChangeRequestDialog({ doctor, initialType = "EDIT", resubmit = null, on
                 <Stack spacing={2} sx={{ pt: 1 }}>
                     {resubmit ? (
                         <Alert severity="warning" variant="outlined">
-                            <Typography variant="caption" component="p" sx={{ fontWeight: 600 }}>
+                            <Typography variant="caption" component="p" sx={{ fontWeight: "fontWeightSemibold" }}>
                                 Rejected{resubmit.reviewedBy ? ` by ${resubmit.reviewedBy}` : ""}
                             </Typography>
                             {resubmit.remarks || "No reason given."}

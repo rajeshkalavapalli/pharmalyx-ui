@@ -154,10 +154,10 @@ export function SnackbarProvider({
                             2,
 
                         fontSize:
-                            13,
+                            "textMd",
 
                         fontWeight:
-                            500,
+                            "fontWeightMedium",
 
                         alignItems:
                             "center",

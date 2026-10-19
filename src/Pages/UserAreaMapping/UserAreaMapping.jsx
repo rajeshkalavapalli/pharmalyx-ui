@@ -459,8 +459,8 @@ function UserAreaMapping() {
                                     theme.palette
                                         .primary
                                         .contrastText,
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                             })}
                         >
                             1
@@ -473,7 +473,7 @@ function UserAreaMapping() {
                                 color:
                                     theme.palette
                                         .text.primary,
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                             })}
                         >
                             Select User
@@ -562,7 +562,7 @@ function UserAreaMapping() {
                         <Typography
                             variant="body1"
                             sx={{
-                                fontWeight: 600,
+                                fontWeight: "fontWeightSemibold",
                                 mb: 1.5,
                             }}
                         >
@@ -588,7 +588,7 @@ function UserAreaMapping() {
                         <Typography
                             variant="body1"
                             sx={{
-                                fontWeight: 600,
+                                fontWeight: "fontWeightSemibold",
                                 mb: 1.5,
                             }}
                         >
@@ -617,7 +617,7 @@ function UserAreaMapping() {
                                 color:
                                     theme.palette
                                         .success.main,
-                                fontWeight: 600,
+                                fontWeight: "fontWeightSemibold",
                             })}
                         >
                             {selectedUserDetails
@@ -694,8 +694,8 @@ function UserAreaMapping() {
                                             .palette
                                             .text
                                             .disabled,
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                             })}
                         >
                             2
@@ -707,7 +707,7 @@ function UserAreaMapping() {
                             sx={{
                                 color:
                                     "text.primary",
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             Select Territories
@@ -895,8 +895,8 @@ function UserAreaMapping() {
                                             .palette
                                             .text
                                             .disabled,
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                             })}
                         >
                             3
@@ -908,7 +908,7 @@ function UserAreaMapping() {
                             sx={{
                                 color:
                                     "text.primary",
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             Select Areas
@@ -1065,8 +1065,8 @@ function UserAreaMapping() {
                             xs: 1.5,
                             sm: 2,
                         },
-                        fontSize: 12,
-                        fontWeight: 700,
+                        fontSize: "textSm",
+                        fontWeight: "fontWeightBold",
                         color:
                             "text.primary",
                         whiteSpace:
@@ -1099,8 +1099,8 @@ function UserAreaMapping() {
 
                     <Typography
                         sx={{
-                            fontSize: 10,
-                            fontWeight: 500,
+                            fontSize: "textXxs",
+                            fontWeight: "fontWeightMedium",
                             color:
                                 "text.secondary",
                             lineHeight: 1.2,
@@ -1113,8 +1113,8 @@ function UserAreaMapping() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 11,
-                            fontWeight: 700,
+                            fontSize: "textXs",
+                            fontWeight: "fontWeightBold",
                             color:
                                 "text.primary",
                             lineHeight: 1.2,
@@ -1157,8 +1157,8 @@ function UserAreaMapping() {
 
                     <Typography
                         sx={{
-                            fontSize: 10,
-                            fontWeight: 500,
+                            fontSize: "textXxs",
+                            fontWeight: "fontWeightMedium",
                             color:
                                 "text.secondary",
                             lineHeight: 1.2,
@@ -1171,8 +1171,8 @@ function UserAreaMapping() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 11,
-                            fontWeight: 700,
+                            fontSize: "textXs",
+                            fontWeight: "fontWeightBold",
                             color:
                                 "text.primary",
                             lineHeight: 1.2,
@@ -1206,8 +1206,8 @@ function UserAreaMapping() {
 
                     <Typography
                         sx={{
-                            fontSize: 10,
-                            fontWeight: 500,
+                            fontSize: "textXxs",
+                            fontWeight: "fontWeightMedium",
                             color:
                                 "text.secondary",
                             lineHeight: 1.2,
@@ -1220,8 +1220,8 @@ function UserAreaMapping() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 11,
-                            fontWeight: 700,
+                            fontSize: "textXs",
+                            fontWeight: "fontWeightBold",
                             color:
                                 "text.primary",
                             lineHeight: 1.2,

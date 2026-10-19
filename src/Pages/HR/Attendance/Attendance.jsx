@@ -103,7 +103,7 @@ function MonthCalendar({ person }) {
         <Box>
             <Box sx={(theme) => ({ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: theme.calendar.gridGap })}>
                 {WEEKDAYS.map((day) => (
-                    <Typography key={day} variant="caption" sx={(theme) => ({ textAlign: "center", py: theme.calendar.weekdayPaddingY, color: theme.palette.text.secondary, fontWeight: 600 })}>
+                    <Typography key={day} variant="caption" sx={(theme) => ({ textAlign: "center", py: theme.calendar.weekdayPaddingY, color: theme.palette.text.secondary, fontWeight: "fontWeightSemibold" })}>
                         {day}
                     </Typography>
                 ))}
@@ -130,11 +130,11 @@ function MonthCalendar({ person }) {
                                 })}
                             >
                                 <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
-                                    <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                                    <Typography variant="caption" sx={{ fontWeight: "fontWeightSemibold" }}>
                                         {Number(day.day.slice(8))}
                                     </Typography>
                                     {status.short && (
-                                        <Typography variant="micro" sx={(theme) => ({ fontWeight: 700, color: theme.palette[status.color].dark })}>
+                                        <Typography variant="micro" sx={(theme) => ({ fontWeight: "fontWeightBold", color: theme.palette[status.color].dark })}>
                                             {status.short}
                                         </Typography>
                                     )}

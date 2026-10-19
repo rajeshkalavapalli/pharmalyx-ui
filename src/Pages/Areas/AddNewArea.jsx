@@ -290,7 +290,7 @@ function AddNewArea({
 
         "& .MuiInputLabel-root": {
 
-            fontSize: 13,
+            fontSize: "textMd",
 
             color:
                 "text.secondary",
@@ -306,7 +306,7 @@ function AddNewArea({
 
         "& .MuiInputBase-input": {
 
-            fontSize: 13,
+            fontSize: "textMd",
 
             color:
                 "text.primary",
@@ -315,13 +315,13 @@ function AddNewArea({
 
         "& .MuiSelect-select": {
 
-            fontSize: 13,
+            fontSize: "textMd",
 
         },
 
         "& .MuiFormHelperText-root": {
 
-            fontSize: 11,
+            fontSize: "textXs",
 
             marginLeft: 0.5,
 
@@ -602,7 +602,7 @@ function AddNewArea({
                     <Typography
                         variant="h6"
                         sx={{
-                            fontWeight: 700,
+                            fontWeight: "fontWeightBold",
                             color:
                                 "text.primary",
                             lineHeight: 1.3,
@@ -617,7 +617,7 @@ function AddNewArea({
                             mt: 0.5,
                             color:
                                 "text.secondary",
-                            fontSize: 13,
+                            fontSize: "textMd",
                         }}
                     >
                         {getDescription()}
@@ -681,8 +681,8 @@ function AddNewArea({
 
                             <Typography
                                 sx={{
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                     color:
                                         "text.primary",
                                 }}
@@ -693,7 +693,7 @@ function AddNewArea({
                             <Typography
                                 sx={{
                                     mt: 0.25,
-                                    fontSize: 12,
+                                    fontSize: "textSm",
                                     color:
                                         "text.secondary",
                                 }}
@@ -975,8 +975,8 @@ function AddNewArea({
 
                             <Typography
                                 sx={{
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                     color:
                                         "text.primary",
                                 }}
@@ -987,7 +987,7 @@ function AddNewArea({
                             <Typography
                                 sx={{
                                     mt: 0.25,
-                                    fontSize: 12,
+                                    fontSize: "textSm",
                                     color:
                                         "text.secondary",
                                 }}
@@ -1086,7 +1086,7 @@ function AddNewArea({
 
                                 "& .MuiInputBase-input":
                                     {
-                                        fontSize: 13,
+                                        fontSize: "textMd",
                                         color:
                                             "text.secondary",
                                         cursor:
@@ -1102,7 +1102,7 @@ function AddNewArea({
 
                             <Typography
                                 sx={{
-                                    fontSize: 13,
+                                    fontSize: "textMd",
                                     color:
                                         "text.secondary",
                                     mb: 1,
@@ -1161,8 +1161,8 @@ function AddNewArea({
                                         textTransform:
                                             "none",
 
-                                        fontSize: 12,
-                                        fontWeight: 600,
+                                        fontSize: "textSm",
+                                        fontWeight: "fontWeightSemibold",
 
                                         color:
                                             values.IsActive ===
@@ -1237,8 +1237,8 @@ function AddNewArea({
                                         textTransform:
                                             "none",
 
-                                        fontSize: 12,
-                                        fontWeight: 600,
+                                        fontSize: "textSm",
+                                        fontWeight: "fontWeightSemibold",
 
                                         color:
                                             values.IsActive ===

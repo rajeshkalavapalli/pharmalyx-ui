@@ -140,12 +140,12 @@ function StpSummary({ stp }) {
                                                 <Icon fontSize="small" />
                                             </Box>
                                         </Stack>
-                                        <Typography variant="subtitle1" sx={(theme) => ({ fontWeight: 600, textTransform: "capitalize", color: area ? theme.palette.text.primary : theme.palette.text.disabled })}>
+                                        <Typography variant="subtitle1" sx={(theme) => ({ fontWeight: "fontWeightSemibold", textTransform: "capitalize", color: area ? theme.palette.text.primary : theme.palette.text.disabled })}>
                                             {area ? names.get(area) : "Day off"}
                                         </Typography>
                                         <Box sx={{ mt: "auto" }}>
                                             {area && (
-                                                <Typography variant="caption" sx={(theme) => ({ fontWeight: 600, color: theme.palette[color].main })}>
+                                                <Typography variant="caption" sx={(theme) => ({ fontWeight: "fontWeightSemibold", color: theme.palette[color].main })}>
                                                     {patchLabel(type)}
                                                     {night ? " · night stay" : ""}
                                                 </Typography>

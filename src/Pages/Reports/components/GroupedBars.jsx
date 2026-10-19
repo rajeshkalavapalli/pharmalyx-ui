@@ -2,8 +2,7 @@ import { useState } from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
-const visuallyHidden = { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" };
+import { visuallyHidden } from "@mui/utils";
 
 // Two series side by side per group (validated chart pair), hover tooltip, legend, screen-reader table.
 // series: [{ key, label, color: (theme) => string }]  rows: [{ key, label, ...values }]
@@ -101,28 +100,31 @@ function GroupedBars({ series, rows, format = (value) => value, ariaLabel }) {
                 ))}
             </Box>
 
-            <Box component="table" sx={visuallyHidden}>
-                <caption>{ariaLabel}</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Period</th>
-                        {series.map((item) => (
-                            <th key={item.key} scope="col">
-                                {item.label}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row) => (
-                        <tr key={row.key}>
-                            <th scope="row">{row.label}</th>
+            {/* Screen-reader copy of the chart. Hidden on a wrapper: a table ignores width and height. */}
+            <Box sx={visuallyHidden}>
+                <table>
+                    <caption>{ariaLabel}</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Period</th>
                             {series.map((item) => (
-                                <td key={item.key}>{format(row[item.key] || 0)}</td>
+                                <th key={item.key} scope="col">
+                                    {item.label}
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {rows.map((row) => (
+                            <tr key={row.key}>
+                                <th scope="row">{row.label}</th>
+                                {series.map((item) => (
+                                    <td key={item.key}>{format(row[item.key] || 0)}</td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Box>
         </Box>
     );

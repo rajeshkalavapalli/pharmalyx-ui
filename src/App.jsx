@@ -63,6 +63,8 @@ import ComingSoon from './Pages/ComingSoon/ComingSoon.jsx';
 
 import Catalogue from './Pages/Catalogue/Catalogue.jsx';
 import RolesPermissions from './Pages/Roles/RolesPermissions.jsx';
+import DataImport from './Pages/DataImport/DataImport.jsx';
+import ImportWizard from './Pages/DataImport/ImportWizard.jsx';
 import Orders from './Pages/Sales/Orders/Orders.jsx';
 import Accounts from './Pages/Sales/Accounts/Accounts.jsx';
 import SecondarySales from './Pages/Sales/Secondary/SecondarySales.jsx';
@@ -70,6 +72,9 @@ import StockPosition from './Pages/Sales/Secondary/StockPosition.jsx';
 import Business from './Pages/Sales/Business/Business.jsx';
 import BusinessTracker from './Pages/Business/Tracker.jsx';
 import BusinessData from './Pages/Business/BusinessData.jsx';
+import FieldLedger from './Pages/FieldLedger/FieldLedger.jsx';
+import SupplyReports from './Pages/FieldLedger/SupplyReports.jsx';
+import DoctorSpend from './Pages/DoctorSpend/DoctorSpend.jsx';
 import SalesPlan from './Pages/Planning/SalesPlan/SalesPlan.jsx';
 import DoctorPlan from './Pages/Planning/DoctorPlan/DoctorPlan.jsx';
 import MyClaim from './Pages/Expenses/Claims/MyClaim.jsx';
@@ -352,11 +357,14 @@ function App() {
                     <Route path='doctor-engagement/gifts' element={<StockPage key='gifts' itemType='GIFT' />} />
                     <Route path='doctor-engagement/feedback' element={<Feedback />} />
                     <Route path='doctor-engagement/doctor-business' element={<DoctorBusiness />} />
+                    <Route path='doctor-engagement/spend' element={<DoctorSpend />} />
 
                     {/* Roles & permissions */}
 
                     <Route path='admin/roles' element={<RolesPermissions />} />
                     <Route path='admin/approvals' element={<Approvals />} />
+                    <Route path='admin/data-import' element={<DataImport />} />
+                    <Route path='admin/data-import/:batchId' element={<ImportWizard />} />
 
                     {/* Sales & distribution */}
 
@@ -368,6 +376,8 @@ function App() {
                     <Route path='sales/business' element={<Business />} />
                     <Route path='sales/tracker' element={<BusinessTracker />} />
                     <Route path='sales/business-data' element={<BusinessData />} />
+                    <Route path='sales/field-ledger' element={<FieldLedger />} />
+                    <Route path='sales/supply-reports' element={<SupplyReports />} />
 
                     {/* Planning */}
 

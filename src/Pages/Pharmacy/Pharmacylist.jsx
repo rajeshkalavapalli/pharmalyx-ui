@@ -153,14 +153,14 @@ export const PharmacyList = function ({ onAddPharmacy }) {
 
                     <Box>
 
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                             Pharmacies
                         </Typography>
 
                         <Typography
                             sx={{
                                 mt: 0.5,
-                                fontSize: 13,
+                                fontSize: "textMd",
                                 color: "text.secondary"
                             }}
                         >
@@ -353,7 +353,7 @@ export const PharmacyList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <VisibilityOutlinedIcon
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>
@@ -382,7 +382,7 @@ export const PharmacyList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <EditOutlinedIcon
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>
@@ -411,7 +411,7 @@ export const PharmacyList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <DeleteOutline
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>

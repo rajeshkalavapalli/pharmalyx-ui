@@ -87,7 +87,7 @@ export function DashboardHeader({ greeting, name, subtitle, status, date, action
                     <Typography variant="overline" sx={{ display: "block", lineHeight: 1.6, letterSpacing: "0.12em", color: theme.palette.text.secondary }}>
                         Welcome back
                     </Typography>
-                    <Typography variant="h3" component="h1" sx={{ fontWeight: 800 }}>
+                    <Typography variant="h3" component="h1">
                         {greeting},{" "}
                         <Box component="span" sx={{ color: theme.palette.primary.main }}>
                             {name}
@@ -107,7 +107,7 @@ export function DashboardHeader({ greeting, name, subtitle, status, date, action
                                 }}
                             />
                         )}
-                        <Typography variant="body1" component="div" sx={{ color: theme.palette.text.secondary, "& b": { color: theme.palette.primary.main, fontWeight: 700 } }}>
+                        <Typography variant="body1" component="div" sx={{ color: theme.palette.text.secondary, "& b": { color: theme.palette.primary.main, fontWeight: "fontWeightBold" } }}>
                             {subtitle}
                         </Typography>
                     </Stack>
@@ -128,7 +128,7 @@ export function DashboardHeader({ greeting, name, subtitle, status, date, action
                         }}
                     >
                         <FormatQuoteRounded fontSize="small" sx={{ color: theme.palette.primary.main, transform: "scaleX(-1)" }} />
-                        <Typography variant="body2" sx={{ fontStyle: "italic", fontWeight: 700, color: theme.palette.primary.dark }}>
+                        <Typography variant="body2" sx={{ fontStyle: "italic", fontWeight: "fontWeightBold", color: theme.palette.primary.dark }}>
                             {QUOTES[day % QUOTES.length]}
                         </Typography>
                     </Stack>
@@ -155,7 +155,7 @@ export function DashboardHeader({ greeting, name, subtitle, status, date, action
                         }}
                     >
                         <CalendarMonthRounded fontSize="small" sx={{ color: theme.palette.primary.main }} />
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                             {new Date(`${date}T00:00:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
                         </Typography>
                     </Box>
@@ -492,7 +492,7 @@ function QuickTile({ label, to, icon: Icon, color, count }) {
                         placeItems: "center",
                         borderRadius: theme.statusChip.radius,
                         ...theme.typography.micro,
-                        fontWeight: 700,
+                        fontWeight: "fontWeightBold",
                         color: theme.palette.error.contrastText,
                         backgroundColor: theme.palette.error.main,
                     })}
@@ -604,7 +604,7 @@ export function ApprovalsPanel({ approvals, sx }) {
                         >
                             <Icon fontSize="small" />
                         </Box>
-                        <Typography variant="body2" sx={{ flex: 1, textAlign: "left", fontWeight: 600 }}>
+                        <Typography variant="body2" sx={{ flex: 1, textAlign: "left", fontWeight: "fontWeightSemibold" }}>
                             {label}
                         </Typography>
                         {count != null ? <Tag label={`${count} pending`} color={count ? "warning" : "success"} /> : <ChevronRightRounded fontSize="small" sx={(theme) => ({ color: theme.palette.text.disabled })} />}

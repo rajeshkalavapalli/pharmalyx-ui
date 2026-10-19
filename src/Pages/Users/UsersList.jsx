@@ -294,7 +294,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                                 >
                                                     <VisibilityOutlinedIcon
                                                         sx={{
-                                                            fontSize: 17,
+                                                            fontSize: "text2xl",
                                                         }}
                                                     />
                                                 </IconButton>
@@ -330,7 +330,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                                 >
                                                     <EditOutlinedIcon
                                                         sx={{
-                                                            fontSize: 17,
+                                                            fontSize: "text2xl",
                                                         }}
                                                     />
                                                 </IconButton>
@@ -366,7 +366,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                                 >
                                                     <DeleteOutline
                                                         sx={{
-                                                            fontSize: 17,
+                                                            fontSize: "text2xl",
                                                         }}
                                                     />
                                                 </IconButton>
@@ -378,9 +378,9 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     <TableCell>
                                         <Typography
                                             sx={{
-                                                fontSize: 12,
+                                                fontSize: "textSm",
                                                 color: "text.primary",
-                                                fontWeight: 600,
+                                                fontWeight: "fontWeightSemibold",
                                             }}
                                         >
                                             {user.UserName || "-"}
@@ -390,7 +390,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     {/* Email */}
                                     <TableCell
                                         sx={{
-                                            fontSize: 12,
+                                            fontSize: "textSm",
                                             color: "text.secondary",
                                         }}
                                     >
@@ -400,7 +400,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     {/* Mobile */}
                                     <TableCell
                                         sx={{
-                                            fontSize: 12,
+                                            fontSize: "textSm",
                                             color: "text.secondary",
                                         }}
                                     >
@@ -415,7 +415,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     {/* Designation */}
                                     <TableCell
                                         sx={{
-                                            fontSize: 12,
+                                            fontSize: "textSm",
                                             color: "text.secondary",
                                         }}
                                     >
@@ -425,7 +425,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     {/* Division */}
                                     <TableCell
                                         sx={{
-                                            fontSize: 12,
+                                            fontSize: "textSm",
                                             color: "text.secondary",
                                         }}
                                     >
@@ -435,7 +435,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                     {/* Manager */}
                                     <TableCell
                                         sx={{
-                                            fontSize: 12,
+                                            fontSize: "textSm",
                                             color: "text.secondary",
                                         }}
                                     >

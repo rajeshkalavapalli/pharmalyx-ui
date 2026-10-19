@@ -12,12 +12,16 @@ function StatCard({ icon: Icon, label, value, caption, color = "primary", progre
                 overflow: "hidden",
                 borderRadius: theme.panel.radius,
                 backgroundColor: theme.palette.background.paper,
-                // Soft accent glow in the top-right corner.
-                backgroundImage: `radial-gradient(circle at 100% 0%, ${alpha(
-                    theme.palette[color].main,
-                    theme.tint.soft
-                )} 0%, transparent 55%)`,
                 boxShadow: theme.card.shadow,
+                // Thin accent line along the top edge.
+                "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    insetInline: 0,
+                    top: 0,
+                    height: theme.spacing(0.375),
+                    backgroundColor: alpha(theme.palette[color].main, theme.tint.strong),
+                },
                 transition: theme.calendar.transition,
 
                 "&:hover": {
@@ -66,12 +70,9 @@ function StatCard({ icon: Icon, label, value, caption, color = "primary", progre
                             display: "grid",
                             placeItems: "center",
                             borderRadius: theme.stat.iconRadius,
-                            color: theme.palette[color].contrastText,
-                            backgroundImage:
-                                color === "primary"
-                                    ? theme.palette.brand.gradient
-                                    : `linear-gradient(135deg, ${theme.palette[color].main} 0%, ${theme.palette[color].light} 100%)`,
-                            boxShadow: `0 6px 16px ${alpha(theme.palette[color].main, theme.tint.border)}`,
+                            color: theme.palette[color].main,
+                            backgroundColor: alpha(theme.palette[color].main, theme.tint.soft),
+                            border: `1px solid ${alpha(theme.palette[color].main, theme.tint.selected)}`,
                         })}
                     >
                         <Icon sx={(theme) => ({ fontSize: theme.stat.iconFontSize })} />

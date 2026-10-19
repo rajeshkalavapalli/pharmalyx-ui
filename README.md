@@ -342,3 +342,19 @@
   # V0.0.80
  
  - Dashboard greeting: daily quote highlighted as a soft blue callout with a quote icon, blue left border and bold italic text
+
+
+  # V0.0.81
+ 
+ - New page Sales & Distribution > Field Stock & Dues: stock in hand per MR, Deliver stock to a chemist (in-app photo of the stamped receipt + GPS at the chemist, catalogue price), Record payment (cash needs a receipt photo), chemist dues with ageing (0-30 / 31-60 / 61-90 / 90+) and credit hold, chemist ledger drawer; head office tabs: Stock with MRs (issue / take back, Rs limit, held-too-long), Payments to confirm, Schemes & special prices (from stockist billing), Exit clearance (full and final on hold until every item is closed, handover of chemists, doctors and stock)
+ - New page Sales & Distribution > Supply & Spend Reports: stockist fill rate, spend vs business (territory / doctor / chemist), focus ranking (doctors, chemists, areas, products)
+ - New page Doctor Engagement > Doctor Spend: MR request (allowed activities only, expected business over 3 or 6 months), manager recommendation, head office approval with compliance check, payment with supporting document, outcome (On track / Partly met / Claim failed), MR and manager scores, earlier-claim-failed warning, allowed activity types with the UCPMP 2024 note
+ - New flag labels: POB not supplied in time, MR holding stock too long, spend request with an earlier failed claim
+
+
+  # V0.0.82
+ 
+ - Premium redesign of every screen ("Ink & Jade"): all colours, fonts, font sizes, weights, radius, shadows and motion now come only from Theme.js (BRAND block at the top); ink #0A1628, jade #0F766E, jadeGlow #2DD4BF, gold #E9C77B (rare), background #F4F5F7; Plus Jakarta Sans for text, Fraunces for page titles and big headings
+ - Same Pharmalyx logo everywhere (sidebar, login, browser tab favicon) with the wordmark in Fraunces and "lyx" in jade
+ - About 570 hard-coded font sizes and weights in components replaced with named theme sizes (textXs ... text4xl) and weights; no hard-coded colours remain outside Theme.js
+ - Calmer stat cards (white card, thin accent line, softly tinted icon), refined buttons, inputs, tables, dialogs, menus and tooltips

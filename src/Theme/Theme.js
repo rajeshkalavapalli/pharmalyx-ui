@@ -1,412 +1,330 @@
 import { alpha, createTheme } from "@mui/material/styles";
 
+// =========================================================
+// PHARMALYX DESIGN SYSTEM · "INK & JADE"
+//
+// Everything visual in the app comes from this file. Change a value in BRAND
+// below and every screen follows: colours, fonts, corner radius, spacing,
+// shadows and motion. Components never hard-code these values.
+// =========================================================
+
+// ---------------------------------------------------------
+// 1. BRAND: the only raw values in the app
+// ---------------------------------------------------------
+const BRAND = {
+    color: {
+        ink: "#0A1628", // text, navigation, dark surfaces
+        inkSoft: "#1C2B42",
+        inkMuted: "#5B6676",
+        inkFaint: "#97A1AE",
+
+        jade: "#0F766E", // primary actions
+        jadeDark: "#0B5C56",
+        jadeDeep: "#084A45",
+        jadeLight: "#5FB8AE",
+        jadeGlow: "#2DD4BF", // highlights, active states, live indicators
+        jadeMist: "#E7F4F2",
+        jadeWash: "#F2F9F8",
+
+        gold: "#E9C77B", // rare: top rank, premium marks
+        goldDark: "#B98F33",
+        goldMist: "#FBF4E4",
+
+        bg: "#F4F5F7",
+        paper: "#FFFFFF",
+        line: "#E3E6EB",
+        lineSoft: "#EDEFF2",
+        lineStrong: "#CDD2DA",
+        mute: "#EEF0F3",
+
+        success: "#15803D",
+        successDark: "#166534",
+        successLight: "#86EFAC",
+        warning: "#C2780B",
+        warningDark: "#92580A",
+        warningLight: "#F8D48A",
+        error: "#C8312F",
+        errorDark: "#991F1D",
+        errorLight: "#F4A8A6",
+        info: "#2F6A9F",
+        infoDark: "#22507A",
+        infoLight: "#9CC1E3",
+
+        white: "#FFFFFF",
+    },
+
+    font: {
+        body: "'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+        display: "'Fraunces', 'Iowan Old Style', Georgia, serif",
+    },
+
+    // Font sizes (px) and weights used everywhere.
+    size: { micro: 11, caption: 12, small: 13, body: 14, lead: 15, title: 16, h5: 18, h4: 20, h3: 28, h2: 32, h1: 38, metric: 28 },
+    weight: { regular: 400, medium: 500, semibold: 600, bold: 700, heavy: 800 },
+
+    // Corner radius in px. `shape.borderRadius` is the base unit (sx multiples).
+    radius: { base: 8, xs: 6, sm: 8, md: 10, lg: 14, xl: 18, pill: 999 },
+
+    // Spacing base (px). theme.spacing(n) = n x 8.
+    spacing: 8,
+
+    // Control heights (px).
+    control: { height: 40, field: 44, compact: 38, small: 32 },
+
+    shadow: {
+        ink: "10, 22, 40", // rgb of ink, for layered shadows
+        jade: "15, 118, 110",
+    },
+
+    motion: { fast: "140ms ease", base: "180ms ease", slow: "240ms ease" },
+};
+
+const C = BRAND.color;
+const ink = (a) => `rgba(${BRAND.shadow.ink}, ${a})`;
+const jadeA = (a) => `rgba(${BRAND.shadow.jade}, ${a})`;
+const px = (n) => `${n}px`;
+
+const SHADOW = {
+    xs: `0 1px 2px ${ink(0.05)}`,
+    sm: `0 1px 2px ${ink(0.04)}, 0 4px 12px ${ink(0.04)}`,
+    md: `0 1px 2px ${ink(0.04)}, 0 10px 28px ${ink(0.06)}`,
+    lg: `0 18px 48px ${ink(0.14)}`,
+    xl: `0 28px 80px ${ink(0.2)}`,
+    focus: `0 0 0 4px ${jadeA(0.16)}`,
+    glow: `0 10px 26px ${jadeA(0.28)}`,
+    glowSoft: `0 4px 12px ${jadeA(0.16)}`,
+};
+
+// ---------------------------------------------------------
+// 2. THEME
+// ---------------------------------------------------------
 const PharmalyxTheme = createTheme({
-    // =========================================================
-    // PHARMALYX DESIGN SYSTEM
-    // HORIZON PRO • NAVY NAVIGATION + BLUE PRIMARY + TEAL PERFORMANCE + SLATE SURFACES
-    // =========================================================
+    brand: BRAND,
+    radius: BRAND.radius,
+    fontWeight: BRAND.weight,
+    fontSize: BRAND.size,
+    control: BRAND.control,
+    motion: BRAND.motion,
+    shadows3: SHADOW,
+
+    spacing: BRAND.spacing,
 
     palette: {
         mode: "light",
 
-        // Horizon Pro: blue primary actions, navy navigation, teal performance.
-        primary: {
-            main: "#2563EB",
-            dark: "#1D4ED8",
-            light: "#93C5FD",
-            contrastText: "#FFFFFF",
-        },
+        primary: { main: C.jade, dark: C.jadeDark, light: C.jadeLight, contrastText: C.white },
+        secondary: { main: C.inkMuted, dark: C.inkSoft, light: C.inkFaint, contrastText: C.white },
 
-        // Neutral slate for drafts, "soon" badges and quiet actions.
-        secondary: {
-            main: "#64748B",
-            dark: "#334155",
-            light: "#94A3B8",
-            contrastText: "#FFFFFF",
-        },
+        // Rare accent: ranks, premium marks.
+        gold: { main: C.gold, dark: C.goldDark, light: C.goldMist, contrastText: C.ink },
 
         brand: {
-            blue: "#2563EB",
-            cyan: "#0EA5E9",
-            teal: "#10B981",
-            navy: "#102B50",
+            ink: C.ink,
+            jade: C.jade,
+            jadeGlow: C.jadeGlow,
+            gold: C.gold,
 
-            gradient: "linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%)",
-            gradientSoft: "linear-gradient(135deg, #EFF6FF 0%, #ECFEFF 100%)",
-            glow: "0 8px 24px rgba(37, 99, 235, 0.30)",
+            gradient: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeDark} 100%)`,
+            gradientGlow: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeGlow} 100%)`,
+            gradientSoft: `linear-gradient(135deg, ${C.jadeWash} 0%, ${C.paper} 100%)`,
+            gradientInk: `linear-gradient(160deg, ${C.inkSoft} 0%, ${C.ink} 60%)`,
+            glow: SHADOW.glow,
+            glowSoft: SHADOW.glowSoft, // logo on white surfaces
 
-            glass: "rgba(255, 255, 255, 0.94)",
-            glassStrong: "rgba(255, 255, 255, 0.98)",
-            white: "#FFFFFF",
+            glass: C.paper,
+            glassStrong: C.paper,
+            white: C.white,
 
-            // Names used by existing components, mapped to Horizon Pro.
-            indigo: "#2563EB",
-            violet: "#0EA5E9",
-            ink: "#0B1E3A",
-            terracotta: "#2563EB",
-            terracottaDark: "#1D4ED8",
-            terracottaLight: "#93C5FD",
-            terracottaSoft: "#EFF6FF",
-            terracottaMuted: "#F5F9FF",
-            graphite: "#0F172A",
-            charcoal: "#1E293B",
-            slate: "#64748B",
-            sage: "#0EA5E9",
-            sageDark: "#0369A1",
-            sageLight: "#7DD3FC",
-            sageSoft: "#ECFEFF",
-            ivory: "#F8FAFC",
-            ivoryDark: "#F1F5F9",
+            // Logo: the mark's top sheen and its strokes.
+            markSheen: `linear-gradient(180deg, ${alpha(C.white, 0.22)} 0%, ${alpha(C.white, 0)} 55%)`,
+            markStroke: C.white,
+            markPulse: C.jadeGlow,
+
+            // Older names used by existing components, mapped to Ink & Jade.
+            blue: C.jade,
+            cyan: C.jadeGlow,
+            teal: C.jadeGlow,
+            navy: C.ink,
+            indigo: C.jade,
+            violet: C.jadeGlow,
+            terracotta: C.jade,
+            terracottaDark: C.jadeDark,
+            terracottaLight: C.jadeLight,
+            terracottaSoft: C.jadeMist,
+            terracottaMuted: C.jadeWash,
+            graphite: C.ink,
+            charcoal: C.inkSoft,
+            slate: C.inkMuted,
+            sage: C.jadeGlow,
+            sageDark: C.jadeDark,
+            sageLight: C.jadeLight,
+            sageSoft: C.jadeMist,
+            ivory: C.bg,
+            ivoryDark: C.mute,
         },
 
         chart: {
-            primary: "#2563EB",
-            secondary: "#0EA5E9",
-            success: "#10B981",
-            warning: "#F59E0B",
-            error: "#EF4444",
-            neutral: "#94A3B8",
-            accent: "#0EA5E9",
-            // Two-series comparison (validated pair): our brand vs competitors / expected.
-            ours: "#2563EB",
-            competitor: "#10B981",
+            primary: C.jade,
+            secondary: C.jadeGlow,
+            success: C.success,
+            warning: C.warning,
+            error: C.error,
+            neutral: C.inkFaint,
+            accent: C.gold,
+            ours: C.jade,
+            competitor: C.lineStrong,
         },
 
-        command: {
-            background: "#F8FAFC",
-            surface: "#FFFFFF",
-            elevated: "#FFFFFF",
-            border: "#E2E8F0",
-            text: "#0F172A",
-            mutedText: "#64748B",
-        },
+        command: { background: C.bg, surface: C.paper, elevated: C.paper, border: C.line, text: C.ink, mutedText: C.inkMuted },
+        intelligence: { background: C.bg, surface: C.paper, elevated: C.paper, primary: C.jade, accent: C.jadeGlow, border: C.line, text: C.ink, mutedText: C.inkMuted },
 
-        intelligence: {
-            background: "#F8FAFC",
-            surface: "#FFFFFF",
-            elevated: "#FFFFFF",
-            primary: "#2563EB",
-            accent: "#10B981",
-            border: "#E2E8F0",
-            text: "#0F172A",
-            mutedText: "#64748B",
-        },
-
-        // Navy navigation rail.
+        // Navigation rail: light surface, ink pill for the current page, jade accents.
         sidebar: {
-            background: "#102B50",
-            backgroundImage: "linear-gradient(180deg, #13335E 0%, #102B50 50%, #0C2242 100%)",
-            surface: "#173B6A",
+            tone: "light", // logo colours: "light" (on white) or "dark" (on ink)
+            background: C.paper,
+            backgroundImage: "none",
+            surface: C.mute,
 
-            active: "#60A5FA",
-            activeLight: "rgba(37, 99, 235, 0.32)",
-            activeText: "#FFFFFF",
-            activeGlow: "0 0 0 1px rgba(96, 165, 250, 0.30), 0 6px 18px rgba(37, 99, 235, 0.40)",
+            active: C.jade, // current section icon, guide-line marker, focus ring
+            activeLight: C.ink, // the pill behind the current page
+            activeText: C.white, // text inside the pill
+            pillIcon: C.jadeGlow, // icon inside the pill
+            sectionText: C.ink, // open section holding the current page
+            activeGlow: `0 6px 16px ${ink(0.18)}`,
 
-            text: "#CBD5E1",
-            mutedText: "#8DA3C2",
-            hoverText: "#FFFFFF",
-            hover: "rgba(255, 255, 255, 0.07)",
+            text: C.inkSoft,
+            mutedText: C.inkMuted,
+            groupLabel: C.inkFaint,
+            hoverText: C.ink,
+            hover: C.mute,
 
-            border: "rgba(255, 255, 255, 0.09)",
-            guide: "rgba(255, 255, 255, 0.12)",
-            scrollbar: "rgba(255, 255, 255, 0.18)",
+            border: C.line,
+            guide: C.line,
+            scrollbar: C.lineStrong,
 
-            badgeBackground: "rgba(255, 255, 255, 0.09)",
-            badgeText: "#A9BBD3",
+            badgeBackground: C.mute,
+            badgeText: C.inkMuted,
+
+            searchBackground: C.bg,
+            searchBorder: C.line,
+            searchFocusBorder: C.jade,
+            keyBackground: C.paper,
+
+            countBackground: C.goldMist, // numeric badge (e.g. pending items)
+            countText: C.goldDark,
+            aiBackground: C.jadeMist, // "AI" badge
+            aiText: C.jade,
         },
 
-        background: {
-            default: "#F8FAFC",
-            paper: "#FFFFFF",
+        // Dark ink surfaces (login brand panel): the original ink styling.
+        night: {
+            background: C.ink,
+            backgroundImage: `linear-gradient(180deg, ${C.inkSoft} 0%, ${C.ink} 42%, ${C.ink} 100%)`,
+            surface: C.inkSoft,
+            active: C.jadeGlow,
+            activeText: C.white,
+            text: alpha(C.white, 0.78),
+            mutedText: alpha(C.white, 0.5),
+            hover: alpha(C.white, 0.1), // progress track
+            activeLight: alpha(C.jadeGlow, 0.14), // feature icon tile
+            border: alpha(C.white, 0.08),
+            card: alpha(C.white, 0.06),
         },
 
-        surface: {
-            workspace: "#F8FAFC",
-            default: "#FFFFFF",
-            subtle: "#F8FAFC",
-            muted: "#F1F5F9",
-            elevated: "#FFFFFF",
+        // Light brand panel on the login page (white fading into jade glows).
+        loginPanel: {
+            background: C.paper,
+            backgroundImage: "none",
+            surface: C.paper, // "This month" preview card
+            border: C.line,
+            activeText: C.ink, // headline, card title and values
+            heading: C.inkSoft, // brand-panel headline
+            text: C.inkSoft,
+            mutedText: C.inkMuted,
+            hover: ink(0.08), // progress track
+            active: C.jadeGlow, // feature icon
+            activeLight: C.ink, // feature icon tile
         },
 
-        border: {
-            subtle: "#EDF2F7",
-            default: "#E2E8F0",
-            strong: "#CBD5E1",
-        },
+        background: { default: C.bg, paper: C.paper },
 
-        text: {
-            primary: "#0F172A",
-            secondary: "#64748B",
-            disabled: "#94A3B8",
-        },
+        surface: { workspace: C.bg, default: C.paper, subtle: C.jadeWash, muted: C.mute, elevated: C.paper },
 
-        divider: "#E2E8F0",
+        border: { subtle: C.lineSoft, default: C.line, strong: C.lineStrong },
 
-        // Day states on planning calendars (tour plan, leave, attendance).
-        plan: {
-            working: "#2563EB",
-            workingSoft: "#EFF6FF",
-            workingBorder: "#BFDBFE",
+        text: { primary: C.ink, secondary: C.inkMuted, disabled: C.inkFaint },
 
-            off: "#64748B",
-            offSoft: "#F1F5F9",
-            offHatch: "#E2E8F0",
+        divider: C.line,
 
-            empty: "#CBD5E1",
-        },
+        plan: { working: C.jade, workingSoft: C.jadeMist, workingBorder: C.jadeLight, off: C.inkMuted, offSoft: C.mute, offHatch: C.line, empty: C.lineStrong },
 
-        success: {
-            main: "#10B981",
-            dark: "#047857",
-            light: "#6EE7B7",
-            contrastText: "#FFFFFF",
-        },
-
-        warning: {
-            main: "#F59E0B",
-            dark: "#B45309",
-            light: "#FCD34D",
-            contrastText: "#FFFFFF",
-        },
-
-        error: {
-            main: "#EF4444",
-            dark: "#B91C1C",
-            light: "#FCA5A5",
-            contrastText: "#FFFFFF",
-        },
-
-        // Secondary cyan: highlights and informational states.
-        info: {
-            main: "#0EA5E9",
-            dark: "#0369A1",
-            light: "#7DD3FC",
-            contrastText: "#FFFFFF",
-        },
-
-        // Workflow state "Submitted" (sent for approval).
-        submitted: {
-            main: "#3B82F6",
-            dark: "#1D4ED8",
-            light: "#93C5FD",
-            contrastText: "#FFFFFF",
-        },
+        success: { main: C.success, dark: C.successDark, light: C.successLight, contrastText: C.white },
+        warning: { main: C.warning, dark: C.warningDark, light: C.warningLight, contrastText: C.white },
+        error: { main: C.error, dark: C.errorDark, light: C.errorLight, contrastText: C.white },
+        info: { main: C.info, dark: C.infoDark, light: C.infoLight, contrastText: C.white },
+        submitted: { main: C.info, dark: C.infoDark, light: C.infoLight, contrastText: C.white },
     },
 
     // =========================================================
-    // CENTRALIZED DESIGN TOKENS
+    // LAYOUT AND SHARED TOKENS (spacing units unless marked px)
     // =========================================================
 
     layout: {
-        page: {
-            maxWidth: 900,
-            paddingX: {
-                xs: 2,
-                sm: 3,
-                md: 4,
-            },
-            paddingY: 3.5,
-        },
-
-        section: {
-            marginBottom: 3,
-            titleGap: 2.5,
-            fieldGap: 2.25,
-        },
-
-        header: {
-            paddingX: {
-                xs: 2,
-                sm: 3,
-                md: 4,
-            },
-            paddingY: 3,
-            indicatorWidth: 4,
-            indicatorHeight: 42,
-            sectionIndicatorWidth: 3,
-            sectionIndicatorHeight: 28,
-        },
-
-        actionBar: {
-            paddingX: {
-                xs: 2,
-                sm: 3,
-                md: 4,
-            },
-            paddingY: 2,
-            gap: 1.5,
-        },
+        page: { maxWidth: 900, paddingX: { xs: 2, sm: 3, md: 4 }, paddingY: 3.5 },
+        section: { marginBottom: 3, titleGap: 2.5, fieldGap: 2.25 },
+        header: { paddingX: { xs: 2, sm: 3, md: 4 }, paddingY: 3, indicatorWidth: 4, indicatorHeight: 42, sectionIndicatorWidth: 3, sectionIndicatorHeight: 28 },
+        actionBar: { paddingX: { xs: 2, sm: 3, md: 4 }, paddingY: 2, gap: 1.5 },
     },
 
-    card: {
-        radius: 2.5,
-        borderWidth: 1,
-        shadow: "0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06)",
-    },
+    card: { radius: 2, borderWidth: 1, shadow: SHADOW.sm },
 
-    // Layered shadows (ink-tinted) for surfaces that float.
-    elevation: {
-        sm: "0 1px 2px rgba(15, 23, 42, 0.05)",
-        md: "0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06)",
-        lg: "0 12px 40px rgba(15, 23, 42, 0.12)",
-        focus: "0 0 0 4px rgba(37, 99, 235, 0.16)",
-    },
+    elevation: { sm: SHADOW.xs, md: SHADOW.md, lg: SHADOW.lg, focus: SHADOW.focus },
 
-    // =========================================================
-    // CONFIGURATION MODULE DESIGN TOKENS
-    // =========================================================
-
-    // Settings-style layout: section label column + compact item list.
-    configuration: {
-        labelColumnWidth: 280,
-        sectionPaddingY: 3,
-        rowMinHeight: 56,
-        rowPaddingX: 2,
-        rowPaddingY: 1.25,
-        iconSize: 32,
-        iconFontSize: 18,
-        countMinWidth: 96,
-    },
+    configuration: { labelColumnWidth: 280, sectionPaddingY: 3, rowMinHeight: 56, rowPaddingX: 2, rowPaddingY: 1.25, iconSize: 32, iconFontSize: 18, countMinWidth: 96 },
 
     field: {
-        minHeight: 46,
-        // Inputs placed in toolbars next to buttons.
-        compactHeight: 40,
-        radius: 1.5,
-
-        label: {
-            fontSize: 13,
-        },
-
-        input: {
-            fontSize: 13,
-        },
-
-        helperText: {
-            fontSize: 11,
-            marginLeft: 0.5,
-            marginTop: 0.5,
-        },
-
-        transition:
-            "border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease",
+        minHeight: BRAND.control.field,
+        compactHeight: BRAND.control.height,
+        radius: 1.25,
+        label: { fontSize: BRAND.size.small },
+        input: { fontSize: BRAND.size.body },
+        helperText: { fontSize: BRAND.size.micro, marginLeft: 0.5, marginTop: 0.5 },
+        transition: `border-color ${BRAND.motion.base}, box-shadow ${BRAND.motion.base}, background-color ${BRAND.motion.base}`,
     },
 
-    status: {
-        controlHeight: 38,
-        optionMinWidth: 70,
-        optionPaddingX: 1.75,
-        optionRadius: 0,
-        dotSize: 7,
-    },
+    status: { controlHeight: BRAND.control.compact, optionMinWidth: 70, optionPaddingX: 1.75, optionRadius: 0, dotSize: 7 },
 
-    // =========================================================
-    // SHARED PAGE BUILDING BLOCKS
-    // =========================================================
+    tint: { hover: 0.04, selected: 0.08, soft: 0.1, border: 0.22, strong: 0.32 },
 
-    // Alpha levels for tinting a palette color (hover, selected, chips...).
-    tint: {
-        hover: 0.04,
-        selected: 0.08,
-        soft: 0.1,
-        border: 0.22,
-        strong: 0.32,
-    },
+    pageHeader: { marginBottom: 3, gap: 2, eyebrowMarginBottom: 0.75, subtitleMarginTop: 0.75, actionsGap: 1.25 },
 
-    pageHeader: {
-        marginBottom: 3,
-        gap: 2,
-        eyebrowMarginBottom: 0.75,
-        subtitleMarginTop: 0.5,
-        actionsGap: 1.25,
-    },
+    panel: { radius: 2, padding: { xs: 2, md: 2.5 }, headerPaddingY: 2, gap: 2 },
 
-    // Radii are multiples of shape.borderRadius (9px) when used in sx.
-    panel: {
-        radius: 1.5,
-        padding: { xs: 2, md: 2.5 },
-        headerPaddingY: 2,
-        gap: 2,
-    },
+    stat: { padding: { xs: 2, md: 2.25 }, gap: 2, iconSize: 42, iconFontSize: 22, iconRadius: 1.5, valueMarginTop: 0.5, progressMarginTop: 1.5, progressHeight: 6 },
 
-    stat: {
-        padding: { xs: 2, md: 2.25 },
-        gap: 2,
-        iconSize: 42,
-        iconFontSize: 22,
-        iconRadius: 1.25,
-        valueMarginTop: 0.5,
-        progressMarginTop: 1.5,
-        progressHeight: 6,
-    },
+    statusChip: { height: 28, paddingX: 1.25, gap: 0.75, radius: BRAND.radius.pill, dotSize: 7 },
 
-    statusChip: {
-        height: 30,
-        paddingX: 1.5,
-        gap: 1,
-        radius: 999,
-        dotSize: 8,
-    },
-
-    timeline: {
-        dotSize: 28,
-        iconSize: 16,
-        connectorWidth: 2,
-        stepGap: 2.25,
-    },
+    timeline: { dotSize: 28, iconSize: 16, connectorWidth: 2, stepGap: 2.25 },
 
     calendar: {
         weekdayPaddingY: 1.25,
         gridGap: { xs: 0.5, sm: 0.75 },
-        cell: {
-            minHeight: { xs: 64, sm: 92, lg: 108 },
-            padding: { xs: 0.5, sm: 1 },
-            radius: 1,
-            markerWidth: 3,
-        },
-        dateBadge: {
-            size: 26,
-        },
+        cell: { minHeight: { xs: 64, sm: 92, lg: 108 }, padding: { xs: 0.5, sm: 1 }, radius: 1.25, markerWidth: 3 },
+        dateBadge: { size: 26 },
         hatchSize: 6,
         legendSwatch: 12,
         loadingOpacity: 0.55,
-        transition:
-            "background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease",
+        transition: `background-color ${BRAND.motion.fast}, border-color ${BRAND.motion.fast}, box-shadow ${BRAND.motion.fast}, transform ${BRAND.motion.fast}`,
     },
 
-    dialog: {
-        width: 520,
-        paddingX: { xs: 2, sm: 3 },
-        paddingY: { xs: 2, sm: 2.5 },
-        phoneMargin: 2,
-    },
+    dialog: { width: 520, paddingX: { xs: 2, sm: 3 }, paddingY: { xs: 2, sm: 2.5 }, phoneMargin: 2 },
 
-    // Pill toggle (MuiSwitch): thumb sits inside the track.
-    toggle: {
-        medium: { width: 34, height: 20, thumb: 16, gap: 2 },
-        small: { width: 28, height: 16, thumb: 12, gap: 2 },
-    },
+    toggle: { medium: { width: 36, height: 20, thumb: 16, gap: 2 }, small: { width: 28, height: 16, thumb: 12, gap: 2 } },
 
-    // Roles & permissions matrix.
-    permissionMatrix: {
-        featureColumnMinWidth: 260,
-        actionColumnWidth: 96,
-        minWidth: 820,
-        cellHeight: 60,
-        changedDotSize: 6,
-    },
+    permissionMatrix: { featureColumnMinWidth: 260, actionColumnWidth: 96, minWidth: 820, cellHeight: 60, changedDotSize: 6 },
 
-    // Doctor engagement pages (RCPA lines, business charts, legends).
-    engagement: {
-        dateColumn: 160,
-        quantityColumn: 100,
-        groupedBarWidth: "28%",
-        percentColumn: 36,
-        swatchRadius: 0.5,
-    },
+    engagement: { dateColumn: 160, quantityColumn: 100, groupedBarWidth: "28%", percentColumn: 36, swatchRadius: 0.5 },
 
-    // Dashboard: hero banner and the visit trend chart.
     dashboard: {
         heroPadding: { xs: 2.5, md: 3.5 },
         chartHeight: 180,
@@ -416,7 +334,7 @@ const PharmalyxTheme = createTheme({
         barWidth: "62%",
         barMinWidth: 4,
         tooltipOffset: 8,
-        sideColumnWidth: 44, // spacing units
+        sideColumnWidth: 44,
         skeleton: { hero: 180, stat: 120, chart: 280 },
         donutSize: 156,
         donutStroke: 14,
@@ -424,97 +342,63 @@ const PharmalyxTheme = createTheme({
         scheduleDotSize: 10,
         scheduleMaxHeight: 300,
         quickActionMinHeight: 92,
-        dateChipHeight: 40,
+        dateChipHeight: BRAND.control.height,
         lineChartHeight: 180,
         markerSize: 8,
         donutGap: 4,
-        // Greeting banner: white card with a brand accent bar on the left.
         hero: {
             quoteMaxWidth: 460,
             padding: { xs: 2.5, md: 3 },
             accentWidth: 4,
             statusDot: 8,
-            accentGradient: (theme) => `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.success.main} 100%)`,
+            accentGradient: (theme) => `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.brand.jadeGlow} 100%)`,
         },
-        // Mini visuals inside KPI cards.
         kpi: { sparkWidth: 76, sparkHeight: 34, ringSize: 50, ringStroke: 6, barWidth: 6, barGap: 3, barHeight: 34 },
         quickTileMinHeight: 96,
         quickTileWidth: 88,
         groupedBarGap: 0.18,
     },
 
-    // Doctor requests (add / edit / delete with approval).
-    doctorRequests: {
-        cameraMaxHeight: 320,
-        photoHeight: 160,
+    doctorRequests: { cameraMaxHeight: 320, photoHeight: 160 },
+    insights: { pickerWidth: 240, thresholdWidth: 170 },
+    reports: { tableMaxHeight: 560 },
+
+    // Data Import Center (Administration > Data import).
+    dataImport: {
+        stepBadgeSize: 32, // numbered circle on each import type
+        dropZonePaddingY: 4,
+        dropZoneBorder: "2px dashed",
+        dropIconSize: 34,
+        fieldColumnWidth: 240, // "Pharmalyx field" column when matching columns
+        selectWidth: 260,
+        sampleMaxWidth: 320,
+        valueChooserWidth: 300,
+        issuesMaxHeight: 520,
+        messageMaxWidth: 520,
+        actionSelectWidth: 150,
+        defaultInputWidth: 200, // "value for every row" box
+        placeChooserWidth: 260,
     },
 
-    // Insights pages.
-    insights: {
-        pickerWidth: 240,
-        thresholdWidth: 170,
-    },
+    login: { formMaxWidth: 400, brandPaddingX: { md: 6, lg: 8 }, brandPaddingY: 6, glowSize: 520, previewWidth: 360, fieldHeight: 48, brandMarkSize: 40, headlineMaxWidth: 500, spinnerSize: 18, sectionGap: 4, featuresMarginTop: 4, featureGap: 1.5,
+        // Laptop screens with little height: tighter panel so it fits without scrolling.
+        shortScreen: "@media (max-height: 760px)",
+        compact: { paddingY: 4, sectionGap: 2.5, featuresMarginTop: 2.5, featureGap: 1 },
+        // Brand-panel headline: lighter and smaller than h1 so the sign-in form leads.
+        headline: { fontSize: 34, fontWeight: BRAND.weight.medium, lineHeight: 1.15, letterSpacing: "-0.025em" } },
 
-    // Report pages.
-    reports: {
-        tableMaxHeight: 560,
-    },
+    appShell: { contentPadding: { xs: 2, sm: 2.5, md: 3, lg: 3.5 }, headerHeight: 68, headerPaddingX: { xs: 1.5, sm: 2, md: 3 }, drawerMaxWidth: "85vw" },
 
-    // Sign-in screen.
-    login: {
-        formMaxWidth: 400,
-        brandPaddingX: { md: 6, lg: 8 },
-        brandPaddingY: 6,
-        glowSize: 520,
-        previewWidth: 360,
-        fieldHeight: 48,
-        brandMarkSize: 40,
-        headlineMaxWidth: 520,
-        spinnerSize: 18,
-    },
+    table: { loadingOpacity: 0.55, textMaxWidth: 260, emptyPaddingY: 7, emptyIconSize: 44, emptyMessageMaxWidth: 420 },
 
-    // Page frame: content padding, header and the phone menu drawer.
-    appShell: {
-        contentPadding: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
-        headerHeight: 68,
-        headerPaddingX: { xs: 1.5, sm: 2, md: 3 },
-        drawerMaxWidth: "85vw",
-    },
+    entityCard: { minWidth: 280, padding: 2, gap: 1.5, badgeSize: 26, hoverLift: "translateY(-2px)" },
 
-    table: {
-        loadingOpacity: 0.55,
-        textMaxWidth: 260,
-        emptyPaddingY: 7,
-        emptyIconSize: 44,
-        emptyMessageMaxWidth: 420,
-    },
+    search: { minWidth: { xs: "100%", sm: 240 } },
 
-    // Grid cards for people/entities (doctors, chemists, stockists).
-    entityCard: {
-        minWidth: 280,
-        padding: 2,
-        gap: 1.5,
-        badgeSize: 26,
-        hoverLift: "translateY(-2px)",
-    },
+    dcr: { calendarWidth: 56, cellMinHeight: { xs: 48, sm: 64 }, dotSize: 6 },
 
-    search: {
-        minWidth: { xs: "100%", sm: 240 },
-    },
+    visitList: { timeColumnWidth: 104, sidePanelWidth: 40, sideListMaxHeight: 360 },
 
-    dcr: {
-        calendarWidth: 56, // spacing units
-        cellMinHeight: { xs: 48, sm: 64 },
-        dotSize: 6,
-    },
-
-    visitList: {
-        timeColumnWidth: 104,
-        sidePanelWidth: 40, // spacing units
-        sideListMaxHeight: 360,
-    },
-
-    // App navigation rail. Colors live in palette.sidebar.
     sidebarLayout: {
         width: 264,
         collapsedWidth: 76,
@@ -526,179 +410,103 @@ const PharmalyxTheme = createTheme({
         childItemHeight: 36,
         railItemSize: 44,
         iconSize: 20,
-        radius: 1,
+        radius: 1.25,
         childIndent: 2.25,
         guideOffset: 2.5,
         indicatorWidth: 3,
         flyoutMinWidth: 220,
+        searchHeight: 38,
+        groupGap: 2,
+        badgeHeight: 18,
         scrollbarWidth: 5,
-        transition: "width 200ms ease",
-        itemTransition: "background-color 140ms ease, color 140ms ease",
-        chevronTransition: "transform 160ms ease",
+        transition: `width ${BRAND.motion.base}`,
+        itemTransition: `background-color ${BRAND.motion.fast}, color ${BRAND.motion.fast}`,
+        chevronTransition: `transform ${BRAND.motion.base}`,
     },
 
-    // Right-side detail / review panels.
-    drawer: {
-        width: { xs: "100%", sm: 560 },
-        paddingX: { xs: 2, sm: 3 },
-        paddingY: 2.5,
-        sectionGap: 3,
+    drawer: { width: { xs: "100%", sm: 560 }, paddingX: { xs: 2, sm: 3 }, paddingY: 2.5, sectionGap: 3 },
+
+    avatar: { size: 44, sizeSmall: 32 },
+
+    segmented: { padding: 0.5, gap: 0.5, radius: 1.5, itemRadius: 1.25, itemHeight: BRAND.control.compact, itemPaddingX: 1.75, itemGap: 1, iconSize: 18, selectedShadow: SHADOW.sm },
+
+    // Legacy master and mapping pages (Users, Areas, Doctors, Pharmacies, Stockists, mappings).
+    master: {
+        listMaxHeight: 420,
+        searchWidth: 280,
+        selectWidth: 260,
+        formMaxWidth: 1200,
+        iconBox: 40,
+        smallIconBox: 32,
+        chipHeight: 24,
+        avatar: 36,
     },
 
-    avatar: {
-        size: 44,
-        sizeSmall: 32,
-    },
-
-    segmented: {
-        padding: 0.5,
-        gap: 0.5,
-        radius: 1.25,
-        itemRadius: 1,
-        itemHeight: 38,
-        itemPaddingX: 1.75,
-        itemGap: 1,
-        iconSize: 18,
-        selectedShadow: "0 1px 3px rgba(15, 23, 42, 0.12)",
-    },
-
-    // =========================================================
-    // GLOBAL SHAPE
-    // =========================================================
-
-    shape: {
-        borderRadius: 9,
-    },
+    shape: { borderRadius: BRAND.radius.base },
 
     // =========================================================
     // TYPOGRAPHY
     // =========================================================
 
     typography: {
-        fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-        displayFontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+        fontFamily: BRAND.font.body,
+        displayFontFamily: BRAND.font.display,
+        fontWeightLight: BRAND.weight.regular,
+        fontWeightRegular: BRAND.weight.regular,
+        fontWeightMedium: BRAND.weight.medium,
+        fontWeightSemibold: BRAND.weight.semibold,
+        fontWeightBold: BRAND.weight.bold,
+        fontWeightHeavy: BRAND.weight.heavy,
 
-        h1: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "34px",
-            lineHeight: 1.15,
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-        },
+        // Named text sizes: components use them as sx `fontSize: "textSm"` (also for icons).
+        textXxs: px(10),
+        textXs: px(BRAND.size.micro),
+        textSm: px(BRAND.size.caption),
+        textMd: px(BRAND.size.small),
+        textBase: px(BRAND.size.body),
+        textLg: px(BRAND.size.lead),
+        textXl: px(BRAND.size.title),
+        text2xl: px(BRAND.size.h5),
+        text3xl: px(BRAND.size.h4),
+        text4xl: px(22),
 
-        h2: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "28px",
-            lineHeight: 1.22,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-        },
+        // Big headings: Fraunces.
+        h1: { fontFamily: BRAND.font.display, fontSize: px(BRAND.size.h1), lineHeight: 1.12, fontWeight: BRAND.weight.semibold, letterSpacing: "-0.02em" },
+        h2: { fontFamily: BRAND.font.display, fontSize: px(BRAND.size.h2), lineHeight: 1.18, fontWeight: BRAND.weight.semibold, letterSpacing: "-0.015em" },
+        h3: { fontFamily: BRAND.font.display, fontSize: px(BRAND.size.h3), lineHeight: 1.22, fontWeight: BRAND.weight.semibold, letterSpacing: "-0.01em" },
 
-        h3: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "24px",
-            lineHeight: 1.28,
-            fontWeight: 700,
-            letterSpacing: "-0.015em",
-        },
+        // Section and card headings: Plus Jakarta Sans.
+        h4: { fontFamily: BRAND.font.body, fontSize: px(BRAND.size.h4), lineHeight: 1.35, fontWeight: BRAND.weight.bold, letterSpacing: "-0.01em" },
+        h5: { fontFamily: BRAND.font.body, fontSize: px(BRAND.size.h5), lineHeight: 1.4, fontWeight: BRAND.weight.bold, letterSpacing: "-0.005em" },
+        h6: { fontFamily: BRAND.font.body, fontSize: px(BRAND.size.title), lineHeight: 1.45, fontWeight: BRAND.weight.bold },
 
-        h4: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "20px",
-            lineHeight: 1.35,
-            fontWeight: 650,
-            letterSpacing: "-0.01em",
-        },
+        body1: { fontSize: px(BRAND.size.lead), lineHeight: 1.6, fontWeight: BRAND.weight.regular },
+        body2: { fontSize: px(BRAND.size.body), lineHeight: 1.55, fontWeight: BRAND.weight.regular },
+        subtitle1: { fontSize: px(BRAND.size.lead), lineHeight: 1.45, fontWeight: BRAND.weight.semibold },
+        subtitle2: { fontSize: px(BRAND.size.small), lineHeight: 1.4, fontWeight: BRAND.weight.semibold },
+        caption: { fontSize: px(BRAND.size.caption), lineHeight: 1.45, fontWeight: BRAND.weight.regular },
+        overline: { fontSize: px(BRAND.size.micro), lineHeight: 1.4, fontWeight: BRAND.weight.bold, letterSpacing: "0.14em", textTransform: "uppercase" },
 
-        h5: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "18px",
-            lineHeight: 1.4,
-            fontWeight: 650,
-        },
+        // Large numbers on stat cards: Jakarta, tabular so columns line up.
+        metric: { fontFamily: BRAND.font.body, fontSize: px(BRAND.size.metric), lineHeight: 1.15, fontWeight: BRAND.weight.heavy, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" },
 
-        h6: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "16px",
-            lineHeight: 1.45,
-            fontWeight: 650,
-        },
+        micro: { fontSize: px(BRAND.size.micro), lineHeight: 1.3, fontWeight: BRAND.weight.medium },
 
-        body1: {
-            fontSize: "15px",
-            lineHeight: 1.6,
-            fontWeight: 400,
-        },
+        // The "Pharmalyx" wordmark next to the logo.
+        wordmark: { fontFamily: BRAND.font.display, fontSize: px(BRAND.size.h4), lineHeight: 1.05, fontWeight: BRAND.weight.semibold, letterSpacing: "-0.02em" },
+        tagline: { fontFamily: BRAND.font.body, fontSize: px(BRAND.size.micro - 1), lineHeight: 1.3, fontWeight: BRAND.weight.semibold, letterSpacing: "0.14em", textTransform: "uppercase" },
 
-        body2: {
-            fontSize: "14px",
-            lineHeight: 1.55,
-            fontWeight: 400,
-        },
-
-        subtitle1: {
-            fontSize: "15px",
-            lineHeight: 1.45,
-            fontWeight: 650,
-        },
-
-        subtitle2: {
-            fontSize: "13px",
-            lineHeight: 1.4,
-            fontWeight: 650,
-        },
-
-        caption: {
-            fontSize: "12px",
-            lineHeight: 1.4,
-            fontWeight: 400,
-        },
-
-        // Eyebrow labels above page and section titles.
-        overline: {
-            fontSize: "11px",
-            lineHeight: 1.4,
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-        },
-
-        // Large numbers on stat cards.
-        metric: {
-            fontFamily: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
-            fontSize: "26px",
-            lineHeight: 1.15,
-            fontWeight: 750,
-            letterSpacing: "-0.02em",
-            fontVariantNumeric: "tabular-nums",
-        },
-
-        // Tiny labels inside dense UI (calendar cells, badges).
-        micro: {
-            fontSize: "11px",
-            lineHeight: 1.3,
-            fontWeight: 500,
-        },
-
-        button: {
-            fontSize: "14px",
-            fontWeight: 600,
-            textTransform: "none",
-            letterSpacing: "0",
-        },
+        button: { fontSize: px(BRAND.size.body), fontWeight: BRAND.weight.semibold, textTransform: "none", letterSpacing: "0" },
     },
 
     // =========================================================
-    // COMPONENT DESIGN SYSTEM
+    // COMPONENTS
     // =========================================================
 
     components: {
         MuiCssBaseline: {
             styleOverrides: (theme) => ({
-                html: {
-                    backgroundColor: theme.palette.background.default,
-                },
-
+                html: { backgroundColor: theme.palette.background.default },
                 body: {
                     margin: 0,
                     padding: 0,
@@ -707,34 +515,14 @@ const PharmalyxTheme = createTheme({
                     fontFamily: theme.typography.fontFamily,
                     WebkitFontSmoothing: "antialiased",
                     MozOsxFontSmoothing: "grayscale",
+                    fontFeatureSettings: "'ss01' on, 'cv11' on",
                 },
-
-                "::selection": {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.18),
-                },
-
-                "*": {
-                    scrollbarWidth: "thin",
-                    scrollbarColor: `${theme.palette.border.strong} transparent`,
-                },
-
-                "*::-webkit-scrollbar": {
-                    width: "7px",
-                    height: "7px",
-                },
-
-                "*::-webkit-scrollbar-track": {
-                    background: "transparent",
-                },
-
-                "*::-webkit-scrollbar-thumb": {
-                    background: theme.palette.border.strong,
-                    borderRadius: "10px",
-                },
-
-                "*::-webkit-scrollbar-thumb:hover": {
-                    background: theme.palette.text.disabled,
-                },
+                "::selection": { backgroundColor: alpha(theme.palette.brand.jadeGlow, 0.3) },
+                "*": { scrollbarWidth: "thin", scrollbarColor: `${theme.palette.border.strong} transparent` },
+                "*::-webkit-scrollbar": { width: px(7), height: px(7) },
+                "*::-webkit-scrollbar-track": { background: "transparent" },
+                "*::-webkit-scrollbar-thumb": { background: theme.palette.border.strong, borderRadius: px(theme.radius.md) },
+                "*::-webkit-scrollbar-thumb:hover": { background: theme.palette.text.disabled },
             }),
         },
 
@@ -742,195 +530,98 @@ const PharmalyxTheme = createTheme({
             styleOverrides: {
                 root: ({ theme }) => ({
                     backgroundImage: "none",
-                    background: theme.palette.brand.glass,
-                    backdropFilter: "blur(8px)",
-                    border:
-                        "1px solid " + theme.palette.divider,
-                    boxShadow:
-                        "0 4px 18px rgba(15, 23, 42, 0.035)",
+                    backgroundColor: theme.palette.background.paper,
+                    border: `1px solid ${theme.palette.divider}`,
+                    boxShadow: theme.shadows3.sm,
                 }),
-
-                rounded: ({ theme }) => ({
-                    borderRadius: theme.shape.borderRadius,
-                }),
+                rounded: ({ theme }) => ({ borderRadius: px(theme.radius.lg) }),
             },
         },
 
         MuiButton: {
-            defaultProps: {
-                disableElevation: true,
-            },
-
+            defaultProps: { disableElevation: true },
             styleOverrides: {
                 root: ({ theme }) => ({
-                    minHeight: 40,
-                    borderRadius: 8,
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    fontWeight: 600,
-
-                    transition:
-                        "background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
-
-                    "&:hover": {
-                        transform: "translateY(-1px)",
-                    },
-
-                    "&:active": {
-                        transform: "translateY(1px)",
-                    },
+                    minHeight: theme.control.height,
+                    borderRadius: px(theme.radius.md),
+                    paddingLeft: theme.spacing(2),
+                    paddingRight: theme.spacing(2),
+                    fontWeight: theme.fontWeight.semibold,
+                    transition: `background-color ${theme.motion.base}, border-color ${theme.motion.base}, box-shadow ${theme.motion.base}, transform ${theme.motion.base}`,
+                    "&:hover": { transform: "translateY(-1px)" },
+                    "&:active": { transform: "translateY(0)" },
                 }),
-
+                sizeSmall: ({ theme }) => ({ minHeight: theme.control.small, paddingLeft: theme.spacing(1.25), paddingRight: theme.spacing(1.25), borderRadius: px(theme.radius.sm) }),
+                sizeLarge: ({ theme }) => ({ minHeight: theme.control.field, paddingLeft: theme.spacing(2.5), paddingRight: theme.spacing(2.5) }),
                 containedPrimary: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.primary.main,
-                    backgroundImage:
-                        theme.palette.brand.gradient,
-                    color:
-                        theme.palette.primary.contrastText,
-
-                    "&:hover": {
-                        backgroundColor:
-                            theme.palette.primary.dark,
-
-                        boxShadow:
-                            "0 6px 16px " +
-                            alpha(
-                                theme.palette.primary.main,
-                                0.18
-                            ),
-                    },
+                    backgroundColor: theme.palette.primary.main,
+                    backgroundImage: theme.palette.brand.gradient,
+                    color: theme.palette.primary.contrastText,
+                    boxShadow: `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.14)}`,
+                    "&:hover": { backgroundColor: theme.palette.primary.dark, boxShadow: theme.palette.brand.glow },
                 }),
-
                 containedSecondary: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.secondary.main,
-                    color:
-                        theme.palette.secondary.contrastText,
-
-                    "&:hover": {
-                        backgroundColor:
-                            theme.palette.secondary.dark,
-
-                        boxShadow:
-                            "0 6px 16px " +
-                            alpha(
-                                theme.palette.secondary.main,
-                                0.12
-                            ),
-                    },
+                    backgroundColor: theme.palette.brand.ink,
+                    color: theme.palette.secondary.contrastText,
+                    "&:hover": { backgroundColor: theme.palette.secondary.dark, boxShadow: theme.shadows3.md },
                 }),
-
                 outlined: ({ theme }) => ({
-                    borderColor:
-                        theme.palette.divider,
-
-                    color:
-                        theme.palette.text.primary,
-
-                    backgroundColor:
-                        theme.palette.background.paper,
-
-                    "&:hover": {
-                        borderColor:
-                            theme.palette.primary.main,
-
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.04
-                            ),
-                    },
-
+                    borderColor: theme.palette.border.default,
+                    color: theme.palette.text.primary,
+                    backgroundColor: theme.palette.background.paper,
+                    "&:hover": { borderColor: theme.palette.primary.main, backgroundColor: alpha(theme.palette.primary.main, theme.tint.hover), color: theme.palette.primary.dark },
                     "&.MuiButton-colorError": {
-                        color:
-                            theme.palette.error.main,
-
-                        borderColor:
-                            theme.palette.error.main,
-
-                        "&:hover": {
-                            borderColor:
-                                theme.palette.error.dark,
-
-                            backgroundColor:
-                                alpha(
-                                    theme.palette.error.main,
-                                    0.04
-                                ),
-                        },
+                        color: theme.palette.error.main,
+                        borderColor: alpha(theme.palette.error.main, theme.tint.strong),
+                        "&:hover": { borderColor: theme.palette.error.main, backgroundColor: alpha(theme.palette.error.main, theme.tint.hover) },
                     },
+                    "&.MuiButton-colorSuccess": { color: theme.palette.success.main, borderColor: alpha(theme.palette.success.main, theme.tint.strong) },
+                    "&.MuiButton-colorWarning": { color: theme.palette.warning.dark, borderColor: alpha(theme.palette.warning.main, theme.tint.strong) },
                 }),
-
-                text: ({ theme }) => ({
-                    "&:hover": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.06
-                            ),
-                    },
-                }),
+                text: ({ theme }) => ({ "&:hover": { backgroundColor: alpha(theme.palette.primary.main, theme.tint.selected) } }),
             },
         },
 
         MuiIconButton: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    borderRadius: 8,
+                    borderRadius: px(theme.radius.md),
+                    transition: `background-color ${theme.motion.fast}, color ${theme.motion.fast}`,
+                    "&:hover": { backgroundColor: alpha(theme.palette.primary.main, theme.tint.selected) },
+                }),
+            },
+        },
 
-                    transition:
-                        "background-color 160ms ease, color 160ms ease",
-
-                    "&:hover": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.07
-                            ),
-                    },
+        MuiToggleButton: {
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    textTransform: "none",
+                    fontWeight: theme.fontWeight.semibold,
+                    borderColor: theme.palette.border.default,
+                    "&.Mui-selected": { color: theme.palette.primary.dark, backgroundColor: alpha(theme.palette.primary.main, theme.tint.soft) },
                 }),
             },
         },
 
         MuiTabs: {
             styleOverrides: {
-                root: {
-                    minHeight: 48,
-                },
-
-                indicator: ({ theme }) => ({
-                    height: 2,
-                    borderRadius: 2,
-                    backgroundColor:
-                        theme.palette.primary.main,
-                }),
+                root: ({ theme }) => ({ minHeight: theme.control.field }),
+                indicator: ({ theme }) => ({ height: 2, borderRadius: px(theme.radius.xs), backgroundColor: theme.palette.primary.main }),
             },
         },
 
         MuiTab: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    minHeight: 48,
-                    paddingLeft: 18,
-                    paddingRight: 18,
-
-                    color:
-                        theme.palette.text.secondary,
-
-                    fontSize: "14px",
-                    fontWeight: 600,
+                    minHeight: theme.control.field,
+                    paddingLeft: theme.spacing(2),
+                    paddingRight: theme.spacing(2),
+                    color: theme.palette.text.secondary,
+                    fontSize: px(theme.fontSize.body),
+                    fontWeight: theme.fontWeight.semibold,
                     textTransform: "none",
-
-                    "&.Mui-selected": {
-                        color:
-                            theme.palette.primary.main,
-                    },
-
-                    "&:hover": {
-                        color:
-                            theme.palette.primary.dark,
-                    },
+                    "&.Mui-selected": { color: theme.palette.primary.main },
+                    "&:hover": { color: theme.palette.primary.dark },
                 }),
             },
         },
@@ -938,155 +629,64 @@ const PharmalyxTheme = createTheme({
         MuiOutlinedInput: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    minHeight:
-                        theme.field?.minHeight || 46,
-
-                    borderRadius:
-                        theme.field?.radius || 1.5,
-
-                    backgroundColor:
-                        theme.palette.background.paper,
-
-                    transition:
-                        theme.field?.transition,
-
-                    "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor:
-                            theme.palette.divider,
-                    },
-
-                    "&:hover .MuiOutlinedInput-notchedInput": {
-                        borderColor:
-                            theme.palette.primary.light,
-                    },
-
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor:
-                            theme.palette.primary.light,
-                    },
-
-                    "&.Mui-focused": {
-                        boxShadow:
-                            "0 0 0 3px " +
-                            alpha(
-                                theme.palette.primary.main,
-                                0.08
-                            ),
-                    },
-
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor:
-                            theme.palette.primary.main,
-
-                        borderWidth: 1,
-                    },
-
-                    "&.Mui-disabled": {
-                        backgroundColor:
-                            theme.palette.action.hover,
-                    },
+                    minHeight: theme.field.minHeight,
+                    borderRadius: px(theme.radius.md),
+                    backgroundColor: theme.palette.background.paper,
+                    transition: theme.field.transition,
+                    "& .MuiOutlinedInput-notchedOutline": { borderColor: theme.palette.border.default },
+                    "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: theme.palette.primary.light },
+                    "&.Mui-focused": { boxShadow: theme.shadows3.focus },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: theme.palette.primary.main, borderWidth: 1 },
+                    "&.Mui-disabled": { backgroundColor: theme.palette.surface.muted },
+                    "&.MuiInputBase-sizeSmall": { minHeight: theme.control.compact },
                 }),
-
-                input: ({ theme }) => ({
-                    fontSize:
-                        theme.field?.input?.fontSize || 13,
-
-                    color:
-                        theme.palette.text.primary,
-                }),
+                input: ({ theme }) => ({ fontSize: px(theme.field.input.fontSize), color: theme.palette.text.primary }),
             },
         },
 
         MuiInputLabel: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-
-                    fontSize:
-                        theme.field?.label?.fontSize || 13,
-
-                    "&.Mui-focused": {
-                        color:
-                            theme.palette.primary.main,
-                    },
+                    color: theme.palette.text.secondary,
+                    fontSize: px(theme.field.label.fontSize),
+                    fontWeight: theme.fontWeight.medium,
+                    "&.Mui-focused": { color: theme.palette.primary.main },
                 }),
             },
         },
 
-        MuiSelect: {
-            styleOverrides: {
-                select: ({ theme }) => ({
-                    fontSize:
-                        theme.field?.input?.fontSize || 13,
-                }),
-            },
-        },
+        MuiSelect: { styleOverrides: { select: ({ theme }) => ({ fontSize: px(theme.field.input.fontSize) }) } },
 
         MuiFormHelperText: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-
-                    fontSize:
-                        theme.field?.helperText?.fontSize ||
-                        11,
-
-                    marginLeft:
-                        theme.field?.helperText?.marginLeft ||
-                        0.5,
-
-                    marginTop:
-                        theme.field?.helperText?.marginTop ||
-                        0.5,
+                    color: theme.palette.text.secondary,
+                    fontSize: px(theme.field.helperText.fontSize),
+                    marginLeft: theme.spacing(theme.field.helperText.marginLeft),
+                    marginTop: theme.spacing(theme.field.helperText.marginTop),
                 }),
             },
         },
 
-        MuiTableContainer: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    borderRadius: 9,
-                    backgroundColor:
-                        theme.palette.background.paper,
-                }),
-            },
-        },
+        MuiTableContainer: { styleOverrides: { root: ({ theme }) => ({ borderRadius: px(theme.radius.lg), backgroundColor: theme.palette.background.paper }) } },
 
-        MuiTableHead: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.surface.muted,
-                }),
-            },
-        },
+        MuiTableHead: { styleOverrides: { root: ({ theme }) => ({ backgroundColor: theme.palette.surface.muted }) } },
 
         MuiTableCell: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    borderBottom:
-                        "1px solid " +
-                        theme.palette.divider,
-
-                    color:
-                        theme.palette.text.primary,
-
-                    fontSize: "14px",
-                    padding: "14px 16px",
+                    borderBottom: `1px solid ${theme.palette.border.subtle}`,
+                    color: theme.palette.text.primary,
+                    fontSize: px(theme.fontSize.body),
+                    padding: theme.spacing(1.75, 2),
                 }),
-
                 head: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-
-                    fontSize: "13px",
-                    fontWeight: 650,
-
-                    backgroundColor:
-                        theme.palette.surface.muted,
-
+                    color: theme.palette.text.secondary,
+                    fontSize: px(theme.fontSize.caption),
+                    fontWeight: theme.fontWeight.bold,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    backgroundColor: theme.palette.surface.muted,
                     whiteSpace: "nowrap",
                 }),
             },
@@ -1095,98 +695,31 @@ const PharmalyxTheme = createTheme({
         MuiTableRow: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    transition:
-                        "background-color 140ms ease",
-
-                    "&:hover": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.025
-                            ),
-                    },
-
-                    "&:last-child td": {
-                        borderBottom: 0,
-                    },
+                    transition: `background-color ${theme.motion.fast}`,
+                    "&:hover": { backgroundColor: theme.palette.surface.subtle },
+                    "&:last-child td": { borderBottom: 0 },
                 }),
             },
         },
 
         MuiChip: {
             styleOverrides: {
-                root: {
-                    borderRadius: 7,
-                    fontWeight: 600,
-                    fontSize: "12px",
-                },
-
-                colorPrimary: ({ theme }) => ({
-                    backgroundColor:
-                        alpha(
-                            theme.palette.primary.main,
-                            0.1
-                        ),
-
-                    color:
-                        theme.palette.primary.dark,
-                }),
-
-                colorSuccess: ({ theme }) => ({
-                    backgroundColor:
-                        alpha(
-                            theme.palette.success.main,
-                            0.1
-                        ),
-
-                    color:
-                        theme.palette.success.dark,
-                }),
-
-                colorWarning: ({ theme }) => ({
-                    backgroundColor:
-                        alpha(
-                            theme.palette.warning.main,
-                            0.12
-                        ),
-
-                    color:
-                        theme.palette.warning.dark,
-                }),
-
-                colorError: ({ theme }) => ({
-                    backgroundColor:
-                        alpha(
-                            theme.palette.error.main,
-                            0.1
-                        ),
-
-                    color:
-                        theme.palette.error.dark,
-                }),
+                root: ({ theme }) => ({ borderRadius: px(theme.radius.pill), fontWeight: theme.fontWeight.semibold, fontSize: px(theme.fontSize.caption) }),
+                colorPrimary: ({ theme }) => ({ backgroundColor: alpha(theme.palette.primary.main, theme.tint.soft), color: theme.palette.primary.dark }),
+                colorSuccess: ({ theme }) => ({ backgroundColor: alpha(theme.palette.success.main, theme.tint.soft), color: theme.palette.success.dark }),
+                colorWarning: ({ theme }) => ({ backgroundColor: alpha(theme.palette.warning.main, theme.tint.soft), color: theme.palette.warning.dark }),
+                colorError: ({ theme }) => ({ backgroundColor: alpha(theme.palette.error.main, theme.tint.soft), color: theme.palette.error.dark }),
             },
         },
 
         MuiDialog: {
             styleOverrides: {
                 paper: ({ theme }) => ({
-                    borderRadius: 13,
-
-                    border:
-                        "1px solid " +
-                        theme.palette.divider,
-
-                    boxShadow:
-                        "0 24px 70px rgba(15, 23, 42, 0.16)",
-
+                    borderRadius: px(theme.radius.xl),
+                    border: `1px solid ${theme.palette.divider}`,
+                    boxShadow: theme.shadows3.xl,
                     backgroundImage: "none",
-
-                    background:
-                        theme.palette.brand.glass,
-
-                    backdropFilter: "blur(12px)",
-
-                    // Phones: small, even margins instead of MUI's 32px.
+                    backgroundColor: theme.palette.background.paper,
                     [theme.breakpoints.down("sm")]: {
                         margin: theme.spacing(theme.dialog.phoneMargin),
                         width: `calc(100% - ${theme.spacing(theme.dialog.phoneMargin * 2)})`,
@@ -1196,19 +729,19 @@ const PharmalyxTheme = createTheme({
             },
         },
 
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: ({ theme }) => ({ ...theme.typography.h5, paddingTop: theme.spacing(2.5) }),
+            },
+        },
+
         MuiMenu: {
             styleOverrides: {
                 paper: ({ theme }) => ({
-                    borderRadius: 9,
-
-                    border:
-                        "1px solid " +
-                        theme.palette.divider,
-
-                    boxShadow:
-                        "0 12px 32px rgba(15, 23, 42, 0.12)",
-
-                    marginTop: 4,
+                    borderRadius: px(theme.radius.lg),
+                    border: `1px solid ${theme.palette.divider}`,
+                    boxShadow: theme.shadows3.lg,
+                    marginTop: theme.spacing(0.5),
                 }),
             },
         },
@@ -1216,33 +749,15 @@ const PharmalyxTheme = createTheme({
         MuiMenuItem: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    minHeight: 40,
-                    borderRadius: 7,
-                    margin: "2px 5px",
-                    fontSize: "14px",
-
-                    "&:hover": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.06
-                            ),
-                    },
-
+                    minHeight: theme.control.height,
+                    borderRadius: px(theme.radius.sm),
+                    margin: theme.spacing(0.25, 0.75),
+                    fontSize: px(theme.fontSize.body),
+                    "&:hover": { backgroundColor: alpha(theme.palette.primary.main, theme.tint.selected) },
                     "&.Mui-selected": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.09
-                            ),
-
-                        "&:hover": {
-                            backgroundColor:
-                                alpha(
-                                    theme.palette.primary.main,
-                                    0.12
-                                ),
-                        },
+                        backgroundColor: alpha(theme.palette.primary.main, theme.tint.soft),
+                        color: theme.palette.primary.dark,
+                        "&:hover": { backgroundColor: alpha(theme.palette.primary.main, theme.tint.soft * 1.4) },
                     },
                 }),
             },
@@ -1251,155 +766,72 @@ const PharmalyxTheme = createTheme({
         MuiTooltip: {
             styleOverrides: {
                 tooltip: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.secondary.main,
-
-                    color:
-                        theme.palette.secondary.contrastText,
-
-                    fontSize: "12px",
-                    borderRadius: 7,
-                    padding: "7px 10px",
-
-                    boxShadow:
-                        "0 6px 18px rgba(15, 23, 42, 0.16)",
+                    backgroundColor: theme.palette.brand.ink,
+                    color: theme.palette.common.white,
+                    fontSize: px(theme.fontSize.caption),
+                    fontWeight: theme.fontWeight.medium,
+                    borderRadius: px(theme.radius.sm),
+                    padding: theme.spacing(0.875, 1.25),
+                    boxShadow: theme.shadows3.lg,
                 }),
-
-                arrow: ({ theme }) => ({
-                    color:
-                        theme.palette.secondary.main,
-                }),
+                arrow: ({ theme }) => ({ color: theme.palette.brand.ink }),
             },
         },
 
-        MuiDivider: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    borderColor:
-                        theme.palette.divider,
-                }),
-            },
-        },
+        MuiDivider: { styleOverrides: { root: ({ theme }) => ({ borderColor: theme.palette.border.subtle }) } },
 
         MuiAutocomplete: {
             styleOverrides: {
-                paper: ({ theme }) => ({
-                    borderRadius: 9,
+                paper: ({ theme }) => ({ borderRadius: px(theme.radius.lg), boxShadow: theme.shadows3.lg }),
+            },
+        },
 
-                    boxShadow:
-                        "0 12px 32px rgba(15, 23, 42, 0.08)",
-                }),
+        MuiAlert: {
+            styleOverrides: {
+                root: ({ theme }) => ({ borderRadius: px(theme.radius.lg), alignItems: "flex-start" }),
             },
         },
 
         MuiSnackbar: {
             styleOverrides: {
-                root: {
-                    "& .MuiSnackbarContent-root": {
-                        borderRadius: 8,
-
-                        boxShadow:
-                            "0 8px 20px rgba(15,23,42,0.08)",
-                    },
-                },
+                root: ({ theme }) => ({ "& .MuiSnackbarContent-root, & .MuiAlert-root": { borderRadius: px(theme.radius.lg), boxShadow: theme.shadows3.lg } }),
             },
         },
 
-        MuiFormControlLabel: {
-            styleOverrides: {
-                root: {
-                    marginRight: 8,
-                },
-            },
-        },
+        MuiFormControlLabel: { styleOverrides: { root: ({ theme }) => ({ marginRight: theme.spacing(1) }) } },
 
         MuiAvatar: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    backgroundColor:
-                        theme.palette.surface.default,
-
-                    color:
-                        theme.palette.text.primary,
-                }),
+                root: ({ theme }) => ({ backgroundColor: theme.palette.surface.subtle, color: theme.palette.primary.dark, fontWeight: theme.fontWeight.bold }),
             },
         },
 
         MuiLinearProgress: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    height: 8,
-                    borderRadius: 8,
-
-                    backgroundColor:
-                        theme.palette.surface.subtle,
-                }),
-
-                bar: ({ theme }) => ({
-                    borderRadius: 8,
-
-                    backgroundImage:
-                        theme.palette.brand.gradient,
-                }),
+                root: ({ theme }) => ({ height: theme.stat.progressHeight, borderRadius: px(theme.radius.pill), backgroundColor: theme.palette.surface.muted }),
+                bar: ({ theme }) => ({ borderRadius: px(theme.radius.pill) }),
+                barColorPrimary: ({ theme }) => ({ backgroundImage: theme.palette.brand.gradientGlow }),
             },
         },
 
-        MuiCircularProgress: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    color:
-                        theme.palette.primary.main,
-                }),
-            },
-        },
+        MuiCircularProgress: { styleOverrides: { root: ({ theme }) => ({ color: theme.palette.primary.main }) } },
 
         MuiAccordion: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    borderRadius: 10,
-
-                    boxShadow:
-                        "0 8px 24px rgba(15,23,42,0.06)",
-
-                    "&.Mui-expanded": {
-                        margin: "12px 0",
-                    },
-                }),
+                root: ({ theme }) => ({ borderRadius: px(theme.radius.lg), boxShadow: theme.shadows3.sm, "&.Mui-expanded": { margin: theme.spacing(1.5, 0) } }),
             },
         },
 
-        MuiBreadcrumbs: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-                }),
-            },
-        },
+        MuiBreadcrumbs: { styleOverrides: { root: ({ theme }) => ({ color: theme.palette.text.secondary }) } },
 
-        MuiStepper: {
-            styleOverrides: {
-                root: {
-                    background: "transparent",
-                },
-            },
-        },
+        MuiStepper: { styleOverrides: { root: { background: "transparent" } } },
 
         MuiStepIcon: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    color:
-                        theme.palette.surface.muted,
-
-                    "&.Mui-active": {
-                        color:
-                            theme.palette.primary.main,
-                    },
-
-                    "&.Mui-completed": {
-                        color:
-                            theme.palette.success.main,
-                    },
+                    color: theme.palette.surface.muted,
+                    "&.Mui-active": { color: theme.palette.primary.main },
+                    "&.Mui-completed": { color: theme.palette.success.main },
                 }),
             },
         },
@@ -1408,16 +840,8 @@ const PharmalyxTheme = createTheme({
             styleOverrides: {
                 root: ({ theme }) => ({
                     "& .MuiPaginationItem-root": {
-                        borderRadius: 8,
-
-                        "&.Mui-selected": {
-                            backgroundImage:
-                                theme.palette.brand.gradient,
-
-                            color:
-                                theme.palette.primary
-                                    .contrastText,
-                        },
+                        borderRadius: px(theme.radius.sm),
+                        "&.Mui-selected": { backgroundImage: theme.palette.brand.gradient, color: theme.palette.primary.contrastText },
                     },
                 }),
             },
@@ -1425,95 +849,46 @@ const PharmalyxTheme = createTheme({
 
         MuiListItemButton: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    borderRadius: 8,
-
-                    "&:hover": {
-                        backgroundColor:
-                            alpha(
-                                theme.palette.primary.main,
-                                0.04
-                            ),
-                    },
-                }),
+                root: ({ theme }) => ({ borderRadius: px(theme.radius.md), "&:hover": { backgroundColor: alpha(theme.palette.primary.main, theme.tint.hover) } }),
             },
         },
 
-        MuiListItemIcon: {
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    minWidth: 40,
-
-                    color:
-                        theme.palette.text.secondary,
-                }),
-            },
-        },
+        MuiListItemIcon: { styleOverrides: { root: ({ theme }) => ({ minWidth: theme.control.height, color: theme.palette.text.secondary }) } },
 
         MuiListItemText: {
             styleOverrides: {
-                primary: ({ theme }) => ({
-                    color:
-                        theme.palette.text.primary,
-                }),
-
-                secondary: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-                }),
+                primary: ({ theme }) => ({ color: theme.palette.text.primary }),
+                secondary: ({ theme }) => ({ color: theme.palette.text.secondary }),
             },
         },
 
         // Pill toggle: white thumb centred inside a filled track.
-        // Everything is set from the root with descendant selectors so MUI's built-in
-        // size variants (which also target the root) can't override the geometry.
         MuiSwitch: {
             styleOverrides: {
                 root: ({ theme, ownerState }) => {
                     const t = theme.toggle[ownerState.size === "small" ? "small" : "medium"];
                     const travel = t.width - t.thumb - t.gap * 2;
-
                     return {
                         width: t.width,
                         height: t.height,
                         padding: 0,
                         overflow: "visible",
-
                         "& .MuiSwitch-switchBase": {
                             padding: t.gap,
                             color: theme.palette.common.white,
-                            transitionDuration: "180ms",
-
+                            transitionDuration: theme.motion.base.split(" ")[0],
                             "&:hover": { backgroundColor: "transparent" },
-
                             "&.Mui-checked": {
                                 transform: `translateX(${travel}px)`,
                                 color: theme.palette.common.white,
-
-                                "& + .MuiSwitch-track": {
-                                    opacity: 1,
-                                    backgroundColor: theme.palette.primary.main,
-                                    backgroundImage: theme.palette.brand.gradient,
-                                },
+                                "& + .MuiSwitch-track": { opacity: 1, backgroundColor: theme.palette.primary.main, backgroundImage: theme.palette.brand.gradient },
                             },
-
                             "&.Mui-disabled": { color: theme.palette.common.white },
                             "&.Mui-disabled + .MuiSwitch-track": { opacity: 0.45 },
                             "&.Mui-focusVisible + .MuiSwitch-track": { boxShadow: theme.elevation.focus },
                         },
-
-                        "& .MuiSwitch-thumb": {
-                            width: t.thumb,
-                            height: t.thumb,
-                            boxShadow: theme.elevation.sm,
-                        },
-
-                        "& .MuiSwitch-track": {
-                            opacity: 1,
-                            borderRadius: t.height / 2,
-                            backgroundColor: theme.palette.border.strong,
-                            transition: theme.field.transition,
-                        },
+                        "& .MuiSwitch-thumb": { width: t.thumb, height: t.thumb, boxShadow: theme.elevation.sm },
+                        "& .MuiSwitch-track": { opacity: 1, borderRadius: t.height / 2, backgroundColor: theme.palette.border.strong, transition: theme.field.transition },
                     };
                 },
             },
@@ -1521,60 +896,29 @@ const PharmalyxTheme = createTheme({
 
         MuiCheckbox: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-
-                    "&.Mui-checked": {
-                        color:
-                            theme.palette.primary.main,
-                    },
-                }),
+                root: ({ theme }) => ({ color: theme.palette.border.strong, "&.Mui-checked": { color: theme.palette.primary.main } }),
             },
         },
 
         MuiRadio: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.secondary,
-
-                    "&.Mui-checked": {
-                        color:
-                            theme.palette.primary.main,
-                    },
-                }),
+                root: ({ theme }) => ({ color: theme.palette.border.strong, "&.Mui-checked": { color: theme.palette.primary.main } }),
             },
         },
 
         MuiBackdrop: {
             styleOverrides: {
-                root: ({ theme }) => ({
-                    backgroundColor:
-                        alpha(
-                            theme.palette.secondary.main,
-                            0.45
-                        ),
-
-                    backdropFilter: "blur(2px)",
-                }),
+                root: ({ theme, ownerState }) => (ownerState?.invisible ? {} : { backgroundColor: alpha(theme.palette.brand.ink, 0.42), backdropFilter: "blur(3px)" }),
             },
         },
 
-        MuiTypography: {
-            defaultProps: {
-                variantMapping: {
-                    metric: "p",
-                    micro: "span",
-                },
-            },
+        MuiSkeleton: {
+            styleOverrides: { root: ({ theme }) => ({ backgroundColor: theme.palette.surface.muted }), rounded: ({ theme }) => ({ borderRadius: px(theme.radius.lg) }) },
+        },
 
-            styleOverrides: {
-                root: ({ theme }) => ({
-                    color:
-                        theme.palette.text.primary,
-                }),
-            },
+        MuiTypography: {
+            defaultProps: { variantMapping: { metric: "p", micro: "span", wordmark: "span", tagline: "span" } },
+            styleOverrides: { root: ({ theme }) => ({ color: theme.palette.text.primary }) },
         },
     },
 });

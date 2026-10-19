@@ -87,7 +87,7 @@ function AddNewUser({
         },
 
         "& .MuiInputLabel-root": {
-            fontSize: 13,
+            fontSize: "textMd",
             color: "text.secondary",
         },
 
@@ -96,16 +96,16 @@ function AddNewUser({
         },
 
         "& .MuiInputBase-input": {
-            fontSize: 13,
+            fontSize: "textMd",
             color: "text.primary",
         },
 
         "& .MuiSelect-select": {
-            fontSize: 13,
+            fontSize: "textMd",
         },
 
         "& .MuiFormHelperText-root": {
-            fontSize: 11,
+            fontSize: "textXs",
             marginLeft: 0.5,
             marginTop: 0.6,
         },
@@ -836,10 +836,10 @@ function AddNewUser({
                         <Typography
                             sx={{
                                 fontSize: {
-                                    xs: 20,
-                                    md: 22,
+                                    xs: "text3xl",
+                                    md: "text4xl",
                                 },
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                                 letterSpacing: "-0.025em",
                                 lineHeight: 1.25,
@@ -851,7 +851,7 @@ function AddNewUser({
                         <Typography
                             sx={{
                                 mt: 0.55,
-                                fontSize: 13,
+                                fontSize: "textMd",
                                 lineHeight: 1.55,
                                 color: "text.secondary",
                                 maxWidth: 640,
@@ -923,8 +923,8 @@ function AddNewUser({
 
                             <Typography
                                 sx={{
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                     color: "text.primary",
                                     letterSpacing: "-0.01em",
                                     lineHeight: 1.35,
@@ -936,7 +936,7 @@ function AddNewUser({
                             <Typography
                                 sx={{
                                     mt: 0.4,
-                                    fontSize: 12.5,
+                                    fontSize: "textSm",
                                     color: "text.secondary",
                                     lineHeight: 1.5,
                                 }}
@@ -1242,8 +1242,8 @@ function AddNewUser({
 
                             <Typography
                                 sx={{
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                     color: "text.primary",
                                     letterSpacing: "-0.01em",
                                     lineHeight: 1.35,
@@ -1255,7 +1255,7 @@ function AddNewUser({
                             <Typography
                                 sx={{
                                     mt: 0.4,
-                                    fontSize: 12.5,
+                                    fontSize: "textSm",
                                     color: "text.secondary",
                                     lineHeight: 1.5,
                                 }}
@@ -1810,8 +1810,8 @@ function AddNewUser({
                         height: 40,
                         borderRadius: 1.5,
                         textTransform: "none",
-                        fontSize: 13,
-                        fontWeight: 600,
+                        fontSize: "textMd",
+                        fontWeight: "fontWeightSemibold",
                         borderColor: "divider",
                         color: "text.secondary",
                         backgroundColor: "background.paper",
@@ -1833,8 +1833,8 @@ function AddNewUser({
                             height: 40,
                             borderRadius: 1.5,
                             textTransform: "none",
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: "textMd",
+                            fontWeight: "fontWeightBold",
                             boxShadow: "none",
                         }}
                     >
