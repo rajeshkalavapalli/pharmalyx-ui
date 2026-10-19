@@ -71,8 +71,8 @@ function SectionHeading({ icon: Icon, title, tone }) {
                 ...sectionStyles[tone](theme),
             })}
         >
-            <Icon sx={{ fontSize: 19 }} />
-            <Typography sx={{ fontSize: 13.5, fontWeight: 700 }}>
+            <Icon sx={{ fontSize: "text3xl" }} />
+            <Typography sx={{ fontSize: "textMd", fontWeight: "fontWeightBold" }}>
                 {title}
             </Typography>
         </Box>
@@ -82,8 +82,8 @@ function SectionHeading({ icon: Icon, title, tone }) {
 const fieldSx = (theme) => ({
     "& .MuiInputLabel-root": {
         color: theme.palette.text.primary,
-        fontSize: 12,
-        fontWeight: 600,
+        fontSize: "textSm",
+        fontWeight: "fontWeightSemibold",
     },
     "& .MuiOutlinedInput-root": {
         minHeight: 42,
@@ -93,8 +93,8 @@ const fieldSx = (theme) => ({
         "&:hover fieldset": { borderColor: theme.palette.border.strong },
         "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
     },
-    "& .MuiInputBase-input": { fontSize: 12.5 },
-    "& .MuiSelect-select": { fontSize: 12.5 },
+    "& .MuiInputBase-input": { fontSize: "textSm" },
+    "& .MuiSelect-select": { fontSize: "textSm" },
 });
 
 const formGridSx = {
@@ -296,10 +296,10 @@ export const AddNewPharmacy = () => {
                     <LocalPharmacyOutlinedIcon />
                 </Box>
                 <Box>
-                    <Typography sx={{ fontSize: 20, fontWeight: 750, color: "text.primary", lineHeight: 1.25 }}>
+                    <Typography sx={{ fontSize: "text3xl", fontWeight: "fontWeightBold", color: "text.primary", lineHeight: 1.25 }}>
                         {mode === "view" ? "View Pharmacy" : mode === "edit" ? "Edit Pharmacy" : "Add Pharmacy"}
                     </Typography>
-                    <Typography sx={{ mt: 0.25, fontSize: 12.5, color: "text.secondary" }}>
+                    <Typography sx={{ mt: 0.25, fontSize: "textSm", color: "text.secondary" }}>
                         {readOnly ? "Pharmacy / chemist details" : "Enter pharmacy / chemist details"}
                     </Typography>
                 </Box>
@@ -552,7 +552,7 @@ export const AddNewPharmacy = () => {
                         }}
                     >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-                            <Typography sx={{ fontSize: 12.5, color: "text.secondary" }}>
+                            <Typography sx={{ fontSize: "textSm", color: "text.secondary" }}>
                                 Select Status
                             </Typography>
                             <ToggleButtonGroup
@@ -571,7 +571,7 @@ export const AddNewPharmacy = () => {
                                         borderColor: theme.palette.border.default,
                                         color: theme.palette.text.secondary,
                                         textTransform: "none",
-                                        fontSize: 12,
+                                        fontSize: "textSm",
                                     },
                                     "& .MuiToggleButton-root.Mui-selected": {
                                         color: theme.palette.success.dark,

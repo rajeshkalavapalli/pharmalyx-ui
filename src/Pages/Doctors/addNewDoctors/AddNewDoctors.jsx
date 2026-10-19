@@ -713,8 +713,8 @@ export const AddNewDoctors = function () {
                         <Typography
                             sx={{
                                 color: "text.primary",
-                                fontSize: 15,
-                                fontWeight: 700,
+                                fontSize: "textLg",
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             Doctor Information
@@ -725,7 +725,7 @@ export const AddNewDoctors = function () {
                     <Typography
                         sx={{
                             color: "text.secondary",
-                            fontSize: 11.5,
+                            fontSize: "textXs",
                             textAlign: "right",
                         }}
                     >
@@ -912,8 +912,8 @@ export const AddNewDoctors = function () {
                             <Typography
                                 sx={{
                                     color: "text.primary",
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                 }}
                             >
                                 Contact Information
@@ -924,7 +924,7 @@ export const AddNewDoctors = function () {
                         <Typography
                             sx={{
                                 color: "text.secondary",
-                                fontSize: 11.5,
+                                fontSize: "textXs",
                                 textAlign: "right",
                             }}
                         >
@@ -1066,8 +1066,8 @@ export const AddNewDoctors = function () {
                             <Typography
                                 sx={{
                                     color: "text.primary",
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                 }}
                             >
                                 Location
@@ -1078,7 +1078,7 @@ export const AddNewDoctors = function () {
                         <Typography
                             sx={{
                                 color: "text.secondary",
-                                fontSize: 11.5,
+                                fontSize: "textXs",
                                 textAlign: "right",
                             }}
                         >
@@ -1315,8 +1315,8 @@ export const AddNewDoctors = function () {
                             <Typography
                                 sx={{
                                     color: "text.primary",
-                                    fontSize: 15,
-                                    fontWeight: 700,
+                                    fontSize: "textLg",
+                                    fontWeight: "fontWeightBold",
                                 }}
                             >
                                 Clinic Check
@@ -1327,7 +1327,7 @@ export const AddNewDoctors = function () {
                         <Typography
                             sx={{
                                 color: "text.secondary",
-                                fontSize: 11.5,
+                                fontSize: "textXs",
                                 textAlign: "right",
                             }}
                         >
@@ -1437,13 +1437,13 @@ export const AddNewDoctors = function () {
                     >
 
                         <SettingsOutlinedIcon
-                            sx={{ fontSize: 19 }}
+                            sx={{ fontSize: "text3xl" }}
                         />
 
                         <Typography
                             sx={{
-                                fontSize: 13.5,
-                                fontWeight: 700,
+                                fontSize: "textMd",
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             Status
@@ -1484,7 +1484,7 @@ export const AddNewDoctors = function () {
 
                             <Typography
                                 sx={{
-                                    fontSize: 12.5,
+                                    fontSize: "textSm",
                                     color:
                                         "text.secondary",
                                 }}
@@ -1528,7 +1528,7 @@ export const AddNewDoctors = function () {
                                                 .secondary,
                                         textTransform:
                                             "none",
-                                        fontSize: 12,
+                                        fontSize: "textSm",
                                     },
 
                                     "& .MuiToggleButton-root.Mui-selected":
@@ -1565,7 +1565,7 @@ export const AddNewDoctors = function () {
                         {requestMode && (
                             <Typography
                                 sx={{
-                                    fontSize: 12.5,
+                                    fontSize: "textSm",
                                     color:
                                         "text.secondary",
                                 }}

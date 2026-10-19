@@ -176,14 +176,14 @@ export const DoctorList = function ({ onAddDoctor }) {
                     }}
                 >
                     <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                             Doctors
                         </Typography>
 
                         <Typography
                             sx={{
                                 mt: 0.5,
-                                fontSize: 13,
+                                fontSize: "textMd",
                                 color: "text.secondary",
                             }}
                         >
@@ -339,7 +339,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                 >
                                                     <VisibilityOutlinedIcon
                                                         sx={{
-                                                            fontSize: 17,
+                                                            fontSize: "text2xl",
                                                         }}
                                                     />
                                                 </IconButton>
@@ -388,7 +388,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                         >
                                                             <EditOutlinedIcon
                                                                 sx={{
-                                                                    fontSize: 17,
+                                                                    fontSize: "text2xl",
                                                                 }}
                                                             />
                                                         </IconButton>
@@ -446,7 +446,7 @@ export const DoctorList = function ({ onAddDoctor }) {
                                                         >
                                                             <DeleteOutline
                                                                 sx={{
-                                                                    fontSize: 17,
+                                                                    fontSize: "text2xl",
                                                                 }}
                                                             />
                                                         </IconButton>

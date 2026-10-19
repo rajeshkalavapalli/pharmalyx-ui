@@ -2,15 +2,7 @@ import { useState } from "react";
 
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
-const visuallyHidden = {
-    position: "absolute",
-    width: 1,
-    height: 1,
-    overflow: "hidden",
-    clip: "rect(0 0 0 0)",
-    whiteSpace: "nowrap",
-};
+import { visuallyHidden } from "@mui/utils";
 
 // Rounded "nice" ceiling so grid lines land on whole numbers.
 const niceMax = (value, lines) => Math.max(lines, Math.ceil(value / lines) * lines);
@@ -149,16 +141,19 @@ function BarChart({ items, unit, ariaLabel, highlightKey }) {
             </Box>
 
             {/* Table view for screen readers */}
-            <Box component="table" sx={visuallyHidden}>
-                <caption>{ariaLabel}</caption>
-                <tbody>
-                    {items.map((item) => (
-                        <tr key={item.key}>
-                            <th scope="row">{item.tooltipTitle}</th>
-                            <td>{item.detail || plural(item.value, unit)}</td>
-                        </tr>
-                    ))}
-                </tbody>
+            {/* Screen-reader copy of the chart. Hidden on a wrapper: a table ignores width and height. */}
+            <Box sx={visuallyHidden}>
+                <table>
+                    <caption>{ariaLabel}</caption>
+                    <tbody>
+                        {items.map((item) => (
+                            <tr key={item.key}>
+                                <th scope="row">{item.tooltipTitle}</th>
+                                <td>{item.detail || plural(item.value, unit)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Box>
         </Box>
     );

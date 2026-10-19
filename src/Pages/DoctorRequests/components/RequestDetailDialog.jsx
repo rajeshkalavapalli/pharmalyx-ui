@@ -99,7 +99,7 @@ function RequestDetailDialog({ requestId, onClose, onChanged }) {
                         <Stack spacing={2.5}>
                             {data.previous && (
                                 <Alert severity="warning" variant="outlined">
-                                    <Typography variant="caption" component="p" sx={{ fontWeight: 600 }}>
+                                    <Typography variant="caption" component="p" sx={{ fontWeight: "fontWeightSemibold" }}>
                                         Sent again after it was rejected{data.previous.reviewedBy ? ` by ${data.previous.reviewedBy}` : ""}
                                         {data.previous.reviewedOn ? ` on ${formatDate(data.previous.reviewedOn)}` : ""}
                                     </Typography>
@@ -109,7 +109,7 @@ function RequestDetailDialog({ requestId, onClose, onChanged }) {
 
                             {request.Comment && (
                                 <Alert severity="info" variant="outlined" icon={false}>
-                                    <Typography variant="caption" component="p" sx={{ fontWeight: 600 }}>
+                                    <Typography variant="caption" component="p" sx={{ fontWeight: "fontWeightSemibold" }}>
                                         {data.previous ? `What ${request.RequestedByName} fixed` : `${request.RequestedByName}'s reason`}
                                     </Typography>
                                     {request.Comment}

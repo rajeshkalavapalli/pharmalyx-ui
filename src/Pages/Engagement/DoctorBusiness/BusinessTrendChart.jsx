@@ -98,7 +98,7 @@ function BusinessTrendChart({ data }) {
                         <Typography variant="caption" component="p" sx={{ color: "inherit" }}>
                             Expected {formatMoney(data[active].expected)}
                         </Typography>
-                        <Typography variant="caption" component="p" sx={{ color: "inherit", fontWeight: 700 }}>
+                        <Typography variant="caption" component="p" sx={{ color: "inherit", fontWeight: "fontWeightBold" }}>
                             Actual {formatMoney(data[active].actual)}
                         </Typography>
                     </Box>
@@ -111,7 +111,7 @@ function BusinessTrendChart({ data }) {
                         <Typography variant="micro" component="p" sx={{ color: theme.palette.text.secondary }}>
                             {formatShortMonth(row.month)}
                         </Typography>
-                        <Typography variant="micro" component="p" sx={{ color: theme.palette.text.primary, fontWeight: 600 }}>
+                        <Typography variant="micro" component="p" sx={{ color: theme.palette.text.primary, fontWeight: "fontWeightSemibold" }}>
                             {row.actual ? formatMoneyCompact(row.actual) : "—"}
                         </Typography>
                     </Box>

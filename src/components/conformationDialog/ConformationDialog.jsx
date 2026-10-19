@@ -72,9 +72,9 @@ const ConfirmationDialog = ({
                     <Typography
                         component="div"
                         sx={{
-                            fontSize: 18,
+                            fontSize: "text2xl",
 
-                            fontWeight: 700,
+                            fontWeight: "fontWeightBold",
 
                             color: "text.primary",
 
@@ -113,7 +113,7 @@ const ConfirmationDialog = ({
                 >
                     <CloseIcon
                         sx={{
-                            fontSize: 18,
+                            fontSize: "text2xl",
                         }}
                     />
                 </IconButton>
@@ -139,7 +139,7 @@ const ConfirmationDialog = ({
                     sx={{
                         color: "text.secondary",
 
-                        fontSize: 13.5,
+                        fontSize: "textMd",
 
                         lineHeight: 1.65,
                     }}
@@ -187,9 +187,9 @@ const ConfirmationDialog = ({
 
                         textTransform: "none",
 
-                        fontSize: 13,
+                        fontSize: "textMd",
 
-                        fontWeight: 600,
+                        fontWeight: "fontWeightSemibold",
 
                         borderColor: "divider",
 
@@ -230,9 +230,9 @@ const ConfirmationDialog = ({
 
                         textTransform: "none",
 
-                        fontSize: 13,
+                        fontSize: "textMd",
 
-                        fontWeight: 650,
+                        fontWeight: "fontWeightSemibold",
 
                         boxShadow: "none",
 

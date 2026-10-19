@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { visuallyHidden } from "@mui/utils";
 
 import { formatAmount, formatMoneyCompact } from "../index";
 
@@ -9,15 +10,6 @@ const SERIES = [
     { key: "pob", label: "POB", color: (theme) => theme.palette.chart.ours },
     { key: "secondary", label: "Secondary sales", color: (theme) => theme.palette.chart.competitor },
 ];
-
-const visuallyHidden = {
-    position: "absolute",
-    width: 1,
-    height: 1,
-    overflow: "hidden",
-    clip: "rect(0 0 0 0)",
-    whiteSpace: "nowrap",
-};
 
 const shortMonth = (month) => new Date(`${month}T00:00:00`).toLocaleDateString("en-GB", { month: "short" });
 const longMonth = (month) => new Date(`${month}T00:00:00`).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
@@ -120,7 +112,7 @@ function TrendChart({ data }) {
                         <Typography variant="micro" component="p" sx={{ color: theme.palette.text.secondary }}>
                             {shortMonth(row.month)}
                         </Typography>
-                        <Typography variant="micro" component="p" sx={{ color: theme.palette.text.primary, fontWeight: 600 }}>
+                        <Typography variant="micro" component="p" sx={{ color: theme.palette.text.primary, fontWeight: "fontWeightSemibold" }}>
                             {row.secondary ? formatMoneyCompact(row.secondary) : "—"}
                         </Typography>
                     </Box>
@@ -128,24 +120,27 @@ function TrendChart({ data }) {
             </Box>
 
             {/* Table view for screen readers */}
-            <Box component="table" sx={visuallyHidden}>
-                <caption>{caption}</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Month</th>
-                        <th scope="col">POB</th>
-                        <th scope="col">Secondary sales</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((row) => (
-                        <tr key={row.month}>
-                            <th scope="row">{longMonth(row.month)}</th>
-                            <td>{formatAmount(row.pob)}</td>
-                            <td>{formatAmount(row.secondary)}</td>
+            {/* Screen-reader copy of the chart. Hidden on a wrapper: a table ignores width and height. */}
+            <Box sx={visuallyHidden}>
+                <table>
+                    <caption>{caption}</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Month</th>
+                            <th scope="col">POB</th>
+                            <th scope="col">Secondary sales</th>
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {data.map((row) => (
+                            <tr key={row.month}>
+                                <th scope="row">{longMonth(row.month)}</th>
+                                <td>{formatAmount(row.pob)}</td>
+                                <td>{formatAmount(row.secondary)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Box>
         </Box>
     );

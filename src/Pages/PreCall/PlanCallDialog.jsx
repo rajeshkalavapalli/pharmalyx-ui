@@ -76,7 +76,7 @@ function PlanCallDialog({ doctor, date, saving, onClose, onSave }) {
                                 borderColor: alpha(theme.palette.primary.main, theme.tint.border),
                             })}
                         >
-                            <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.primary.main, fontWeight: 600, mb: 1 })}>
+                            <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.primary.main, fontWeight: "fontWeightSemibold", mb: 1 })}>
                                 From the briefing: tap to use
                             </Typography>
                             <Stack spacing={0.75}>

@@ -946,8 +946,8 @@ function UserStockistMapping() {
 
                     <Typography
                         sx={{
-                            fontSize: 22,
-                            fontWeight: 800,
+                            fontSize: "text4xl",
+                            fontWeight: "fontWeightHeavy",
                             color: "text.primary",
                         }}
                     >
@@ -957,7 +957,7 @@ function UserStockistMapping() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 13,
+                            fontSize: "textMd",
                             color: "text.secondary",
                         }}
                     >
@@ -980,22 +980,22 @@ function UserStockistMapping() {
                             display: "flex",
                             alignItems: "center",
                             gap: 0.5,
-                            fontSize: 12.5,
+                            fontSize: "textSm",
                             color: "text.secondary",
                         }}
                     >
 
                         <HomeRoundedIcon
-                            sx={{ fontSize: 16 }}
+                            sx={{ fontSize: "textXl" }}
                         />
 
                         <ChevronRightRounded
-                            sx={{ fontSize: 15 }}
+                            sx={{ fontSize: "textLg" }}
                         />
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
+                                fontSize: "textSm",
                                 color: "text.secondary",
                             }}
                         >
@@ -1003,14 +1003,14 @@ function UserStockistMapping() {
                         </Typography>
 
                         <ChevronRightRounded
-                            sx={{ fontSize: 15 }}
+                            sx={{ fontSize: "textLg" }}
                         />
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
+                                fontSize: "textSm",
                                 color: "primary.main",
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             User Stockist Mapping
@@ -1024,7 +1024,7 @@ function UserStockistMapping() {
                         size="small"
                         startIcon={
                             <HelpOutlineRoundedIcon
-                                sx={{ fontSize: 17 }}
+                                sx={{ fontSize: "text2xl" }}
                             />
                         }
                         sx={{
@@ -1093,8 +1093,8 @@ function UserStockistMapping() {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                                 backgroundColor:
                                     item.step === 1
                                         ? theme.palette.primary.main
@@ -1113,8 +1113,8 @@ function UserStockistMapping() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 14,
-                                    fontWeight: 700,
+                                    fontSize: "textBase",
+                                    fontWeight: "fontWeightBold",
                                     color: "text.primary",
                                 }}
                             >
@@ -1124,7 +1124,7 @@ function UserStockistMapping() {
                             <Typography
                                 sx={{
                                     mt: 0.25,
-                                    fontSize: 12,
+                                    fontSize: "textSm",
                                     color: "text.secondary",
                                 }}
                             >
@@ -1238,8 +1238,8 @@ function UserStockistMapping() {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontWeight: 700,
-                                    fontSize: 14,
+                                    fontWeight: "fontWeightBold",
+                                    fontSize: "textBase",
                                     backgroundColor:
                                         theme.palette.brand.terracottaSoft,
                                     color:
@@ -1265,8 +1265,8 @@ function UserStockistMapping() {
 
                                     <Typography
                                         sx={{
-                                            fontSize: 14.5,
-                                            fontWeight: 700,
+                                            fontSize: "textBase",
+                                            fontWeight: "fontWeightBold",
                                             color: "text.primary",
                                         }}
                                     >
@@ -1279,8 +1279,8 @@ function UserStockistMapping() {
                                         color="success"
                                         sx={{
                                             height: 20,
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     />
 
@@ -1295,7 +1295,7 @@ function UserStockistMapping() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 11,
+                                    fontSize: "textXs",
                                     color: "text.secondary",
                                 }}
                             >
@@ -1304,8 +1304,8 @@ function UserStockistMapping() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 13,
-                                    fontWeight: 700,
+                                    fontSize: "textMd",
+                                    fontWeight: "fontWeightBold",
                                     color: "text.primary",
                                 }}
                             >
@@ -1319,7 +1319,7 @@ function UserStockistMapping() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 11,
+                                    fontSize: "textXs",
                                     color: "text.secondary",
                                 }}
                             >
@@ -1328,8 +1328,8 @@ function UserStockistMapping() {
 
                             <Typography
                                 sx={{
-                                    fontSize: 13,
-                                    fontWeight: 700,
+                                    fontSize: "textMd",
+                                    fontWeight: "fontWeightBold",
                                     color: "text.primary",
                                 }}
                             >
@@ -1385,15 +1385,15 @@ function UserStockistMapping() {
 
                         <FilterAltRoundedIcon
                             sx={{
-                                fontSize: 18,
+                                fontSize: "text2xl",
                                 color: "primary.main",
                             }}
                         />
 
                         <Typography
                             sx={{
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -1408,7 +1408,7 @@ function UserStockistMapping() {
                         size="small"
                         startIcon={
                             <RestartAltRoundedIcon
-                                sx={{ fontSize: 17 }}
+                                sx={{ fontSize: "text2xl" }}
                             />
                         }
                         onClick={handleClearFilters}
@@ -1645,7 +1645,7 @@ function UserStockistMapping() {
 
                             <PeopleAltRoundedIcon
                                 sx={{
-                                    fontSize: 19,
+                                    fontSize: "text3xl",
                                     color: "primary.main",
                                 }}
                             />
@@ -1654,8 +1654,8 @@ function UserStockistMapping() {
 
                                 <Typography
                                     sx={{
-                                        fontSize: 14,
-                                        fontWeight: 700,
+                                        fontSize: "textBase",
+                                        fontWeight: "fontWeightBold",
                                         color: "text.primary",
                                     }}
                                 >
@@ -1664,7 +1664,7 @@ function UserStockistMapping() {
 
                                 <Typography
                                     sx={{
-                                        fontSize: 11,
+                                        fontSize: "textXs",
                                         color: "text.secondary",
                                     }}
                                 >
@@ -1680,7 +1680,7 @@ function UserStockistMapping() {
                             size="small"
                             label={`${availableStockists.length} Stockists`}
                             sx={{
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                                 backgroundColor:
                                     "background.paper",
                             }}
@@ -1706,7 +1706,7 @@ function UserStockistMapping() {
                                     <SearchRoundedIcon
                                         sx={{
                                             mr: 1,
-                                            fontSize: 18,
+                                            fontSize: "text2xl",
                                             color: "text.secondary",
                                         }}
                                     />
@@ -1736,8 +1736,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Stockist Name
@@ -1745,8 +1745,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Owner
@@ -1754,8 +1754,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Contact
@@ -1763,8 +1763,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Location
@@ -1826,8 +1826,8 @@ function UserStockistMapping() {
 
                                                     <Typography
                                                         sx={{
-                                                            fontSize: 12.5,
-                                                            fontWeight: 700,
+                                                            fontSize: "textSm",
+                                                            fontWeight: "fontWeightBold",
                                                             color: "text.primary",
                                                         }}
                                                     >
@@ -1839,7 +1839,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {stockist.OwnerName ||
@@ -1849,7 +1849,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {stockist.ContactNumber ||
@@ -1859,7 +1859,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {[
@@ -1928,8 +1928,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 12,
-                                fontWeight: 700,
+                                fontSize: "textSm",
+                                fontWeight: "fontWeightBold",
                                 color: "primary.main",
                             }}
                         >
@@ -2106,7 +2106,7 @@ function UserStockistMapping() {
 
                             <GroupRoundedIcon
                                 sx={{
-                                    fontSize: 19,
+                                    fontSize: "text3xl",
                                     color: "brand.sageDark",
                                 }}
                             />
@@ -2115,8 +2115,8 @@ function UserStockistMapping() {
 
                                 <Typography
                                     sx={{
-                                        fontSize: 14,
-                                        fontWeight: 700,
+                                        fontSize: "textBase",
+                                        fontWeight: "fontWeightBold",
                                         color: "text.primary",
                                     }}
                                 >
@@ -2125,7 +2125,7 @@ function UserStockistMapping() {
 
                                 <Typography
                                     sx={{
-                                        fontSize: 11,
+                                        fontSize: "textXs",
                                         color: "text.secondary",
                                     }}
                                 >
@@ -2145,7 +2145,7 @@ function UserStockistMapping() {
                             color="success"
                             variant="outlined"
                             sx={{
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                                 backgroundColor:
                                     "background.paper",
                             }}
@@ -2171,7 +2171,7 @@ function UserStockistMapping() {
                                     <SearchRoundedIcon
                                         sx={{
                                             mr: 1,
-                                            fontSize: 18,
+                                            fontSize: "text2xl",
                                             color: "text.secondary",
                                         }}
                                     />
@@ -2201,8 +2201,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Stockist Name
@@ -2210,8 +2210,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Owner
@@ -2219,8 +2219,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Contact
@@ -2228,8 +2228,8 @@ function UserStockistMapping() {
 
                                     <TableCell
                                         sx={{
-                                            fontSize: 11,
-                                            fontWeight: 700,
+                                            fontSize: "textXs",
+                                            fontWeight: "fontWeightBold",
                                         }}
                                     >
                                         Location
@@ -2291,8 +2291,8 @@ function UserStockistMapping() {
 
                                                     <Typography
                                                         sx={{
-                                                            fontSize: 12.5,
-                                                            fontWeight: 700,
+                                                            fontSize: "textSm",
+                                                            fontWeight: "fontWeightBold",
                                                             color: "text.primary",
                                                         }}
                                                     >
@@ -2304,7 +2304,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {stockist.OwnerName ||
@@ -2314,7 +2314,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {stockist.ContactNumber ||
@@ -2324,7 +2324,7 @@ function UserStockistMapping() {
 
                                                 <TableCell
                                                     sx={{
-                                                        fontSize: 12.5,
+                                                        fontSize: "textSm",
                                                     }}
                                                 >
                                                     {[
@@ -2428,7 +2428,7 @@ function UserStockistMapping() {
                         })}
                     >
                         <AssignmentRoundedIcon
-                            sx={{ fontSize: 19 }}
+                            sx={{ fontSize: "text3xl" }}
                         />
                     </Box>
 
@@ -2437,8 +2437,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 13,
-                                fontWeight: 700,
+                                fontSize: "textMd",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -2447,7 +2447,7 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 11,
+                                fontSize: "textXs",
                                 color: "text.secondary",
                             }}
                         >
@@ -2472,7 +2472,7 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 10.5,
+                                fontSize: "textXxs",
                                 color: "text.secondary",
                             }}
                         >
@@ -2481,8 +2481,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
-                                fontWeight: 700,
+                                fontSize: "textSm",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -2496,7 +2496,7 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 10.5,
+                                fontSize: "textXxs",
                                 color: "text.secondary",
                             }}
                         >
@@ -2505,8 +2505,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
-                                fontWeight: 700,
+                                fontSize: "textSm",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -2524,7 +2524,7 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 10.5,
+                                fontSize: "textXxs",
                                 color: "text.secondary",
                             }}
                         >
@@ -2533,8 +2533,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
-                                fontWeight: 700,
+                                fontSize: "textSm",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -2552,7 +2552,7 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 10.5,
+                                fontSize: "textXxs",
                                 color: "text.secondary",
                             }}
                         >
@@ -2561,8 +2561,8 @@ function UserStockistMapping() {
 
                         <Typography
                             sx={{
-                                fontSize: 12.5,
-                                fontWeight: 700,
+                                fontSize: "textSm",
+                                fontWeight: "fontWeightBold",
                                 color: "text.primary",
                             }}
                         >
@@ -2588,7 +2588,7 @@ function UserStockistMapping() {
                         onClick={handleReset}
                         startIcon={
                             <RestartAltRoundedIcon
-                                sx={{ fontSize: 17 }}
+                                sx={{ fontSize: "text2xl" }}
                             />
                         }
                         sx={{

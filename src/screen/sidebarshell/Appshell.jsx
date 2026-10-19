@@ -25,6 +25,8 @@ function AppShell() {
       sx={(theme) => ({
         height: "100dvh",
         display: "flex",
+        // relative + hidden: nothing on a page (tooltips, hidden tables) can stretch the browser page.
+        position: "relative",
         overflow: "hidden",
         backgroundColor: theme.palette.background.default,
       })}
@@ -67,6 +69,7 @@ function AppShell() {
             flex: 1,
             minWidth: 0,
             minHeight: 0,
+            position: "relative",
             overflowY: "auto",
             overflowX: "hidden",
             backgroundColor: theme.palette.background.default,

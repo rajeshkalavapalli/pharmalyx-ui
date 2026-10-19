@@ -235,7 +235,7 @@ function ListAreas({
                         <Typography
                             variant="h6"
                             sx={{
-                                fontWeight: 700,
+                                fontWeight: "fontWeightBold",
                             }}
                         >
                             Areas
@@ -244,7 +244,7 @@ function ListAreas({
                         <Typography
                             sx={{
                                 mt: 0.5,
-                                fontSize: 13,
+                                fontSize: "textMd",
                                 color: "text.secondary",
                             }}
                         >
@@ -453,7 +453,7 @@ function ListAreas({
 
                                                         <VisibilityOutlinedIcon
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: "text2xl",
                                                             }}
                                                         />
 
@@ -493,7 +493,7 @@ function ListAreas({
 
                                                         <EditOutlinedIcon
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: "text2xl",
                                                             }}
                                                         />
 
@@ -535,7 +535,7 @@ function ListAreas({
 
                                                         <DeleteOutline
                                                             sx={{
-                                                                fontSize: 17,
+                                                                fontSize: "text2xl",
                                                             }}
                                                         />
 

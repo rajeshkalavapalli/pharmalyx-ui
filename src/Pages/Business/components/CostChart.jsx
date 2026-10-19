@@ -45,13 +45,13 @@ function CostChart({ series }) {
                 {ticks.map((tick) => (
                     <g key={tick}>
                         <line x1={PAD.left} x2={W - PAD.right} y1={y(tick)} y2={y(tick)} stroke={theme.palette.divider} strokeWidth="1" />
-                        <text x={PAD.left - 8} y={y(tick) + 4} textAnchor="end" fontSize="11" fill={theme.palette.text.secondary}>
+                        <text x={PAD.left - 8} y={y(tick) + 4} textAnchor="end" fontSize={theme.typography.textXs} fill={theme.palette.text.secondary}>
                             {compact(tick)}
                         </text>
                     </g>
                 ))}
                 {series.map((row, i) => (
-                    <text key={row.month} x={x(i)} y={H - 8} textAnchor="middle" fontSize="11" fill={theme.palette.text.secondary}>
+                    <text key={row.month} x={x(i)} y={H - 8} textAnchor="middle" fontSize={theme.typography.textXs} fill={theme.palette.text.secondary}>
                         {i % Math.ceil(series.length / 8) === 0 || i === series.length - 1 ? `M${row.monthNumber}` : ""}
                     </text>
                 ))}

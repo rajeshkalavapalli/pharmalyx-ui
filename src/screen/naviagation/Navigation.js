@@ -1,15 +1,19 @@
 // Sidebar menu.
 // - `ready: true` marks modules that are built; others show a "Soon" badge.
 // - `match` lists extra path prefixes that should highlight an item.
+// - `group` is the heading a top-level entry sits under; entries of a group stay together.
+// - `badge` adds a small label to a top-level entry: { label, tone: 'count' | 'ai' }.
 const navigation = [
     {
         label: 'Dashboard',
+        group: 'Overview',
         path: '/dashboard',
         ready: true,
     },
 
     {
         label: 'Field Operations',
+        group: 'Overview',
         children: [
             { label: 'My Day', path: '/field-operation/my-day', ready: true },
             { label: 'Doctors', path: '/field-operation/doctors', ready: true },
@@ -26,17 +30,20 @@ const navigation = [
 
     {
         label: 'Doctor Engagement',
+        group: 'Overview',
         children: [
             { label: 'RCPA', path: '/doctor-engagement/rcpa', ready: true },
             { label: 'Samples', path: '/doctor-engagement/samples', ready: true },
             { label: 'Gifts', path: '/doctor-engagement/gifts', ready: true },
             { label: 'Feedback', path: '/doctor-engagement/feedback', ready: true },
             { label: 'Doctor Business', path: '/doctor-engagement/doctor-business', ready: true },
+            { label: 'Doctor Spend', path: '/doctor-engagement/spend', ready: true },
         ],
     },
 
     {
         label: 'Products & Promotion',
+        group: 'Overview',
         children: [
             { label: 'Products', path: '/products' },
             { label: 'Promotions', path: '/promotions' },
@@ -47,6 +54,7 @@ const navigation = [
 
     {
         label: 'Sales & Distribution',
+        group: 'Overview',
         children: [
             { label: 'POB / Orders', path: '/sales/orders', ready: true },
             { label: 'Retailers', path: '/sales/retailers', ready: true },
@@ -56,11 +64,14 @@ const navigation = [
             { label: 'Business', path: '/sales/business', ready: true },
             { label: 'Business Tracker', path: '/sales/tracker', ready: true },
             { label: 'Business Data', path: '/sales/business-data', ready: true },
+            { label: 'Field Stock & Dues', path: '/sales/field-ledger', ready: true },
+            { label: 'Supply & Spend Reports', path: '/sales/supply-reports', ready: true },
         ],
     },
 
     {
         label: 'Planning',
+        group: 'Workspace',
         children: [
             { label: 'Doctor Business Plan', path: '/planning/doctor-plan', ready: true },
             { label: 'Sales Plan', path: '/planning/sales-plan', ready: true },
@@ -69,6 +80,7 @@ const navigation = [
 
     {
         label: 'Expenses',
+        group: 'Workspace',
         children: [
             { label: 'TA / Claims', path: '/expenses/claims', ready: true },
             { label: 'Payments', path: '/expenses/payments', ready: true },
@@ -78,6 +90,7 @@ const navigation = [
 
     {
         label: 'HR / Employee',
+        group: 'Workspace',
         children: [
             { label: 'Attendance', path: '/hr/attendance', ready: true },
             { label: 'Leave', path: '/hr/leave', ready: true },
@@ -88,6 +101,7 @@ const navigation = [
 
     {
         label: 'Resources',
+        group: 'Workspace',
         children: [
             { label: 'Files', path: '/files' },
             { label: 'Shared Content', path: '/shared-content' },
@@ -96,6 +110,7 @@ const navigation = [
 
     {
         label: 'Communication',
+        group: 'Workspace',
         children: [
             { label: 'Internal Communication', path: '/communication' },
             { label: 'Announcements', path: '/announcements' },
@@ -105,6 +120,7 @@ const navigation = [
 
     {
         label: 'Reports & Analytics',
+        group: 'Workspace',
         children: [
             { label: 'MIS Reports', path: '/reports/mis', ready: true },
             { label: 'DCR / Call Reports', path: '/reports/dcr', ready: true },
@@ -119,6 +135,8 @@ const navigation = [
 
     {
         label: 'Insights',
+        group: 'Workspace',
+        badge: { label: 'AI', tone: 'ai' },
         children: [
             { label: 'Performance Insights', path: '/insights/performance', ready: true },
             { label: 'Field Intelligence', path: '/insights/field', ready: true },
@@ -130,6 +148,7 @@ const navigation = [
 
     {
         label: 'Administration',
+        group: 'Admin',
         children: [
             { label: 'Roles & Permissions', path: '/admin/roles', ready: true },
             {
@@ -153,6 +172,7 @@ const navigation = [
                 ],
             },
             { label: 'Approvals', path: '/admin/approvals', ready: true },
+            { label: 'Data Import', path: '/admin/data-import', ready: true },
         ],
     },
 ];

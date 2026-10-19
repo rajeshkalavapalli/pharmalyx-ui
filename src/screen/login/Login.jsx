@@ -52,14 +52,14 @@ function PreviewCard() {
                 p: 2.5,
                 borderRadius: theme.panel.radius,
                 border: "1px solid",
-                borderColor: theme.palette.sidebar.border,
-                backgroundColor: alpha(theme.palette.sidebar.surface, 0.72),
+                borderColor: theme.palette.loginPanel.border,
+                backgroundColor: alpha(theme.palette.loginPanel.surface, 0.72),
                 backdropFilter: "blur(16px)",
                 boxShadow: theme.elevation.lg,
             })}
         >
             <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-                <Typography variant="subtitle2" sx={(theme) => ({ color: theme.palette.sidebar.activeText })}>
+                <Typography variant="subtitle2" sx={(theme) => ({ color: theme.palette.loginPanel.activeText })}>
                     This month
                 </Typography>
                 <Box
@@ -69,8 +69,8 @@ function PreviewCard() {
                         px: 1,
                         py: 0.25,
                         borderRadius: theme.statusChip.radius,
-                        color: theme.palette.success.light,
-                        backgroundColor: alpha(theme.palette.success.main, theme.tint.border),
+                        color: theme.palette.success.dark,
+                        backgroundColor: alpha(theme.palette.success.main, theme.tint.soft),
                     })}
                 >
                     ▲ 12%
@@ -81,10 +81,10 @@ function PreviewCard() {
                 {rows.map((row) => (
                     <Box key={row.label}>
                         <Stack direction="row" sx={{ justifyContent: "space-between", mb: 0.75 }}>
-                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.sidebar.text })}>
+                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.loginPanel.text })}>
                                 {row.label}
                             </Typography>
-                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.sidebar.activeText, fontWeight: 700 })}>
+                            <Typography variant="caption" sx={(theme) => ({ color: theme.palette.loginPanel.activeText, fontWeight: "fontWeightBold" })}>
                                 {row.value}%
                             </Typography>
                         </Stack>
@@ -92,7 +92,7 @@ function PreviewCard() {
                             sx={(theme) => ({
                                 height: theme.stat.progressHeight,
                                 borderRadius: theme.stat.progressHeight,
-                                backgroundColor: theme.palette.sidebar.hover,
+                                backgroundColor: theme.palette.loginPanel.hover,
                                 overflow: "hidden",
                             })}
                         >
@@ -126,10 +126,12 @@ function BrandPanel() {
                 display: { xs: "none", md: "flex" },
                 flexDirection: "column",
                 justifyContent: "space-between",
+                gap: theme.login.sectionGap,
                 px: theme.login.brandPaddingX,
                 py: theme.login.brandPaddingY,
-                backgroundColor: theme.palette.sidebar.background,
-                backgroundImage: theme.palette.sidebar.backgroundImage,
+                [theme.login.shortScreen]: { gap: theme.login.compact.sectionGap, py: theme.login.compact.paddingY },
+                backgroundColor: theme.palette.loginPanel.background,
+                backgroundImage: theme.palette.loginPanel.backgroundImage,
 
                 // Glowing gradient orbs.
                 "&::before, &::after": {
@@ -154,21 +156,20 @@ function BrandPanel() {
             })}
         >
             <Box sx={{ position: "relative", zIndex: 1 }}>
-                <BrandMark size={theme.login.brandMarkSize} showWordmark tagline="Field intelligence" />
+                <BrandMark size={theme.login.brandMarkSize} showWordmark tagline="Field intelligence" tone="light" />
             </Box>
 
             <Box sx={(theme) => ({ position: "relative", zIndex: 1, maxWidth: theme.login.headlineMaxWidth })}>
                 <Typography
                     variant="h1"
                     component="p"
-                    sx={(theme) => ({ color: theme.palette.sidebar.activeText })}
+                    sx={(theme) => ({ ...theme.login.headline, color: theme.palette.loginPanel.heading })}
                 >
                     Field intelligence for{" "}
                     <Box
                         component="span"
                         sx={(theme) => ({
-                            backgroundImage: theme.palette.brand.gradient,
-                            filter: "brightness(1.4)",
+                            backgroundImage: theme.palette.brand.gradientGlow,
                             WebkitBackgroundClip: "text",
                             backgroundClip: "text",
                             color: "transparent",
@@ -180,13 +181,24 @@ function BrandPanel() {
 
                 <Typography
                     variant="body1"
-                    sx={(theme) => ({ mt: 2, color: theme.palette.sidebar.text })}
+                    sx={(theme) => ({ mt: 2, color: theme.palette.loginPanel.text })}
                 >
                     Plan, execute and review every doctor call with clarity — from the
                     representative's phone to the manager's dashboard.
                 </Typography>
 
-                <Stack spacing={1.5} sx={{ mt: 4 }}>
+                <Box
+                    sx={(theme) => ({
+                        mt: theme.login.featuresMarginTop,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: theme.login.featureGap,
+                        [theme.login.shortScreen]: {
+                            mt: theme.login.compact.featuresMarginTop,
+                            gap: theme.login.compact.featureGap,
+                        },
+                    })}
+                >
                     {FEATURES.map(({ icon: Icon, text }) => (
                         <Stack key={text} direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                             <Box
@@ -196,18 +208,18 @@ function BrandPanel() {
                                     display: "grid",
                                     placeItems: "center",
                                     borderRadius: theme.sidebarLayout.radius,
-                                    color: theme.palette.sidebar.active,
-                                    backgroundColor: theme.palette.sidebar.activeLight,
+                                    color: theme.palette.loginPanel.active,
+                                    backgroundColor: theme.palette.loginPanel.activeLight,
                                 })}
                             >
                                 <Icon fontSize="small" />
                             </Box>
-                            <Typography variant="body2" sx={(theme) => ({ color: theme.palette.sidebar.text })}>
+                            <Typography variant="body2" sx={(theme) => ({ color: theme.palette.loginPanel.text })}>
                                 {text}
                             </Typography>
                         </Stack>
                     ))}
-                </Stack>
+                </Box>
             </Box>
 
             <Stack
@@ -217,7 +229,7 @@ function BrandPanel() {
                 <PreviewCard />
                 <Typography
                     variant="caption"
-                    sx={(theme) => ({ color: theme.palette.sidebar.mutedText, display: { md: "none", lg: "block" } })}
+                    sx={(theme) => ({ color: theme.palette.loginPanel.mutedText, display: { md: "none", lg: "block" } })}
                 >
                     © {new Date().getFullYear()} Pharmalyx
                 </Typography>
@@ -305,10 +317,10 @@ function Login() {
                             p: 1.25,
                             pr: 2,
                             borderRadius: theme.panel.radius,
-                            backgroundColor: theme.palette.sidebar.background,
+                            backgroundColor: theme.palette.loginPanel.background,
                         })}
                     >
-                        <BrandMark size={theme.sidebarLayout.markSize} showWordmark />
+                        <BrandMark size={theme.sidebarLayout.markSize} showWordmark tone="light" />
                     </Box>
 
                     <Typography variant="h2" component="h1">

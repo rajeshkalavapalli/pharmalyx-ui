@@ -153,14 +153,14 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
 
                     <Box>
 
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                             Stockists
                         </Typography>
 
                         <Typography
                             sx={{
                                 mt: 0.5,
-                                fontSize: 13,
+                                fontSize: "textMd",
                                 color: "text.secondary"
                             }}
                         >
@@ -357,7 +357,7 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <VisibilityOutlinedIcon
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>
@@ -386,7 +386,7 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <EditOutlinedIcon
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>
@@ -415,7 +415,7 @@ export const StockistOrRetailerList = function ({ onAddPharmacy }) {
                                                 >
 
                                                     <DeleteOutline
-                                                        sx={{ fontSize: 17 }}
+                                                        sx={{ fontSize: "text2xl" }}
                                                     />
 
                                                 </IconButton>

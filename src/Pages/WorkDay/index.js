@@ -82,6 +82,9 @@ export const FLAG_LABEL = {
     POB_NO_REORDER: "Large order, no reorder",
     POB_MONTH_END_SPIKE: "Month-end order spike",
     POB_DUPLICATE_SLIP: "Same slip photo reused",
+    POB_UNSUPPLIED: "POB not supplied in time",
+    STOCK_HELD_LONG: "MR holding stock too long",
+    SPEND_PRIOR_FAILED: "Spend request: earlier claim failed",
 };
 
 export const EXCEPTION_TYPES = [

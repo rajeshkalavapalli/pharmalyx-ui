@@ -135,11 +135,11 @@ function UserPharmacyMappingList() {
                         borderColor: "primary.main",
                     }}
                 >
-                    <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+                    <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", lineHeight: 1.3 }}>
                         User Pharmacy Mappings
                     </Typography>
 
-                    <Typography sx={{ mt: 0.35, fontSize: 12.5, color: "text.secondary" }}>
+                    <Typography sx={{ mt: 0.35, fontSize: "textSm", color: "text.secondary" }}>
                         Manage users&apos; assigned pharmacies.
                     </Typography>
                 </Box>
@@ -181,7 +181,7 @@ function UserPharmacyMappingList() {
                                 <SearchOutlinedIcon
                                     sx={{
                                         mr: 1,
-                                        fontSize: 18,
+                                        fontSize: "text2xl",
                                         color: "text.secondary",
                                     }}
                                 />

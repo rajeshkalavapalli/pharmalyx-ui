@@ -178,7 +178,7 @@ function UserStockistMappingList() {
                     <Typography
                         variant="h6"
                         sx={{
-                            fontWeight: 700,
+                            fontWeight: "fontWeightBold",
                             lineHeight: 1.3,
                         }}
                     >
@@ -188,7 +188,7 @@ function UserStockistMappingList() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 12.5,
+                            fontSize: "textSm",
                             color: "text.secondary",
                         }}
                     >
@@ -253,7 +253,7 @@ function UserStockistMappingList() {
                                 <SearchOutlinedIcon
                                     sx={{
                                         mr: 1,
-                                        fontSize: 18,
+                                        fontSize: "text2xl",
                                         color: "text.secondary",
                                     }}
                                 />

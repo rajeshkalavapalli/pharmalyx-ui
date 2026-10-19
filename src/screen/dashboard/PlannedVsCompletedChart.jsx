@@ -2,15 +2,7 @@ import { useRef, useState } from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
-const visuallyHidden = {
-    position: "absolute",
-    width: 1,
-    height: 1,
-    overflow: "hidden",
-    clip: "rect(0 0 0 0)",
-    whiteSpace: "nowrap",
-};
+import { visuallyHidden } from "@mui/utils";
 
 const SERIES = [
     { key: "planned", label: "Planned", color: (theme) => theme.palette.chart.competitor },
@@ -155,7 +147,7 @@ function PlannedVsCompletedChart({ data }) {
                                 <Typography variant="caption" component="p" sx={{ color: "inherit" }}>
                                     Planned {row.planned}
                                 </Typography>
-                                <Typography variant="caption" component="p" sx={{ color: "inherit", fontWeight: 700 }}>
+                                <Typography variant="caption" component="p" sx={{ color: "inherit", fontWeight: "fontWeightBold" }}>
                                     Completed {row.visits}
                                 </Typography>
                             </Box>
@@ -178,7 +170,7 @@ function PlannedVsCompletedChart({ data }) {
                                 transform: index === data.length - 1 ? "translateX(-100%)" : index === 0 ? "none" : "translateX(-50%)",
                                 whiteSpace: "nowrap",
                                 color: index === data.length - 1 ? theme.palette.text.primary : theme.palette.text.secondary,
-                                fontWeight: index === data.length - 1 ? 700 : 400,
+                                fontWeight: index === data.length - 1 ? "fontWeightBold" : "fontWeightRegular",
                             }}
                         >
                             {dayLabel(point.date)}
@@ -187,24 +179,27 @@ function PlannedVsCompletedChart({ data }) {
                 )}
             </Box>
 
-            <Box component="table" sx={visuallyHidden}>
-                <caption>Planned calls and completed visits per day</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Day</th>
-                        <th scope="col">Planned</th>
-                        <th scope="col">Completed</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((point) => (
-                        <tr key={point.date}>
-                            <th scope="row">{dayLabel(point.date)}</th>
-                            <td>{point.planned}</td>
-                            <td>{point.visits}</td>
+            {/* Screen-reader copy of the chart. Hidden on a wrapper: a table ignores width and height. */}
+            <Box sx={visuallyHidden}>
+                <table>
+                    <caption>Planned calls and completed visits per day</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Day</th>
+                            <th scope="col">Planned</th>
+                            <th scope="col">Completed</th>
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
+                    <tbody>
+                        {data.map((point) => (
+                            <tr key={point.date}>
+                                <th scope="row">{dayLabel(point.date)}</th>
+                                <td>{point.planned}</td>
+                                <td>{point.visits}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Box>
         </Box>
     );

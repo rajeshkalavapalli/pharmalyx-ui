@@ -449,10 +449,10 @@ function UserDoctorMapping() {
                 }}
             >
                 <Box>
-                    <Typography sx={{ fontSize: 22, fontWeight: 800, color: "text.primary" }}>
+                    <Typography sx={{ fontSize: "text4xl", fontWeight: "fontWeightHeavy", color: "text.primary" }}>
                         User Doctor Mapping
                     </Typography>
-                    <Typography sx={{ mt: 0.35, fontSize: 13, color: "text.secondary" }}>
+                    <Typography sx={{ mt: 0.35, fontSize: "textMd", color: "text.secondary" }}>
                         Assign and manage doctors for field users
                     </Typography>
                 </Box>
@@ -463,17 +463,17 @@ function UserDoctorMapping() {
                             display: "flex",
                             alignItems: "center",
                             gap: 0.5,
-                            fontSize: 12.5,
+                            fontSize: "textSm",
                             color: "text.secondary",
                         }}
                     >
-                        <HomeRoundedIcon sx={{ fontSize: 16 }} />
-                        <ChevronRightRounded sx={{ fontSize: 15 }} />
-                        <Typography sx={{ fontSize: 12.5, color: "text.secondary" }}>
+                        <HomeRoundedIcon sx={{ fontSize: "textXl" }} />
+                        <ChevronRightRounded sx={{ fontSize: "textLg" }} />
+                        <Typography sx={{ fontSize: "textSm", color: "text.secondary" }}>
                             Masters
                         </Typography>
-                        <ChevronRightRounded sx={{ fontSize: 15 }} />
-                        <Typography sx={{ fontSize: 12.5, color: "primary.main", fontWeight: 700 }}>
+                        <ChevronRightRounded sx={{ fontSize: "textLg" }} />
+                        <Typography sx={{ fontSize: "textSm", color: "primary.main", fontWeight: "fontWeightBold" }}>
                             User Doctor Mapping
                         </Typography>
                     </Box>
@@ -481,7 +481,7 @@ function UserDoctorMapping() {
                     <Button
                         variant="outlined"
                         size="small"
-                        startIcon={<HelpOutlineRoundedIcon sx={{ fontSize: 17 }} />}
+                        startIcon={<HelpOutlineRoundedIcon sx={{ fontSize: "text2xl" }} />}
                         sx={{
                             textTransform: "none",
                             borderRadius: 999,
@@ -533,8 +533,8 @@ function UserDoctorMapping() {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                fontSize: 14,
-                                fontWeight: 700,
+                                fontSize: "textBase",
+                                fontWeight: "fontWeightBold",
                                 backgroundColor:
                                     item.step === 1
                                         ? theme.palette.primary.main
@@ -549,10 +549,10 @@ function UserDoctorMapping() {
                         </Box>
 
                         <Box sx={{ minWidth: 0 }}>
-                            <Typography sx={{ fontSize: 14, fontWeight: 700, color: "text.primary" }}>
+                            <Typography sx={{ fontSize: "textBase", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                 {item.title}
                             </Typography>
-                            <Typography sx={{ mt: 0.25, fontSize: 12, color: "text.secondary" }}>
+                            <Typography sx={{ mt: 0.25, fontSize: "textSm", color: "text.secondary" }}>
                                 {item.description}
                             </Typography>
                         </Box>
@@ -608,8 +608,8 @@ function UserDoctorMapping() {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontWeight: 700,
-                                    fontSize: 14,
+                                    fontWeight: "fontWeightBold",
+                                    fontSize: "textBase",
                                     backgroundColor: theme.palette.brand.terracottaSoft,
                                     color: theme.palette.primary.main,
                                     flexShrink: 0,
@@ -620,29 +620,29 @@ function UserDoctorMapping() {
 
                             <Box>
                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <Typography sx={{ fontSize: 14.5, fontWeight: 700, color: "text.primary" }}>
+                                    <Typography sx={{ fontSize: "textBase", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                         {selectedUser.UserName}
                                     </Typography>
                                     <Chip
                                         size="small"
                                         label="Active"
                                         color="success"
-                                        sx={{ height: 20, fontSize: 11, fontWeight: 700 }}
+                                        sx={{ height: 20, fontSize: "textXs", fontWeight: "fontWeightBold" }}
                                     />
                                 </Box>
                             </Box>
                         </Box>
 
                         <Box>
-                            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>Designation</Typography>
-                            <Typography sx={{ fontSize: 13, fontWeight: 700, color: "text.primary" }}>
+                            <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>Designation</Typography>
+                            <Typography sx={{ fontSize: "textMd", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                 {selectedUser.SldName || "-"}
                             </Typography>
                         </Box>
 
                         <Box>
-                            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>Division</Typography>
-                            <Typography sx={{ fontSize: 13, fontWeight: 700, color: "text.primary" }}>
+                            <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>Division</Typography>
+                            <Typography sx={{ fontSize: "textMd", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                 {selectedUser.DivisionName || "-"}
                             </Typography>
                         </Box>
@@ -675,8 +675,8 @@ function UserDoctorMapping() {
                     }}
                 >
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <FilterAltRoundedIcon sx={{ fontSize: 18, color: "primary.main" }} />
-                        <Typography sx={{ fontSize: 14, fontWeight: 700, color: "text.primary" }}>
+                        <FilterAltRoundedIcon sx={{ fontSize: "text2xl", color: "primary.main" }} />
+                        <Typography sx={{ fontSize: "textBase", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             Location & Speciality Filters
                         </Typography>
                     </Box>
@@ -684,7 +684,7 @@ function UserDoctorMapping() {
                     <Button
                         variant="outlined"
                         size="small"
-                        startIcon={<RestartAltRoundedIcon sx={{ fontSize: 17 }} />}
+                        startIcon={<RestartAltRoundedIcon sx={{ fontSize: "text2xl" }} />}
                         onClick={handleClearFilters}
                         sx={{ textTransform: "none", borderColor: "divider", color: "text.secondary" }}
                     >
@@ -808,12 +808,12 @@ function UserDoctorMapping() {
                         })}
                     >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-                            <PeopleAltRoundedIcon sx={{ fontSize: 19, color: "primary.main" }} />
+                            <PeopleAltRoundedIcon sx={{ fontSize: "text3xl", color: "primary.main" }} />
                             <Box>
-                                <Typography sx={{ fontSize: 14, fontWeight: 700, color: "text.primary" }}>
+                                <Typography sx={{ fontSize: "textBase", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                     Available Doctors
                                 </Typography>
-                                <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                                <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>
                                     Doctors available for mapping (not assigned to this user)
                                 </Typography>
                             </Box>
@@ -822,7 +822,7 @@ function UserDoctorMapping() {
                         <Chip
                             size="small"
                             label={`${availableDoctors.length} Doctors`}
-                            sx={{ fontWeight: 700, backgroundColor: "background.paper" }}
+                            sx={{ fontWeight: "fontWeightBold", backgroundColor: "background.paper" }}
                         />
                     </Box>
 
@@ -835,7 +835,7 @@ function UserDoctorMapping() {
                             onChange={(event) => setAvailableSearch(event.target.value)}
                             InputProps={{
                                 startAdornment: (
-                                    <SearchRoundedIcon sx={{ mr: 1, fontSize: 18, color: "text.secondary" }} />
+                                    <SearchRoundedIcon sx={{ mr: 1, fontSize: "text2xl", color: "text.secondary" }} />
                                 ),
                             }}
                         />
@@ -846,10 +846,10 @@ function UserDoctorMapping() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell padding="checkbox" />
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Doctor Name</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Speciality</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Hospital / Clinic</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Location</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Doctor Name</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Speciality</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Hospital / Clinic</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Location</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -863,10 +863,10 @@ function UserDoctorMapping() {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                                            <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                                 {doctor.DoctorName}
                                             </Typography>
-                                            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                                            <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>
                                                 {doctor.Qualification}
                                             </Typography>
                                         </TableCell>
@@ -877,16 +877,16 @@ function UserDoctorMapping() {
                                                     label={doctor.Speciality}
                                                     sx={(theme) => ({
                                                         height: 20,
-                                                        fontSize: 11,
-                                                        fontWeight: 700,
+                                                        fontSize: "textXs",
+                                                        fontWeight: "fontWeightBold",
                                                         backgroundColor: theme.palette.brand.terracottaSoft,
                                                         color: theme.palette.primary.main,
                                                     })}
                                                 />
                                             )}
                                         </TableCell>
-                                        <TableCell sx={{ fontSize: 12.5 }}>{doctor.HospitalName || "-"}</TableCell>
-                                        <TableCell sx={{ fontSize: 12.5 }}>
+                                        <TableCell sx={{ fontSize: "textSm" }}>{doctor.HospitalName || "-"}</TableCell>
+                                        <TableCell sx={{ fontSize: "textSm" }}>
                                             {[doctor.AreaName, doctor.TerritoryName].filter(Boolean).join(" / ") || "-"}
                                         </TableCell>
                                     </TableRow>
@@ -919,7 +919,7 @@ function UserDoctorMapping() {
                             borderColor: theme.palette.border.subtle,
                         })}
                     >
-                        <Typography sx={{ fontSize: 12, fontWeight: 700, color: "primary.main" }}>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "primary.main" }}>
                             {highlightedAvailable.length} doctor(s) selected
                         </Typography>
                     </Box>
@@ -1025,12 +1025,12 @@ function UserDoctorMapping() {
                         })}
                     >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-                            <GroupRoundedIcon sx={{ fontSize: 19, color: "brand.sageDark" }} />
+                            <GroupRoundedIcon sx={{ fontSize: "text3xl", color: "brand.sageDark" }} />
                             <Box>
-                                <Typography sx={{ fontSize: 14, fontWeight: 700, color: "text.primary" }}>
+                                <Typography sx={{ fontSize: "textBase", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                     Assigned Doctors
                                 </Typography>
-                                <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                                <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>
                                     Doctors already assigned to {selectedUser?.UserName || "this user"}
                                 </Typography>
                             </Box>
@@ -1041,7 +1041,7 @@ function UserDoctorMapping() {
                             label={`${assignedDoctors.length} Doctors`}
                             color="success"
                             variant="outlined"
-                            sx={{ fontWeight: 700, backgroundColor: "background.paper" }}
+                            sx={{ fontWeight: "fontWeightBold", backgroundColor: "background.paper" }}
                         />
                     </Box>
 
@@ -1054,7 +1054,7 @@ function UserDoctorMapping() {
                             onChange={(event) => setAssignedSearch(event.target.value)}
                             InputProps={{
                                 startAdornment: (
-                                    <SearchRoundedIcon sx={{ mr: 1, fontSize: 18, color: "text.secondary" }} />
+                                    <SearchRoundedIcon sx={{ mr: 1, fontSize: "text2xl", color: "text.secondary" }} />
                                 ),
                             }}
                         />
@@ -1065,10 +1065,10 @@ function UserDoctorMapping() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell padding="checkbox" />
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Doctor Name</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Speciality</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Hospital / Clinic</TableCell>
-                                    <TableCell sx={{ fontSize: 11, fontWeight: 700 }}>Location</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Doctor Name</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Speciality</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Hospital / Clinic</TableCell>
+                                    <TableCell sx={{ fontSize: "textXs", fontWeight: "fontWeightBold" }}>Location</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -1082,10 +1082,10 @@ function UserDoctorMapping() {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                                            <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                                                 {doctor.DoctorName}
                                             </Typography>
-                                            <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                                            <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>
                                                 {doctor.Qualification}
                                             </Typography>
                                         </TableCell>
@@ -1096,16 +1096,16 @@ function UserDoctorMapping() {
                                                     label={doctor.Speciality}
                                                     sx={(theme) => ({
                                                         height: 20,
-                                                        fontSize: 11,
-                                                        fontWeight: 700,
+                                                        fontSize: "textXs",
+                                                        fontWeight: "fontWeightBold",
                                                         backgroundColor: theme.palette.brand.terracottaSoft,
                                                         color: theme.palette.primary.main,
                                                     })}
                                                 />
                                             )}
                                         </TableCell>
-                                        <TableCell sx={{ fontSize: 12.5 }}>{doctor.HospitalName || "-"}</TableCell>
-                                        <TableCell sx={{ fontSize: 12.5 }}>
+                                        <TableCell sx={{ fontSize: "textSm" }}>{doctor.HospitalName || "-"}</TableCell>
+                                        <TableCell sx={{ fontSize: "textSm" }}>
                                             {[doctor.AreaName, doctor.TerritoryName].filter(Boolean).join(" / ") || "-"}
                                         </TableCell>
                                     </TableRow>
@@ -1158,13 +1158,13 @@ function UserDoctorMapping() {
                             color: theme.palette.primary.main,
                         })}
                     >
-                        <AssignmentRoundedIcon sx={{ fontSize: 19 }} />
+                        <AssignmentRoundedIcon sx={{ fontSize: "text3xl" }} />
                     </Box>
                     <Box>
-                        <Typography sx={{ fontSize: 13, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textMd", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             Mapping Summary
                         </Typography>
-                        <Typography sx={{ fontSize: 11, color: "text.secondary" }}>
+                        <Typography sx={{ fontSize: "textXs", color: "text.secondary" }}>
                             Review your selections before saving.
                         </Typography>
                     </Box>
@@ -1172,32 +1172,32 @@ function UserDoctorMapping() {
 
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, flex: 1 }}>
                     <Box>
-                        <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>User</Typography>
-                        <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>User</Typography>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             {selectedUser?.UserName || "-"}
                         </Typography>
                     </Box>
                     <Box>
-                        <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>Territory</Typography>
-                        <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>Territory</Typography>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             {territories.find((item) => item.TerritoryId === selectedTerritory)?.TerritoryName || "-"}
                         </Typography>
                     </Box>
                     <Box>
-                        <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>Area</Typography>
-                        <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>Area</Typography>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             {areas.find((item) => item.AreaId === selectedArea)?.AreaName || "-"}
                         </Typography>
                     </Box>
                     <Box>
-                        <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>Speciality</Typography>
-                        <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>Speciality</Typography>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             {selectedSpeciality || "-"}
                         </Typography>
                     </Box>
                     <Box>
-                        <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>New Doctors to Assign</Typography>
-                        <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "text.primary" }}>
+                        <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>New Doctors to Assign</Typography>
+                        <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
                             {newDoctorsToAssign}
                         </Typography>
                     </Box>
@@ -1207,7 +1207,7 @@ function UserDoctorMapping() {
                     <Button
                         variant="outlined"
                         onClick={handleReset}
-                        startIcon={<RestartAltRoundedIcon sx={{ fontSize: 17 }} />}
+                        startIcon={<RestartAltRoundedIcon sx={{ fontSize: "text2xl" }} />}
                         sx={{ textTransform: "none", borderColor: "divider", color: "text.secondary" }}
                     >
                         Reset

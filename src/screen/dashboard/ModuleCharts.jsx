@@ -64,7 +64,7 @@ function MiniRing({ value, color }) {
                     transform={`rotate(-90 ${size / 2} ${size / 2})`}
                 />
             </Box>
-            <Typography variant="micro" sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontWeight: 700 }}>
+            <Typography variant="micro" sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontWeight: "fontWeightBold" }}>
                 {Math.round(pct)}%
             </Typography>
         </Box>
@@ -126,14 +126,14 @@ export function KpiCard({ icon: Icon, label, value, caption, color = "primary", 
                 <Box sx={{ width: theme.avatar.size, height: theme.avatar.size, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: theme.stat.iconRadius, color: main, backgroundColor: alpha(main, theme.tint.soft) }}>
                     {Icon && <Icon />}
                 </Box>
-                <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: 600, lineHeight: 1.25, minWidth: 0 }}>
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: "fontWeightSemibold", lineHeight: 1.25, minWidth: 0 }}>
                     {label}
                 </Typography>
             </Stack>
 
             <Stack direction="row" sx={{ alignItems: "flex-end", justifyContent: "space-between", gap: 1 }}>
                 <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="h4" component="p" noWrap sx={{ fontWeight: 700, lineHeight: 1.1 }}>
+                    <Typography variant="h4" component="p" noWrap sx={{ fontWeight: "fontWeightBold", lineHeight: 1.1 }}>
                         {value}
                     </Typography>
                     {trend != null && (
@@ -143,7 +143,7 @@ export function KpiCard({ icon: Icon, label, value, caption, color = "primary", 
                             sx={{ mt: 0.75, px: 0.75, py: 0.25, width: "fit-content", alignItems: "center", gap: 0.25, borderRadius: theme.statusChip.radius, color: trendColor, backgroundColor: alpha(trendColor, theme.tint.soft) }}
                         >
                             {up ? <ArrowUpwardRounded fontSize="inherit" /> : <ArrowDownwardRounded fontSize="inherit" />}
-                            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                            <Typography variant="caption" sx={{ fontWeight: "fontWeightBold" }}>
                                 {Math.abs(trend)}%
                             </Typography>
                         </Stack>
@@ -157,7 +157,7 @@ export function KpiCard({ icon: Icon, label, value, caption, color = "primary", 
                     <Box sx={{ flex: 1, height: theme.stat.progressHeight, borderRadius: theme.stat.progressHeight, backgroundColor: theme.palette.surface.muted, overflow: "hidden" }}>
                         <Box sx={{ width: `${Math.min(100, progress)}%`, height: "100%", borderRadius: "inherit", backgroundColor: main }} />
                     </Box>
-                    <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                    <Typography variant="caption" sx={{ fontWeight: "fontWeightBold" }}>
                         {Math.round(progress)}%
                     </Typography>
                 </Stack>
@@ -207,7 +207,7 @@ export function GroupedBars({ rows, series }) {
                 {ticks.map((t) => (
                     <g key={t}>
                         <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke={theme.palette.divider} strokeDasharray="3 4" />
-                        <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill={theme.palette.text.secondary}>
+                        <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={theme.typography.textXs} fill={theme.palette.text.secondary}>
                             {t}
                         </text>
                     </g>
@@ -222,7 +222,7 @@ export function GroupedBars({ rows, series }) {
                                 return <rect key={j} x={x0 + gap + j * bw} y={H - pad.b - h} width={Math.max(1, bw - 2)} height={h} rx={Math.min(theme.dashboard.barRadius, (bw - 2) / 2)} fill={series[j].color} />;
                             })}
                             {i % labelEvery === 0 && (
-                                <text x={x0 + slot / 2} y={H - 8} textAnchor="middle" fontSize="11" fill={active === i ? theme.palette.text.primary : theme.palette.text.secondary} fontWeight={active === i ? 700 : 400}>
+                                <text x={x0 + slot / 2} y={H - 8} textAnchor="middle" fontSize={theme.typography.textXs} fill={active === i ? theme.palette.text.primary : theme.palette.text.secondary} fontWeight={active === i ? theme.typography.fontWeightBold : theme.typography.fontWeightRegular}>
                                     {row.label}
                                 </text>
                             )}
@@ -247,7 +247,7 @@ export function GroupedBars({ rows, series }) {
                         whiteSpace: "nowrap",
                     }}
                 >
-                    <Typography variant="caption" sx={{ fontWeight: 700, display: "block" }}>
+                    <Typography variant="caption" sx={{ fontWeight: "fontWeightBold", display: "block" }}>
                         {rows[active].label}
                     </Typography>
                     {series.map((s, j) => (
@@ -302,7 +302,7 @@ export function LineChart({ items, money, unit }) {
                 {ticks.map((t) => (
                     <g key={t}>
                         <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke={theme.palette.divider} strokeDasharray="3 4" />
-                        <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill={theme.palette.text.secondary}>
+                        <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={theme.typography.textXs} fill={theme.palette.text.secondary}>
                             {label(t)}
                         </text>
                     </g>
@@ -312,7 +312,7 @@ export function LineChart({ items, money, unit }) {
                 {pts.map(([px, py], i) => (
                     <g key={items[i].key}>
                         <circle cx={px} cy={py} r={active === i ? 6 : 4.5} fill={theme.palette.background.paper} stroke={color} strokeWidth="2.5" />
-                        <text x={px} y={H - 8} textAnchor="middle" fontSize="11" fill={active === i ? theme.palette.text.primary : theme.palette.text.secondary} fontWeight={active === i ? 700 : 400}>
+                        <text x={px} y={H - 8} textAnchor="middle" fontSize={theme.typography.textXs} fill={active === i ? theme.palette.text.primary : theme.palette.text.secondary} fontWeight={active === i ? theme.typography.fontWeightBold : theme.typography.fontWeightRegular}>
                             {items[i].label}
                         </text>
                         <rect x={px - (W - pad.l - pad.r) / items.length / 2} y={0} width={(W - pad.l - pad.r) / items.length} height={H} fill="transparent" onMouseEnter={() => setActive(i)} />
@@ -336,7 +336,7 @@ export function LineChart({ items, money, unit }) {
                         whiteSpace: "nowrap",
                     }}
                 >
-                    <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                    <Typography variant="caption" sx={{ fontWeight: "fontWeightBold" }}>
                         {items[active].label}: {formatValue(items[active].value, money, unit)}
                     </Typography>
                 </Box>
@@ -385,7 +385,7 @@ export function DonutChart({ items, money, unit }) {
                         })}
                 </Box>
                 <Stack sx={{ position: "absolute", inset: 0, alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-                    <Typography variant="h5" component="p" sx={{ fontWeight: 700 }}>
+                    <Typography variant="h5" component="p" sx={{ fontWeight: "fontWeightBold" }}>
                         {total ? `${Math.round((top.value / total) * 100)}%` : "0"}
                     </Typography>
                     <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
@@ -400,7 +400,7 @@ export function DonutChart({ items, money, unit }) {
                         <Typography variant="body2" sx={{ flex: 1, minWidth: 0 }} noWrap>
                             {item.label}
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
                             {money ? compactMoney(item.value) : item.value}
                         </Typography>
                         <Typography variant="caption" sx={{ color: theme.palette.text.secondary, width: theme.spacing(4.5), textAlign: "right" }}>
@@ -432,16 +432,16 @@ export function RankList({ items, money, unit }) {
                 return (
                     <Stack key={item.key} direction="row" sx={{ alignItems: "center", gap: 1.5 }}>
                         <Box sx={{ width: theme.spacing(3.25), height: theme.spacing(3.25), flexShrink: 0, borderRadius: "50%", display: "grid", placeItems: "center", color, backgroundColor: alpha(color, theme.tint.soft) }}>
-                            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                            <Typography variant="caption" sx={{ fontWeight: "fontWeightBold" }}>
                                 {i + 1}
                             </Typography>
                         </Box>
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Stack direction="row" sx={{ justifyContent: "space-between", gap: 1, mb: 0.5 }}>
-                                <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
+                                <Typography variant="body2" sx={{ fontWeight: "fontWeightSemibold" }} noWrap>
                                     {item.label}
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 700, flexShrink: 0 }}>
+                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", flexShrink: 0 }}>
                                     {money ? compactMoney(item.value) : `${item.value}${unit ? ` ${unit}` : ""}`}
                                 </Typography>
                             </Stack>

@@ -71,7 +71,7 @@ function RampTab({ userId }) {
                                     </Typography>
                                     <Tag label={MILESTONE_STATUS[m.status].label} color={color} />
                                 </Stack>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: "fontWeightSemibold" }}>
                                     {m.label}
                                 </Typography>
                                 <Typography variant="body2" sx={(theme) => ({ color: theme.palette.text.secondary })}>

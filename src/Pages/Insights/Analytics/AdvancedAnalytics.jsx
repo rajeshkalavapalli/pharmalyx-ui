@@ -95,7 +95,7 @@ function AdvancedAnalytics() {
                                                 {row.advice}
                                             </Typography>
                                             {row.pob > 0 && (
-                                                <Typography variant="caption" component="p" sx={{ mt: 0.5, fontWeight: 600 }}>
+                                                <Typography variant="caption" component="p" sx={{ mt: 0.5, fontWeight: "fontWeightSemibold" }}>
                                                     POB {formatMoneyCompact(row.pob)}
                                                 </Typography>
                                             )}

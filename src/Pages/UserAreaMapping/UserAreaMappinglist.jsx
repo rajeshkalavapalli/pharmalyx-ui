@@ -254,7 +254,7 @@ function UserAreaMappingList() {
                     <Typography
                         variant="h6"
                         sx={{
-                            fontWeight: 700,
+                            fontWeight: "fontWeightBold",
                             lineHeight: 1.3,
                         }}
                     >
@@ -264,7 +264,7 @@ function UserAreaMappingList() {
                     <Typography
                         sx={{
                             mt: 0.35,
-                            fontSize: 12.5,
+                            fontSize: "textSm",
                             color: "text.secondary",
                         }}
                     >
@@ -341,7 +341,7 @@ function UserAreaMappingList() {
                                     <SearchOutlinedIcon
                                         sx={{
                                             mr: 1,
-                                            fontSize: 18,
+                                            fontSize: "text2xl",
                                             color: "text.secondary",
                                         }}
                                     />
@@ -399,8 +399,8 @@ function UserAreaMappingList() {
                                     sx={{
                                         py: 1.5,
                                         color: "text.secondary",
-                                        fontSize: 10.5,
-                                        fontWeight: 800,
+                                        fontSize: "textXxs",
+                                        fontWeight: "fontWeightHeavy",
                                         letterSpacing: "0.08em",
                                         textTransform: "uppercase",
                                         whiteSpace: "nowrap",
@@ -483,7 +483,7 @@ function UserAreaMappingList() {
 
                                                 <VisibilityOutlinedIcon
                                                     sx={{
-                                                        fontSize: 17,
+                                                        fontSize: "text2xl",
                                                     }}
                                                 />
 
@@ -533,7 +533,7 @@ function UserAreaMappingList() {
 
                                                 <EditOutlinedIcon
                                                     sx={{
-                                                        fontSize: 17,
+                                                        fontSize: "text2xl",
                                                     }}
                                                 />
 
@@ -572,7 +572,7 @@ function UserAreaMappingList() {
 
                                                 <DeleteOutline
                                                     sx={{
-                                                        fontSize: 17,
+                                                        fontSize: "text2xl",
                                                     }}
                                                 />
 
@@ -591,8 +591,8 @@ function UserAreaMappingList() {
 
                                     <Typography
                                         sx={{
-                                            fontSize: 13,
-                                            fontWeight: 750,
+                                            fontSize: "textMd",
+                                            fontWeight: "fontWeightBold",
                                             color: "primary.main",
                                         }}
                                     >
@@ -607,7 +607,7 @@ function UserAreaMappingList() {
                                 <TableCell
                                     sx={{
                                         color: "text.secondary",
-                                        fontSize: 12.5,
+                                        fontSize: "textSm",
                                     }}
                                 >
                                     {row.EmailId || "-"}
@@ -618,7 +618,7 @@ function UserAreaMappingList() {
 
                                 <TableCell
                                     sx={{
-                                        fontWeight: 600,
+                                        fontWeight: "fontWeightSemibold",
                                     }}
                                 >
                                     {row.DivisionName || "-"}
