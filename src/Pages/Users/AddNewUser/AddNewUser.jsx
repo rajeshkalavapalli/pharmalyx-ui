@@ -683,6 +683,28 @@ function AddNewUser({
                             ? data.recordset
                             : [];
 
+                const idOf = (row) => String(row.UserId || row.userId || "").toLowerCase();
+                const editingId = String(user?.UserId || user?.userId || "").toLowerCase();
+
+                // People who report to the user being edited, at any level: choosing one of them
+                // (or the user themselves) as manager would make a loop.
+                const below = new Set();
+                if (editingId) {
+                    let added = true;
+                    while (added) {
+                        added = false;
+                        managerRows.forEach((row) => {
+                            const managerId = String(row.ManagerId || "").toLowerCase();
+                            if ((managerId === editingId || below.has(managerId)) && !below.has(idOf(row))) {
+                                below.add(idOf(row));
+                                added = true;
+                            }
+                        });
+                    }
+                }
+
+                // Active people in the same division, plus company-wide people without a division
+                // (such as the company owner / head office).
                 const filteredManagers = managerRows.filter((manager) => {
                     const managerDivisionId =
                         manager.DivisionId ||
@@ -690,7 +712,10 @@ function AddNewUser({
                         manager.DivisionID ||
                         manager.Division_Id;
 
-                    return managerDivisionId === DivisionId;
+                    const active = manager.IsActive !== false && manager.IsActive !== 0 && manager.IsActive !== "No";
+                    const id = idOf(manager);
+
+                    return active && id !== editingId && !below.has(id) && (!managerDivisionId || managerDivisionId === DivisionId);
                 });
 
                 setManagers(filteredManagers);
@@ -1732,17 +1757,17 @@ function AddNewUser({
                                             manager.UserID ||
                                             manager.Id;
 
+                                        // The person's name; the login only when no name is set.
+                                        const fullName = [manager.FirstName, manager.LastName]
+                                            .map((part) => String(part || "").trim())
+                                            .filter(Boolean)
+                                            .join(" ");
+
                                         const displayName =
+                                            fullName ||
+                                            manager.Name ||
                                             manager.UserName ||
                                             manager.userName ||
-                                            manager.Username ||
-                                            manager.Name ||
-                                            [
-                                                manager.FirstName,
-                                                manager.LastName,
-                                            ]
-                                                .filter(Boolean)
-                                                .join(" ") ||
                                             "-";
 
                                         return (

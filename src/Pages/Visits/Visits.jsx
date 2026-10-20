@@ -116,7 +116,7 @@ function ConnectionStatus({ online, pending, syncing, onSync }) {
 
 function Visits() {
     const { showSnackbar } = useSnackbar();
-    const { actingUserId, setActingUserId, users } = useActingUser();
+    const { actingUserId, setActingUserId, users, colleagues: jointColleagues } = useActingUser();
 
     const [team, setTeam] = useState([]);
     const [viewUserId, setViewUserId] = useState("");
@@ -284,7 +284,7 @@ function Visits() {
 
     const rows = useMemo(() => {
         const saved = new Set(visits.map((visit) => visit.VisitId));
-        const pending = pendingRows(sync.queue, viewUserId, month, users).filter(
+        const pending = pendingRows(sync.queue, viewUserId, month, [...users, ...jointColleagues]).filter(
             (row) => !saved.has(row.VisitId)
         );
 
@@ -293,7 +293,7 @@ function Visits() {
                 b.VisitDate.localeCompare(a.VisitDate) ||
                 String(b.StartTime || "").localeCompare(String(a.StartTime || ""))
         );
-    }, [visits, sync.queue, viewUserId, month, users]);
+    }, [visits, sync.queue, viewUserId, month, users, jointColleagues]);
 
     const stats = useMemo(() => {
         const visitedIds = new Set(rows.map((row) => row.DoctorId));
@@ -344,7 +344,8 @@ function Visits() {
         }));
     }, [stock, myQueue]);
     const failedSyncs = myQueue.filter((item) => item.error).length;
-    const colleagues = users.filter((user) => user.id !== actingUserId);
+    // Joint work only with my manager chain, my team and people sharing my territory.
+    const colleagues = jointColleagues;
 
     // =========================================================
     // RENDER

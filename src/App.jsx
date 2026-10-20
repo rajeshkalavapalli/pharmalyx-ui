@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './screen/login/Login';
 import AppShell from './screen/sidebarshell/Appshell';
 import RequireAuth from './configurations/RequireAuth';
+import ChangePassword from './screen/login/ChangePassword';
 
 import Dashboard from './screen/dashboard/Dashboard';
 
@@ -120,6 +121,14 @@ function App() {
                 <Route
                     path="/"
                     element={<Login />}
+                />
+
+
+                {/* CHOOSE YOUR OWN PASSWORD (first sign-in, or from the top bar) */}
+
+                <Route
+                    path="/change-password"
+                    element={<ChangePassword />}
                 />
 
 

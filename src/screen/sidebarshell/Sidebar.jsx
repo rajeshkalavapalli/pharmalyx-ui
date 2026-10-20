@@ -35,7 +35,8 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import KeyboardDoubleArrowLeftRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftRounded";
 import KeyboardDoubleArrowRightRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowRightRounded";
 
-import navigation from "../naviagation/Navigation";
+import { visibleNavigation } from "../naviagation/Navigation";
+import usePermissions from "../../configurations/usePermissions";
 import BrandMark from "../../components/BrandMark/BrandMark";
 
 // Icons for top-level entries; child items are text-only under a guide line.
@@ -277,7 +278,7 @@ function SidebarSearch({ value, onChange, inputRef }) {
 }
 
 // Keeps entries whose label matches; for sections, otherwise only the matching children.
-const filterNavigation = (query) => {
+const filterNavigation = (navigation, query) => {
     const q = query.trim().toLowerCase();
     if (!q) return navigation;
 
@@ -526,6 +527,10 @@ function Sidebar({ mobile = false, onClose }) {
     const [pinnedCollapsed, setPinnedCollapsed] = useState(readCollapsed);
     const collapsed = !mobile && (compactScreen || pinnedCollapsed);
 
+    // Only the screens this person's role can open.
+    const permissions = usePermissions();
+    const navigation = useMemo(() => visibleNavigation(permissions), [permissions]);
+
     const activeSection = navigation.find((section) => isSectionActive(section, pathname))?.label;
 
     // One section open at a time; follows the current page.
@@ -540,7 +545,7 @@ function Sidebar({ mobile = false, onClose }) {
     const [query, setQuery] = useState("");
     const searchRef = useRef(null);
     const searching = query.trim() !== "";
-    const items = useMemo(() => filterNavigation(query), [query]);
+    const items = useMemo(() => filterNavigation(navigation, query), [navigation, query]);
 
     // Ctrl/Cmd + K jumps to the menu search (expands the menu first if needed).
     useEffect(() => {

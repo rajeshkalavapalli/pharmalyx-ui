@@ -49,12 +49,15 @@ function DeviationFilters({ filters, onChange, onClear, users, divisions, territ
                 slotProps={{ inputLabel: { shrink: true } }}
             />
 
-            <SelectFilter
-                label="Representative"
-                value={filters.userId}
-                onChange={(value) => onChange("userId", value)}
-                options={users.map((user) => ({ value: user.id, label: user.name }))}
-            />
+            {/* Only people with a team choose a representative (an MR sees just their own). */}
+            {users.length > 1 && (
+                <SelectFilter
+                    label="Representative"
+                    value={filters.userId}
+                    onChange={(value) => onChange("userId", value)}
+                    options={users.map((user) => ({ value: user.id, label: user.name }))}
+                />
+            )}
 
             <SelectFilter
                 label="Division"

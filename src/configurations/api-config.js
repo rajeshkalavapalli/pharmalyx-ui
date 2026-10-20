@@ -1,6 +1,12 @@
 import axios from 'axios'
 
-import { clearSession, getToken } from './session'
+import { clearSession, getToken, setMustChangePassword } from './session'
+
+// Tabs share one session: signing in or out in another tab replaces it here too, so reload
+// to show the person whose session this now is (name, menu and data all match again).
+window.addEventListener('storage', (event) => {
+    if (event.key === 'authToken' || event.key === null) window.location.reload();
+});
 
 const api = axios.create({
     baseURL:import.meta.env.VITE_CONFIG_API
@@ -28,6 +34,15 @@ api.interceptors.response.use(
 
             if (window.location.pathname !== '/') {
                 window.location.assign('/');
+            }
+        }
+
+        // The server only allows choosing a new password until that is done.
+        if (error.response?.status === 403 && error.response?.data?.code === 'PASSWORD_CHANGE_REQUIRED') {
+            setMustChangePassword(true);
+
+            if (window.location.pathname !== '/change-password') {
+                window.location.assign('/change-password');
             }
         }
 

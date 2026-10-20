@@ -54,9 +54,10 @@ function ExtendDialog({ doctor, onClose, onSaved }) {
 }
 
 // Provisional doctors with their deadline, and the proofs waiting for (or sent to) a manager.
-function VerificationTab({ permissions, onCounts }) {
+// initialView "proofs" opens the proofs waiting for review (link from the Approvals inbox).
+function VerificationTab({ permissions, onCounts, initialView = "doctors" }) {
     const { showSnackbar } = useSnackbar();
-    const [view, setView] = useState("doctors");
+    const [view, setView] = useState(initialView === "proofs" ? "proofs" : "doctors");
     const [status, setStatus] = useState("PENDING");
     const [data, setData] = useState(null);
     const [error, setError] = useState("");

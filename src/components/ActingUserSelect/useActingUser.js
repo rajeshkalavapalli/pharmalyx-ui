@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { getUsers } from "../../Pages/Users/service/index";
+import api from "../../configurations/api-config";
 
-// Temporary until login stores the signed-in user: the API identifies the
-// acting user from localStorage.userId (sent as the x-user-id header).
+// The signed-in person and the people they may see, from GET /app/people (names only, no phone or email):
+//   users: me + my team (everyone for head office); colleagues: joint-work candidates.
 const CHANGE_EVENT = "pharmalyx:acting-user";
 
 const readStoredUserId = () => {
@@ -17,28 +17,19 @@ const readStoredUserId = () => {
     return stored;
 };
 
+const lower = (value) => String(value || "").toLowerCase();
+
 function useActingUser() {
     const [actingUserId, setActingUserIdState] = useState(readStoredUserId);
-    const [users, setUsers] = useState([]);
+    const [people, setPeople] = useState({ me: null, team: [], colleagues: [] });
 
     useEffect(() => {
-        getUsers()
-            .then((response) => {
-                const data = response?.result || response || [];
+        api.get("/app/people")
+            .then(({ data }) => setPeople({ me: data?.me || null, team: data?.team || [], colleagues: data?.colleagues || [] }))
+            .catch(() => setPeople({ me: null, team: [], colleagues: [] }));
+    }, [actingUserId]);
 
-                setUsers(
-                    (Array.isArray(data) ? data : []).map((user) => ({
-                        id: user.userId || user.UserId,
-                        name:
-                            [user.FirstName, user.LastName].filter(Boolean).join(" ") ||
-                            user.UserName,
-                    }))
-                );
-            })
-            .catch(() => setUsers([]));
-    }, []);
-
-    // Keep every instance (header, pages) in sync when the user is switched.
+    // Keep every instance (header, pages) in sync when the session changes.
     useEffect(() => {
         const sync = () => setActingUserIdState(readStoredUserId());
 
@@ -52,7 +43,16 @@ function useActingUser() {
         window.dispatchEvent(new Event(CHANGE_EVENT));
     };
 
-    return { actingUserId, setActingUserId, users };
+    // Ids compare case-insensitively (the server returns upper-case GUIDs).
+    const normalise = (list) => list.map((person) => ({ ...person, id: lower(person.id) === lower(actingUserId) ? actingUserId : person.id }));
+
+    return {
+        actingUserId,
+        setActingUserId,
+        me: people.me,
+        users: normalise(people.team),
+        colleagues: normalise(people.colleagues),
+    };
 }
 
 export default useActingUser;

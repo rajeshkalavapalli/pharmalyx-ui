@@ -36,6 +36,7 @@ import {
     checkDuplicates,
     errorMessage,
     getMyPermissions,
+    NO_PHOTO_REASONS,
     requestChange,
     requestNewDoctor,
     uploadPhoto,
@@ -46,6 +47,7 @@ import {
     LocationStatus,
 } from "../../DoctorRequests/components/LiveCapture";
 import useLiveLocation from "../../DoctorRequests/components/useLiveLocation";
+import { getUsers } from "../../UserDoctorMapping/index";
 
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
@@ -86,16 +88,21 @@ export const AddNewDoctors = function () {
     const [permissions, setPermissions] = useState(null);
     const liveLocation = useLiveLocation();
     const [photo, setPhoto] = useState(null);
+    const [noPhotoReason, setNoPhotoReason] = useState(""); // new doctor without a signboard photo
     const [moveClinic, setMoveClinic] = useState(false);
     const [reason, setReason] = useState("");
     const [registrationNumber, setRegistrationNumber] = useState("");
     const [duplicates, setDuplicates] = useState([]);
+    // Admin adding a doctor: optionally assign it to an MR in the same step.
+    const [assignTo, setAssignTo] = useState("");
+    const [people, setPeople] = useState([]);
 
     const requestMode =
         !isViewMode &&
         Boolean(permissions) &&
         !permissions.has(isEditMode ? "masters.edit" : "masters.create");
     const needsLocation = requestMode && (!isEditMode || moveClinic);
+    const canAssign = !isViewMode && !isEditMode && Boolean(permissions) && !requestMode;
 
 
     const formik = useFormik({
@@ -226,6 +233,7 @@ export const AddNewDoctors = function () {
                         values.status === "no"
                             ? "No"
                             : "Yes",
+                    assignTo: canAssign && assignTo ? assignTo : null,
                 };
 
 
@@ -320,6 +328,24 @@ export const AddNewDoctors = function () {
             .catch(() => setPermissions(new Set()));
     }, []);
 
+    useEffect(() => {
+        if (!canAssign) return;
+        getUsers()
+            .then((list) => setPeople(Array.isArray(list) ? list : list?.result || list?.users || []))
+            .catch(() => setPeople([]));
+    }, [canAssign]);
+
+    // Active people working in the chosen territory (everyone active until a territory is picked).
+    const assignOptions = people
+        .filter((person) => person.IsActive !== false && person.IsActive !== 0 && person.IsActive !== "No")
+        .filter((person) => !formik.values.territory || String(person.TerritoryIds || "").toLowerCase().split(",").includes(String(formik.values.territory).toLowerCase()))
+        .map((person) => ({
+            id: person.userId,
+            name: [person.FirstName, person.LastName].filter(Boolean).join(" ") || person.UserName,
+            role: person.SldName,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
     // Live GPS: always for a new doctor, and for an edit when the clinic has moved.
     useEffect(() => {
         if (needsLocation) liveLocation.start();
@@ -360,8 +386,8 @@ export const AddNewDoctors = function () {
             showSnackbar("Capture the clinic location first (you need to be at the clinic).", "error");
             return;
         }
-        if (!isEditMode && !photo) {
-            showSnackbar("Take the clinic signboard photo first.", "error");
+        if (!isEditMode && !photo && !noPhotoReason) {
+            showSnackbar("Take the clinic signboard photo, or choose why there is none.", "error");
             return;
         }
         if (isEditMode && reason.trim().length < MIN_REASON) {
@@ -414,6 +440,7 @@ export const AddNewDoctors = function () {
                     Comment: reason.trim() || null,
                     ...gps,
                     PhotoId: photoId,
+                    NoPhotoReason: photoId ? undefined : noPhotoReason,
                 });
             }
 
@@ -1247,6 +1274,33 @@ export const AddNewDoctors = function () {
                 </Box>
 
 
+                {/* Assign to an MR (admin adding a doctor) */}
+
+                {canAssign && (
+                    <TextField
+                        select
+                        label="Assign to MR (optional)"
+                        value={assignOptions.some((option) => option.id === assignTo) ? assignTo : ""}
+                        onChange={(event) => setAssignTo(event.target.value)}
+                        helperText={
+                            formik.values.territory
+                                ? "People working in this territory. Leave empty to assign later from Doctor Mapping."
+                                : "Pick a territory to see the people working there."
+                        }
+                        sx={{ gridColumn: "1 / -1" }}
+                    >
+                        <MenuItem value="">
+                            <em>Don't assign now</em>
+                        </MenuItem>
+                        {assignOptions.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                                {option.role ? `${option.name} · ${option.role}` : option.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                )}
+
+
                 {/* Clinic check (requests only) */}
 
                 {requestMode && (
@@ -1333,7 +1387,7 @@ export const AddNewDoctors = function () {
                         >
                             {isEditMode
                                 ? "Your manager approves the change first"
-                                : "Live GPS and signboard photo at the clinic; your manager approves"}
+                                : "Live GPS at the clinic, with a signboard photo if there is one; your manager approves"}
                         </Typography>
 
                     </Box>
@@ -1362,8 +1416,27 @@ export const AddNewDoctors = function () {
                         <CameraCapture
                             value={photo}
                             onChange={setPhoto}
-                            label={isEditMode ? "New signboard photo (recommended)" : "Clinic signboard photo *"}
+                            label={isEditMode ? "New signboard photo (recommended)" : "Clinic signboard photo"}
                         />
+                    )}
+
+                    {needsLocation && !isEditMode && !photo && (
+                        <TextField
+                            select
+                            label="No signboard photo? Tell your manager why"
+                            value={noPhotoReason}
+                            onChange={(event) => setNoPhotoReason(event.target.value)}
+                            helperText="Take the photo if you can. Without one, your manager checks the request more closely."
+                        >
+                            <MenuItem value="">
+                                <em>I'll take the photo</em>
+                            </MenuItem>
+                            {NO_PHOTO_REASONS.map((item) => (
+                                <MenuItem key={item.value} value={item.value}>
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     )}
 
                     <TextField
