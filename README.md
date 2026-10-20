@@ -358,3 +358,8 @@
  - Same Pharmalyx logo everywhere (sidebar, login, browser tab favicon) with the wordmark in Fraunces and "lyx" in jade
  - About 570 hard-coded font sizes and weights in components replaced with named theme sizes (textXs ... text4xl) and weights; no hard-coded colours remain outside Theme.js
  - Calmer stat cards (white card, thin accent line, softly tinted icon), refined buttons, inputs, tables, dialogs, menus and tooltips
+
+
+  # V0.0.83
+ 
+ - updated one to many organisations

@@ -24,6 +24,7 @@ import DeleteOutline from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
 
 import { deleteUser, getUsers } from "./service/index";
+import Tag from "../../components/Tag/Tag";
 import ConfirmationDialog from "../../components/conformationDialog/ConformationDialog";
 import { useSnackbar } from "../../components/Snackbar/SnackbarContext";
 
@@ -102,20 +103,22 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
 
             if (!userId) return;
 
-            await deleteUser(userId);
+            const result = await deleteUser(userId);
 
+            // Someone with work history is deactivated instead of deleted: keep them in the list.
             setUsers((current) =>
-                current.filter(
-                    (user) =>
-                        (user.UserId || user.userId) !== userId
-                )
+                result?.deactivated
+                    ? current.map((user) =>
+                          (user.UserId || user.userId) === userId ? { ...user, IsActive: false } : user
+                      )
+                    : current.filter((user) => (user.UserId || user.userId) !== userId)
             );
 
             setDeleteTarget(null);
 
             showSnackbar(
-                "User deleted successfully",
-                "success"
+                result?.message || "User deleted",
+                result?.deactivated ? "info" : "success"
             );
         } catch (error) {
             console.error(
@@ -385,6 +388,7 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
                                         >
                                             {user.UserName || "-"}
                                         </Typography>
+                                        {user.IsActive === false && <Tag label="Deactivated" color="secondary" />}
                                     </TableCell>
 
                                     {/* Email */}
@@ -482,10 +486,10 @@ function UserList({ onAddUser, onViewUser, onEditUser }) {
             <ConfirmationDialog
                 open={Boolean(deleteTarget)}
                 title="Delete User"
-                message={`Are you sure you want to delete ${
+                message={`Delete ${
                     deleteTarget?.UserName ||
                     "this user"
-                }?`}
+                }? If they have any work history (visits, DCRs, orders...), they are deactivated instead, so their history is kept.`}
                 confirmText="Yes, Delete"
                 onCancel={() =>
                     setDeleteTarget(null)

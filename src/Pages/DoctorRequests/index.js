@@ -61,7 +61,16 @@ export const DUPLICATE_REASON = {
 export const WARNING_LABEL = {
     WEAK_GPS: "Weak GPS when the clinic was pinned",
     CLINIC_MOVED: "Clinic location changed",
+    NO_SIGNBOARD_PHOTO: "No signboard photo",
 };
+
+// Why a new doctor has no signboard photo (same codes as the server).
+export const NO_PHOTO_REASONS = [
+    { value: "NO_SIGNBOARD", label: "No signboard at the clinic" },
+    { value: "INSIDE_HOSPITAL", label: "Doctor sits inside a hospital" },
+    { value: "HOME_CLINIC", label: "Home clinic" },
+    { value: "NOT_ALLOWED", label: "Photo not allowed at the clinic" },
+];
 
 export const FIELD_LABEL = {
     DoctorName: "Name",

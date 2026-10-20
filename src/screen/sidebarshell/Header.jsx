@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
@@ -57,7 +58,7 @@ const initials = (name) =>
 // `onMenuClick` is passed on phones, where the sidebar lives in a drawer.
 function Header({ onMenuClick }) {
   const { pathname } = useLocation();
-  const { actingUserId, users } = useActingUser();
+  const { me } = useActingUser();
 
   const navigate = useNavigate();
 
@@ -67,7 +68,7 @@ function Header({ onMenuClick }) {
   };
 
   const crumbs = breadcrumbFor(pathname);
-  const user = users.find((item) => item.id === actingUserId);
+  const user = me;
 
   return (
     <AppBar
@@ -190,10 +191,28 @@ function Header({ onMenuClick }) {
                 component="p"
                 sx={(theme) => ({ color: theme.palette.text.secondary, whiteSpace: "nowrap" })}
               >
-                {user ? "Pharmalyx workspace" : "Loading…"}
+                {user ? user.designation || "Pharmalyx workspace" : "Loading…"}
               </Typography>
             </Box>
           </Stack>
+
+          <Tooltip title="Change password">
+            <IconButton
+              aria-label="Change password"
+              onClick={() => navigate("/change-password")}
+              sx={(theme) => ({
+                border: "1px solid",
+                borderColor: theme.palette.border.default,
+                color: theme.palette.text.secondary,
+                "&:hover": {
+                  color: theme.palette.primary.main,
+                  borderColor: alpha(theme.palette.primary.main, theme.tint.border),
+                },
+              })}
+            >
+              <KeyRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
 
           <Tooltip title="Sign out">
             <IconButton

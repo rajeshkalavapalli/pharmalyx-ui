@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -130,7 +130,9 @@ function DuplicateFlagRow({ flag, onResolve }) {
 function DoctorRequests() {
     const { showSnackbar } = useSnackbar();
 
-    const [tab, setTab] = useState("requests");
+    // ?tab=verification opens that tab (links from the Approvals inbox).
+    const [searchParams] = useSearchParams();
+    const [tab, setTab] = useState(() => (["requests", "verification", "duplicates"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "requests"));
     const [status, setStatus] = useState("PENDING");
     const [permissions, setPermissions] = useState(new Set());
     const [requests, setRequests] = useState(null);
@@ -279,7 +281,7 @@ function DoctorRequests() {
                     sx={(theme) => ({ opacity: loading ? theme.table.loadingOpacity : 1 })}
                 >
                     {tab === "verification" ? (
-                        <VerificationTab permissions={permissions} onCounts={setVerifySummary} />
+                        <VerificationTab initialView={searchParams.get("view")} permissions={permissions} onCounts={setVerifySummary} />
                     ) : tab === "requests" ? (
                         all.length ? (
                             <Stack divider={<Divider />}>

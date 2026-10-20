@@ -5,6 +5,7 @@ import {
     Alert,
     Box,
     Button,
+    ButtonBase,
     CircularProgress,
     IconButton,
     InputAdornment,
@@ -14,7 +15,9 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import {
+    ArrowBackRounded,
     ArrowForwardRounded,
+    BusinessRounded,
     CheckCircleRounded,
     InsightsRounded,
     LockOutlined,
@@ -115,7 +118,8 @@ function PreviewCard() {
     );
 }
 
-function BrandPanel() {
+// Also the left side of the change-password screen.
+export function BrandPanel() {
     const theme = useTheme();
 
     return (
@@ -238,6 +242,49 @@ function BrandPanel() {
     );
 }
 
+// Shown when the username and password match in more than one company.
+function CompanyChoice({ organisations, busy, onChoose, onBack }) {
+    return (
+        <Stack spacing={1.25}>
+            {organisations.map((organisation) => (
+                <ButtonBase
+                    key={organisation.organisationId}
+                    onClick={() => onChoose(organisation.organisationId)}
+                    disabled={busy}
+                    sx={(theme) => ({
+                        width: "100%",
+                        minHeight: theme.login.fieldHeight,
+                        px: 2,
+                        gap: 1.5,
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        textAlign: "left",
+                        borderRadius: theme.panel.radius,
+                        border: "1px solid",
+                        borderColor: theme.palette.border.default,
+                        backgroundColor: theme.palette.background.paper,
+                        transition: theme.sidebarLayout.itemTransition,
+                        "&:hover, &:focus-visible": {
+                            borderColor: theme.palette.primary.main,
+                            backgroundColor: alpha(theme.palette.primary.main, theme.tint.hover),
+                            outline: "none",
+                        },
+                    })}
+                >
+                    <BusinessRounded sx={(theme) => ({ color: theme.palette.primary.main })} />
+                    <Typography variant="subtitle1" sx={{ flex: 1 }}>
+                        {organisation.name}
+                    </Typography>
+                    <ArrowForwardRounded fontSize="small" sx={(theme) => ({ color: theme.palette.text.secondary })} />
+                </ButtonBase>
+            ))}
+            <Button startIcon={<ArrowBackRounded />} onClick={onBack} disabled={busy} sx={{ alignSelf: "flex-start" }}>
+                Use a different account
+            </Button>
+        </Stack>
+    );
+}
+
 function Login() {
     const theme = useTheme();
     const navigate = useNavigate();
@@ -247,6 +294,30 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const [choice, setChoice] = useState(null); // { organisations, ticket } when several companies match
+
+    const finishSignIn = (data) => {
+        saveSession({ token: data.token, expiresAt: data.expiresAt, userId: data.user.UserId, mustChangePassword: data.mustChangePassword });
+        // Someone else set this password: the person chooses their own first.
+        navigate(data.mustChangePassword ? "/change-password" : "/dashboard");
+    };
+
+    const signInError = (err) =>
+        err.response?.data?.message || (err.response ? "Sign-in failed. Please try again." : "Can't reach the server. Check your connection.");
+
+    const chooseCompany = async (organisationId) => {
+        setSubmitting(true);
+        setError("");
+        try {
+            const response = await api.post("/app/login/choose", { ticket: choice.ticket, organisationId });
+            finishSignIn(response.data);
+        } catch (err) {
+            setError(signInError(err));
+            if (err.response?.status === 401) setChoice(null);
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -261,15 +332,15 @@ function Login() {
 
         try {
             const response = await api.post("/app/login", { login: login.trim(), password });
-            const user = response.data?.user;
 
-            saveSession({ token: response.data.token, expiresAt: response.data.expiresAt, userId: user.UserId });
-            navigate("/dashboard");
+            // The same login works in several companies: let the person pick one.
+            if (response.data?.chooseOrganisation) {
+                setChoice({ organisations: response.data.organisations, ticket: response.data.ticket });
+                return;
+            }
+            finishSignIn(response.data);
         } catch (err) {
-            setError(
-                err.response?.data?.message ||
-                    (err.response ? "Sign-in failed. Please try again." : "Can't reach the server. Check your connection.")
-            );
+            setError(signInError(err));
         } finally {
             setSubmitting(false);
         }
@@ -324,15 +395,32 @@ function Login() {
                     </Box>
 
                     <Typography variant="h2" component="h1">
-                        Welcome back
+                        {choice ? "Choose your company" : "Welcome back"}
                     </Typography>
                     <Typography
                         variant="body2"
                         sx={(theme) => ({ mt: 1, mb: 4, color: theme.palette.text.secondary })}
                     >
-                        Sign in to your Pharmalyx workspace.
+                        {choice ? "Your account works in more than one company. Which one do you want to open?" : "Sign in to your Pharmalyx workspace."}
                     </Typography>
 
+                    {choice && error && (
+                        <Alert severity="error" variant="outlined" sx={{ mb: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
+
+                    {choice ? (
+                        <CompanyChoice
+                            organisations={choice.organisations}
+                            busy={submitting}
+                            onChoose={chooseCompany}
+                            onBack={() => {
+                                setChoice(null);
+                                setError("");
+                            }}
+                        />
+                    ) : (
                     <Stack spacing={2.25}>
                         {error && (
                             <Alert severity="error" variant="outlined">
@@ -407,6 +495,7 @@ function Login() {
                             {submitting ? "Signing in…" : "Sign in"}
                         </Button>
                     </Stack>
+                    )}
 
                     <Stack
                         direction="row"

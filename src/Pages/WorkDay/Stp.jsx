@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { Alert, Box, Button, Divider, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -260,7 +261,9 @@ function StpEditor({ form, setForm, areas }) {
 function Stp() {
     const { showSnackbar } = useSnackbar();
     const [permissions, setPermissions] = useState(new Set());
-    const [userId, setUserId] = useState(""); // set only when head office opens someone's plan from the queue
+    // Set only when head office opens someone's plan (from the queue, or ?user= from the Approvals inbox).
+    const [searchParams] = useSearchParams();
+    const [userId, setUserId] = useState(() => (/^[0-9a-f-]{36}$/i.test(searchParams.get("user") || "") ? searchParams.get("user") : ""));
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
     const [form, setForm] = useState(toForm(null));

@@ -261,6 +261,10 @@ function UserDoctorMapping() {
         doctor.IsActive === "Yes" ||
         doctor.IsActive === "YES";
 
+    // Doctors an MR added wait for their manager; they are assigned to that MR on approval.
+    // Pending and rejected doctors are never offered here.
+    const isDoctorApproved = (doctor) => !doctor.ApprovalStatus || doctor.ApprovalStatus === "APPROVED";
+
     // Doctors already mapped to a DIFFERENT user must never appear as available.
     const doctorIdsAssignedElsewhere = useMemo(() => {
         return new Set(
@@ -308,6 +312,7 @@ function UserDoctorMapping() {
 
             return (
                 isDoctorActive(doctor) &&
+                isDoctorApproved(doctor) &&
                 matchesLocation &&
                 matchesSpeciality &&
                 matchesSearch &&
