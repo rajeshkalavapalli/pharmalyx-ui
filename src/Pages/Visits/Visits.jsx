@@ -254,15 +254,19 @@ function Visits() {
             const result = response?.data || response || {};
             const gpsFlags = result.gpsFlags || [];
             const notCounted = result.validity === "INVALID";
+            const needsLook = result.validity === "REVIEW";
+            const why = (result.reasons || []).map((reason) => reason.text).join("; ");
             showSnackbar(
                 notCounted
-                    ? `Visit saved but not counted: ${(result.reasons || []).map((reason) => reason.text).join("; ")}`
+                    ? `Visit saved but not counted: ${why}. If it was genuine, open the visit and explain it.`
+                    : needsLook
+                      ? `Visit counted, but it needs a look: ${why}. You can explain it from the visit.`
                     : gpsFlags.length
                       ? `${response?.message || "Visit logged"}, flagged for review: ${gpsFlags[0].details}`
                       : result.validity === "VALID"
                         ? "Visit logged and counted as valid work."
                         : response?.message || "Visit logged",
-                notCounted || result.deviationCreated || gpsFlags.length ? "warning" : "success"
+                notCounted || needsLook || result.deviationCreated || gpsFlags.length ? "warning" : "success"
             );
             load();
             return true;
@@ -611,6 +615,7 @@ function Visits() {
             <VisitDetailsDrawer
                 visit={selectedVisit}
                 onClose={() => setSelectedVisit(null)}
+                onExplained={() => load()}
                 onDiscard={(visitId) => {
                     sync.discard(visitId);
                     setSelectedVisit(null);

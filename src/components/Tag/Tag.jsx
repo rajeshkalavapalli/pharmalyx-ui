@@ -20,7 +20,7 @@ function Tag({ icon: Icon, label, color = "secondary", title }) {
                 borderRadius: theme.statusChip.radius,
                 fontWeight: theme.typography.subtitle2.fontWeight,
                 color: theme.palette[color].dark,
-                backgroundColor: alpha(theme.palette[color].main, theme.tint.selected),
+                backgroundColor: alpha(theme.palette[color].main, theme.tint.badge),
             })}
         >
             {Icon && <Icon fontSize="inherit" />}

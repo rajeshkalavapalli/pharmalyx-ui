@@ -141,7 +141,7 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
         checkingFor.current = doctorId;
         setCheckInError("");
         checkIn(doctorId, location)
-            .then((result) => setVisitCheckIn({ id: result.CheckInId, at: new Date(result.CheckInAt).getTime(), doctorId, minMinutes: result.minDwellMinutes }))
+            .then((result) => setVisitCheckIn({ id: result.CheckInId, at: new Date(result.CheckInAt).getTime(), doctorId, minMinutes: result.minDwellMinutes, clinic: result.clinic || null }))
             .catch((err) => {
                 checkingFor.current = null;
                 setCheckInError(err?.response?.data?.message || "Could not check in. The visit will not count until you check in.");
@@ -270,9 +270,26 @@ function LogVisitDialog({ doctors, colleagues, stock = [], initialDoctorId, init
                         <Alert severity={remainingSeconds ? "info" : "success"} variant="outlined" icon={<HowToRegRounded />}>
                             Checked in at {new Date(visitCheckIn.at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })} · {clock(stayedSeconds)} at the clinic.{" "}
                             {remainingSeconds
-                                ? `Stay at least ${visitCheckIn.minMinutes} min for the visit to count (${clock(remainingSeconds)} left).`
-                                : "This visit can count. Save when you finish."}
+                                ? `Stay at least ${visitCheckIn.minMinutes} min so the visit counts (${clock(remainingSeconds)} left).`
+                                : "You've stayed long enough. Save when you finish."}
                         </Alert>
+                    )}
+                    {/* Live distance guidance, judged the same way as the visit. */}
+                    {visitCheckIn && visitCheckIn.doctorId === doctorId && visitCheckIn.clinic && (
+                        visitCheckIn.clinic.inside === false ? (
+                            <Alert severity="warning" variant="outlined">
+                                You are about {visitCheckIn.clinic.distanceM} m from the clinic (it counts within {visitCheckIn.clinic.radiusM} m).
+                                Move closer, or check in again at the clinic. If you are inside a hospital with weak GPS, you can explain it after saving.
+                            </Alert>
+                        ) : visitCheckIn.clinic.inside === true ? (
+                            <Alert severity="success" variant="outlined">
+                                You are at the clinic (about {visitCheckIn.clinic.distanceM} m away).
+                            </Alert>
+                        ) : !visitCheckIn.clinic.pinned ? (
+                            <Alert severity="info" variant="outlined">
+                                This doctor's clinic location is not pinned yet, so the visit will need a look. Ask your manager to pin the clinic.
+                            </Alert>
+                        ) : null
                     )}
                     {checkInError && (
                         <Alert severity="warning" variant="outlined">

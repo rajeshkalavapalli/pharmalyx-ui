@@ -122,7 +122,9 @@ export function TeamPerformancePanel({ team, sx }) {
                     sx={(theme) => ({
                         width: "100%",
                         borderCollapse: "collapse",
-                        "& th, & td": { textAlign: "left", py: 1, px: 0.75, borderBottom: "1px solid", borderColor: theme.palette.border.subtle, whiteSpace: "nowrap" },
+                        "& th, & td": { textAlign: "left", py: 1, px: 0.75, borderBottom: "1px solid", borderColor: theme.palette.border.subtle, whiteSpace: "nowrap", verticalAlign: "middle" },
+                        // The name column wraps so the table fits the card without scrolling sideways.
+                        "& td:first-of-type": { whiteSpace: "normal" },
                         "& th": { ...theme.typography.caption, color: theme.palette.text.secondary, fontWeight: theme.typography.subtitle2.fontWeight },
                         "& tr:last-of-type td": { borderBottom: 0 },
                     })}
@@ -133,7 +135,6 @@ export function TeamPerformancePanel({ team, sx }) {
                             <th>Visits</th>
                             <th>Coverage</th>
                             <th>DCRs</th>
-                            <th>Last visit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,9 +148,11 @@ export function TeamPerformancePanel({ team, sx }) {
                                             <Avatar name={member.Name} />
                                             <Box>
                                                 <Typography variant="subtitle2">{member.Name}</Typography>
-                                                <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                                <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.text.secondary })}>
                                                     {member.DesignationName || "—"}
+                                                    {member.lastVisitDate ? ` · last visit ${shortDate(member.lastVisitDate)}` : ""}
                                                 </Typography>
+                                                {!member.lastVisitDate && <Tag label="No visits yet" color="warning" />}
                                             </Box>
                                         </Stack>
                                     </td>
@@ -166,13 +169,6 @@ export function TeamPerformancePanel({ team, sx }) {
                                     </td>
                                     <td>
                                         <Typography variant="body2">{member.dcrSent}</Typography>
-                                    </td>
-                                    <td>
-                                        {member.lastVisitDate ? (
-                                            <Typography variant="body2">{shortDate(member.lastVisitDate)}</Typography>
-                                        ) : (
-                                            <Tag label="No visits yet" color="warning" />
-                                        )}
                                     </td>
                                 </tr>
                             );

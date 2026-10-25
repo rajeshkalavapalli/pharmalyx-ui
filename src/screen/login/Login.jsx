@@ -150,12 +150,12 @@ export function BrandPanel() {
                 "&::before": {
                     top: -theme.login.glowSize / 3,
                     right: -theme.login.glowSize / 3,
-                    backgroundColor: alpha(theme.palette.brand.indigo, 0.45),
+                    backgroundColor: theme.palette.loginPanel.glowPrimary,
                 },
                 "&::after": {
                     bottom: -theme.login.glowSize / 2.5,
                     left: -theme.login.glowSize / 4,
-                    backgroundColor: alpha(theme.palette.brand.violet, 0.35),
+                    backgroundColor: theme.palette.loginPanel.glowSecondary,
                 },
             })}
         >
@@ -366,13 +366,15 @@ function Login() {
             <BrandPanel />
 
             <Box
-                sx={{
+                sx={(theme) => ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     px: { xs: 2.5, sm: 4 },
                     py: 6,
-                }}
+                    backgroundColor: theme.palette.loginPanel.formBackground,
+                    backgroundImage: theme.palette.loginPanel.formImage,
+                })}
             >
                 <Box
                     component="form"

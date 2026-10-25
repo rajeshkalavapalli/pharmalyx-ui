@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Alert, Box, Button, Divider, Drawer, IconButton, Link, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Drawer, IconButton, Link, Stack, TextField, Typography } from "@mui/material";
 import { CloseRounded, MapRounded, OpenInNewRounded } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -11,7 +11,7 @@ import {
 } from "../../../components/DetailSection/DetailSection";
 import Tag from "../../../components/Tag/Tag";
 import CategoryBadge from "../../MyDoctors/components/CategoryBadge";
-import { formatClock, formatDwell, validityOf } from "../../WorkDay/index";
+import { EXPLANATION_STATUS, explainVisit, formatClock, formatDwell, validityOf } from "../../WorkDay/index";
 import DoctorAvatar from "../../MyDoctors/components/DoctorAvatar";
 import {
     FEEDBACK,
@@ -66,7 +66,76 @@ function useVisitItems(visit) {
     return items;
 }
 
-function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry }) {
+// The employee explains a visit that needs a look / is not counted; their manager decides.
+function ExplainBox({ visit, onExplained }) {
+    const [open, setOpen] = useState(false);
+    const [text, setText] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState("");
+    const [sent, setSent] = useState(null);
+
+    const explanation = sent || visit.Explanation;
+    if (explanation) {
+        const status = EXPLANATION_STATUS[explanation.Status] || EXPLANATION_STATUS.PENDING;
+        return (
+            <Stack spacing={0.5} sx={{ alignItems: "flex-start" }}>
+                <Tag label={status.label} color={status.color} />
+                <Typography variant="body2">Your explanation: "{explanation.Reason}"</Typography>
+                {explanation.ReviewNote && (
+                    <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                        {explanation.ReviewedByName ? `${explanation.ReviewedByName}: ` : ""}
+                        {explanation.ReviewNote}
+                    </Typography>
+                )}
+            </Stack>
+        );
+    }
+    if (!visit.CanExplain) return null;
+
+    const send = async () => {
+        setBusy(true);
+        setError("");
+        try {
+            await explainVisit(visit.VisitId, text.trim());
+            setSent({ Status: "PENDING", Reason: text.trim() });
+            onExplained?.();
+        } catch (err) {
+            setError(err.response?.data?.message || "Couldn't send. Please try again.");
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    return open ? (
+        <Stack spacing={1} sx={{ width: "100%" }}>
+            {error && <Alert severity="error" variant="outlined">{error}</Alert>}
+            <TextField
+                multiline
+                minRows={2}
+                autoFocus
+                label="What happened?"
+                placeholder="For example: the doctor was in surgery, I waited in the hospital lobby where GPS is weak."
+                value={text}
+                onChange={(event) => setText(event.target.value.slice(0, 500))}
+                helperText={`${text.trim().length < 10 ? "At least 10 characters. " : ""}Your manager decides; if accepted, the visit counts.`}
+            />
+            <Stack direction="row" spacing={1}>
+                <Button variant="contained" size="small" disabled={busy || text.trim().length < 10} onClick={send}>
+                    {busy ? "Sending…" : "Send to my manager"}
+                </Button>
+                <Button size="small" disabled={busy} onClick={() => setOpen(false)}>
+                    Cancel
+                </Button>
+            </Stack>
+        </Stack>
+    ) : (
+        <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
+            Explain this visit
+        </Button>
+    );
+}
+
+function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry, onExplained }) {
     const items = useVisitItems(visit);
 
     const duration = visit ? minutesBetween(visit.StartTime, visit.EndTime) : null;
@@ -234,8 +303,9 @@ function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry }) {
                                             {visit.MotionActivity ? ` · phone: ${String(visit.MotionActivity).toLowerCase().replace("_", " ")}` : ""}
                                         </Typography>
                                     )}
+                                    {/* Hard reasons (red) stop a visit counting; soft ones (amber) only need a look. */}
                                     {(visit.reasons || []).map((reason) => (
-                                        <Typography key={reason.code} variant="body2" sx={(theme) => ({ color: theme.palette.error.main })}>
+                                        <Typography key={reason.code} variant="body2" sx={(theme) => ({ color: reason.hard ? theme.palette.error.main : theme.palette.warning.dark })}>
                                             • {reason.text}
                                         </Typography>
                                     ))}
@@ -246,16 +316,21 @@ function VisitDetailsDrawer({ visit, onClose, onDiscard, onRetry }) {
                                     ))}
                                     {visit.ValidityOverride && (
                                         <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
-                                            Changed by head office: {visit.OverrideReason}
+                                            Changed after review: {visit.OverrideReason}
                                         </Typography>
                                     )}
+                                    <ExplainBox key={visit.VisitId} visit={visit} onExplained={onExplained} />
                                     {!visit.FinalValidity && (
                                         <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
                                             Logged before verified work started.
                                         </Typography>
                                     )}
                                     <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
-                                        Decided by the system. Only head office can change it.
+                                        {visit.FinalValidity === "REVIEW"
+                                            ? "This visit counts. Your manager or head office may look at it; you can explain it within 2 days."
+                                            : visit.FinalValidity === "INVALID"
+                                              ? "Decided by the system. If it was a genuine visit, explain it within 2 days and your manager decides."
+                                              : "Decided by the system."}
                                     </Typography>
                                 </Stack>
                             </DetailSection>

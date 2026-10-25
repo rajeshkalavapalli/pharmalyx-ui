@@ -122,7 +122,7 @@ function ChangePassword() {
         >
             <BrandPanel />
 
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", px: { xs: 2.5, sm: 4 }, py: 6 }}>
+            <Box sx={(theme) => ({ display: "flex", alignItems: "center", justifyContent: "center", px: { xs: 2.5, sm: 4 }, py: 6, backgroundColor: theme.palette.loginPanel.formBackground, backgroundImage: theme.palette.loginPanel.formImage })}>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={(theme) => ({ width: "100%", maxWidth: theme.login.formMaxWidth })}>
                     {/* Brand on phones, where the panel is hidden */}
                     <Box

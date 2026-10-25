@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     Box,
     Button,
@@ -9,6 +9,7 @@ import {
     FormControl,
     IconButton,
     InputLabel,
+    ListItemText,
     MenuItem,
     Paper,
     Select,
@@ -69,8 +70,8 @@ const WORKFLOW_STEPS = [
     },
     {
         step: 3,
-        title: "Select Speciality",
-        description: "Filter doctors by speciality.",
+        title: "Narrow down (optional)",
+        description: "Pick an area or speciality, or keep all.",
     },
     {
         step: 4,
@@ -84,7 +85,9 @@ function UserDoctorMapping() {
     const navigate = useNavigate();
 
     const [users, setUsers] = useState([]);
-    const [selectedUserId, setSelectedUserId] = useState("");
+    // Opened from a row's edit / view in the list: that person is preselected. Opened from the tab: empty.
+    const location = useLocation();
+    const [selectedUserId, setSelectedUserId] = useState(location.state?.user?.userId || location.state?.user?.UserId || "");
 
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
@@ -94,7 +97,9 @@ function UserDoctorMapping() {
     const [selectedState, setSelectedState] = useState("");
     const [selectedTerritory, setSelectedTerritory] = useState("");
     const [selectedArea, setSelectedArea] = useState("");
-    const [selectedSpeciality, setSelectedSpeciality] = useState("");
+    // Several specialities can be ticked; none ticked = all.
+    const [selectedSpecialities, setSelectedSpecialities] = useState([]);
+    const specialityOf = (doctor) => String(doctor.Speciality || "").trim();
 
     const [doctors, setDoctors] = useState([]);
     const [doctorsLoading, setDoctorsLoading] = useState(false);
@@ -109,10 +114,12 @@ function UserDoctorMapping() {
 
     const selectedUser = users.find((user) => user.userId === selectedUserId);
 
-    const locationFiltersComplete = Boolean(
-        selectedCountry && selectedState && selectedTerritory && selectedArea
-    );
-    const allFiltersComplete = Boolean(locationFiltersComplete && selectedSpeciality);
+    // Territory is enough to list doctors; area and speciality only narrow the list ("" = all).
+    const locationFiltersComplete = Boolean(selectedCountry && selectedState && selectedTerritory);
+    const allFiltersComplete = locationFiltersComplete;
+    // Doctor location ids are text and may differ in case from the dropdown ids.
+    const same = (a, b) => String(a || "").toLowerCase() === String(b || "").toLowerCase();
+    const inArea = (doctor) => !selectedArea || same(doctor.AreaId, selectedArea);
 
     // =========================================================
     // INITIAL LOAD — only the reference lists needed up front.
@@ -285,15 +292,15 @@ function UserDoctorMapping() {
                     .filter(
                         (doctor) =>
                             isDoctorActive(doctor) &&
-                            doctor.CountryId === selectedCountry &&
-                            doctor.StateId === selectedState &&
-                            doctor.TerritoryId === selectedTerritory &&
-                            doctor.AreaId === selectedArea
+                            same(doctor.CountryId, selectedCountry) &&
+                            same(doctor.StateId, selectedState) &&
+                            same(doctor.TerritoryId, selectedTerritory) &&
+                            inArea(doctor)
                     )
-                    .map((doctor) => doctor.Speciality)
+                    .map(specialityOf)
                     .filter(Boolean)
             )
-        );
+        ).sort((a, b) => a.localeCompare(b));
     }, [doctors, locationFiltersComplete, selectedCountry, selectedState, selectedTerritory, selectedArea]);
 
     const availableDoctors = useMemo(() => {
@@ -301,11 +308,11 @@ function UserDoctorMapping() {
 
         return doctors.filter((doctor) => {
             const matchesLocation =
-                doctor.CountryId === selectedCountry &&
-                doctor.StateId === selectedState &&
-                doctor.TerritoryId === selectedTerritory &&
-                doctor.AreaId === selectedArea;
-            const matchesSpeciality = doctor.Speciality === selectedSpeciality;
+                same(doctor.CountryId, selectedCountry) &&
+                same(doctor.StateId, selectedState) &&
+                same(doctor.TerritoryId, selectedTerritory) &&
+                inArea(doctor);
+            const matchesSpeciality = !selectedSpecialities.length || selectedSpecialities.includes(specialityOf(doctor));
             const matchesSearch = `${doctor.DoctorName || ""} ${doctor.HospitalName || ""} ${doctor.Speciality || ""}`
                 .toLowerCase()
                 .includes(availableSearch.trim().toLowerCase());
@@ -328,7 +335,7 @@ function UserDoctorMapping() {
         selectedState,
         selectedTerritory,
         selectedArea,
-        selectedSpeciality,
+        selectedSpecialities,
         availableSearch,
         assignedDoctorIds,
         doctorIdsAssignedElsewhere,
@@ -381,7 +388,7 @@ function UserDoctorMapping() {
         setSelectedState("");
         setSelectedTerritory("");
         setSelectedArea("");
-        setSelectedSpeciality("");
+        setSelectedSpecialities([]);
     };
 
     const handleReset = () => {
@@ -417,7 +424,7 @@ function UserDoctorMapping() {
             setSelectedState("");
             setSelectedTerritory("");
             setSelectedArea("");
-            setSelectedSpeciality("");
+            setSelectedSpecialities([]);
             setAvailableSearch("");
             setAssignedSearch("");
             setHighlightedAvailable([]);
@@ -748,28 +755,61 @@ function UserDoctorMapping() {
                     </FormControl>
 
                     <FormControl fullWidth size="small" disabled={!selectedTerritory}>
-                        <InputLabel>Area</InputLabel>
+                        <InputLabel shrink>Area</InputLabel>
                         <Select
                             label="Area"
+                            notched
+                            displayEmpty
                             value={selectedArea}
                             onChange={(event) => setSelectedArea(event.target.value)}
                         >
+                            <MenuItem value="">All areas</MenuItem>
                             {areas.map((item) => (
                                 <MenuItem key={item.AreaId} value={item.AreaId}>{item.AreaName}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
 
-                    <FormControl fullWidth size="small" disabled={!locationFiltersComplete}>
-                        <InputLabel>Speciality</InputLabel>
+                    <FormControl fullWidth size="small" disabled={!locationFiltersComplete || !selectedUserId}>
+                        <InputLabel shrink>Speciality</InputLabel>
                         <Select
                             label="Speciality"
-                            value={selectedSpeciality}
-                            onChange={(event) => setSelectedSpeciality(event.target.value)}
+                            notched
+                            displayEmpty
+                            multiple
+                            value={selectedSpecialities}
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                const next = typeof value === "string" ? value.split(",") : value;
+                                // "All" clears the ticks.
+                                setSelectedSpecialities(next.includes("") ? [] : next);
+                            }}
+                            renderValue={(value) =>
+                                !selectedUserId
+                                    ? "Choose the person first"
+                                    : !value.length
+                                        ? "All specialities"
+                                        : value.length <= 2
+                                            ? value.join(", ")
+                                            : `${value.length} specialities`
+                            }
+                            MenuProps={{ slotProps: { paper: { sx: (theme) => ({ maxHeight: theme.spacing(40) }) } } }}
                         >
+                            <MenuItem value="">
+                                <Checkbox size="small" checked={!selectedSpecialities.length} />
+                                <ListItemText primary="All specialities" />
+                            </MenuItem>
                             {specialities.map((item) => (
-                                <MenuItem key={item} value={item}>{item}</MenuItem>
+                                <MenuItem key={item} value={item}>
+                                    <Checkbox size="small" checked={selectedSpecialities.includes(item)} />
+                                    <ListItemText primary={item} />
+                                </MenuItem>
                             ))}
+                            {!specialities.length && (
+                                <MenuItem disabled>
+                                    <ListItemText primary="No doctors in this area yet" />
+                                </MenuItem>
+                            )}
                         </Select>
                     </FormControl>
                 </Box>
@@ -900,11 +940,11 @@ function UserDoctorMapping() {
                                     <TableRow>
                                         <TableCell colSpan={5} align="center" sx={{ py: 4, color: "text.secondary" }}>
                                             {!selectedUserId
-                                                ? "Select a user to continue."
+                                                ? "Choose the person at the top first."
                                                 : doctorsLoading
                                                     ? "Loading doctors..."
                                                     : !allFiltersComplete
-                                                        ? "Select location and speciality to view available doctors."
+                                                        ? "Choose the country, state and territory to see the doctors."
                                                         : "No doctors found for the selected filters."}
                                         </TableCell>
                                     </TableRow>
@@ -1119,7 +1159,7 @@ function UserDoctorMapping() {
                                     <TableRow>
                                         <TableCell colSpan={5} align="center" sx={{ py: 4, color: "text.secondary" }}>
                                             {!selectedUserId
-                                                ? "Select a user to continue."
+                                                ? "Choose the person at the top first."
                                                 : mappingsLoading
                                                     ? "Loading assigned doctors..."
                                                     : "No doctors assigned yet."}
@@ -1191,13 +1231,13 @@ function UserDoctorMapping() {
                     <Box>
                         <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>Area</Typography>
                         <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
-                            {areas.find((item) => item.AreaId === selectedArea)?.AreaName || "-"}
+                            {selectedArea ? areas.find((item) => item.AreaId === selectedArea)?.AreaName || "-" : selectedTerritory ? "All areas" : "-"}
                         </Typography>
                     </Box>
                     <Box>
                         <Typography sx={{ fontSize: "textXxs", color: "text.secondary" }}>Speciality</Typography>
                         <Typography sx={{ fontSize: "textSm", fontWeight: "fontWeightBold", color: "text.primary" }}>
-                            {selectedSpeciality || "-"}
+                            {selectedSpecialities.length ? selectedSpecialities.join(", ") : selectedTerritory ? "All specialities" : "-"}
                         </Typography>
                     </Box>
                     <Box>

@@ -20,7 +20,7 @@ function StatCard({ icon: Icon, label, value, caption, color = "primary", progre
                     insetInline: 0,
                     top: 0,
                     height: theme.spacing(0.375),
-                    backgroundColor: alpha(theme.palette[color].main, theme.tint.strong),
+                    backgroundImage: theme.palette.accentGradient[color] || theme.palette.brand.gradient,
                 },
                 transition: theme.calendar.transition,
 
@@ -70,9 +70,10 @@ function StatCard({ icon: Icon, label, value, caption, color = "primary", progre
                             display: "grid",
                             placeItems: "center",
                             borderRadius: theme.stat.iconRadius,
-                            color: theme.palette[color].main,
-                            backgroundColor: alpha(theme.palette[color].main, theme.tint.soft),
-                            border: `1px solid ${alpha(theme.palette[color].main, theme.tint.selected)}`,
+                            // Solid gradient tile with a white icon and a soft coloured shadow.
+                            color: theme.palette.common.white,
+                            backgroundImage: theme.palette.accentGradient[color] || theme.palette.brand.gradient,
+                            boxShadow: `0 6px 14px ${alpha(theme.palette[color].main, theme.tint.tileShadow)}`,
                         })}
                     >
                         <Icon sx={(theme) => ({ fontSize: theme.stat.iconFontSize })} />

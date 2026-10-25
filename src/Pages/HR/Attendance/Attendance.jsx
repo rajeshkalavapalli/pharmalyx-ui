@@ -88,7 +88,7 @@ function TodayCard({ today, onDone }) {
                     </Box>
                 ))}
                 <Typography variant="body2" sx={(theme) => ({ alignSelf: "center", color: theme.palette.text.secondary, maxWidth: theme.table.emptyMessageMaxWidth })}>
-                    Check in when you start your field day and check out when you finish. Check-ins after {today.lateAfter} are marked late.
+                    Starting your day in My Day, or checking in at your first visit, checks you in automatically. Use this only if you work without visits today, and check out when you finish. Check-ins after {today.lateAfter} are marked late.
                 </Typography>
             </Stack>
         </Panel>
@@ -218,7 +218,7 @@ function Attendance() {
             <PageHeader
                 eyebrow="HR / Employee"
                 title="Attendance"
-                subtitle="Check in and out each field day. Days are also marked from visits, DCRs, approved leave and week offs."
+                subtitle="You are checked in automatically when your day starts in My Day or at your first visit. Days are also marked from visits, DCRs, approved leave and week offs."
                 actions={
                     <>
                         <EmployeePicker

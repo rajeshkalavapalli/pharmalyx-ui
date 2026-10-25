@@ -29,6 +29,35 @@ export const getFinanceClaims = (status) => get("/app/expenses/finance", { statu
 export const finalApprove = (claimId, remarks) => post(`/app/expenses/claims/${claimId}/final-approve`, { Remarks: remarks || null });
 export const markPaid = (claimId, paymentRef) => post(`/app/expenses/claims/${claimId}/mark-paid`, { PaymentRef: paymentRef });
 
+// Daily statement and TA / DA day reviews (employee -> manager -> head office).
+export const getStatement = (month) => get("/app/expenses/statement", { month });
+export const sendDayReason = (reviewId, reason) => post(`/app/expenses/day-reviews/${reviewId}/reason`, { Reason: reason });
+export const getManagerDayReviews = () => get("/app/expenses/day-reviews/manager");
+export const managerDecideDay = (reviewId, approve, comment) => post(`/app/expenses/day-reviews/${reviewId}/${approve ? "manager-approve" : "manager-reject"}`, { Comment: comment });
+export const getAdminDayReviews = () => get("/app/expenses/day-reviews/admin");
+export const adminDecideDay = (reviewId, approve, comment, grantDa = false) => post(`/app/expenses/day-reviews/${reviewId}/${approve ? "admin-approve" : "admin-reject"}`, { Comment: comment, GrantDa: grantDa });
+export const getManagerRejections = () => get("/app/expenses/day-reviews/manager-rejections");
+export const getApprovedWithoutDa = () => get("/app/expenses/day-reviews/approved");
+export const grantDaLater = (reviewId, comment) => post(`/app/expenses/day-reviews/${reviewId}/grant-da`, { Comment: comment });
+export const getDayReport = (reviewId) => get(`/app/expenses/day-reviews/${reviewId}/report`);
+export const verifyDayReport = (reviewId, code) => post(`/app/expenses/day-reviews/${reviewId}/verify`, { Code: code });
+export const acceptPolicy = () => post("/app/expenses/policy/accept");
+
+// Where a day stands, in the words the employee sees.
+export const DAY_STATUS = {
+    EARNED: { label: "Earned", color: "success" },
+    ON_HOLD: { label: "On hold", color: "warning" },
+    PAYABLE: { label: "Payable after review", color: "success" },
+    NOT_PAYABLE: { label: "Not payable", color: "error" },
+};
+export const REVIEW_STEP = {
+    HELD: "Waiting for your reason",
+    WITH_MANAGER: "With your manager",
+    WITH_ADMIN: "With head office",
+    PAYABLE: "Decided: payable",
+    NOT_PAYABLE: "Decided: not payable",
+};
+
 export const getRates = () => get("/app/expenses/rates");
 export const saveRate = (designationId, payload) => put(`/app/expenses/rates/${designationId}`, payload);
 

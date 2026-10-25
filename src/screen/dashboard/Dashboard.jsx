@@ -34,6 +34,7 @@ import {
 import useActingUser from "../../components/ActingUserSelect/useActingUser";
 import ActingUserSelect from "../../components/ActingUserSelect/ActingUserSelect";
 import Panel from "../../components/Panel/Panel";
+import EmptyState from "../../components/EmptyState/EmptyState";
 import Tag from "../../components/Tag/Tag";
 import api from "../../configurations/api-config";
 import SegmentedControl from "../../components/SegmentedControl/SegmentedControl";
@@ -119,9 +120,18 @@ const percent = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
 
 const dayLabel = (key) => new Date(`${key}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-// Planned vs completed per day as paired bars.
+// Planned vs completed per day as paired bars. With nothing planned or done, a message instead of an empty grid.
 function VisitTrend({ data }) {
     const theme = useTheme();
+    if (!data.some((row) => row.planned || row.visits)) {
+        return (
+            <EmptyState
+                icon={EventNoteRounded}
+                title="No visits in these days yet"
+                message="Planned calls and completed visits from your team will show here day by day."
+            />
+        );
+    }
     return (
         <GroupedBars
             rows={data.map((row) => ({ key: row.date, label: dayLabel(row.date), values: [row.planned, row.visits] }))}

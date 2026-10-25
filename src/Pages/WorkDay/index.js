@@ -50,13 +50,23 @@ export const setHospitalDoctors = (hospitalId, add, remove) => post(`/app/work/h
 export const getReconciliation = (userId) => get("/app/stock/reconciliation", { userId: userId || undefined });
 export const recordCount = (userId, counts, remarks) => post("/app/stock/counts", { UserId: userId, Counts: counts, Remarks: remarks || null });
 
+// Counted / needs a look (still counts) / not counted.
 export const VALIDITY = {
-    VALID: { label: "Valid", color: "success" },
+    VALID: { label: "Counted", color: "success" },
+    REVIEW: { label: "Counted · needs a look", color: "warning" },
     INVALID: { label: "Not counted", color: "error" },
     UNCHECKED: { label: "Before verification", color: "secondary" },
 };
 
-export const validityOf = (visit) => VALIDITY[visit?.FinalValidity || "UNCHECKED"];
+export const validityOf = (visit) => VALIDITY[visit?.FinalValidity] || VALIDITY.UNCHECKED;
+
+// Visit explanations: the employee explains; the manager or head office decides.
+export const explainVisit = (visitId, reason) => post(`/app/work/visits/${visitId}/explain`, { Reason: reason });
+export const EXPLANATION_STATUS = {
+    PENDING: { label: "Explained · waiting for your manager", color: "info" },
+    ACCEPTED: { label: "Explanation accepted", color: "success" },
+    REJECTED: { label: "Explanation rejected", color: "error" },
+};
 
 export const PATCH_TYPES = [
     { value: "HQ", label: "HQ", color: "primary" },
