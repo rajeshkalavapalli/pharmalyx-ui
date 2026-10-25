@@ -123,7 +123,7 @@ export function KpiCard({ icon: Icon, label, value, caption, color = "primary", 
             }}
         >
             <Stack direction="row" sx={{ gap: 1.25, alignItems: "center", minWidth: 0 }}>
-                <Box sx={{ width: theme.avatar.size, height: theme.avatar.size, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: theme.stat.iconRadius, color: main, backgroundColor: alpha(main, theme.tint.soft) }}>
+                <Box sx={{ width: theme.avatar.size, height: theme.avatar.size, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: theme.stat.iconRadius, color: theme.palette.common.white, backgroundImage: theme.palette.accentGradient[color] || theme.palette.brand.gradient, boxShadow: `0 6px 14px ${alpha(main, theme.tint.tileShadow)}` }}>
                     {Icon && <Icon />}
                 </Box>
                 <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: "fontWeightSemibold", lineHeight: 1.25, minWidth: 0 }}>
@@ -181,6 +181,18 @@ export function GroupedBars({ rows, series }) {
     const H = theme.dashboard.lineChartHeight + 40;
     const pad = { l: 36, r: 8, t: 12, b: 28 };
     const lines = theme.dashboard.gridLines;
+
+    // Every value zero: a plain message, not an empty grid that looks broken.
+    if (!rows.some((r) => r.values.some((v) => Number(v) > 0))) {
+        return (
+            <Box sx={{ height: H, display: "grid", placeItems: "center", textAlign: "center", px: 2 }}>
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                    Nothing recorded for this period yet.
+                </Typography>
+            </Box>
+        );
+    }
+
     const peak = Math.max(1, ...rows.flatMap((r) => r.values));
     const step = Math.max(1, Math.ceil(peak / lines));
     const max = step * lines;

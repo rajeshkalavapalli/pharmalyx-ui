@@ -63,6 +63,8 @@ import {
 } from "react-router-dom";
 
 
+const upperId = (value) => (value ? String(value).toUpperCase() : "");
+
 export const AddNewDoctors = function () {
 
     const navigate = useNavigate();
@@ -124,6 +126,8 @@ export const AddNewDoctors = function () {
                 doctor?.speciality ||
                 "",
 
+            clinicAddress: doctor?.ClinicAddress || "",
+
             hospitalName:
                 doctor?.HospitalName ||
                 doctor?.hospitalName ||
@@ -139,25 +143,26 @@ export const AddNewDoctors = function () {
                 doctor?.emailId ||
                 "",
 
-            country:
+            // Location ids in upper case, as the dropdown options are (imported doctors were stored in lower case).
+            country: upperId(
                 doctor?.CountryId ||
-                doctor?.country ||
-                "",
+                doctor?.country
+            ),
 
-            state:
+            state: upperId(
                 doctor?.StateId ||
-                doctor?.state ||
-                "",
+                doctor?.state
+            ),
 
-            territory:
+            territory: upperId(
                 doctor?.TerritoryId ||
-                doctor?.territory ||
-                "",
+                doctor?.territory
+            ),
 
-            area:
+            area: upperId(
                 doctor?.AreaId ||
-                doctor?.area ||
-                "",
+                doctor?.area
+            ),
 
             status:
                 doctor?.IsActive === "No"
@@ -219,6 +224,7 @@ export const AddNewDoctors = function () {
                     qualification: values.qualification,
                     speciality: values.speciality,
                     hospitalName: values.hospitalName,
+                    clinicAddress: values.clinicAddress,
                     mobileNumber: values.mobileNumber,
                     emailId: values.emailId,
                     country: values.country,
@@ -248,6 +254,7 @@ export const AddNewDoctors = function () {
                     Qualification: values.qualification,
                     Speciality: values.speciality,
                     HospitalName: values.hospitalName,
+                    ClinicAddress: values.clinicAddress,
                     MobileNumber: values.mobileNumber,
                     EmailId: values.emailId,
                     CountryId: values.country,
@@ -863,6 +870,19 @@ export const AddNewDoctors = function () {
                         formik.errors.hospitalName
                     }
                     disabled={isViewMode}
+                />
+
+
+                {/* Clinic address (also filled by Data Import). */}
+                <TextField
+                    label="Clinic address"
+                    name="clinicAddress"
+                    multiline
+                    minRows={2}
+                    value={formik.values.clinicAddress}
+                    onChange={(event) => formik.setFieldValue("clinicAddress", event.target.value.slice(0, 500))}
+                    disabled={isViewMode}
+                    sx={{ gridColumn: "1 / -1" }}
                 />
 
 

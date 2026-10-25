@@ -376,8 +376,8 @@ function PreCall() {
                     {data.plansEnabled === false && (
                         <EmptyState
                             icon={AssignmentTurnedInRounded}
-                            title="Call planning isn't set up yet"
-                            message="Ask your administrator to run the pre-call planning database script. The briefings below still work."
+                            title="Call planning is not available right now"
+                            message="You can still read each doctor's briefing below and log your visits. Please tell your administrator if this stays."
                         />
                     )}
 

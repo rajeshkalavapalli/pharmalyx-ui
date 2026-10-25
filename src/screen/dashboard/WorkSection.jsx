@@ -8,7 +8,7 @@ import EmptyState from "../../components/EmptyState/EmptyState";
 import Panel from "../../components/Panel/Panel";
 import StatCard from "../../components/StatCard/StatCard";
 import Tag from "../../components/Tag/Tag";
-import { formatClock, getCoverage, getFlags, getToday, getWorkVisits } from "../../Pages/WorkDay/index";
+import { formatClock, getCoverage, getFlags, getToday, getWorkVisits, validityOf } from "../../Pages/WorkDay/index";
 
 const percent = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
 const todayKey = () => new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
@@ -64,8 +64,9 @@ function TeamWork() {
     const perRep = useMemo(() => {
         const map = new Map();
         (visits?.visits || []).forEach((v) => {
-            const row = map.get(v.EmployeeName) || { name: v.EmployeeName, valid: 0, invalid: 0 };
+            const row = map.get(v.EmployeeName) || { name: v.EmployeeName, valid: 0, review: 0, invalid: 0 };
             if (v.FinalValidity === "VALID") row.valid++;
+            if (v.FinalValidity === "REVIEW") row.review++;
             if (v.FinalValidity === "INVALID") row.invalid++;
             map.set(v.EmployeeName, row);
         });
@@ -76,13 +77,15 @@ function TeamWork() {
     if (!visits || !flags) return <EmptyState icon={CheckCircleRounded} title="Loading…" />;
 
     const s = visits.summary;
-    const checked = s.valid + s.invalid;
+    // Counted = valid + needs a look.
+    const counted = s.valid + (s.review || 0);
+    const checked = counted + s.invalid;
 
     return (
         <>
             <Box sx={grid}>
-                <StatCard icon={CheckCircleRounded} label="Valid visits" value={s.valid} caption={`${percent(s.valid, checked)}% of checked visits`} color="success" progress={percent(s.valid, checked)} />
-                <StatCard icon={HighlightOffRounded} label="Not counted" value={s.invalid} caption="Drive-by, outside territory, typed later…" color="error" />
+                <StatCard icon={CheckCircleRounded} label="Counted visits" value={counted} caption={`${percent(counted, checked)}% of checked${s.review ? ` · ${s.review} need a look` : ""}`} color="success" progress={percent(counted, checked)} />
+                <StatCard icon={HighlightOffRounded} label="Not counted" value={s.invalid} caption="Fake GPS, outside territory, typed later…" color="error" />
                 <StatCard icon={FlagRounded} label="Open red flags" value={flags.flags.length} caption="Reviewed by head office" color={flags.flags.length ? "warning" : "secondary"} />
                 <StatCard icon={PercentRounded} label="Head office changes" value={s.overridden} caption="Overrides, all in the audit log" color="info" />
             </Box>
@@ -104,6 +107,7 @@ function TeamWork() {
                                         {rep.name}
                                     </Typography>
                                     <Tag label={`${rep.valid} valid`} color="success" />
+                                    {rep.review > 0 && <Tag label={`${rep.review} need a look`} color="warning" />}
                                     {rep.invalid > 0 && <Tag label={`${rep.invalid} not counted`} color="error" />}
                                 </Stack>
                             ))}
@@ -145,7 +149,7 @@ function MyWork({ userId }) {
         <>
             <Box sx={grid}>
                 <StatCard icon={TodayRounded} label="Valid visits today" value={today.validToday} caption={`DA needs ${da}`} color={today.validToday >= da ? "success" : "warning"} progress={percent(Math.min(today.validToday, da), da)} />
-                <StatCard icon={CheckCircleRounded} label="Valid this month" value={s.valid} caption={`${s.invalid} not counted`} color="success" />
+                <StatCard icon={CheckCircleRounded} label="Counted this month" value={s.valid + (s.review || 0)} caption={`${s.review ? `${s.review} need a look · ` : ""}${s.invalid} not counted`} color="success" />
                 <StatCard icon={PercentRounded} label="Doctor coverage" value={coverage.summary.percent == null ? "—" : `${coverage.summary.percent}%`} caption={`${coverage.summary.valid} of ${coverage.summary.required} required visits`} color="primary" progress={coverage.summary.percent || 0} />
                 <StatCard icon={FlagRounded} label="Day started" value={today.workDay ? formatClock(today.workDay.StartedAt) : "—"} caption={today.planned?.areaName ? `Patch: ${today.planned.areaName}` : "No plan for today"} color="info" />
             </Box>
@@ -166,7 +170,7 @@ function MyWork({ userId }) {
                                     <Typography variant="body2" sx={{ flex: 1 }}>
                                         Dr. {visit.DoctorName}
                                     </Typography>
-                                    <Tag label={visit.FinalValidity === "VALID" ? "Valid" : visit.FinalValidity === "INVALID" ? "Not counted" : "Before verification"} color={visit.FinalValidity === "VALID" ? "success" : visit.FinalValidity === "INVALID" ? "error" : "secondary"} />
+                                    <Tag label={validityOf(visit).label} color={validityOf(visit).color} />
                                 </Stack>
                             ))}
                         </Stack>

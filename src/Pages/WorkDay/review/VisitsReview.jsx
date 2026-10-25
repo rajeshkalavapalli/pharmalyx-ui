@@ -65,7 +65,8 @@ function VisitsReview({ people, canOverride }) {
                 </TextField>
                 <TextField select size="small" label="Result" value={filters.validity} onChange={(e) => set({ validity: e.target.value })} sx={(theme) => ({ minWidth: theme.spacing(20) })}>
                     <MenuItem value="">All</MenuItem>
-                    <MenuItem value="VALID">Valid</MenuItem>
+                    <MenuItem value="VALID">Counted</MenuItem>
+                    <MenuItem value="REVIEW">Counted · needs a look</MenuItem>
                     <MenuItem value="INVALID">Not counted</MenuItem>
                     <MenuItem value="UNCHECKED">Before verification</MenuItem>
                 </TextField>
@@ -121,7 +122,7 @@ function VisitsReview({ people, canOverride }) {
                                                 Mark valid
                                             </Button>
                                         )}
-                                        {visit.FinalValidity === "VALID" && (
+                                        {(visit.FinalValidity === "VALID" || visit.FinalValidity === "REVIEW") && (
                                             <Button size="small" color="error" onClick={() => setPending({ visit, validity: "INVALID" })}>
                                                 Mark not counted
                                             </Button>

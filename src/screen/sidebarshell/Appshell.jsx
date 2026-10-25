@@ -73,6 +73,10 @@ function AppShell() {
             overflowY: "auto",
             overflowX: "hidden",
             backgroundColor: theme.palette.background.default,
+            // Soft brand glow at the top of every page; scrolls away with the content.
+            backgroundImage: theme.palette.brand.workspaceGlow,
+            backgroundRepeat: "no-repeat",
+            backgroundAttachment: "local",
             p: theme.appShell.contentPadding,
           })}
         >

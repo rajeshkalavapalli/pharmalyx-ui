@@ -20,7 +20,11 @@ import {
     minutesBetween,
     geofenceTag,
 } from "../index";
-import { validityOf } from "../../WorkDay/index";
+import { formatClock, formatDwell, validityOf } from "../../WorkDay/index";
+
+// Checked-in visits show the real stay (check-in to save), not the times typed in the form.
+const liveStay = (visit) => (visit.CheckInAt && visit.DwellSeconds != null ? visit.DwellSeconds : null);
+const stayMinutes = (visit) => (liveStay(visit) != null ? liveStay(visit) / 60 : minutesBetween(visit.StartTime, visit.EndTime) || 0);
 
 const truncate = { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
 
@@ -74,9 +78,13 @@ function VisitRow({ visit, onOpen }) {
 
             <Box>
                 <Typography variant="subtitle2" sx={{ whiteSpace: "nowrap" }}>
-                    {formatTimeRange(visit.StartTime, visit.EndTime)}
+                    {liveStay(visit) != null ? `${formatClock(visit.CheckInAt)} – ${formatClock(visit.CheckOutAt)}` : formatTimeRange(visit.StartTime, visit.EndTime)}
                 </Typography>
-                {duration && (
+                {liveStay(visit) != null ? (
+                    <Typography variant="caption" sx={(theme) => ({ color: liveStay(visit) < 60 ? theme.palette.error.main : theme.palette.text.secondary })}>
+                        stayed {formatDwell(liveStay(visit))}
+                    </Typography>
+                ) : duration && (
                     <Typography
                         variant="caption"
                         sx={(theme) => ({ color: theme.palette.text.secondary })}
@@ -126,7 +134,7 @@ function VisitRow({ visit, onOpen }) {
 
                     {visit.FinalValidity && (
                         <Tag
-                            label={validityOf(visit).label}
+                            label={visit.Explanation?.Status === "PENDING" ? `${validityOf(visit).label} · explained` : validityOf(visit).label}
                             color={validityOf(visit).color}
                             title={(visit.reasons || []).map((reason) => reason.text).join("; ") || "Counted as valid work"}
                         />
@@ -162,10 +170,7 @@ function VisitList({ visits, onOpen }) {
     return (
         <Stack spacing={3}>
             {groupByDay(visits).map((group) => {
-                const minutes = group.visits.reduce(
-                    (sum, visit) => sum + (minutesBetween(visit.StartTime, visit.EndTime) || 0),
-                    0
-                );
+                const minutes = Math.round(group.visits.reduce((sum, visit) => sum + stayMinutes(visit), 0));
 
                 return (
                     <Box key={group.date}>

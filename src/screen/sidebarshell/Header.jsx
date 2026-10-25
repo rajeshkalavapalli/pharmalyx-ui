@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   AppBar,
   Avatar,
   Box,
+  ButtonBase,
+  Divider,
   IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   Stack,
   Toolbar,
   Tooltip,
@@ -12,7 +18,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
@@ -62,7 +68,11 @@ function Header({ onMenuClick }) {
 
   const navigate = useNavigate();
 
+  // The name chip opens the account menu (sign out lives there).
+  const [menuAnchor, setMenuAnchor] = useState(null);
+
   const handleSignOut = () => {
+    setMenuAnchor(null);
     clearSession();
     navigate("/", { replace: true });
   };
@@ -155,18 +165,25 @@ function Header({ onMenuClick }) {
             </IconButton>
           </Tooltip>
 
-          <Stack
-            direction="row"
+          <ButtonBase
+            aria-label="Account menu"
+            aria-haspopup="menu"
+            aria-expanded={Boolean(menuAnchor)}
+            onClick={(event) => setMenuAnchor(event.currentTarget)}
             sx={(theme) => ({
+              display: "flex",
               alignItems: "center",
               gap: 1.25,
               pl: 0.5,
-              pr: { xs: 0.5, sm: 1.5 },
+              pr: { xs: 0.5, sm: 1 },
               py: 0.5,
+              textAlign: "left",
               borderRadius: theme.statusChip.radius,
               border: "1px solid",
-              borderColor: theme.palette.border.default,
+              borderColor: menuAnchor ? alpha(theme.palette.primary.main, theme.tint.border) : theme.palette.border.default,
               backgroundColor: theme.palette.background.paper,
+              transition: theme.sidebarLayout.itemTransition,
+              "&:hover": { borderColor: alpha(theme.palette.primary.main, theme.tint.border) },
             })}
           >
             <Avatar
@@ -194,43 +211,39 @@ function Header({ onMenuClick }) {
                 {user ? user.designation || "Pharmalyx workspace" : "Loading…"}
               </Typography>
             </Box>
-          </Stack>
-
-          <Tooltip title="Change password">
-            <IconButton
-              aria-label="Change password"
-              onClick={() => navigate("/change-password")}
+            <ExpandMoreRoundedIcon
+              fontSize="small"
               sx={(theme) => ({
-                border: "1px solid",
-                borderColor: theme.palette.border.default,
+                display: { xs: "none", sm: "block" },
                 color: theme.palette.text.secondary,
-                "&:hover": {
-                  color: theme.palette.primary.main,
-                  borderColor: alpha(theme.palette.primary.main, theme.tint.border),
-                },
+                transform: menuAnchor ? "rotate(180deg)" : "none",
+                transition: theme.sidebarLayout.chevronTransition,
               })}
-            >
-              <KeyRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+            />
+          </ButtonBase>
 
-          <Tooltip title="Sign out">
-            <IconButton
-              aria-label="Sign out"
-              onClick={handleSignOut}
-              sx={(theme) => ({
-                border: "1px solid",
-                borderColor: theme.palette.border.default,
-                color: theme.palette.text.secondary,
-                "&:hover": {
-                  color: theme.palette.error.main,
-                  borderColor: alpha(theme.palette.error.main, theme.tint.border),
-                },
-              })}
-            >
-              <LogoutRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={() => setMenuAnchor(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            slotProps={{ paper: { sx: (theme) => ({ minWidth: theme.sidebarLayout.flyoutMinWidth }) } }}
+          >
+            <Box sx={{ px: 2, py: 1 }}>
+              <Typography variant="subtitle2">{user?.name || "Not signed in"}</Typography>
+              <Typography variant="caption" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                {user?.designation || "Pharmalyx workspace"}
+              </Typography>
+            </Box>
+            <Divider />
+            <MenuItem onClick={handleSignOut} sx={(theme) => ({ color: theme.palette.error.main })}>
+              <ListItemIcon sx={(theme) => ({ color: theme.palette.error.main })}>
+                <LogoutRoundedIcon fontSize="small" />
+              </ListItemIcon>
+              Sign out
+            </MenuItem>
+          </Menu>
         </Stack>
       </Toolbar>
     </AppBar>

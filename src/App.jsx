@@ -79,6 +79,7 @@ import DoctorSpend from './Pages/DoctorSpend/DoctorSpend.jsx';
 import SalesPlan from './Pages/Planning/SalesPlan/SalesPlan.jsx';
 import DoctorPlan from './Pages/Planning/DoctorPlan/DoctorPlan.jsx';
 import MyClaim from './Pages/Expenses/Claims/MyClaim.jsx';
+import DayReport from './Pages/Expenses/DayReport/DayReport.jsx';
 import ExpensePayments from './Pages/Expenses/Payments/ExpensePayments.jsx';
 import RateCard from './Pages/Expenses/Rates/RateCard.jsx';
 import CallReport from './Pages/Reports/CallReport/CallReport.jsx';
@@ -396,6 +397,7 @@ function App() {
                     {/* Expenses */}
 
                     <Route path='expenses/claims' element={<MyClaim />} />
+                    <Route path='expenses/day-report/:reviewId' element={<DayReport />} />
                     <Route path='expenses/payments' element={<ExpensePayments />} />
                     <Route path='expenses/rates' element={<RateCard />} />
 

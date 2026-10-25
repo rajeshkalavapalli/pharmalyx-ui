@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import {
     Alert,
@@ -39,6 +40,9 @@ import Timeline from "../../../components/Timeline/Timeline";
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 import ClaimDialog from "../components/ClaimDialog";
 import ItemDialog from "../components/ItemDialog";
+import DailyStatement from "../components/DailyStatement";
+import DayReviews from "../components/DayReviews";
+import Tag from "../../../components/Tag/Tag";
 import {
     CLAIM_STATUS,
     STATIONS,
@@ -50,7 +54,12 @@ import {
     formatAmount,
     formatDate,
     formatMonthLabel,
+    DAY_STATUS,
+    getAdminDayReviews,
     getClaimReviews,
+    getManagerDayReviews,
+    getApprovedWithoutDa,
+    getManagerRejections,
     getMyClaim,
     monthKey,
     submitClaim,
@@ -61,7 +70,11 @@ function MyClaim() {
     const { showSnackbar } = useSnackbar();
 
     const [month, setMonth] = useState(monthKey());
-    const [tab, setTab] = useState("mine");
+    // ?tab= opens a tab directly (links from the Approvals inbox).
+    const [searchParams] = useSearchParams();
+    const [tab, setTab] = useState(() => (["mine", "statement", "reviews", "days"].includes(searchParams.get("tab")) ? searchParams.get("tab") : "mine"));
+    // TA / DA day reviews: the manager's queue, head office's queue and manager rejections (null = not allowed).
+    const [dayQueues, setDayQueues] = useState({ manager: null, admin: null, rejections: null, approved: null });
     const [data, setData] = useState(null);
     const [reviews, setReviews] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -83,6 +96,15 @@ function MyClaim() {
 
             // Only managers allowed to approve get a review queue; a 403 just hides it.
             if (claim.hasTeam) setReviews(await getClaimReviews().then((response) => response.reviews).catch(() => null));
+
+            // Day reviews: each list appears only for people allowed to see it.
+            const [manager, admin, rejections, approved] = await Promise.all([
+                claim.hasTeam ? getManagerDayReviews().then((r) => r.reviews).catch(() => null) : null,
+                getAdminDayReviews().then((r) => r.reviews).catch(() => null),
+                getManagerRejections().then((r) => r.reviews).catch(() => null),
+                getApprovedWithoutDa().then((r) => r.reviews).catch(() => null),
+            ]);
+            setDayQueues({ manager, admin, rejections, approved });
         } catch (err) {
             setData(null);
             setError(errorMessage(err, "Failed to load your claim"));
@@ -143,6 +165,8 @@ function MyClaim() {
     const totals = data?.totals;
     const status = data ? CLAIM_STATUS[data.status] : null;
     const canReview = Array.isArray(reviews);
+    const hasDayReviews = Array.isArray(dayQueues.manager) || Array.isArray(dayQueues.admin);
+    const dayCount = (dayQueues.manager?.length || 0) + (dayQueues.admin?.length || 0);
     const remaining = data?.otherLimit == null ? null : Math.max(0, Math.round((data.otherLimit - totals.other) * 100) / 100);
     const returnedNote = data?.status === "RETURNED" ? data.claim?.FinanceRemarks || data.claim?.ManagerRemarks : null;
     const steps = claimSteps(data?.claim);
@@ -151,21 +175,21 @@ function MyClaim() {
         <Box>
             <PageHeader
                 eyebrow="Expenses · TA / DA"
-                title={tab === "reviews" ? "Team claims to review" : "My expense claim"}
+                title={tab === "reviews" ? "Team claims to review" : tab === "days" ? "TA / DA day reviews" : tab === "statement" ? "My daily TA / DA" : "My expense claim"}
                 subtitle="TA and DA come from verified work: distance actually travelled (GPS, work hours) and valid visits. Add other expenses with the bill number, then submit once a month."
                 actions={
                     <>
-                        {canReview && (
-                            <SegmentedControl
-                                value={tab}
-                                onChange={setTab}
-                                options={[
-                                    { value: "mine", label: "My claim" },
-                                    { value: "reviews", label: `Team reviews · ${reviews.length}` },
-                                ]}
-                            />
-                        )}
-                        {tab === "mine" && <MonthSwitcher month={month} onChange={setMonth} />}
+                        <SegmentedControl
+                            value={tab}
+                            onChange={setTab}
+                            options={[
+                                { value: "mine", label: "My claim" },
+                                { value: "statement", label: "Daily statement" },
+                                ...(canReview ? [{ value: "reviews", label: `Team claims · ${reviews.length}` }] : []),
+                                ...(hasDayReviews ? [{ value: "days", label: `Day reviews${dayCount ? ` · ${dayCount}` : ""}` }] : []),
+                            ]}
+                        />
+                        {(tab === "mine" || tab === "statement") && <MonthSwitcher month={month} onChange={setMonth} />}
                         {tab === "mine" && data?.canSubmit && (
                             <Button variant="contained" startIcon={<SendRounded />} onClick={() => setConfirmSubmit(true)}>
                                 Submit claim
@@ -175,7 +199,11 @@ function MyClaim() {
                 }
             />
 
-            {tab === "reviews" && canReview ? (
+            {tab === "statement" ? (
+                <DailyStatement month={month} />
+            ) : tab === "days" && hasDayReviews ? (
+                <DayReviews managerQueue={dayQueues.manager} adminQueue={dayQueues.admin} rejections={dayQueues.rejections} approvedWithoutDa={dayQueues.approved} onChanged={load} />
+            ) : tab === "reviews" && canReview ? (
                 <Panel title="Waiting for your review" subtitle={`${reviews.length} claim(s) from your team`}>
                     {reviews.length ? (
                         <Stack divider={<Divider />}>
@@ -249,6 +277,12 @@ function MyClaim() {
                                 subtitle={`Days with valid visits. TA = GPS km × your rate; DA needs ${data?.daMinValidVisits ?? 6} valid visits; HQ / Ex-HQ / Outstation comes from the patches you visited.`}
                                 actions={status && <StatusChip label={status.label} color={status.color} />}
                             >
+                                {(data?.holds?.count > 0 || data?.holds?.releasedTotal > 0) && (
+                                    <Alert severity="info" variant="outlined" sx={{ mb: 1.5 }} action={<Button size="small" onClick={() => setTab("statement")}>Daily statement</Button>}>
+                                        {data.holds.count > 0 && <>{formatAmount(data.holds.onHold)} on hold for {data.holds.count} day{data.holds.count === 1 ? "" : "s"}: not in this total until reviewed. </>}
+                                        {data.holds.releasedTotal > 0 && <>{formatAmount(data.holds.releasedTotal)} from earlier days, approved after review, is added when you submit.</>}
+                                    </Alert>
+                                )}
                                 {data?.days?.length ? (
                                     <Box sx={{ maxWidth: "100%", overflowX: "auto" }}>
                                         <Table size="small">
@@ -271,7 +305,15 @@ function MyClaim() {
                                                                     {day.VisitCount} valid visit(s)
                                                                 </Typography>
                                                             )}
-                                                            {day.DaEligible === false && (
+                                                            {day.Hold?.Status === "PAYABLE" && <Tag label={day.Hold.DaGranted ? "Approved after review · DA granted" : "Approved after review"} color="success" title={day.Hold.AdminComment || day.Hold.ManagerComment || ""} />}
+                                                            {day.Hold && day.Hold.Status !== "PAYABLE" && (
+                                                                <Tag
+                                                                    label={`${DAY_STATUS[day.Hold.Status === "NOT_PAYABLE" ? "NOT_PAYABLE" : "ON_HOLD"].label}: ${formatAmount(day.Hold.Amount)}`}
+                                                                    color={day.Hold.Status === "NOT_PAYABLE" ? "error" : "warning"}
+                                                                    title={day.Hold.Findings.map((finding) => finding.text).join(" ")}
+                                                                />
+                                                            )}
+                                                            {day.DaEligible === false && !day.Hold?.DaGranted && (
                                                                 <Typography variant="caption" component="p" sx={(theme) => ({ color: theme.palette.warning.main })}>
                                                                     No DA: needs {data.daMinValidVisits} valid visits
                                                                 </Typography>

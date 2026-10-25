@@ -110,9 +110,13 @@ function MyDay() {
             <Box sx={(theme) => ({ display: "grid", gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", lg: "repeat(4, minmax(0, 1fr))" }, gap: theme.stat.gap, mb: theme.stat.gap })}>
                 <StatCard
                     icon={CheckCircleRounded}
-                    label="Valid visits today"
+                    label="Counted today"
                     value={data.validToday}
-                    caption={`DA needs ${data.rules.daMinValidVisits}`}
+                    caption={
+                        data.validToday >= data.rules.daMinValidVisits
+                            ? "DA earned for today"
+                            : `${data.rules.daMinValidVisits - data.validToday} more for today's DA${data.today?.review ? ` · ${data.today.review} need a look` : ""}`
+                    }
                     color={data.validToday >= data.rules.daMinValidVisits ? "success" : "warning"}
                     progress={Math.min(100, (data.validToday / Math.max(1, data.rules.daMinValidVisits)) * 100)}
                 />
@@ -160,7 +164,21 @@ function MyDay() {
                     )}
                 </Stack>
 
-                <Panel title="Today's visits" subtitle="The system decides what counts. Only head office can change a result.">
+                <Panel title="Today's visits" subtitle="Counted, needs a look (still counts) or not counted. Open a visit in Visits to explain it.">
+                    {data.today && data.visits.length > 0 && (
+                        <Alert
+                            severity={data.validToday >= data.rules.daMinValidVisits ? "success" : "info"}
+                            variant="outlined"
+                            sx={{ mb: 1.5 }}
+                        >
+                            Today: <b>{data.today.counted}</b> counted
+                            {data.today.review ? <>, <b>{data.today.review}</b> need a look (they still count)</> : null}
+                            {data.today.notCounted ? <>, <b>{data.today.notCounted}</b> not counted</> : null}.{" "}
+                            {data.validToday >= data.rules.daMinValidVisits
+                                ? "Today's DA is earned."
+                                : `${data.rules.daMinValidVisits - data.validToday} more counted visit${data.rules.daMinValidVisits - data.validToday === 1 ? "" : "s"} for today's DA.`}
+                        </Alert>
+                    )}
                     {data.visits.length ? (
                         <Stack divider={<Divider />}>
                             {data.visits.map((visit) => (
@@ -173,7 +191,7 @@ function MyDay() {
                                         {visit.CheckInAt ? `${formatClock(visit.CheckInAt)} – ${formatClock(visit.CheckOutAt)}` : "No live check-in"}
                                     </Typography>
                                     {visit.reasons.map((reason) => (
-                                        <Typography key={reason.code} variant="caption" component="p" sx={(theme) => ({ color: theme.palette.error.main })}>
+                                        <Typography key={reason.code} variant="caption" component="p" sx={(theme) => ({ color: reason.hard ? theme.palette.error.main : theme.palette.warning.dark })}>
                                             • {reason.text}
                                         </Typography>
                                     ))}

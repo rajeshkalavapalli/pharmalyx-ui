@@ -1,7 +1,7 @@
 import { alpha, createTheme } from "@mui/material/styles";
 
 // =========================================================
-// PHARMALYX DESIGN SYSTEM · "INK & JADE"
+// PHARMALYX DESIGN SYSTEM · "INK & JADE · VIVID"
 //
 // Everything visual in the app comes from this file. Change a value in BRAND
 // below and every screen follows: colours, fonts, corner radius, spacing,
@@ -15,40 +15,54 @@ const BRAND = {
     color: {
         ink: "#0A1628", // text, navigation, dark surfaces
         inkSoft: "#1C2B42",
-        inkMuted: "#5B6676",
+        inkMuted: "#4B5768",
         inkFaint: "#97A1AE",
 
         jade: "#0F766E", // primary actions
         jadeDark: "#0B5C56",
         jadeDeep: "#084A45",
         jadeLight: "#5FB8AE",
+        jadeBright: "#0D9488", // middle of the brand gradient
+        jadeLively: "#14B8A6", // light end of the brand gradient
         jadeGlow: "#2DD4BF", // highlights, active states, live indicators
         jadeMist: "#E7F4F2",
         jadeWash: "#F2F9F8",
+        jadeLine: "#D5EBE8", // table header underline
 
         gold: "#E9C77B", // rare: top rank, premium marks
         goldDark: "#B98F33",
         goldMist: "#FBF4E4",
 
-        bg: "#F4F5F7",
+        bg: "#F3F6F9",
         paper: "#FFFFFF",
-        line: "#E3E6EB",
-        lineSoft: "#EDEFF2",
-        lineStrong: "#CDD2DA",
-        mute: "#EEF0F3",
+        line: "#E2E8F0",
+        lineSoft: "#EDF1F5",
+        lineStrong: "#CBD5E1",
+        mute: "#EEF2F6",
 
-        success: "#15803D",
-        successDark: "#166534",
+        // Status colours: clear and saturated; text on tints uses the Dark shade.
+        success: "#16A34A",
+        successDark: "#15803D",
         successLight: "#86EFAC",
-        warning: "#C2780B",
-        warningDark: "#92580A",
-        warningLight: "#F8D48A",
-        error: "#C8312F",
-        errorDark: "#991F1D",
-        errorLight: "#F4A8A6",
-        info: "#2F6A9F",
-        infoDark: "#22507A",
-        infoLight: "#9CC1E3",
+        successBright: "#4ADE80",
+        warning: "#D97706",
+        warningDark: "#B45309",
+        warningLight: "#FCD34D",
+        warningBright: "#FBBF24",
+        error: "#DC2626",
+        errorDark: "#B91C1C",
+        errorLight: "#FCA5A5",
+        errorBright: "#F87171",
+        info: "#2563EB",
+        infoDark: "#1D4ED8",
+        infoLight: "#93C5FD",
+        infoBright: "#60A5FA",
+        violet: "#7C3AED", // second chart series, "AI" and leave marks
+        violetDark: "#6D28D9",
+        violetBright: "#A78BFA",
+        indigo: "#6366F1",
+        slate: "#475569",
+        slateBright: "#94A3B8",
 
         white: "#FFFFFF",
     },
@@ -74,6 +88,8 @@ const BRAND = {
     shadow: {
         ink: "10, 22, 40", // rgb of ink, for layered shadows
         jade: "15, 118, 110",
+        jadeBright: "13, 148, 136",
+        indigo: "79, 70, 229",
     },
 
     motion: { fast: "140ms ease", base: "180ms ease", slow: "240ms ease" },
@@ -84,16 +100,36 @@ const ink = (a) => `rgba(${BRAND.shadow.ink}, ${a})`;
 const jadeA = (a) => `rgba(${BRAND.shadow.jade}, ${a})`;
 const px = (n) => `${n}px`;
 
+const brightA = (a) => `rgba(${BRAND.shadow.jadeBright}, ${a})`;
+const indigoA = (a) => `rgba(${BRAND.shadow.indigo}, ${a})`;
+
+// Cards lift off the page: a crisp contact shadow plus a soft, wide one.
 const SHADOW = {
-    xs: `0 1px 2px ${ink(0.05)}`,
-    sm: `0 1px 2px ${ink(0.04)}, 0 4px 12px ${ink(0.04)}`,
-    md: `0 1px 2px ${ink(0.04)}, 0 10px 28px ${ink(0.06)}`,
-    lg: `0 18px 48px ${ink(0.14)}`,
-    xl: `0 28px 80px ${ink(0.2)}`,
-    focus: `0 0 0 4px ${jadeA(0.16)}`,
-    glow: `0 10px 26px ${jadeA(0.28)}`,
-    glowSoft: `0 4px 12px ${jadeA(0.16)}`,
+    xs: `0 1px 2px ${ink(0.06)}`,
+    sm: `0 1px 2px ${ink(0.06)}, 0 8px 24px ${ink(0.07)}`,
+    md: `0 1px 2px ${ink(0.06)}, 0 14px 34px ${ink(0.09)}`,
+    lg: `0 20px 50px ${ink(0.16)}`,
+    xl: `0 28px 80px ${ink(0.22)}`,
+    focus: `0 0 0 4px ${jadeA(0.18)}`,
+    glow: `0 8px 20px ${brightA(0.3)}, inset 0 1px 0 rgba(255, 255, 255, 0.22)`,
+    glowSoft: `0 6px 18px ${brightA(0.35)}`,
 };
+
+// Soft brand glow behind every page (jade top-left, indigo top-right).
+const WORKSPACE_GLOW = `radial-gradient(1200px 420px at 0% 0%, ${brightA(0.1)}, transparent 60%), radial-gradient(900px 380px at 100% 0%, ${indigoA(0.07)}, transparent 60%)`;
+
+// Icon tiles and accent bars: each colour as a gradient from its main to its bright shade.
+const ACCENT = {
+    primary: [C.jade, C.jadeLively],
+    info: [C.info, C.infoBright],
+    submitted: [C.info, C.infoBright],
+    success: [C.success, C.successBright],
+    warning: [C.warning, C.warningBright],
+    error: [C.error, C.errorBright],
+    secondary: [C.slate, C.slateBright],
+    gold: [C.goldDark, C.gold],
+};
+const accentGradient = Object.fromEntries(Object.entries(ACCENT).map(([key, [from, to]]) => [key, `linear-gradient(135deg, ${from} 0%, ${to} 100%)`]));
 
 // ---------------------------------------------------------
 // 2. THEME
@@ -124,8 +160,9 @@ const PharmalyxTheme = createTheme({
             jadeGlow: C.jadeGlow,
             gold: C.gold,
 
-            gradient: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeDark} 100%)`,
-            gradientGlow: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeGlow} 100%)`,
+            gradient: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeBright} 55%, ${C.jadeLively} 100%)`,
+            gradientGlow: `linear-gradient(135deg, ${C.jade} 0%, ${C.jadeLively} 100%)`,
+            workspaceGlow: WORKSPACE_GLOW,
             gradientSoft: `linear-gradient(135deg, ${C.jadeWash} 0%, ${C.paper} 100%)`,
             gradientInk: `linear-gradient(160deg, ${C.inkSoft} 0%, ${C.ink} 60%)`,
             glow: SHADOW.glow,
@@ -145,8 +182,8 @@ const PharmalyxTheme = createTheme({
             cyan: C.jadeGlow,
             teal: C.jadeGlow,
             navy: C.ink,
-            indigo: C.jade,
-            violet: C.jadeGlow,
+            indigo: C.indigo,
+            violet: C.violet,
             terracotta: C.jade,
             terracottaDark: C.jadeDark,
             terracottaLight: C.jadeLight,
@@ -165,7 +202,8 @@ const PharmalyxTheme = createTheme({
 
         chart: {
             primary: C.jade,
-            secondary: C.jadeGlow,
+            secondary: C.indigo, // a second series that is not another teal
+            violet: C.violet,
             success: C.success,
             warning: C.warning,
             error: C.error,
@@ -244,11 +282,23 @@ const PharmalyxTheme = createTheme({
             hover: ink(0.08), // progress track
             active: C.jadeGlow, // feature icon
             activeLight: C.ink, // feature icon tile
+            // Brand-panel glows: jade only, so the panel stays on brand.
+            glowPrimary: jadeA(0.3),
+            glowSecondary: alpha(C.jadeGlow, 0.22),
+            // Form side: a light jade tint at the top so both halves feel like one surface.
+            formBackground: C.bg,
+            formImage: `radial-gradient(900px 520px at 50% -10%, ${brightA(0.09)}, transparent 70%)`,
         },
 
         background: { default: C.bg, paper: C.paper },
 
         surface: { workspace: C.bg, default: C.paper, subtle: C.jadeWash, muted: C.mute, elevated: C.paper },
+
+        // Gradient per palette key for icon tiles and accent bars (StatCard, KPI cards).
+        accentGradient,
+
+        // Table headers: a clean jade-tinted band with dark text, not grey on grey.
+        tableHead: { background: C.jadeWash, text: C.inkSoft, border: C.jadeLine },
 
         border: { subtle: C.lineSoft, default: C.line, strong: C.lineStrong },
 
@@ -262,6 +312,7 @@ const PharmalyxTheme = createTheme({
         warning: { main: C.warning, dark: C.warningDark, light: C.warningLight, contrastText: C.white },
         error: { main: C.error, dark: C.errorDark, light: C.errorLight, contrastText: C.white },
         info: { main: C.info, dark: C.infoDark, light: C.infoLight, contrastText: C.white },
+        violet: { main: C.violet, dark: C.violetDark, light: C.violetBright, contrastText: C.white },
         submitted: { main: C.info, dark: C.infoDark, light: C.infoLight, contrastText: C.white },
     },
 
@@ -294,7 +345,8 @@ const PharmalyxTheme = createTheme({
 
     status: { controlHeight: BRAND.control.compact, optionMinWidth: 70, optionPaddingX: 1.75, optionRadius: 0, dotSize: 7 },
 
-    tint: { hover: 0.04, selected: 0.08, soft: 0.1, border: 0.22, strong: 0.32 },
+    // badge: tag / chip background strength (stronger so status colours read at a glance).
+    tint: { hover: 0.04, selected: 0.08, soft: 0.1, badge: 0.14, border: 0.22, strong: 0.32, tileShadow: 0.32 },
 
     pageHeader: { marginBottom: 3, gap: 2, eyebrowMarginBottom: 0.75, subtitleMarginTop: 0.75, actionsGap: 1.25 },
 
@@ -518,6 +570,13 @@ const PharmalyxTheme = createTheme({
                     fontFeatureSettings: "'ss01' on, 'cv11' on",
                 },
                 "::selection": { backgroundColor: alpha(theme.palette.brand.jadeGlow, 0.3) },
+                // Browser autofill keeps the field white with normal text instead of its own blue.
+                "input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus": {
+                    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset`,
+                    WebkitTextFillColor: theme.palette.text.primary,
+                    caretColor: theme.palette.text.primary,
+                    transition: "background-color 9999s ease-out",
+                },
                 "*": { scrollbarWidth: "thin", scrollbarColor: `${theme.palette.border.strong} transparent` },
                 "*::-webkit-scrollbar": { width: px(7), height: px(7) },
                 "*::-webkit-scrollbar-track": { background: "transparent" },
@@ -670,7 +729,7 @@ const PharmalyxTheme = createTheme({
 
         MuiTableContainer: { styleOverrides: { root: ({ theme }) => ({ borderRadius: px(theme.radius.lg), backgroundColor: theme.palette.background.paper }) } },
 
-        MuiTableHead: { styleOverrides: { root: ({ theme }) => ({ backgroundColor: theme.palette.surface.muted }) } },
+        MuiTableHead: { styleOverrides: { root: ({ theme }) => ({ backgroundColor: theme.palette.tableHead.background }) } },
 
         MuiTableCell: {
             styleOverrides: {
@@ -681,12 +740,13 @@ const PharmalyxTheme = createTheme({
                     padding: theme.spacing(1.75, 2),
                 }),
                 head: ({ theme }) => ({
-                    color: theme.palette.text.secondary,
+                    color: theme.palette.tableHead.text,
                     fontSize: px(theme.fontSize.caption),
                     fontWeight: theme.fontWeight.bold,
                     letterSpacing: "0.04em",
                     textTransform: "uppercase",
-                    backgroundColor: theme.palette.surface.muted,
+                    backgroundColor: theme.palette.tableHead.background,
+                    borderBottom: `1px solid ${theme.palette.tableHead.border}`,
                     whiteSpace: "nowrap",
                 }),
             },
@@ -705,10 +765,11 @@ const PharmalyxTheme = createTheme({
         MuiChip: {
             styleOverrides: {
                 root: ({ theme }) => ({ borderRadius: px(theme.radius.pill), fontWeight: theme.fontWeight.semibold, fontSize: px(theme.fontSize.caption) }),
-                colorPrimary: ({ theme }) => ({ backgroundColor: alpha(theme.palette.primary.main, theme.tint.soft), color: theme.palette.primary.dark }),
-                colorSuccess: ({ theme }) => ({ backgroundColor: alpha(theme.palette.success.main, theme.tint.soft), color: theme.palette.success.dark }),
-                colorWarning: ({ theme }) => ({ backgroundColor: alpha(theme.palette.warning.main, theme.tint.soft), color: theme.palette.warning.dark }),
-                colorError: ({ theme }) => ({ backgroundColor: alpha(theme.palette.error.main, theme.tint.soft), color: theme.palette.error.dark }),
+                colorPrimary: ({ theme }) => ({ backgroundColor: alpha(theme.palette.primary.main, theme.tint.badge), color: theme.palette.primary.dark }),
+                colorSuccess: ({ theme }) => ({ backgroundColor: alpha(theme.palette.success.main, theme.tint.badge), color: theme.palette.success.dark }),
+                colorWarning: ({ theme }) => ({ backgroundColor: alpha(theme.palette.warning.main, theme.tint.badge), color: theme.palette.warning.dark }),
+                colorError: ({ theme }) => ({ backgroundColor: alpha(theme.palette.error.main, theme.tint.badge), color: theme.palette.error.dark }),
+                colorInfo: ({ theme }) => ({ backgroundColor: alpha(theme.palette.info.main, theme.tint.badge), color: theme.palette.info.dark }),
             },
         },
 
