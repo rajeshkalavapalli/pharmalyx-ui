@@ -38,7 +38,7 @@ function VerifiedWork() {
             [
                 { value: "visits", label: "Visits" },
                 { value: "coverage", label: "Coverage" },
-                { value: "flags", label: "Red flags" },
+                { value: "flags", label: "Review alerts" },
                 { value: "stock", label: "Samples" },
                 { value: "boundaries", label: "Boundaries" },
                 { value: "exceptions", label: "Exceptions" },

@@ -85,8 +85,8 @@ function TeamWork() {
         <>
             <Box sx={grid}>
                 <StatCard icon={CheckCircleRounded} label="Counted visits" value={counted} caption={`${percent(counted, checked)}% of checked${s.review ? ` · ${s.review} need a look` : ""}`} color="success" progress={percent(counted, checked)} />
-                <StatCard icon={HighlightOffRounded} label="Not counted" value={s.invalid} caption="Fake GPS, outside territory, typed later…" color="error" />
-                <StatCard icon={FlagRounded} label="Open red flags" value={flags.flags.length} caption="Reviewed by head office" color={flags.flags.length ? "warning" : "secondary"} />
+                <StatCard icon={HighlightOffRounded} label="Not counted" value={s.invalid} caption="Location app, outside territory, typed later…" color="error" />
+                <StatCard icon={FlagRounded} label="Open review alerts" value={flags.flags.length} caption="Reviewed by head office" color={flags.flags.length ? "warning" : "secondary"} />
                 <StatCard icon={PercentRounded} label="Head office changes" value={s.overridden} caption="Overrides, all in the audit log" color="info" />
             </Box>
             <Box sx={panels}>
