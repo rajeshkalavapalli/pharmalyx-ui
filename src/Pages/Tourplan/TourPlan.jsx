@@ -260,7 +260,7 @@ function TourPlan() {
                             title={noApprover ? "No reporting manager is assigned" : undefined}
                             onClick={() => setAction("submit")}
                         >
-                            Save plan
+                            {owner?.needsApproval ? "Send for approval" : "Save plan"}
                         </Button>
                     )}
                 </>
@@ -591,6 +591,7 @@ function TourPlan() {
                 <PlanActionDialog
                     key={action}
                     action={action}
+                    needsApproval={Boolean(owner?.needsApproval)}
                     busy={busy}
                     onClose={() => {
                         setAction(null);
