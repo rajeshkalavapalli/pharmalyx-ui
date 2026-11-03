@@ -55,8 +55,8 @@ function FlagsTab({ canAct }) {
             )}
 
             <Panel
-                title="Red flags"
-                subtitle="Day starts and visits outside the territory, drive-bys, fake GPS and other GPS checks."
+                title="Review alerts"
+                subtitle="Day starts and visits outside the territory, very short visits, location apps and other GPS checks."
                 actions={
                     <SegmentedControl
                         value={status}
