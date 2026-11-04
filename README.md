@@ -366,3 +366,14 @@
 ### V0.0.83
  
  - updated one to many organisations
+
+
+### V0.0.84
+
+ - Softer wording for GPS checks: "Review alerts", "Location app detected", "Unusual travel time", "Very short visit"
+
+ - Tour plan: when the company rule TOUR_PLAN_APPROVAL is 1, the button and dialog say "Send for approval" and explain the manager review
+
+ - Visit save message no longer says "flagged"; the MR sees that the manager will take a quick look
+
+ - New page Field operation → Joint Work: ask colleagues for a day, confirm / decline requests, coaching feedback with rating, monthly joint days and joint calls
