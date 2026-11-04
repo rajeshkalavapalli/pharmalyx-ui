@@ -262,7 +262,7 @@ function Visits() {
                     : needsLook
                       ? `Visit counted, but it needs a look: ${why}. You can explain it from the visit.`
                     : gpsFlags.length
-                      ? `${response?.message || "Visit logged"}, flagged for review: ${gpsFlags[0].details}`
+                      ? `${response?.message || "Visit logged"}. ${gpsFlags[0].details}`
                       : result.validity === "VALID"
                         ? "Visit logged and counted as valid work."
                         : response?.message || "Visit logged",
