@@ -5,6 +5,7 @@ import { alpha } from "@mui/material/styles";
 import {
     AddRounded,
     ChatBubbleOutlineRounded,
+    GroupsRounded,
     PlaceRounded,
 } from "@mui/icons-material";
 
@@ -149,7 +150,40 @@ function DateBadge({ day, inMonth, isToday, weekend }) {
 
 const truncate = { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
 
-function PlanDetails({ plan }) {
+// Joint work: "With <name>" (a day I planned with a team member, or one a senior planned with me).
+function JointLine({ name }) {
+    return (
+        <Typography
+            variant="micro"
+            sx={(theme) => ({
+                ...truncate,
+                display: "flex",
+                alignItems: "center",
+                gap: 0.25,
+                fontWeight: theme.typography.subtitle2.fontWeight,
+                color: theme.palette.info.dark,
+            })}
+        >
+            <GroupsRounded fontSize="inherit" />
+            <Box component="span" sx={truncate}>
+                With {name}
+            </Box>
+        </Typography>
+    );
+}
+
+function PlanDetails({ plan, lockedBy }) {
+    if (plan.jointWith) {
+        return (
+            <>
+                <JointLine name={plan.jointWithName || "team member"} />
+                <Typography variant="micro" sx={(theme) => ({ ...truncate, color: theme.palette.text.secondary })}>
+                    {plan.jointStatus === "DECLINED" ? "On leave: replan" : plan.areaName || "Area from their plan"}
+                </Typography>
+            </>
+        );
+    }
+
     if (plan.dayType === DAY_TYPE.OFF) {
         return (
             <Typography
@@ -182,16 +216,20 @@ function PlanDetails({ plan }) {
 
     return (
         <>
-            <Typography
-                variant="micro"
-                sx={(theme) => ({
-                    ...truncate,
-                    fontWeight: theme.typography.subtitle2.fontWeight,
-                    color: theme.palette.plan.working,
-                })}
-            >
-                {plan.territoryName}
-            </Typography>
+            {lockedBy ? (
+                <JointLine name={lockedBy} />
+            ) : (
+                <Typography
+                    variant="micro"
+                    sx={(theme) => ({
+                        ...truncate,
+                        fontWeight: theme.typography.subtitle2.fontWeight,
+                        color: theme.palette.plan.working,
+                    })}
+                >
+                    {plan.territoryName}
+                </Typography>
+            )}
 
             <Typography
                 variant="micro"
@@ -216,7 +254,7 @@ function PlanDetails({ plan }) {
 // GRID
 // =========================================================
 
-function MonthGrid({ month, monthDays, plans, editable, loading, onSelectDates }) {
+function MonthGrid({ month, monthDays, plans, locks = {}, editable, loading, onSelectDates }) {
     const weeks = useMemo(() => buildMonthGrid(month), [month]);
     const today = todayKey();
 
@@ -407,7 +445,7 @@ function MonthGrid({ month, monthDays, plans, editable, loading, onSelectDates }
                                                 gap: 0.25,
                                             }}
                                         >
-                                            {plan && <PlanDetails plan={plan} />}
+                                            {plan && <PlanDetails plan={plan} lockedBy={locks[key]} />}
 
                                             {!plan && inMonth && editable && (
                                                 <Typography

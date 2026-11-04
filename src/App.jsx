@@ -59,6 +59,7 @@ import Visits from './Pages/Visits/Visits.jsx';
 import Dcr from './Pages/Dcr/Dcr.jsx';
 
 import PreCall from './Pages/PreCall/PreCall.jsx';
+import JointWork from './Pages/JointWork/JointWork.jsx';
 
 import ComingSoon from './Pages/ComingSoon/ComingSoon.jsx';
 
@@ -328,6 +329,7 @@ function App() {
                     {/* Field operations: pre-call planning */}
 
                     <Route path='field-operation/pre-call' element={<PreCall />} />
+                    <Route path='field-operation/joint-work' element={<JointWork />} />
                     <Route path='field-operation/doctor-requests' element={<DoctorRequests />} />
 
                     {/* Verified work: my day, standard tour plan, head office review */}

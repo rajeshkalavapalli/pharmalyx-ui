@@ -19,6 +19,16 @@ const ACTIONS = {
         confirmLabel: "Save plan",
         remarks: "none",
     },
+    // Company rule: the reporting manager approves every confirmed plan.
+    submitForApproval: {
+        icon: SendRounded,
+        color: "primary",
+        title: "Send the plan for approval?",
+        message:
+            "Your reporting manager will review the month. Until they approve it, the plan stays as sent; any change you make later goes back to them for approval. Days outside your territory need special duty or leave cover from head office.",
+        confirmLabel: "Send for approval",
+        remarks: "none",
+    },
     approve: {
         icon: CheckCircleRounded,
         color: "success",
@@ -53,8 +63,8 @@ const ACTIONS = {
     },
 };
 
-function PlanActionDialog({ action, busy, onClose, onConfirm }) {
-    const config = ACTIONS[action];
+function PlanActionDialog({ action, needsApproval = false, busy, onClose, onConfirm }) {
+    const config = ACTIONS[action === "submit" && needsApproval ? "submitForApproval" : action];
 
     if (!config) return null;
 
