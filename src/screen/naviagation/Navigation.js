@@ -22,6 +22,7 @@ const navigation = [
             { label: 'Standard Tour Plan', path: '/field-operation/stp', ready: true, permission: ['stp.view'] },
             { label: 'Tour Plan', path: '/field-operation/tour-plan', ready: true, permission: ['tourplan.view'] },
             { label: 'Pre-call Planning', path: '/field-operation/pre-call', ready: true, permission: ['visits.create'] },
+            { label: 'Joint Work', path: '/field-operation/joint-work', ready: true, permission: ['visits.create', 'visits.view'] },
             { label: 'Visits', path: '/field-operation/visits', ready: true, permission: ['visits.view'] },
             { label: 'DCR', path: '/field-operation/dcr', ready: true, permission: ['dcr.view'] },
             { label: 'Plan Deviation', path: '/field-operation/plan-deviation', ready: true, permission: ['deviation.view'] },
