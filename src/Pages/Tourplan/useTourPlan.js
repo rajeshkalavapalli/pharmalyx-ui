@@ -7,6 +7,7 @@ import {
     DAY_TYPE,
     addMonths,
     approveTourPlan,
+    changeMemberDay,
     copyByWeekdayPattern,
     daysOfMonth,
     detailsToPlans,
@@ -79,6 +80,8 @@ function useTourPlan() {
         /^\d{4}-\d{2}$/.test(monthParam || "") ? `${monthParam}-01` : monthStartOf(todayKey())
     );
     const [owner, setOwner] = useState(null);
+    // Days a senior planned as joint work with this person: { date: senior's name } (locked for them).
+    const [locks, setLocks] = useState({});
     const [history, setHistory] = useState([]);
     const [plans, setPlans] = useState({});
     const [savedPlans, setSavedPlans] = useState({});
@@ -115,11 +118,12 @@ function useTourPlan() {
             setLoadError("");
 
             try {
-                const { plan, owner: planOwner } = await getTourPlan(targetMonth, viewUserId);
+                const { plan, owner: planOwner, locks: planLocks } = await getTourPlan(targetMonth, viewUserId);
 
                 if (!isCurrent()) return;
 
                 setOwner(planOwner || null);
+                setLocks(planLocks || {});
 
                 if (!plan) {
                     const self = getCurrentUserId();
@@ -157,6 +161,7 @@ function useTourPlan() {
                 setSavedPlans({});
                 setMeta(EMPTY_META);
                 setOwner(null);
+                setLocks({});
                 setLoadError(errorMessage(error, "Unable to load tour plan"));
             } finally {
                 if (isCurrent()) {
@@ -354,12 +359,17 @@ function useTourPlan() {
     const approve = (remarks) =>
         runAction(() => approveTourPlan(meta.planId, remarks), "Tour plan approved");
 
+    // Joint work: move the team member's planned day to another area (an approved deviation in their plan).
+    const moveMemberDay = (memberId, date, territoryId, areaId) =>
+        runAction(() => changeMemberDay(memberId, date, territoryId, areaId), "Team member's day moved");
+
     const reject = (remarks) =>
         runAction(() => rejectTourPlan(meta.planId, remarks), "Tour plan returned for changes");
 
     return {
         viewUserId,
         owner,
+        locks,
         history,
         actingUserId,
         setActingUserId,
@@ -390,6 +400,7 @@ function useTourPlan() {
         submit: () => save(true),
         approve,
         reject,
+        moveMemberDay,
     };
 }
 

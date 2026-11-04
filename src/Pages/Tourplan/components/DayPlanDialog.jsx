@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
+    Alert,
     Box,
     Button,
     Dialog,
@@ -17,6 +18,7 @@ import {
     CloseRounded,
     DeleteOutlineRounded,
     EventBusyRounded,
+    GroupsRounded,
     WorkOutlineRounded,
 } from "@mui/icons-material";
 
@@ -24,10 +26,13 @@ import SegmentedControl from "../../../components/SegmentedControl/SegmentedCont
 import { getAreasByTerritory } from "../../Doctors/index";
 import { DAY_TYPE, REMARKS_LIMIT, describeDates, formatDayLabel } from "../index";
 
+const JOINT = "joint";
 const DAY_TYPE_OPTIONS = [
     { value: DAY_TYPE.WORKING, label: "Working day", icon: WorkOutlineRounded },
     { value: DAY_TYPE.OFF, label: "Off / Leave", icon: EventBusyRounded },
 ];
+// Seniors also plan joint work with a team member: the area comes from the member's plan.
+const JOINT_OPTION = { value: JOINT, label: "Joint work", icon: GroupsRounded };
 
 // Mounted fresh (via `key`) for each selection, so initial state comes from props.
 function DayPlanDialog({
@@ -37,11 +42,18 @@ function DayPlanDialog({
     hasExistingPlan,
     territories,
     readOnly,
+    team = [],
+    lockedBy = "",
+    onMoveMemberDay,
     onClose,
     onApply,
     onClear,
 }) {
-    const [dayType, setDayType] = useState(initialPlan?.dayType || DAY_TYPE.WORKING);
+    const [dayType, setDayType] = useState(initialPlan?.jointWith ? JOINT : lockedBy ? DAY_TYPE.WORKING : initialPlan?.dayType || DAY_TYPE.WORKING);
+    // A day a senior planned with me: I can only fill in the area while it is still empty.
+    const lockedArea = Boolean(lockedBy) && Boolean(initialPlan?.area);
+    const [jointWith, setJointWith] = useState(initialPlan?.jointWith || "");
+    const [moving, setMoving] = useState(false); // changing the team member's area
     const [territory, setTerritory] = useState(initialPlan?.territory || "");
     const [area, setArea] = useState(initialPlan?.area || "");
     const [remarks, setRemarks] = useState(initialPlan?.remarks || "");
@@ -74,17 +86,38 @@ function DayPlanDialog({
         };
     }, [territory]);
 
-    const isWorking = dayType === DAY_TYPE.WORKING;
-    const canApply = !isWorking || (territory && area);
+    const isJoint = dayType === JOINT;
+    const isWorking = dayType === DAY_TYPE.WORKING || (isJoint && moving);
+    const canApply = isJoint ? Boolean(jointWith) : !isWorking || (territory && area);
     const single = dates.length === 1;
+    const member = team.find((item) => item.id === jointWith);
+    // Moving a member's area is for one saved joint day with that member.
+    const canMove = single && isJoint && jointWith && initialPlan?.jointWith === jointWith && onMoveMemberDay;
+    const options = team.length ? [...DAY_TYPE_OPTIONS, JOINT_OPTION] : DAY_TYPE_OPTIONS;
 
     const handleApply = () => {
+        if (isJoint) {
+            onApply({
+                dayType: DAY_TYPE.WORKING,
+                jointWith,
+                jointWithName: member?.name || initialPlan?.jointWithName || "",
+                territory: "",
+                area: "",
+                territoryName: initialPlan?.jointWith === jointWith ? initialPlan.territoryName : "",
+                areaName: initialPlan?.jointWith === jointWith ? initialPlan.areaName : "",
+                remarks: remarks.trim(),
+            });
+            return;
+        }
+
         const territoryName =
             territories.find((item) => item.TerritoryId === territory)?.TerritoryName || "";
         const areaName = areas.find((item) => item.AreaId === area)?.AreaName || "";
 
         onApply({
             dayType,
+            jointWith: "",
+            jointWithName: "",
             territory: isWorking ? territory : "",
             area: isWorking ? area : "",
             territoryName: isWorking ? territoryName : "",
@@ -153,20 +186,66 @@ function DayPlanDialog({
                         </Typography>
                     )}
 
+                    {lockedBy && (
+                        <Alert severity="info" icon={<GroupsRounded />}>
+                            {lockedBy} planned joint work with you on this day. {lockedArea ? "Ask them to change it." : "Choose the area you will work in; it can't be an off day."}
+                        </Alert>
+                    )}
+
                     <SegmentedControl
                         fullWidth
-                        disabled={readOnly}
+                        disabled={readOnly || Boolean(lockedBy)}
                         value={dayType}
-                        options={DAY_TYPE_OPTIONS}
+                        options={options}
                         onChange={(next) => {
                             setDayType(next);
+                            setMoving(false);
 
-                            if (next === DAY_TYPE.OFF) {
+                            if (next !== DAY_TYPE.WORKING) {
                                 setTerritory("");
                                 setArea("");
                             }
                         }}
                     />
+
+                    {isJoint && (
+                        <Stack spacing={1.5}>
+                            <TextField
+                                select
+                                fullWidth
+                                required
+                                label="Joint work with"
+                                value={team.some((item) => item.id === jointWith) ? jointWith : ""}
+                                disabled={readOnly}
+                                onChange={(event) => {
+                                    setJointWith(event.target.value);
+                                    setMoving(false);
+                                }}
+                                helperText="They work with you that day; their planned area is used. Their off days, Sundays and leave can't be chosen."
+                            >
+                                {team.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                        {item.designation ? `${item.name} · ${item.designation}` : item.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
+                            {initialPlan?.jointWith === jointWith && (
+                                <Typography variant="body2" sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                                    {initialPlan.areaName
+                                        ? `Area from their plan: ${initialPlan.territoryName} · ${initialPlan.areaName}`
+                                        : "They have not planned this day yet; the area follows their plan."}
+                                    {initialPlan.jointStatus === "DECLINED" && " Cancelled because of their leave: please replan this day."}
+                                </Typography>
+                            )}
+
+                            {canMove && !moving && !readOnly && (
+                                <Button variant="outlined" size="small" sx={{ alignSelf: "flex-start" }} onClick={() => setMoving(true)}>
+                                    Change {member?.name || "their"}'s area for this day
+                                </Button>
+                            )}
+                        </Stack>
+                    )}
 
                     {isWorking && (
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -176,7 +255,7 @@ function DayPlanDialog({
                                 required
                                 label="Territory"
                                 value={territory}
-                                disabled={readOnly || territories.length === 0}
+                                disabled={readOnly || lockedArea || territories.length === 0}
                                 onChange={(event) => {
                                     setTerritory(event.target.value);
                                     setArea("");
@@ -195,7 +274,7 @@ function DayPlanDialog({
                                 required
                                 label="Area"
                                 value={areas.some((item) => item.AreaId === area) ? area : ""}
-                                disabled={readOnly || !territory || areasLoading}
+                                disabled={readOnly || lockedArea || !territory || areasLoading}
                                 helperText={
                                     territory && !areasLoading && areas.length === 0
                                         ? "No areas in this territory"
@@ -253,7 +332,17 @@ function DayPlanDialog({
                     {readOnly ? "Close" : "Cancel"}
                 </Button>
 
-                {!readOnly && (
+                {!readOnly && isJoint && moving && (
+                    <Button
+                        variant="contained"
+                        disabled={!territory || !area}
+                        onClick={() => onMoveMemberDay(jointWith, dates[0], territory, area)}
+                    >
+                        Move their day
+                    </Button>
+                )}
+
+                {!readOnly && !lockedArea && !(isJoint && moving) && (
                     <Button variant="contained" disabled={!canApply} onClick={handleApply}>
                         {single ? "Save day" : `Apply to ${dates.length} days`}
                     </Button>

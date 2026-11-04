@@ -38,6 +38,17 @@ export const saveTourPlan = async (payload) => {
 };
 
 // Manager: direct reports' plans for a month (planMonth YYYY-MM-01).
+// A senior moves a team member's planned day to another area (for joint work).
+export const changeMemberDay = async (userId, planDate, territoryId, areaId) => {
+    const response = await api.post(`/app/tourplan/team/${userId}/day`, { PlanDate: planDate, TerritoryId: territoryId, AreaId: areaId }, {
+        headers: actingUserHeaders(),
+    });
+    return response.data;
+};
+
+// Me and everyone below me (team), for "joint work with".
+export const getPeople = async () => (await api.get('/app/people')).data;
+
 export const getTeamTourPlans = async (planMonth) => {
     const response = await api.get('/app/tourplan/team', {
         params: { planMonth },
@@ -200,8 +211,9 @@ export const describeDates = (dates) => {
 // PLAN HELPERS
 // =========================================================
 
+// A joint work day is complete with the team member chosen: its area comes from their plan.
 export const isDayComplete = (plan) =>
-    Boolean(plan) && (plan.dayType === DAY_TYPE.OFF || (plan.territory && plan.area));
+    Boolean(plan) && (plan.dayType === DAY_TYPE.OFF || Boolean(plan.jointWith) || Boolean(plan.territory && plan.area));
 
 // Maps each day to the same weekday occurrence in the source month
 // (e.g. 2nd Tuesday -> 2nd Tuesday), so weekly routes carry over.
@@ -239,6 +251,9 @@ export const detailsToPlans = (details = []) =>
             territoryName: detail.TerritoryName || '',
             areaName: detail.AreaName || '',
             remarks: detail.Remarks || '',
+            jointWith: detail.JointWithUserId || '',
+            jointWithName: detail.JointWithName || '',
+            jointStatus: detail.JointStatus || '',
         };
 
         return plans;
@@ -250,7 +265,8 @@ export const plansToDetails = (plans, monthStart) =>
         .map(([date, plan]) => ({
             PlanDate: date,
             DayType: plan.dayType,
-            TerritoryId: plan.dayType === DAY_TYPE.WORKING ? plan.territory || null : null,
-            AreaId: plan.dayType === DAY_TYPE.WORKING ? plan.area || null : null,
+            TerritoryId: plan.dayType === DAY_TYPE.WORKING && !plan.jointWith ? plan.territory || null : null,
+            AreaId: plan.dayType === DAY_TYPE.WORKING && !plan.jointWith ? plan.area || null : null,
             Remarks: plan.remarks || null,
+            ...(plan.jointWith ? { JointWithUserId: plan.jointWith } : {}),
         }));

@@ -100,6 +100,13 @@ function MyDay() {
                         Your territory boundary is not approved by head office yet, so the territory check is not applied to your visits.
                     </Alert>
                 )}
+                {(data.jointWork || []).map((jw) => (
+                    <Alert key={jw.JointWorkId} severity="info" variant="outlined">
+                        Today: joint work with {jw.withName}
+                        {jw.AreaName ? ` · ${[jw.TerritoryName, jw.AreaName].filter(Boolean).join(" · ")}` : ""}.{" "}
+                        {jw.role === "field" ? "Your visits today are marked as joint calls." : "Their visits today are your joint calls."}
+                    </Alert>
+                ))}
                 {data.territory.specialDuty && (
                     <Alert severity="info" variant="outlined">
                         Head office has given you special duty today: visits outside your territory count.

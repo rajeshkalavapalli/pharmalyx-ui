@@ -51,12 +51,13 @@ import {
     PLAN_STATUS,
     addMonths,
     formatMonthLabel,
+    getPeople,
     getTeamTourPlans,
     monthStartOf,
     todayKey,
 } from "./index";
 
-const SAME_PLAN_FIELDS = ["dayType", "territory", "area", "remarks"];
+const SAME_PLAN_FIELDS = ["dayType", "territory", "area", "remarks", "jointWith"];
 
 // Prefill for the day dialog: the existing plan when every selected day shares it.
 const sharedPlan = (plans, dates) => {
@@ -82,6 +83,15 @@ function TourPlan() {
 
     const { reports } = useTeamView(tourPlan.actingUserId);
     const isManager = reports.length > 0;
+
+    // Team members below me, for "joint work with" in my own plan.
+    const [team, setTeam] = useState([]);
+    useEffect(() => {
+        if (!isManager) return;
+        getPeople()
+            .then((people) => setTeam((people?.team || []).filter((person) => person.id !== people?.me?.id)))
+            .catch(() => setTeam([]));
+    }, [isManager]);
     const [awaitingReview, setAwaitingReview] = useState(0);
     const [pendingNav, setPendingNav] = useState(null);
 
@@ -492,6 +502,7 @@ function TourPlan() {
                                         month={month}
                                         monthDays={tourPlan.monthDays}
                                         plans={plans}
+                                        locks={tourPlan.locks}
                                         editable={editable && !busy}
                                         loading={tourPlan.loading}
                                         onSelectDates={handleSelectDates}
@@ -575,6 +586,12 @@ function TourPlan() {
                     hasExistingPlan={selection.dates.some((date) => plans[date])}
                     territories={tourPlan.territories}
                     readOnly={!editable}
+                    team={reviewing ? [] : team}
+                    lockedBy={selection.dates.map((date) => tourPlan.locks[date]).find(Boolean) || ""}
+                    onMoveMemberDay={async (memberId, date, territoryId, areaId) => {
+                        await tourPlan.moveMemberDay(memberId, date, territoryId, areaId);
+                        closeSelection();
+                    }}
                     onClose={closeSelection}
                     onApply={(plan) => {
                         tourPlan.applyToDays(selection.dates, plan);

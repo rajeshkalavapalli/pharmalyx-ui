@@ -377,3 +377,14 @@
  - Visit save message no longer says "flagged"; the MR sees that the manager will take a quick look
 
  - New page Field operation → Joint Work: ask colleagues for a day, confirm / decline requests, coaching feedback with rating, monthly joint days and joint calls
+
+
+### V0.0.85
+
+ - Tour plan: seniors choose "Joint work" for a day and pick a team member; the calendar shows "With <name>" and the member's area (or "On leave: replan")
+
+ - A day a senior planned with me shows "With <name>"; it can't be made an off day or moved to another area
+
+ - "Change <name>'s area for this day" moves the team member's planned day (approved deviation in their plan)
+
+ - My Day shows today's joint work
