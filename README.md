@@ -388,3 +388,8 @@
  - "Change <name>'s area for this day" moves the team member's planned day (approved deviation in their plan)
 
  - My Day shows today's joint work
+
+
+### V 0.0.86
+
+- Samples / gifts: the Issue button and its person list come from /app/stock/recipients, so an admin can issue to anyone in the company

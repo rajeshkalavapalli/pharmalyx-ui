@@ -26,6 +26,8 @@ export const saveGift = (giftId, payload) =>
 
 export const getStockBalances = (userId, itemType) => get('/app/stock/balances', { userId, itemType });
 export const getStockLedger = (userId, itemType, from) => get('/app/stock/ledger', { userId, itemType, from });
+// Direct reports, or everyone in the company for an admin.
+export const getStockRecipients = () => get('/app/stock/recipients');
 export const issueStock = (payload) => post('/app/stock/issue', payload);
 export const returnStock = (payload) => post('/app/stock/return', payload);
 
