@@ -8,7 +8,7 @@ import SegmentedControl from "../SegmentedControl/SegmentedControl";
 
 // Frame for admin master/mapping pages: header, back link, view tabs, content.
 // tabs: [{ value, label, icon? }]
-function MasterLayout({ eyebrow = "Configuration", title, subtitle, tabs, value, onTabChange, children }) {
+function MasterLayout({ eyebrow = "Configuration", title, subtitle, tabs, value, onTabChange, actions, children }) {
     return (
         <Box>
             <PageHeader
@@ -16,6 +16,8 @@ function MasterLayout({ eyebrow = "Configuration", title, subtitle, tabs, value,
                 title={title}
                 subtitle={subtitle}
                 actions={
+                    <>
+                    {actions}
                     <Button
                         variant="outlined"
                         startIcon={<ArrowBackRounded />}
@@ -24,6 +26,7 @@ function MasterLayout({ eyebrow = "Configuration", title, subtitle, tabs, value,
                     >
                         All settings
                     </Button>
+                    </>
                 }
             />
 

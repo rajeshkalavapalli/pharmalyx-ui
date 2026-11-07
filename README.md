@@ -431,3 +431,9 @@
 ### V 0.0.93
 
 - Dashboard: Weekly brief card under the company / team overview
+
+
+### V 0.0.94
+
+- User doctors: Hand over doctors button - pick who is leaving and who takes over, see how many doctors move, confirm
+- MasterLayout accepts extra header actions
