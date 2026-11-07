@@ -7,7 +7,7 @@ import LoadError from "../../../components/LoadError/LoadError";
 import Panel from "../../../components/Panel/Panel";
 import Tag from "../../../components/Tag/Tag";
 import { getMyTeam } from "../../MyDoctors/index";
-import { errorMessage, formatDate, getBrandComparison, getDoctorJourney } from "../index";
+import { errorMessage, formatDate, getBrandComparison, getDoctorJourney, getShelfAvailability } from "../index";
 
 // Market truth: doctor journey stages for one person, and brand x rep prescription conversion.
 
@@ -219,6 +219,78 @@ export function BrandComparison() {
                                                 />
                                             ))}
                                         </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
+        </Panel>
+    );
+}
+
+// Chemist shelf checks by reps: products missing at chemists lose prescriptions to competitors.
+export function ShelfAvailability() {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState("");
+
+    const load = useCallback(async () => {
+        setError("");
+        try {
+            setData(await getShelfAvailability());
+        } catch (err) {
+            setError(errorMessage(err, "Couldn't load chemist availability"));
+        }
+    }, []);
+
+    useEffect(() => {
+        load();
+    }, [load]);
+
+    if (error) return <LoadError title="Couldn't load chemist availability" message={error} onRetry={load} />;
+    if (!data) return <Skeleton variant="rounded" sx={(theme) => ({ height: theme.dashboard.skeleton.stat })} />;
+
+    return (
+        <Panel title="On the shelf" subtitle={`Latest rep checks at ${data.chemistsChecked} chemist(s) · last ${data.days} days`} disablePadding>
+            {data.products.length === 0 ? (
+                <Typography variant="body2" sx={{ color: "text.secondary", p: 3, textAlign: "center" }}>
+                    No chemist checks yet. Reps record them in the app under Chemist Check.
+                </Typography>
+            ) : (
+                <TableContainer>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product</TableCell>
+                                <TableCell align="right">On the shelf</TableCell>
+                                <TableCell>Missing at</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.products.map((p) => (
+                                <TableRow key={p.productId} hover>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">{p.productName}</Typography>
+                                        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                            {p.checked} chemist(s) checked
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Tag label={p.availability == null ? "—" : `${p.availability}%`} color={p.availability >= 90 ? "success" : p.availability >= 60 ? "warning" : "error"} />
+                                    </TableCell>
+                                    <TableCell>
+                                        {p.missing.length === 0 ? (
+                                            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                                Everywhere checked
+                                            </Typography>
+                                        ) : (
+                                            <Stack direction="row" sx={{ flexWrap: "wrap", gap: 0.75 }}>
+                                                {p.missing.map((m) => (
+                                                    <Tag key={m.pharmacyId} label={`${m.pharmacyName}${m.areaName ? ` · ${m.areaName}` : ""}`} color="error" />
+                                                ))}
+                                            </Stack>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}

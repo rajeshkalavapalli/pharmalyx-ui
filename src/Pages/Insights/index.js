@@ -19,6 +19,7 @@ export const getAudits = (month) => get("/app/audits", { month });
 export const assignCrossAudit = (payload) => post("/app/audits/cross", payload);
 export const getDoctorJourney = (userId) => get("/app/truth/journey", { userId });
 export const getBrandComparison = () => get("/app/truth/brands");
+export const getShelfAvailability = () => get("/app/chemists/availability/summary");
 export const saveInsightRule = (ruleCode, payload) => put(`/app/insights/rules/${ruleCode}`, payload);
 
 export const SEVERITY = {

@@ -34,7 +34,7 @@ import Tag from "../../../components/Tag/Tag";
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 import { getMyTeam } from "../../MyDoctors/index";
 import { assignCrossAudit, errorMessage, formatDate, getAudits, getTruthScores } from "../index";
-import { BrandComparison, DoctorJourney } from "./MarketTruth";
+import { BrandComparison, DoctorJourney, ShelfAvailability } from "./MarketTruth";
 
 // Field Truth Score (team) and joint / cross audits. Built only from our own signals - doctors are never asked.
 
@@ -382,7 +382,12 @@ function FieldTruth() {
             {tab === "scores" && <Scores month={month} />}
             {tab === "audits" && <Audits month={month} />}
             {tab === "journey" && <DoctorJourney />}
-            {tab === "brands" && <BrandComparison />}
+            {tab === "brands" && (
+                <Stack spacing={2}>
+                    <BrandComparison />
+                    <ShelfAvailability />
+                </Stack>
+            )}
         </Box>
     );
 }

@@ -421,3 +421,8 @@
 ### V 0.0.91
 
 - Field Truth page: Doctor journey tab (pick a person; stage tiles you can click to filter; doctors with visits, samples, Rx months, last visit) and Brands tab (team conversion per brand, the verdict - brand problem or rep problem - and each rep's prescribing / checked doctors)
+
+
+### V 0.0.92
+
+- Field Truth > Brands: On the shelf panel - share of checked chemists with each product and where it is missing
