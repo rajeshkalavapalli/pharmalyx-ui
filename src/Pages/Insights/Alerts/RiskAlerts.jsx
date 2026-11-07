@@ -8,6 +8,9 @@ import {
     DoneAllRounded,
     DownloadRounded,
     GpsOffRounded,
+    FactCheckRounded,
+    CurrencyRupeeRounded,
+    SupervisorAccountRounded,
     InventoryRounded,
     MedicalServicesRounded,
     NotificationsActiveRounded,
@@ -28,7 +31,7 @@ import { InsightsLayout } from "../components/InsightsLayout";
 import useInsight from "../components/useInsight";
 import { GROUPS, SEVERITY, actOnAlert, downloadCsv, errorMessage, formatDate, getAlerts } from "../index";
 
-const GROUP_ICON = { DOCTOR: MedicalServicesRounded, REP: PersonRounded, STOCK: InventoryRounded, GPS: GpsOffRounded };
+const GROUP_ICON = { DOCTOR: MedicalServicesRounded, REP: PersonRounded, STOCK: InventoryRounded, GPS: GpsOffRounded, TRUTH: FactCheckRounded, MONEY: CurrencyRupeeRounded, MANAGER: SupervisorAccountRounded };
 
 const ACTIONS = {
     ACKNOWLEDGED: { label: "Acknowledge", title: "Acknowledge this alert?", color: "info", icon: VisibilityRounded, remarks: "optional", remarksLabel: "Note (optional)" },
@@ -38,7 +41,7 @@ const ACTIONS = {
 
 function AlertRow({ item, canAct, onAct }) {
     const severity = SEVERITY[item.severity];
-    const Icon = GROUP_ICON[item.group];
+    const Icon = GROUP_ICON[item.group] || NotificationsActiveRounded;
 
     return (
         <Stack direction={{ xs: "column", md: "row" }} sx={{ py: 1.75, gap: 1.5, alignItems: { md: "center" } }}>

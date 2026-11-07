@@ -405,3 +405,8 @@
 ### V 0.0.88
 
 - Dashboard overview band is now light (white to jade wash with a soft glow, ink text, white tiles with a light shadow) instead of dark ink; same layout and numbers
+
+
+### V 0.0.89
+
+- Risk alerts: Field truth, Money & investments and Manager accountability groups with their icons (an unknown group no longer breaks the list)

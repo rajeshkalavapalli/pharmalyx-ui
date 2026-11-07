@@ -28,6 +28,9 @@ export const GROUPS = [
     { value: "REP", label: "Rep performance" },
     { value: "STOCK", label: "Business & stock" },
     { value: "GPS", label: "GPS & location" },
+    { value: "TRUTH", label: "Field truth" },
+    { value: "MONEY", label: "Money & investments" },
+    { value: "MANAGER", label: "Manager accountability" },
 ];
 
 export const SEGMENT_COLOR = { CHAMPION: "success", GROW: "primary", UNDERSERVED: "warning", RECONSIDER: "error", NO_DATA: "secondary" };
