@@ -399,3 +399,4 @@
 
 - Dashboard: new Company / Team overview for managers and head office above the section tabs: dark ink band with the month's headline numbers and "Needs attention" chips, a leaderboard with valid-visit bars and POB, and a live activity feed
 - Theme: dashboard.executive, dashboard.leaderboard and dashboard.activity tokens
+- Fix: overview panels read their sizes from theme.dashboard.leaderboard / theme.dashboard.activity (the dashboard crashed on load)

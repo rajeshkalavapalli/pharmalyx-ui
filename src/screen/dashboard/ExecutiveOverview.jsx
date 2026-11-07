@@ -239,11 +239,11 @@ function Leaderboard({ people, sx }) {
             ) : (
                 <Stack divider={<Divider />}>
                     {people.map((person, index) => (
-                        <Stack key={person.UserId} direction="row" spacing={1.5} sx={(theme) => ({ alignItems: "center", py: theme.leaderboard.rowPaddingY })}>
+                        <Stack key={person.UserId} direction="row" spacing={1.5} sx={(theme) => ({ alignItems: "center", py: theme.dashboard.leaderboard.rowPaddingY })}>
                             <Box
                                 sx={(theme) => ({
-                                    width: theme.leaderboard.rankSize,
-                                    height: theme.leaderboard.rankSize,
+                                    width: theme.dashboard.leaderboard.rankSize,
+                                    height: theme.dashboard.leaderboard.rankSize,
                                     flexShrink: 0,
                                     display: "grid",
                                     placeItems: "center",
@@ -272,14 +272,14 @@ function Leaderboard({ people, sx }) {
                             >
                                 {initials(person.Name)}
                             </Box>
-                            <Box sx={(theme) => ({ flex: 1, minWidth: theme.leaderboard.nameMinWidth })}>
+                            <Box sx={(theme) => ({ flex: 1, minWidth: theme.dashboard.leaderboard.nameMinWidth })}>
                                 <Typography variant="subtitle2" noWrap>
                                     {person.Name}
                                 </Typography>
                                 <Typography variant="caption" sx={{ color: "text.secondary" }} noWrap>
                                     {[person.DesignationName, `${person.doctors} doctor${person.doctors === 1 ? "" : "s"}`, `${person.dcrSent} DCR`].filter(Boolean).join(" · ")}
                                 </Typography>
-                                <Box sx={(theme) => ({ mt: 0.75, height: theme.leaderboard.barHeight, borderRadius: theme.leaderboard.barHeight, backgroundColor: theme.palette.surface.muted, overflow: "hidden" })}>
+                                <Box sx={(theme) => ({ mt: 0.75, height: theme.dashboard.leaderboard.barHeight, borderRadius: theme.dashboard.leaderboard.barHeight, backgroundColor: theme.palette.surface.muted, overflow: "hidden" })}>
                                     <Box
                                         sx={(theme) => ({
                                             width: `${person.validPct ?? 0}%`,
@@ -296,7 +296,7 @@ function Leaderboard({ people, sx }) {
                                     {person.validPct == null ? "—" : `${person.validPct}% valid`}
                                 </Typography>
                             </Box>
-                            <Box sx={(theme) => ({ textAlign: "right", flexShrink: 0, display: { xs: "none", sm: "block" }, minWidth: theme.leaderboard.valueMinWidth })}>
+                            <Box sx={(theme) => ({ textAlign: "right", flexShrink: 0, display: { xs: "none", sm: "block" }, minWidth: theme.dashboard.leaderboard.valueMinWidth })}>
                                 <Typography variant="subtitle2">{rupees(person.pobValue)}</Typography>
                                 <Typography variant="caption" sx={{ color: "text.secondary" }}>
                                     POB
@@ -327,17 +327,17 @@ function ActivityFeed({ items, sx }) {
                     Nothing in the last 7 days.
                 </Typography>
             ) : (
-                <Stack sx={(theme) => ({ maxHeight: theme.activity.maxHeight, overflowY: "auto" })} divider={<Divider />}>
+                <Stack sx={(theme) => ({ maxHeight: theme.dashboard.activity.maxHeight, overflowY: "auto" })} divider={<Divider />}>
                     {items.map((item, index) => {
                         const kind = ACTIVITY[item.kind] || ACTIVITY.VISIT;
                         const Icon = kind.icon;
                         const tag = TAG[item.tag];
                         return (
-                            <Stack key={`${item.kind}-${item.at}-${index}`} direction="row" spacing={1.5} sx={(theme) => ({ alignItems: "center", py: theme.activity.rowPaddingY })}>
+                            <Stack key={`${item.kind}-${item.at}-${index}`} direction="row" spacing={1.5} sx={(theme) => ({ alignItems: "center", py: theme.dashboard.activity.rowPaddingY })}>
                                 <Box
                                     sx={(theme) => ({
-                                        width: theme.activity.iconSize,
-                                        height: theme.activity.iconSize,
+                                        width: theme.dashboard.activity.iconSize,
+                                        height: theme.dashboard.activity.iconSize,
                                         flexShrink: 0,
                                         display: "grid",
                                         placeItems: "center",
