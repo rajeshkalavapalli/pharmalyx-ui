@@ -54,6 +54,7 @@ import ModuleSection from "./ModuleSection";
 import { chartSeries, findStat, useModuleData } from "./moduleData";
 import SalesSection from "./SalesSection";
 import WorkSection from "./WorkSection";
+import ExecutiveOverview from "./ExecutiveOverview";
 import { TeamHighlights, TeamPerformancePanel, TeamTodayPanel } from "./TeamWidgets";
 
 const getDashboard = async () => {
@@ -470,6 +471,9 @@ function Dashboard() {
                     }
                 />
             )}
+
+            {/* Managers and head office: the month at a glance, leaderboard and live activity. */}
+            {showTeam && <ExecutiveOverview refreshKey={loadedAt?.getTime()} />}
 
             {/* One area of the business at a time. */}
             <Box sx={(theme) => ({ mb: theme.stat.gap, overflowX: "auto" })}>

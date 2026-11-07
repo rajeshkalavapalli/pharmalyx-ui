@@ -388,3 +388,15 @@
  - "Change <name>'s area for this day" moves the team member's planned day (approved deviation in their plan)
 
  - My Day shows today's joint work
+
+
+### V 0.0.86
+
+- Samples / gifts: the Issue button and its person list come from /app/stock/recipients, so an admin can issue to anyone in the company
+
+
+### V 0.0.87
+
+- Dashboard: new Company / Team overview for managers and head office above the section tabs: dark ink band with the month's headline numbers and "Needs attention" chips, a leaderboard with valid-visit bars and POB, and a live activity feed
+- Theme: dashboard.executive, dashboard.leaderboard and dashboard.activity tokens
+- Fix: overview panels read their sizes from theme.dashboard.leaderboard / theme.dashboard.activity (the dashboard crashed on load)

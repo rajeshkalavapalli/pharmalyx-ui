@@ -42,6 +42,7 @@ import {
     formatDate,
     getStockBalances,
     getStockLedger,
+    getStockRecipients,
     issueStock,
     monthKey,
     returnStock,
@@ -76,6 +77,16 @@ function StockPage({ itemType }) {
     const [error, setError] = useState("");
     const [dialog, setDialog] = useState(null); // { type: 'issue' } | { type: 'return', item }
     const [saving, setSaving] = useState(false);
+    // Who "Issue" can go to: direct reports, or everyone for an admin (the server decides).
+    const [recipients, setRecipients] = useState([]);
+
+    useEffect(() => {
+        setRecipients([]);
+        if (!actingUserId) return;
+        getStockRecipients()
+            .then((response) => setRecipients(response?.users || []))
+            .catch(() => setRecipients([]));
+    }, [actingUserId]);
 
     const load = useCallback(async () => {
         if (!viewUserId) return;
@@ -150,7 +161,7 @@ function StockPage({ itemType }) {
                     <>
                         <ActingUserSelect users={users} value={actingUserId} onChange={setActingUserId} />
                         <TeamViewSelect team={team} value={viewUserId} onChange={setViewUserId} />
-                        {isManager && (
+                        {(isManager || recipients.length > 0) && (
                             <Button variant="contained" startIcon={<AddRounded />} onClick={() => setDialog({ type: "issue" })}>
                                 Issue {config.plural.toLowerCase()}
                             </Button>
@@ -312,7 +323,7 @@ function StockPage({ itemType }) {
             {dialog?.type === "issue" && (
                 <IssueStockDialog
                     itemType={itemType}
-                    reports={reports}
+                    reports={recipients.length ? recipients : reports}
                     defaultUserId={viewingSelf ? "" : viewUserId}
                     saving={saving}
                     onClose={() => setDialog(null)}
