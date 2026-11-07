@@ -92,6 +92,7 @@ import PobReport from './Pages/Reports/Pob/PobReport.jsx';
 import SalesReport from './Pages/Reports/Sales/SalesReport.jsx';
 import GraphicalReport from './Pages/Reports/Graphical/GraphicalReport.jsx';
 import RiskAlerts from './Pages/Insights/Alerts/RiskAlerts.jsx';
+import FieldTruth from './Pages/Insights/Truth/FieldTruth.jsx';
 import PerformanceInsights from './Pages/Insights/Performance/PerformanceInsights.jsx';
 import FieldIntelligence from './Pages/Insights/Field/FieldIntelligence.jsx';
 import AdvancedAnalytics from './Pages/Insights/Analytics/AdvancedAnalytics.jsx';
@@ -426,6 +427,7 @@ function App() {
                     <Route path='insights/performance' element={<PerformanceInsights />} />
                     <Route path='insights/field' element={<FieldIntelligence />} />
                     <Route path='insights/risk' element={<RiskAlerts />} />
+                    <Route path='insights/truth' element={<FieldTruth />} />
                     <Route path='insights/advanced' element={<AdvancedAnalytics />} />
                     <Route path='insights/rules' element={<InsightRules />} />
 

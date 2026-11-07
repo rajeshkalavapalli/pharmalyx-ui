@@ -14,6 +14,9 @@ export const getPerformance = (userId) => get("/app/insights/performance", { use
 export const getFieldIntel = (userId) => get("/app/insights/field", { userId: userId || undefined });
 export const getAnalytics = (userId) => get("/app/insights/analytics", { userId: userId || undefined });
 export const getInsightRules = () => get("/app/insights/rules");
+export const getTruthScores = (month) => get("/app/truth/scores", { month });
+export const getAudits = (month) => get("/app/audits", { month });
+export const assignCrossAudit = (payload) => post("/app/audits/cross", payload);
 export const saveInsightRule = (ruleCode, payload) => put(`/app/insights/rules/${ruleCode}`, payload);
 
 export const SEVERITY = {

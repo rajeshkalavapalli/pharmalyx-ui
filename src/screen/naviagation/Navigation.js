@@ -143,6 +143,7 @@ const navigation = [
             { label: 'Performance Insights', path: '/insights/performance', ready: true, permission: ['performanceinsights.view'] },
             { label: 'Field Intelligence', path: '/insights/field', ready: true, permission: ['fieldintel.view'] },
             { label: 'Risk & Alerts', path: '/insights/risk', ready: true, permission: ['alerts.view'] },
+            { label: 'Field Truth', path: '/insights/truth', ready: true, permission: ['verifiedwork.view', 'alerts.view'] },
             { label: 'Advanced Analytics', path: '/insights/advanced', ready: true, permission: ['analytics.view'] },
             { label: 'Insight Rules', path: '/insights/rules', ready: true, permission: ['insightrules.view'] },
         ],

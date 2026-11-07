@@ -410,3 +410,9 @@
 ### V 0.0.89
 
 - Risk alerts: Field truth, Money & investments and Manager accountability groups with their icons (an unknown group no longer breaks the list)
+
+
+### V 0.0.90
+
+- Insights > Field Truth page: Truth Score tab (Trusted / Watch / Risk counts, team Rx share, every person with presence / pattern / audits / outcome bars and the reasons, lowest first, learning-mode banner) and Audits tab (month summary, joint and cross audits with why each doctor was picked, distance from the clinic, rep check-in match and result)
+- Head office can assign a cross-audit (rep, auditor who is not the rep's own manager, date)
