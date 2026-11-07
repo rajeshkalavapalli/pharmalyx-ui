@@ -371,6 +371,42 @@ function ActivityFeed({ items, sx }) {
 
 // ---------------------------------------------------------
 
+// The week in a few lines (the Monday brief), coloured by what needs attention.
+function WeeklyBrief({ refreshKey }) {
+    const [brief, setBrief] = useState(null);
+    useEffect(() => {
+        let alive = true;
+        api.get("/app/dashboard/brief")
+            .then((response) => alive && setBrief(response.data))
+            .catch(() => alive && setBrief(null));
+        return () => {
+            alive = false;
+        };
+    }, [refreshKey]);
+    if (!brief?.available || !brief.lines.length) return null;
+    return (
+        <Panel title="Weekly brief" subtitle="What an owner needs to know this week" actions={<BoltRounded sx={(theme) => ({ color: theme.palette.primary.main })} />} sx={(theme) => ({ mb: theme.stat.gap })}>
+            <Stack spacing={1.25}>
+                {brief.lines.map((line) => (
+                    <Stack key={line.text} direction="row" spacing={1.25} sx={{ alignItems: "flex-start" }}>
+                        <Box
+                            sx={(theme) => ({
+                                mt: 0.75,
+                                width: theme.dashboard.executive.liveDot,
+                                height: theme.dashboard.executive.liveDot,
+                                flexShrink: 0,
+                                borderRadius: "50%",
+                                backgroundColor: theme.palette[line.tone === "info" ? "primary" : line.tone].main,
+                            })}
+                        />
+                        <Typography variant="body2">{line.text}</Typography>
+                    </Stack>
+                ))}
+            </Stack>
+        </Panel>
+    );
+}
+
 export default function ExecutiveOverview({ refreshKey }) {
     const [data, setData] = useState(null);
 
@@ -390,6 +426,7 @@ export default function ExecutiveOverview({ refreshKey }) {
     return (
         <>
             <Band data={data} />
+            <WeeklyBrief refreshKey={refreshKey} />
             <Box
                 sx={(theme) => ({
                     display: "grid",

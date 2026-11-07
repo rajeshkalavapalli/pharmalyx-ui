@@ -426,3 +426,8 @@
 ### V 0.0.92
 
 - Field Truth > Brands: On the shelf panel - share of checked chemists with each product and where it is missing
+
+
+### V 0.0.93
+
+- Dashboard: Weekly brief card under the company / team overview
