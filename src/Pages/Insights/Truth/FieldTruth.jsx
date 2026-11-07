@@ -23,7 +23,7 @@ import {
     Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { FactCheckRounded, GppGoodRounded, GppMaybeRounded, PolicyRounded, SchoolRounded, ShuffleRounded } from "@mui/icons-material";
+import { FactCheckRounded, GppGoodRounded, GppMaybeRounded, MedicationRounded, PolicyRounded, RouteRounded, SchoolRounded, ShuffleRounded } from "@mui/icons-material";
 
 import LoadError from "../../../components/LoadError/LoadError";
 import PageHeader from "../../../components/PageHeader/PageHeader";
@@ -34,6 +34,7 @@ import Tag from "../../../components/Tag/Tag";
 import { useSnackbar } from "../../../components/Snackbar/SnackbarContext";
 import { getMyTeam } from "../../MyDoctors/index";
 import { assignCrossAudit, errorMessage, formatDate, getAudits, getTruthScores } from "../index";
+import { BrandComparison, DoctorJourney } from "./MarketTruth";
 
 // Field Truth Score (team) and joint / cross audits. Built only from our own signals - doctors are never asked.
 
@@ -373,10 +374,15 @@ function FieldTruth() {
                     options={[
                         { value: "scores", label: "Truth Score", icon: GppGoodRounded },
                         { value: "audits", label: "Audits", icon: FactCheckRounded },
+                        { value: "journey", label: "Doctor journey", icon: RouteRounded },
+                        { value: "brands", label: "Brands", icon: MedicationRounded },
                     ]}
                 />
             </Box>
-            {tab === "scores" ? <Scores month={month} /> : <Audits month={month} />}
+            {tab === "scores" && <Scores month={month} />}
+            {tab === "audits" && <Audits month={month} />}
+            {tab === "journey" && <DoctorJourney />}
+            {tab === "brands" && <BrandComparison />}
         </Box>
     );
 }

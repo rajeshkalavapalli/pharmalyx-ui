@@ -416,3 +416,8 @@
 
 - Insights > Field Truth page: Truth Score tab (Trusted / Watch / Risk counts, team Rx share, every person with presence / pattern / audits / outcome bars and the reasons, lowest first, learning-mode banner) and Audits tab (month summary, joint and cross audits with why each doctor was picked, distance from the clinic, rep check-in match and result)
 - Head office can assign a cross-audit (rep, auditor who is not the rep's own manager, date)
+
+
+### V 0.0.91
+
+- Field Truth page: Doctor journey tab (pick a person; stage tiles you can click to filter; doctors with visits, samples, Rx months, last visit) and Brands tab (team conversion per brand, the verdict - brand problem or rep problem - and each rep's prescribing / checked doctors)
