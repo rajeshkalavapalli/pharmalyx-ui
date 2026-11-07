@@ -400,3 +400,8 @@
 - Dashboard: new Company / Team overview for managers and head office above the section tabs: dark ink band with the month's headline numbers and "Needs attention" chips, a leaderboard with valid-visit bars and POB, and a live activity feed
 - Theme: dashboard.executive, dashboard.leaderboard and dashboard.activity tokens
 - Fix: overview panels read their sizes from theme.dashboard.leaderboard / theme.dashboard.activity (the dashboard crashed on load)
+
+
+### V 0.0.88
+
+- Dashboard overview band is now light (white to jade wash with a soft glow, ink text, white tiles with a light shadow) instead of dark ink; same layout and numbers

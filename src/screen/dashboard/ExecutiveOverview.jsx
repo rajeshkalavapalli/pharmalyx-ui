@@ -87,6 +87,7 @@ function HeadlineTile({ icon: Icon, label, value, caption }) {
                 borderRadius: theme.dashboard.executive.radius / 1.5,
                 backgroundColor: theme.dashboard.executive.tileBackground,
                 border: `1px solid ${theme.dashboard.executive.tileBorder}`,
+                boxShadow: theme.dashboard.executive.tileShadow,
                 minWidth: 0,
             })}
         >
@@ -121,6 +122,7 @@ function AttentionChip({ icon: Icon, count, label, to, alert }) {
                 color: theme.dashboard.executive.text,
                 backgroundColor: alert ? theme.dashboard.executive.chipAlert : theme.dashboard.executive.chipBackground,
                 border: `1px solid ${theme.dashboard.executive.tileBorder}`,
+                boxShadow: theme.dashboard.executive.tileShadow,
                 ...theme.typography.caption,
                 fontWeight: theme.typography.subtitle2.fontWeight,
                 transition: theme.calendar.transition,
@@ -152,6 +154,7 @@ function Band({ data }) {
                 mb: theme.stat.gap,
                 borderRadius: theme.dashboard.executive.radius,
                 background: theme.dashboard.executive.background,
+                border: theme.dashboard.executive.border,
                 boxShadow: theme.dashboard.executive.shadow,
             })}
         >
